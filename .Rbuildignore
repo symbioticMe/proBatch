@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^proteome_level_diagnostics\.R$
+^feature_level_diagnostics\.R$
+^aux_temp\.R$
+^replicate_diagnostics\.R$
+^Haao_peptide_examples\.R$
