@@ -102,7 +102,7 @@ matrix_to_long <- function(data_matrix, sample_annotation, measure_col = 'Intens
     as.data.frame() %>%
     rownames_to_column(var = 'peptide_group_label') %>%
     melt(id.var = 'peptide_group_label', value.name = measure_col,
-         variable.name = 'FullRunName') %>%
+         variable.name = 'FullRunName', factorsAsStrings = F) %>%
     mutate(before_after = step) %>%
     merge(sample_annotation)
   return(df_long)

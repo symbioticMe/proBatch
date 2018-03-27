@@ -1,4 +1,4 @@
-library(lazyeval)
+
 
 
 #' Quantile normalization of the data, ensuring that the row and column names are retained
