@@ -25,8 +25,10 @@ Imports:
     reshape2,
     lazyeval,
     readr,
-    WGCNA
+    WGCNA,
+    rlang
 Suggests: knitr,
     rmarkdown,
     SWATH2stats
 VignetteBuilder: knitr
+RoxygenNote: 6.0.1
