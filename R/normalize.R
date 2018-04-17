@@ -26,7 +26,8 @@ quantile_normalize <- function(data_matrix){
 #'
 #' @return
 #' @export
-#' @import tidyverse, lazyeval
+#' @import tidyverse
+#' @import lazyeval
 #'
 #' @examples
 median_normalization <- function(data_matrix, sample_annotation,
@@ -58,7 +59,12 @@ median_normalization <- function(data_matrix, sample_annotation,
 #'
 #' @return
 #' @export
-#' @import tidyverse, reshape2, lazyeval
+#' @import dplyr
+#' @importFrom tidyr nest
+#' @importFrom tidyr unnest
+#' @import reshape2
+#' @import lazyeval
+#' @importFrom  purrr map
 #'
 #' @examples
 normalize_custom_fit <- function(data_matrix, sample_annotation, batch_col,
@@ -89,7 +95,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation, batch_col,
     if(!return_long){
       casting_formula =  as.formula(paste(feature_id_col, sample_id_column,
                                           sep =  " ~ "))
-      df_normalized = dcast(df_normalized, formula=casting_formula,
+      df_normalized = dcast(df_normalized, formula = casting_formula,
                             value.var = 'Intensity_normalized')
                      }
   return(df_normalized)
