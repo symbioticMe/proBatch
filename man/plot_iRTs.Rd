@@ -5,13 +5,14 @@
 \title{Plot iRT peptides}
 \usage{
 plot_iRTs(data_df_long, sample_annotation, batch_column = "MS_batch.final",
+  sample_id_column = "FullRunName",
   feature_id_column = "peptide_group_label", measurement.col = "Intensity",
   order_column = "order", ...)
 }
 \arguments{
 \item{data_df_long}{- "openSWATH" format data frame}
 
-\item{...}{}
+\item{...}{additional arguments to plot_peptide_level function}
 }
 \description{
 Plot iRT peptides

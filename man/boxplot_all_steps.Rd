@@ -2,7 +2,7 @@
 % Please edit documentation in R/genome_wide_diagnostics.R
 \name{boxplot_all_steps}
 \alias{boxplot_all_steps}
-\title{Title}
+\title{Plot boxplots to compare various data normalization steps/approaches}
 \usage{
 boxplot_all_steps(list_of_dfs, sample_annotation, batch_column, steps = NULL)
 }
@@ -10,5 +10,5 @@ boxplot_all_steps(list_of_dfs, sample_annotation, batch_column, steps = NULL)
 \item{steps}{}
 }
 \description{
-Title
+Plot boxplots to compare various data normalization steps/approaches
 }
