@@ -2,7 +2,7 @@
 % Please edit documentation in R/genome_wide_diagnostics.R
 \name{cluster_samples}
 \alias{cluster_samples}
-\title{Title}
+\title{cluster the data matrix to visually inspect which confounder dominates}
 \usage{
 cluster_samples(data_matrix, color_df, plot_title, ...)
 }
@@ -10,5 +10,5 @@ cluster_samples(data_matrix, color_df, plot_title, ...)
 \item{title}{}
 }
 \description{
-Title
+cluster the data matrix to visually inspect which confounder dominates
 }
