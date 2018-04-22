@@ -17,7 +17,7 @@ plot correlation plot of a single protein
 \examples{
 plot_corr_plot(q_norm_proteome, protein_name = 'Haao',
 peptide_annotation = peptide_annotation, prot.column = 'Gene',
-title = 'Haao protein peptides after quantile norm',,
+title = 'Haao protein peptides after quantile norm',
 number.cex=0.75, tl.cex = .75
 mar=c(0,0,1,0))
 }
