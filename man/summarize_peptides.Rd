@@ -2,13 +2,14 @@
 % Please edit documentation in R/aux.R
 \name{summarize_peptides}
 \alias{summarize_peptides}
-\title{convert sample annotation matrix to color data frame}
+\title{summarize peptides by sample (ranking) and on the contrary, across peptide-wise across samples}
 \usage{
-summarize_peptides(proteome)
+summarize_peptides(proteome, sample_id = "FullRunName",
+  feature_id = "peptide_group_label")
 }
 \arguments{
 \item{proteome}{}
 }
 \description{
-convert sample annotation matrix to color data frame
+summarize peptides by sample (ranking) and on the contrary, across peptide-wise across samples
 }
