@@ -2,17 +2,18 @@
 % Please edit documentation in R/feature_level_diagnostics.R
 \name{plot_peptide_level}
 \alias{plot_peptide_level}
-\title{plot a single peptide or several peptide each in its own facet}
+\title{plot a single peptide or several peptides each in its own facet}
 \usage{
 plot_peptide_level(pep_name, data_df_long, sample_annotation,
   batch_column = "MS_batch.final",
   feature_id_column = "peptide_group_label", measurement.col = "Intensity",
-  order_column = NULL, geom = c("point", "line"), color_by_batch = F,
-  facet_by_batch = F, title = NULL, requant = NULL, theme = "classic")
+  sample_id_column = "FullRunName", order_column = NULL, geom = c("point",
+  "line"), color_by_batch = F, facet_by_batch = F, title = NULL,
+  requant = NULL, theme = "classic")
 }
 \arguments{
-\item{requant}{}
+\item{theme}{}
 }
 \description{
-plot a single peptide or several peptide each in its own facet
+plot a single peptide or several peptides each in its own facet
 }

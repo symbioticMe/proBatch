@@ -4,10 +4,10 @@
 \alias{plot_sample_corr_distribution}
 \title{Title}
 \usage{
-plot_sample_corr_distribution(data_matrix, sample_annotation, repeated_samples,
-  sample_id_col = "FullRunName", batch_col = "MS_batch.final",
-  covariate = "EarTag", title = "Correlation_distribution",
-  plot_param = "batch_the_same")
+plot_sample_corr_distribution(data_matrix, sample_annotation,
+  repeated_samples = NULL, sample_id_col = "FullRunName",
+  batch_col = "MS_batch.final", covariate = "EarTag",
+  title = "Correlation_distribution", plot_param = "batch_the_same")
 }
 \arguments{
 \item{plot_param}{}
