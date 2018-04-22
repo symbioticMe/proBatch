@@ -6,10 +6,11 @@
 \usage{
 plot_spike_ins(data_df_long, sample_annotation, spike_ins = "BOVIN",
   order_column = "order", measurement.col = "Intensity",
-  batch_column = "MS_batch", feature_id_column = "peptide_group_label", ...)
+  batch_column = "MS_batch", sample_id_column = "FullRunName",
+  feature_id_column = "peptide_group_label", ...)
 }
 \arguments{
-\item{...}{}
+\item{...}{additional arguments to plot_peptide_level function}
 }
 \description{
 Plot Spike-in peptides/proteins
