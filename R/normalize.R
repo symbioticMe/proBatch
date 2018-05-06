@@ -1,11 +1,22 @@
-
+#' @param data_matrix features (in rows) vs samples (in columns) matrix,
+#' with feature IDs in rownames and file/sample names as colnames.
+#' Usually the log transformed version of the original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
+#' @param sample_id_col name of the column in sample_annotation file,
+#' where the filenames (colnames of the data matrix are found)
+#' @param batch_column column in `sample_annotation` that should be used for batch comparison
+#' @param measure_column if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
+#' otherwise, it is used internally for consistency
+#' @name config
+NULL
+#> NULL
 
 
 #' Quantile normalization of the data, ensuring that the row and column names are retained
 #'
 #' @param data_matrix log transformed data matrix (features in rows and samples in columns)
 #'
-#' @return
+#' @return `data_matrix`-size matrix, with columns quantile-normalized
 #' @export
 #' @import preprocessCore
 #'
@@ -19,10 +30,7 @@ quantile_normalize <- function(data_matrix){
 
 #' Median normalization of the data
 #'
-#' @param sample_annotation
-#' @param batch_column
-#' @param measure_column
-#' @param data_matrix
+#' @name config
 #'
 #' @return
 #' @export
@@ -31,7 +39,8 @@ quantile_normalize <- function(data_matrix){
 #'
 #' @examples
 median_normalization <- function(data_matrix, sample_annotation,
-                                 batch_column, measure_column)
+                                 batch_column = 'MS_batch.final',
+                                 measure_column = 'Intensity')
   {
   data_matrix = data_matrix %>% merge(sample_annotation) %>%
     group_by_at(vars(one_of(batch_column))) %>%
@@ -46,15 +55,10 @@ median_normalization <- function(data_matrix, sample_annotation,
 
 #' normalize with the custom (continuous) fit
 #'
-#' @param data_matrix
-#' @param sample_annotation
-#' @param batch_col
-#' @param feature_id_col
-#' @param sample_id_column
-#' @param measure_col
-#' @param sample_order_col
-#' @param fit_func
-#' @param return_long
+#' @name config
+#' @param sample_order_col column, determining the order of sample MS run, used as covariate to fit the non-linear fit
+#' @param fit_func function to fit the (non)-linear trend
+#' @param return_long whether the result should be the "long" data frame (as `df_long`) or "wide" (as `data_matrix`)
 #' @param ... other parameters, usually those of the `fit_func`
 #'
 #' @return
@@ -67,9 +71,15 @@ median_normalization <- function(data_matrix, sample_annotation,
 #' @importFrom  purrr map
 #'
 #' @examples
-normalize_custom_fit <- function(data_matrix, sample_annotation, batch_col,
-                                 feature_id_col, sample_id_column, measure_col,
-                                 sample_order_col, fit_func, return_long = F, ...){
+normalize_custom_fit <- function(data_matrix, sample_annotation,
+                                 batch_column = 'MS_batch.final',
+                                 feature_id_col = 'peptide_group_label',
+                                 sample_id_column = 'FullRunName',
+                                 measure_col = 'Intensity',
+                                 sample_order_col = 'order',
+                                 fit_func = fit_nonlinear,
+                                 return_long = F, ...){
+
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
   df_long = data_matrix %>%
@@ -77,15 +87,16 @@ normalize_custom_fit <- function(data_matrix, sample_annotation, batch_col,
   names(df_long) = c(feature_id_col, sample_id_column, measure_col)
 
   df_normalized = df_long %>%
+    filter(!is.na(rlang::UQ(as.name(measure_col)))) %>%
     merge(sample_annotation) %>%
     arrange_(feature_id_col, sample_order_col) %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
+    group_by_at(vars(one_of(c(feature_id_col, batch_column)))) %>%
     nest() %>%
     mutate(fit = map(data, fit_func, response.var = measure_col,
                      expl.var = sample_order_col, ...)) %>%
     unnest() %>%
     #change the fit to the corrected data
-    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
+    group_by_at(vars(one_of(c(feature_id_col, batch_column)))) %>%
     mutate(mean_fit = mean(fit)) %>%
     mutate(diff = mean_fit - fit) %>%
     mutate_(Intensity_normalized = interp(~`+`(x, y),
@@ -97,19 +108,22 @@ normalize_custom_fit <- function(data_matrix, sample_annotation, batch_col,
                                           sep =  " ~ "))
       df_normalized = dcast(df_normalized, formula = casting_formula,
                             value.var = 'Intensity_normalized')
+      df_normalized = as.matrix(df_normalized[,2:ncol(df_normalized)])
                      }
   return(df_normalized)
 }
 
 
 #' Standardized input-output ComBat normalization
+#' ComBat allows users to adjust for batch effects in datasets where the batch covariate is known, using methodology
+#' described in Johnson et al. 2007. It uses either parametric or non-parametric empirical Bayes frameworks for adjusting data for
+#' batch effects.  Users are returned an expression matrix that has been corrected for batch effects. The input
+#' data are assumed to be cleaned and normalized before batch effect removal.
 #'
-#' @param sample_annotation
-#' @param batch_column
+#' @name config
 #' @param par.prior
-#' @param data_matrix
 #'
-#' @return
+#' @return `data_matrix`-size data matrix with batch-effect corrected by `ComBat`
 #' @export
 #' @import sva
 #'

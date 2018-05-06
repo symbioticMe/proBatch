@@ -1,131 +1,27 @@
-#' Remove peptides with too many missing peptides
+#' Auxiliary functions for data matrix manipulation
 #'
-#' @param df_long
-#' @param sample_annotation
-#' @param batch_column
-#' @param feature_id_column
-#' @param threshold_batch
-#' @param threshold_global
+#'  Converting from long to wide (matrix), wide (matrix) to long, joining the data matrices
 #'
-#' @return
-#' @export
-#' @import dplyr
-#' @importFrom magrittr %>%
-#' @importFrom dplyr one_of
-#'
-#' @examples
-clean_requants <- function(df_long, sample_annotation, batch_column,
-                           feature_id_column = 'peptide_group_label',
-                           threshold_batch = .7, threshold_global = .5){
-  #for dplyr version 0.7 and higher, this is the way to call the functions
-  n_samples = nrow(sample_annotation)
-  df_clean = df_long %>%
-    filter(m_score != 2) %>%
-    merge(sample_annotation) %>%
-    group_by_at(vars(one_of(c(c(feature_id_column, batch_column))))) %>%
-    mutate(n_samples_in_batch = n()) %>%
-    ungroup() %>%
-    group_by_at(vars(one_of(batch_column))) %>%
-    mutate(n_batch = max(n_samples_in_batch)) %>%
-    mutate(requant_fraction_batch = 1 - n_samples_in_batch/n_batch) %>%
-    ungroup() %>%
-    group_by_at(vars(one_of(c(feature_id_column)))) %>%
-    mutate(n_samples_for_peptide = n()) %>%
-    mutate(requant_fraction = 1 - n_samples_for_peptide/n_samples) %>%
-    filter(requant_fraction < threshold_global) %>%
-    filter(requant_fraction_batch < threshold_batch) %>%
-    ungroup()
-  return(df_clean)
-}
+#' @param df_long data frame where each row is a single feature in a single sample,
+#' thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`, but usually also `m_score` (in OpenSWATH output result file)
+#' @param data_matrix features (in rows) vs samples (in columns) matrix,
+#' with feature IDs in rownames and file/sample names as colnames.
+#' Usually the log transformed version of the original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
+#' @param sample_id_col name of the column in sample_annotation file,
+#' where the filenames (colnames of the data matrix are found)
+#' @param measure_column if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
+#' otherwise, it is used internally for consistency
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
+#' @param feature_id_column name of the column with feature/gene/peptide/protein ID used with long format matrix (`df_long`). In wide format (`data_matrix`) this would be the row name
+#' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or `qNorm_ComBat`).
+#' Useful if consecutive steps are compared in plots.
+#' Note that in plots these are usually ordered alphabetically, so it's worth naming with numbers, e.g. `1_raw`, `2_quantile`
+#' @name aux_config
 
-#' remove peptides that are missing in the whole batch
-#' useful for some downstream functions as ComBat normalization, that would "choke"
+#' @name aux_config
 #'
-#' @return data frame free of peptides that were not detected across all batches
-#' @export
-#' @import dplyr
-#' @importFrom tidyr complete
-#'
-#' @examples
-remove_peptides_with_missing_batch <- function(proteome,
-                                               batch_column = 'MS_batch.final',
-                                               feature_id_column = 'peptide_group_label'){
-  peptides_good = proteome %>%
-    group_by_at(vars(one_of(c(feature_id_column, batch_column)))) %>%
-    summarize(n = n()) %>%
-    ungroup () %>%
-    complete(!!!rlang::syms(c(feature_id_column, batch_column)))%>%
-    group_by_at(vars(one_of(c(feature_id_column)))) %>%
-    summarize(full_batches = all(!is.na(n))) %>%
-    filter(full_batches) %>%
-    pull(feature_id_column)
-
-  proteome_clean = proteome %>%
-    filter(rlang::UQ(as.name(feature_id_column)) %in% peptides_good)
-  return(proteome_clean)
-}
-
-#' Identify stretches of time between runs that are long and split a batches by them
-#'
-#' @param date_vector
-#' @param threshold
-#' @param minimal_batch_size
-#' @param batch_name
-#'
-#' @return
-#' @export
-#'
-#' @examples
-define_batches_by_MS_pauses <- function(date_vector, threshold,
-                                     minimal_batch_size = 5,
-                                     batch_name = 'MS_batch'){
-  diff = diff(date_vector)
-  tipping_points = which(diff > threshold)
-  batch_size = diff(tipping_points)
-  if (any(batch_size <= minimal_batch_size)){
-    warning('some batches are too small, merging with the previous')
-    batch_correction = ifelse(batch_size <= minimal_batch_size, batch_size, 0)
-    tipping_points = unique(tipping_points+ c(batch_correction, 0))
-  }
-  tipping_points = c(0, tipping_points, length(date_vector))
-  batch_idx = rep(1:(length(tipping_points) -1),
-                  times = diff(tipping_points))
-  batch_ids = paste(batch_name, batch_idx, sep = '_')
-  return(batch_ids)
-}
-
-
-#' summarize peptides by sample (ranking) and on the contrary, across peptide-wise across samples
-#'
-#' @param proteome
-#'
-#' @return
-#' @export
-#' @importFrom magrittr %>%
-#'
-#' @examples
-summarize_peptides <- function(proteome, sample_id = 'FullRunName',
-                               feature_id = 'peptide_group_label'){
-  peptide_summary = proteome %>%
-    group_by_at(vars(one_of(sample_id)))  %>%
-    mutate(rank = rank(Intensity))  %>%
-    group_by_at(vars(one_of(feature_id))) %>%
-    summarise(RT_mean = mean(RT),
-              Int_mean = mean(Intensity), rank_mean = mean(rank),
-              numb_requants = sum(m_score > 1),
-              mean_m_score = mean(m_score),
-              median_m_score = median(m_score),
-              median_good_m_score = median(m_score[m_score < 1]))
-}
-
-#' Convert from long data frame to data matrix (features in rows, samples in columns)
-#'
-#' @param proteome_long
-#' @param feature_id_column
-#' @param measure_column
-#' @param sample_id_column
-#'
-#' @return
+#' @return `data_matrix`-like matrix (features in rows, samples in columns)
 #' @export
 #' @import tibble
 #' @importFrom magrittr %>%
@@ -133,36 +29,34 @@ summarize_peptides <- function(proteome, sample_id = 'FullRunName',
 #' @import reshape2
 #'
 #' @examples
-convert_to_matrix <- function(data_df_long,
+convert_to_matrix <- function(df_long,
                               feature_id_column = 'peptide_group_label',
                               measure_column = 'Intensity',
-                              sample_id_column = 'FullRunName'){
-  casting_formula =  as.formula(paste(feature_id_column, sample_id_column,
+                              sample_id_col = 'FullRunName'){
+  casting_formula =  as.formula(paste(feature_id_column, sample_id_col,
                                       sep =  " ~ "))
-  proteome_wide = dcast(data_df_long, formula=casting_formula,
+  proteome_wide = dcast(df_long, formula=casting_formula,
                         value.var=measure_column) %>%
     column_to_rownames(feature_id_column) %>%
     as.matrix()
   return(proteome_wide)
 }
 
-#' Convert the features x samples data matrix to a long format (e.g. for plotting)
+#' @name aux_config
 #'
-#' @param data_matrix
-#' @param step
-#' @param sample_annotation
-#'
-#' @return
+#' @return `df_long`-like object
 #' @export
 #' @importFrom magrittr %>%
 #' @import dplyr
 #' @import reshape2
 #'
 #' @examples
-matrix_to_long <- function(data_matrix, sample_annotation, measure_col = 'Intensity', step){
+matrix_to_long <- function(data_matrix, sample_annotation,
+                           feature_id_column = 'peptide_group_label',
+                           measure_col = 'Intensity', step = NA){
   df_long = data_matrix %>%
     as.data.frame() %>%
-    rownames_to_column(var = 'peptide_group_label') %>%
+    rownames_to_column(var = feature_id_column) %>%
     melt(id.var = 'peptide_group_label', value.name = measure_col,
          variable.name = 'FullRunName', factorsAsStrings = F) %>%
     mutate(Step = step) %>%
@@ -170,74 +64,20 @@ matrix_to_long <- function(data_matrix, sample_annotation, measure_col = 'Intens
   return(df_long)
 }
 
-#' convert date/time column to POSIX format
-#' required to keep number-like behaviour
+#' @param matrix_list list of matrices in `data_matrix` format
+#' @name aux_config
 #'
-#' @param sample_annotation
-#' @param time_column
-#' @param dateTimeFormat
-#'
-#' @return
+#' @return `df_long` like data frame with a row, having entries for
+#' 1) `feature_id_col` (e.g. peptide name), 2) `sample_id_col` (e.g. filename),
+#' 3) `measure_col` (e.g. intensity/expression) and 4) `step` (e.g. `raw`, `quantile_norm`)
 #' @export
 #'
 #' @examples
-dates_to_posix <- function(sample_annotation, time_column, new_time_column = NULL,
-                          dateTimeFormat = c("%b_%d", "%H:%M:%S")){
-  if (length(time_column) == 1){
-    if(is.null(new_time_column)) new_time_column = time_column
-    time_col = as.character(sample_annotation[[time_column]])
-    sample_annotation[[new_time_column]] = as.POSIXct(time_col ,
-                                             format=dateTimeFormat)
-  }
-  else {
-    sample_annotation = sample_annotation %>%
-      mutate(dateTime = paste(!!!rlang::syms(time_column), sep=" ")) %>%
-      mutate(dateTime = as.POSIXct(dateTime,
-                                   format = paste(dateTimeFormat, collapse = ' '))) %>%
-      rename(!!new_time_column := dateTime)
-  }
-  return(sample_annotation)
-}
-
-#' convert date to order
-#'
-#' @param sample_annotation
-#' @param time_column
-#' @param dateTimeFormat
-#' @param order_column
-#'
-#' @return
-#' @export
-#'
-#' @examples
-date_to_sample_order <- function(sample_annotation, time_column,
-                                 new_time_column = 'DateTime',
-                          dateTimeFormat = c("%b_%d", "%H:%M:%S"),
-                          order_column = 'order'){
-  sample_annotation = dates_to_posix(sample_annotation = sample_annotation,
-                                    time_column = time_column,
-                                    new_time_column = new_time_column,
-                                    dateTimeFormat = dateTimeFormat)
-  sample_annotation[[order_column]] = rank(sample_annotation[[new_time_column]])
-  return(sample_annotation)
-}
-
-#' join list of matrices from different transformation steps into joined data frame
-#'
-#' @param matrix_list
-#' @param Step
-#' @param sample_annotation
-#' @param measure.col
-#'
-#' @return
-#' @export
-#'
-#' @examples
-join_data_matrices <- function(matrix_list, Step,
-                               sample_annotation, measure.col = 'Intensity'){
+join_data_matrices <- function(matrix_list, step,
+                               sample_annotation, measure_column = 'Intensity'){
   long_df_list = lapply(1:length(matrix_list), function(i){
     matrix_to_long(matrix_list[[i]], sample_annotation = sample_annotation,
-                   measure_col = measure.col, step = Step[i])
+                   measure_col = measure_column, step = step[i])
   })
   joined_df = do.call(rbind, long_df_list)
 
