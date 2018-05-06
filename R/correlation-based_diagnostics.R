@@ -104,10 +104,9 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
   return(corr_distribution)
 }
 
-#' Title
+#' Create violin plot of correlation distribution
+#' Typically to visualize within batch vs within replicate vs non-related sample correlation
 #'
-#' @param data_matrix
-#' @param sample_annotation
 #' @param repeated_samples
 #' @param covariate
 #' @param title
