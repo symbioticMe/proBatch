@@ -26,7 +26,11 @@ Imports:
     lazyeval,
     readr,
     WGCNA,
-    rlang
+    rlang,
+    corrplot,
+    ggfortify,
+    pheatmap, 
+    sva
 Suggests: knitr,
     rmarkdown,
     SWATH2stats
