@@ -9,6 +9,9 @@ quantile_normalize(data_matrix)
 \arguments{
 \item{data_matrix}{log transformed data matrix (features in rows and samples in columns)}
 }
+\value{
+`data_matrix`-size matrix, with columns quantile-normalized
+}
 \description{
 Quantile normalization of the data, ensuring that the row and column names are retained
 }
