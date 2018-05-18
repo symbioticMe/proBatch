@@ -182,6 +182,8 @@ sample_annotation_to_colors <- function(sample_annotation,
                                  is.factor(col) | is.character(col))]
   if(!is.null(factor_columns)){
     factor_columns = union(factor_columns, factor_like_columns)
+  } else {
+      factor_columns = factor_like_columns
     }
   if (!is.null(not_factor_columns)){
     factor_columns = setdiff(factor_columns, not_factor_columns)
@@ -208,7 +210,7 @@ sample_annotation_to_colors <- function(sample_annotation,
   non_factor_cols = setdiff(names(sample_annotation), factor_columns)
   #TODO: if numerics_to_log is a character vector of column names, convert corresponding annotation colors to log scale
   list_of_col_for_numeric = list()
-  if(!is.null(non_factor_cols)){
+  if(!is.null(non_factor_cols) & !identical(non_factor_cols, character(0))){
     numeric_df = sample_annotation %>%
       select(one_of(non_factor_cols))
     map_of_colors_to_num_vec = map_numbers_to_colors(numeric_df,
