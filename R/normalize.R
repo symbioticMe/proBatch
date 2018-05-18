@@ -1,3 +1,4 @@
+#' Data normalization and batch adjustment methods
 #' @param data_matrix features (in rows) vs samples (in columns) matrix,
 #' with feature IDs in rownames and file/sample names as colnames.
 #' Usually the log transformed version of the original data
@@ -28,7 +29,7 @@ quantile_normalize <- function(data_matrix){
   return(q_norm_proteome)
 }
 
-#' Median normalization of the data
+#' Median normalization of the data (per batch median)
 #'
 #' @name config
 #'
@@ -38,19 +39,49 @@ quantile_normalize <- function(data_matrix){
 #' @import lazyeval
 #'
 #' @examples
-median_normalization <- function(data_matrix, sample_annotation,
-                                 batch_column = 'MS_batch.final',
-                                 measure_column = 'Intensity')
-  {
-  data_matrix = data_matrix %>% merge(sample_annotation) %>%
-    group_by_at(vars(one_of(batch_column))) %>%
-    mutate_(median = interp(~median(measurement),
-            measurement = as.name(measure_column))) %>%
+normalize_medians_batch <- function(data_long, sample_annotation = NULL,
+                                    sample_id_column = 'FullRunName',
+                                    batch_column = 'MS_batch.final',
+                                    feature_id_col = 'peptide_group_label',
+                                    measure_column = 'Intensity'){
+  if (!(sample_id_column %in% names(data_long) & batch_column %in% names(data_long)) &
+      !is.null(sample_annotation)){
+    data_long = data_long %>% merge(sample_annotation)
+  }
+  df_normalized = data_long %>%
+    group_by_at(vars(one_of(batch_column, feature_id_col))) %>%
+    mutate(median_batch = median(UQ(rlang::sym(measure_column)), na.rm = T)) %>%
     ungroup() %>%
-    mutate_(median_overall = interp(~median(measurement),
-            measurement = as.name(measure_column))) %>%
-    mutate(diff = median - median_overall) %>%
-    mutate()
+    mutate(median_global = median(UQ(rlang::sym(measure_column)), na.rm = T)) %>%
+    mutate(diff = median_global - median_batch) %>%
+    mutate(Intensity_normalized = UQ(rlang::sym(measure_column))+diff)
+
+  return(df_normalized)
+}
+
+#' Median normalization of the data (global)
+#'
+#' @name config
+#'
+#' @return
+#' @export
+#' @import tidyverse
+#' @import lazyeval
+#' @importFrom rlang UQ
+#'
+#' @examples
+normalize_medians_global <- function(data_long,
+                                     sample_id_column = 'FullRunName',
+                                    measure_column = 'Intensity'){
+  df_normalized = data_long  %>%
+    group_by_at(vars(one_of(sample_id_column))) %>%
+    mutate(median_run = median(UQ(rlang::sym(measure_column)), na.rm = T)) %>%
+    ungroup()
+  df_normalized = df_normalized %>%
+    mutate(median_global = median(UQ(rlang::sym(measure_column)), na.rm = T)) %>%
+    mutate(diff = median_global - median_run) %>%
+    mutate(Intensity_normalized = UQ(rlang::sym(measure_column))+diff)
+  return(df_normalized)
 }
 
 #' normalize with the custom (continuous) fit
