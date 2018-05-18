@@ -127,8 +127,12 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                    title = 'Correlation_distribution',
                                    plot_param = 'batch_the_same'){
   corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
-                                covariate) {
-    corr_matrix = cor(data_matrix[,repeated_samples], use = 'complete.obs')
+                                covariate, sample_id_col, batch_col) {
+    if (!is.null(repeated_samples)){
+      corr_matrix = cor(data_matrix[,repeated_samples], use = 'complete.obs')
+    } else {
+      corr_matrix = cor(data_matrix, use = 'complete.obs')
+    }
     corr_distribution = get_sample_corr_distrib(cor_proteome = corr_matrix,
                                                 sample_annotation = sample_annotation,
                                                 sample_id_col = sample_id_col,
@@ -137,11 +141,13 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
     return(corr_distribution)
   }
   if (!is.list(data_matrix)){
-    corr_distribution = corr_distribution(data_matrix, repeated_samples, sample_annotation, covariate)
+    corr_distribution = corr_distribution(data_matrix, repeated_samples, sample_annotation,
+                                          covariate, sample_id_col, batch_col)
   } else {
     corr_distribution = lapply(1:length(data_matrix), function(i) {
       dm = data_matrix[[i]]
-      corr_distribution = corr_distribution(dm, repeated_samples, sample_annotation, covariate)
+      corr_distribution = corr_distribution(dm, repeated_samples, sample_annotation,
+                                            covariate, sample_id_col, batch_col)
       corr_distribution$Step = names(data_matrix)[i]
       return(corr_distribution)
     })
