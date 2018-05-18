@@ -4,7 +4,8 @@
 \alias{cluster_samples}
 \title{cluster the data matrix to visually inspect which confounder dominates}
 \usage{
-cluster_samples(data_matrix, color_df, plot_title, ...)
+cluster_samples(data_matrix, color_df, plot_title, distance = "euclidean",
+  agglomeration = "complete", ...)
 }
 \arguments{
 \item{title}{}
