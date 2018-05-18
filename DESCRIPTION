@@ -17,7 +17,7 @@ Description: The proBatch package contains functions for diagnosing and removing
     section of this package. 
     The approaches are described in (Čuklina et al. 2019, MCP)
 License: What license is it under?
-Depends: R (>= 3.4.1)
+Depends: R (>= 3.4.0)
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -30,7 +30,8 @@ Imports:
     corrplot,
     ggfortify,
     pheatmap, 
-    sva
+    sva,
+    pvca
 Suggests: knitr,
     rmarkdown,
     SWATH2stats
