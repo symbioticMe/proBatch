@@ -1,3 +1,4 @@
+#' functions for preparing OpenSWATH proteome for batch effect correction and other downstream analyses
 #' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
 #' @param sample_id_col name of the column in sample_annotation file,
 #' where the filenames (colnames of the data matrix are found)
@@ -9,8 +10,6 @@
 #' @param feature_id_column name of the column with feature/gene/peptide/protein ID used with long format matrix (`df_long`). In wide format (`data_matrix`) this would be the row name
 #' @name clean_proteome
 
-#' Remove peptides with too many missing peptides
-#'
 #' @name clean_proteome
 #' @param threshold_batch maximal fraction of missing values for a feature for a batch
 #' @param threshold_global maximal fraction of missing values for a feature globally
