@@ -51,62 +51,126 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     warning('order column not found in sample annotation, taking order of files in the data matrix instead')
     order_column = 'order_temp_col'
   }
+  if(!is.null(facet_column)){
+    df_ave = df_ave %>%
+      group_by_at(vars(one_of(facet_column))) %>%
+      mutate(order = rank(UQ(rlang::sym(order_column))))
+  }
   gg = ggplot(df_ave, aes_string(x = order_column, y = 'average'))+
                 geom_point()
   if(color_by_batch & !is.null(batch_column)){
     gg = gg + aes_string(color = batch_column)
+    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
+      gg = gg + scale_color_brewer(palette = 'Set1')
+    } else{
+      gg = gg + scale_color_manual(values = color_scheme)
+    }
   }
   if(!is.null(batch_column)){
-    #TODO: modify this for multi-instrument case
-    batch.tipping.points = cumsum(table(sample_annotation[[batch_column]]))+.5
-    gg = gg + geom_vline(xintercept = batch.tipping.points,
-                         color = 'grey', linetype = 'dashed')
+    #TODO: check if this works for multi-instrument case
+    if (!is.null(facet_column)){
+      tipping.points = df_ave %>%
+        group_by_at(vars(one_of(facet_column))) %>%
+        arrange(!!! rlang::syms(order_column)) %>%
+        mutate(batch.tipping.points = cumsum(table(batch_column))+.5)
+      gg = gg + geom_vline(data = tipping.points, aes(xintersept = batch.tipping.points),
+                           color = 'grey', linetype = 'dashed')
+    } else {
+      batch.tipping.points = cumsum(table(sample_annotation[[batch_column]]))+.5
+      gg = gg + geom_vline(xintercept = batch.tipping.points,
+                           color = 'grey', linetype = 'dashed')
+    }
   }
+  if(!is.null(facet_column)){
+    gg = gg + facet_wrap(as.formula(paste("~", facet_column)))
+  }
+
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
   if(!is.null(title)) gg = gg + ggtitle(title)+
     theme(plot.title = element_text(face = 'bold',hjust = .5))
-  if(length(color_scheme) == 1 & color_scheme == 'brewer'){
-    gg = gg + scale_color_brewer(palette = 'Set1')
-  } else{
-    gg = gg + scale_color_manual(values = color_scheme)
-  }
+
 
   return(gg)
 }
 
-#' plot boxplot of data, optionally colored by batch
+#' @name plot_sample_means_or_boxplots
 #'
-#' @param data_df_long
-#' @param sample_annotation
-#' @param batch_column
-#'
-#' @return
 #' @export
 #' @import tidyverse
 #'
 #' @examples
-gg_boxplot <- function(data_df_long, sample_annotation, batch_column,
-                      order_column = 'order', measure_col = 'Intensity',
-                      fill_batch = T, theme = 'classic', title = NULL){
-  if (!all(names(sample_annotation) %in% names(data_df_long))){
-    data_df_long = data_df_long %>% merge(sample_annotation)
+plot_boxplot <- function(df_long, sample_annotation = NULL,
+                       sample_id_column = 'FullRunName',
+                       measure_col = 'Intensity',
+                       order_column = 'order',
+                       batch_column = 'MS_batch.final',
+                       facet_column = 'instrument',
+                       color_by_batch = T, color_scheme = 'brewer',
+                       theme = 'classic',
+                       title = NULL){
+  if (!all(c(batch_column, sample_id_column) %in% names(df_long))){
+    if (!is.null(sample_annotation)){
+      df_long = df_long %>% merge(sample_annotation,
+                                            by = sample_id_column)
+    } else {
+      if (color_by_batch){
+        stop('batches cannot be colored if the batch column cannot be defined,
+             check sample_annotation and data matrix')
+      }
+    }
   }
-  gg = ggplot(data_df_long, aes_string(x = order_column, y = measure_col,
+  if (is.null(order_column)){
+    warning('order column not defined, taking order of files in the data matrix instead')
+    order_column = 'order_temp_col'
+    df_long[[order_column]] = match(df_long[[sample_id_column]],
+                                         unique(df_long[[sample_id_column]]))
+  } else if (!(order_column %in% names(sample_annotation)) &
+             !(order_column %in% names(df_long))){
+    warning('order column not found in sample annotation, taking order of files in the data matrix instead')
+    order_column = 'order_temp_col'
+    df_long[[order_column]] = match(df_long[[sample_id_column]],
+                                         unique(df_long[[sample_id_column]]))
+  }
+
+  gg = ggplot(df_long, aes_string(x = order_column, y = measure_col,
                                        group = order_column))+
     geom_boxplot(outlier.size = .15)+
     theme_bw()+
-    theme(plot.title = element_text(face = 'bold', hjust = .5),
-          legend.position="top", axis.text.x = element_text(angle = 90))
-  if(fill_batch){
+    theme(plot.title = element_text(face = 'bold', hjust = .5))
+
+
+  if (!is.numeric(df_long[[order_column]])){
+    warning(sprintf('order column is not numeric, assuming the order is irrelevant
+                    of %s order follows the run order.', order_column))
+    df_long[[order_column]] = factor(df_long[[order_column]],
+                                              levels = df_long[[order_column]])
+    gg = gg +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+  }
+  if(color_by_batch){
     gg = gg + aes_string(fill = batch_column)
+    if (length(unique(df_long[[sample_id_column]])) > 100){
+      gg = gg + theme(legend.position="top")
+    }
+    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
+      n_batches <- length(unique(df_long[[batch_column]]))
+      if(n_batches > RColorBrewer::brewer.pal.info['Set1','maxcolors']){
+        warning('default Brewer palette Set1 has only 9 colors, you specifies %s batches,
+                consider defining color scheme with sample_annotation_to_colors function', n_batches)
+      }
+      gg = gg + scale_color_brewer(palette = 'Set1')
+    } else{
+      gg = gg + scale_color_manual(values = color_scheme)
+    }
   }
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
   if (!is.null(title)){
-    gg = gg + ggtitle(title)+theme(plot.title = element_text(hjust = .5, face = 'bold', size = 16))
+    gg = gg + ggtitle(title)+
+      theme(plot.title = element_text(hjust = .5, face = 'bold', size = 16))
   }
   return(gg)
 }
