@@ -168,44 +168,7 @@ cluster_samples <- function(data_matrix, color_df, plot_title, ...){
                       hang = -0.1, addGuide = T, ...)
 }
 
-#' Quantify variance distribution by variable
-#'
-#' @param data_matrix
-#' @param sample_annotation
-#' @param technical_covariates
-#' @param biological_covariates
-#' @param plot_title
-#' @param colors_for_bars
-#' @param threshold_pca
-#' @param threshold_var
-#'
-#' @return
-#' @export
-#' @import ggplot2
-#' @importFrom pvca pvcaBatchAssess
-#'
-#' @examples
-plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRunName',
-                 technical_covariates = NULL, biological_covariates = NULL,
-                 plot_title = NULL, colors_for_bars = NULL, threshold_pca = .6,
-                 threshold_var = .01, theme = 'classic'){
-  factors_for_PVCA = c(technical_covariates, biological_covariates)
-  if (!is.null(sample_id_column)){
-    if(sample_id_column %in% names(sample_annotation)){
-      rownames(sample_annotation) = sample_annotation[[sample_id_column]]
-    }
-  }
-
-  tech_interactions = expand.grid(technical_covariates, technical_covariates) %>%
-    mutate(tech_interaction = paste(Var1, Var2, sep = ':')) %>%
-    pull(tech_interaction)
-  biol_interactions = expand.grid(biological_covariates, biological_covariates) %>%
-    mutate(biol_interactions = paste(Var1, Var2, sep = ':')) %>%
-    pull(biol_interactions)
-
-  if(!(all(rownames(sample_annotation) %in% colnames(data_matrix)))){
-    stop('check data matrix column names or these in sample annotation')
-  }
+PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca, threshold_var = Inf) {
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
   expr_set = Biobase::ExpressionSet(data_matrix[,rownames(sample_annotation)], covrts.annodf)
   pvcaAssess <- pvcaBatchAssess (expr_set, factors_for_PVCA, threshold = threshold_pca)
@@ -221,6 +184,55 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRu
     pvca_res = rbind(pvca_res, pvca_res_add)
   }
   else {pvca_res = pvcaAssess_df}
+  return(pvca_res)
+}
+
+#' Plot variance distribution by variable
+#'
+#' @param data_matrix features (in rows) vs samples (in columns) matrix,
+#' with feature IDs in rownames and file/sample names as colnames.
+#' in most function, it is assumed that this is the log transformed version of the original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
+#' @param technical_covariates vector `sample_annotation` column names that are technical covariates
+#' @param biological_covariates vector `sample_annotation` column names, that are biologically meaningful covariates
+#' @param title Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))
+#' @param colors_for_bars four-item color vector, specifying colors for the following categories: c('residual', 'biological', 'biol:techn', 'technical')
+#' @param threshold_pca the percentile value of the minimum amount of the variabilities that the selected principal components need to explain
+#' @param threshold_var the percentile value of weight each of the covariates needs to explain
+#'  (the rest will be lumped together)
+#'
+#' @return list of two items: plot =gg, df = pvca_res
+#' @export
+#' @import ggplot2
+#' @importFrom pvca pvcaBatchAssess
+#'
+#' @examples
+#' @seealso \code{\link{sample_annotation_to_colors}}
+plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRunName',
+                 technical_covariates = c('MS_batch', 'instrument'),
+                 biological_covariates = c('cell_line','drug_dose'),
+                 title = NULL, colors_for_bars = NULL, threshold_pca = .6,
+                 threshold_var = .01, theme = 'classic'){
+  factors_for_PVCA = c(technical_covariates, biological_covariates)
+  if (!is.null(sample_id_column)){
+    if(sample_id_column %in% names(sample_annotation)){
+      rownames(sample_annotation) = sample_annotation[[sample_id_column]]
+    }
+  }
+
+  pvca_res = PVCA(data_matrix, sample_annotation, factors_for_PVCA,
+                   threshold_pca, threshold_var = threshold_var)
+
+  tech_interactions = expand.grid(technical_covariates, technical_covariates) %>%
+    mutate(tech_interactions = paste(Var1, Var2, sep = ':')) %>%
+    pull(tech_interactions)
+  biol_interactions = expand.grid(biological_covariates, biological_covariates) %>%
+    mutate(biol_interactions = paste(Var1, Var2, sep = ':')) %>%
+    pull(biol_interactions)
+
+  if(!(all(rownames(sample_annotation) %in% colnames(data_matrix)))){
+    stop('check data matrix column names or these in sample annotation')
+  }
 
   technical_covariates = c(technical_covariates, tech_interactions)
   biological_covariates = c(biological_covariates, biol_interactions)
@@ -228,6 +240,7 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRu
                                                    ifelse(label %in% biological_covariates, 'biological',
                                                           ifelse(label %in% c(label_of_small, 'resid'), 'residual', 'biol:techn'))))
 
+  #ToDo: create a ranking function for PVCA items, so that these are plotted by the following logic and not by alphabetical order
   pvca_res = pvca_res %>%
     arrange(desc(weights)) %>%
     arrange(label == label_of_small) %>%
@@ -245,13 +258,21 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRu
   if(is.null(colors_for_bars)){
     colors_for_bars = c('grey', wesanderson::wes_palettes$Rushmore[3:5])
     names(colors_for_bars) = c('residual', 'biological', 'biol:techn', 'technical')
-    gg = gg + scale_fill_manual(values = colors_for_bars)
+
   }
+  gg = gg + scale_fill_manual(values = colors_for_bars)
+
+  if (!is.null(title)){
+    gg = gg + ggtitle(title)
+  }
+
+  #cosmetic updates to the plot
   gg = gg +
     theme(axis.title.x = NULL, axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))+
     xlab(NULL)+
     theme(text = element_text(size=15))+
     guides(fill=guide_legend(override.aes=list(color=NA), title=NULL))
+
   return(list(plot =gg, df = pvca_res))
 }
 
