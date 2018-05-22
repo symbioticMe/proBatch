@@ -1,39 +1,43 @@
+#' Plot sample average or distribution (boxplot) vs order (if the real running order available)
+#' for quick assessment of trends associated, overall or specific covariate-associated (see `batch_column` and `facet_column`)
+#' @param data_matrix features (in rows) vs samples (in columns) matrix,
+#' with feature IDs in rownames and file/sample names as colnames.
+#' in most function, it is assumed that this is the log transformed version of the original data
+#' @param df_long data frame where each row is a single feature in a single sample,
+#' thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`,
+#' but usually also `m_score` (in OpenSWATH output result file)
 #' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
 #' @param sample_id_col name of the column in sample_annotation file,
 #' where the filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for batch comparison
 #' @param measure_column if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
 #' otherwise, it is used internally for consistency
-#' @param df_long data frame where each row is a single feature in a single sample,
-#' thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`, but usually also `m_score` (in OpenSWATH output result file)
-#' @param feature_id_column name of the column with feature/gene/peptide/protein ID used with long format matrix (`df_long`). In wide format (`data_matrix`) this would be the row name
-#' @name genome_wide_diagnostics
+#' @param batch_column column in `sample_annotation` that should be used for batch comparison
+#' @param order_column column where running order is specified.
+#' @param color_by_batch should the each batch be represented with its own color?
+#' @param color_scheme named vector, names corresponding to unique batch values as specified in `sample_annotation`
+#' @param facet_column recommended if more than one batch covariate is present. Faceting is most suited to examine instruments separately
+#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see examples)
+#' @param title Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))
+#' @return ggplot2 class object. Thus, all aesthetics can be overriden
+#' @name plot_sample_means_or_boxplots
 
 
-#' Plot the sample average
+#' @name plot_sample_means_or_boxplots
 #'
-#' @name genome_wide_diagnostics
-#' @param data_matrix
-#' @param sample_annotation
-#' @param sample_id_col
-#' @param batch_column
-#' @param order_column
-#' @param color_by_batch
-#' @param theme
-#' @param title
-#' @param color_scheme
-#'
-#' @return
 #' @export
 #' @import ggplot2
+#' @import dplyr
+#' @import rlang
 #'
 #' @examples
-plot_sample_mean <- function(data_matrix, sample_annotation,
+plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              sample_id_col = 'FullRunName',
                              order_column = 'order',
                              batch_column = NULL,
-                             color_by_batch = F, theme = 'classic',
-                             title = NULL, color_scheme = 'brewer'){
+                             facet_column = 'instrument',
+                             color_by_batch = F, color_scheme = 'brewer',
+                             theme = 'classic',
+                             title = NULL){
   sample_average = colMeans(data_matrix)
   names(sample_average) = colnames(data_matrix)
 
@@ -108,19 +112,24 @@ gg_boxplot <- function(data_df_long, sample_annotation, batch_column,
 }
 
 #' Plot boxplots to compare various data normalization steps/approaches
+#' WARNING: extremely slow for big dataframes
 #'
-#' @param list_of_dfs
-#' @param sample_annotation
-#' @param batch_column
-#' @param steps
+#' @param list_of_dfs list of data frames of format, specified in `plot_boxplot`
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
+#' @param batch_column column in `sample_annotation` that should be used for batch comparison
+#' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or `qNorm_ComBat`).
+#' Useful if consecutive steps are compared in plots.
+#' Note that in plots these are usually ordered alphabetically, so it's worth naming with numbers, e.g. `1_raw`, `2_quantile`
+
 #'
-#' @return
+#' @return ggplot object
 #' @export
 #' @import tidyverse
 #'
 #' @examples
+#' @seealso \code{\link{plot_boxplot}}
 boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
-                              steps = NULL){
+                              step = NULL){
   if(`*`(dim(list_of_dfs[[1]])[1], dim(list_of_dfs[[1]])[2]) * length(list_of_dfs) > 5*10^5){
     warning('Data matrices are huge, be patient, this might take a while (or crash)')
   }
@@ -248,13 +257,16 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRu
 
 #' plot PCA plot
 #'
-#' @param data_matrix
-#' @param sample_annotation
-#' @param factor_to_color
-#' @param PC_to_plot
-#' @param theme
+#' @param data_matrix features (in rows) vs samples (in columns) matrix,
+#' with feature IDs in rownames and file/sample names as colnames.
+#' in most function, it is assumed that this is the log transformed version of the original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
+#' @param color_by column name (as in `sample_annotation`) to color by
+#' @param PC_to_plot principal component numbers for x and y axis
+#' @param colors_for_factor named vector of colors for the `color_by` variable
+#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see examples)
 #'
-#' @return
+#' @return ggplot scatterplot colored by factor levels of column specified in `factor_to_color`
 #' @export
 #' @import ggplot2
 #' @import ggfortify
