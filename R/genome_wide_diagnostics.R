@@ -287,35 +287,42 @@ plot_pca <- function(data_matrix, sample_annotation, factor_to_color,
 
 #' Plot the heatmap of samples
 #'
-#' @param data_matrix
-#' @param sample_annotation
-#' @param fill_the_missing
-#' @param cluser_rows
-#' @param cluster_cols
-#' @param annotation_color_list
-#' @param filename
-#' @param ...
+#' @param data_matrix features (in rows) vs samples (in columns) matrix,
+#' with feature IDs in rownames and file/sample names as colnames.
+#' in most function, it is assumed that this is the log transformed version of the original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
+#' @param fill_the_missing boolean value determining if missing values should be substituted with -1 (and colored with black)
+#' @param cluster_rows boolean value determining if rows should be clustered
+#' @param cluster_cols boolean value determining if columns should be clustered
+#' @param annotation_color_list list specifying colors for columns (samples).
+#' Best created by `sample_annotation_to_colors`
+#' @param filename filepath where to save the image
+#' @param ... other parameters of pheatmap
 #'
-#' @return
+#' @return object returned by `pheatmap`
 #' @export
 #' @import pheatmap
 #'
 #' @examples
-plot_heatmap <- function(data_matrix, sample_annotation, fill_the_missing = T,
-                         cluser_rows = F, cluster_cols = F,
+#' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link{pheatmap}}
+plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing = T,
+                         cluster_rows = F, cluster_cols = F,
                          annotation_color_list = NA,
                          filename = NA,
                          ...){
   if(fill_the_missing) {
-    data_matrix[is.na(data_matrix)] = 0
+    data_matrix[is.na(data_matrix)] = -1
     heatmap_color = c('black', colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100))
   }
   else {
     heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100)
   }
-  p <- pheatmap(data_matrix, cluster_rows = cluser_rows, cluster_cols = cluster_cols,
+  if (is.null(sample_annotation)){
+    sample_annotation = NA
+  }
+  p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
            color = heatmap_color,
-           annotation_col = sample_annotation, annotation_colors = color_list,
+           annotation_col = sample_annotation, annotation_colors = annotation_color_list,
            filename = filename, ...)
   return(p)
 }
