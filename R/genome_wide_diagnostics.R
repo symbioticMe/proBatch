@@ -151,18 +151,27 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
 
 #' cluster the data matrix to visually inspect which confounder dominates
 #'
-#' @param proteome
-#' @param color_df
-#' @param title
+#' @param data_matrix features (in rows) vs samples (in columns) matrix,
+#' with feature IDs in rownames and file/sample names as colnames.
+#' in most function, it is assumed that this is the log transformed version of the original data
+#' @param title Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))
+#' @param distance distance metric used for clustering
+#' @param agglomeration agglomeration methods as used by `hclust`
+#' @param color_df data frame of colors, as created by `sample_annotation_to_colors`
+#' @param ... other parameters of `plotDendroAndColors` from `WGCNA` package
 #'
-#' @return
 #' @export
 #' @importFrom WGCNA plotDendroAndColors
 #'
 #' @examples
-cluster_samples <- function(data_matrix, color_df, plot_title, ...){
-  dist_matrix = dist(t(as.matrix(data_matrix)))
-  hierarchical_clust = hclust(dist_matrix)
+#' @seealso \code{\link{hclust}}, \code{\link{sample_annotation_to_colors}},
+#' \code{\link{plotDendroAndColors}}
+plot_clustering <- function(data_matrix, color_df, title = 'Clustering of raw samples',
+                            distance = "euclidean",
+                            agglomeration = 'complete',
+                              ...){
+  dist_matrix = dist(t(as.matrix(data_matrix)), method = distance)
+  hierarchical_clust = hclust(dist_matrix, method = agglomeration)
   plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
                       main = plot_title,
                       hang = -0.1, addGuide = T, ...)
