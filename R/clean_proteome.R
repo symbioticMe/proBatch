@@ -76,37 +76,6 @@ remove_peptides_with_missing_batch <- function(df_long,
   return(proteome_clean)
 }
 
-#' Identify stretches of time between runs that are long and split a batches by them
-#'
-#' @param date_vector POSIX or numeric-like vector corresponding to the sample
-#' MS profile acquisition timepoint
-#' @param threshold time difference that would mean there was an interruption
-#' @param minimal_batch_size minimal number of samples in a batch
-#' @param batch_name string with a self-explanatory name for the batch (e.g. `MS_batch` for MS-proteomics)
-#'
-#' @return vector of batches for each sample
-#' @export
-#'
-#' @examples
-define_batches_by_MS_pauses <- function(date_vector, threshold,
-                                        minimal_batch_size = 5,
-                                        batch_name = 'MS_batch'){
-  diff = diff(date_vector)
-  tipping_points = which(diff > threshold)
-  batch_size = diff(tipping_points)
-  if (any(batch_size <= minimal_batch_size)){
-    warning('some batches are too small, merging with the previous')
-    batch_correction = ifelse(batch_size <= minimal_batch_size, batch_size, 0)
-    tipping_points = unique(tipping_points+ c(batch_correction, 0))
-  }
-  tipping_points = c(0, tipping_points, length(date_vector))
-  batch_idx = rep(1:(length(tipping_points) -1),
-                  times = diff(tipping_points))
-  batch_ids = paste(batch_name, batch_idx, sep = '_')
-  return(batch_ids)
-}
-
-
 #' @details summarize peptides by sample (ranking) and on the contrary, across peptide-wise across samples
 #'
 #' @name clean_proteome
