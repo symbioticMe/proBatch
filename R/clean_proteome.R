@@ -1,4 +1,5 @@
 #' functions for preparing OpenSWATH proteome for batch effect correction and other downstream analyses
+#' Used to remove peptides with too many missing values, peptides that are missing in the whole batch (as this causes problems with ComBat) and also for peptide summary
 #' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
 #' @param sample_id_col name of the column in sample_annotation file,
 #' where the filenames (colnames of the data matrix are found)
@@ -47,7 +48,7 @@ clean_requants <- function(df_long, sample_annotation,
   return(df_clean)
 }
 
-#' Remove peptides that are missing in the whole batch
+
 #' @details useful for some downstream functions as ComBat normalization, that would not work otherwise
 #'
 #' @name clean_proteome
@@ -106,11 +107,11 @@ define_batches_by_MS_pauses <- function(date_vector, threshold,
 }
 
 
-#' summarize peptides by sample (ranking) and on the contrary, across peptide-wise across samples
+#' @details summarize peptides by sample (ranking) and on the contrary, across peptide-wise across samples
 #'
 #' @name clean_proteome
 #'
-#' @return
+#' @return summarized proteome with columns such as: `RT_mean`, `Int_mean`, `numb_requants`, `median_m_score`, `mean_m_score`, `median_good_m_score` (median of `m_score` other than requants)
 #' @export
 #' @importFrom magrittr %>%
 #'
@@ -127,4 +128,5 @@ summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
               mean_m_score = mean(m_score),
               median_m_score = median(m_score),
               median_good_m_score = median(m_score[m_score < 1]))
+  return(peptide_summary)
 }
