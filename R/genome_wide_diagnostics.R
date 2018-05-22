@@ -138,9 +138,9 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
     df$step = steps[i]
     list_of_dfs[[i]] = df
   }
-  if (!is.null(steps) |
+  if (!is.null(step) |
       (any(sapply(list_of_dfs, function(df) (!'step' %in% names(df)))))){
-    list_of_dfs = lapply(1:length(list_of_dfs), add_processing_step, list_of_dfs, steps)
+    list_of_dfs = lapply(1:length(list_of_dfs), add_processing_step, list_of_dfs, step)
   }
 
   joined_proteome = do.call(rbind, list_of_dfs)
