@@ -4,13 +4,36 @@
 \alias{plot_heatmap}
 \title{Plot the heatmap of samples}
 \usage{
-plot_heatmap(data_matrix, sample_annotation, fill_the_missing = T,
-  cluser_rows = F, cluster_cols = F, annotation_color_list = NA,
+plot_heatmap(data_matrix, sample_annotation = NULL, fill_the_missing = T,
+  cluster_rows = F, cluster_cols = F, annotation_color_list = NA,
   filename = NA, ...)
 }
 \arguments{
-\item{...}{}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix,
+with feature IDs in rownames and file/sample names as colnames.
+in most function, it is assumed that this is the log transformed version of the original data}
+
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)}
+
+\item{fill_the_missing}{boolean value determining if missing values should be substituted with -1 (and colored with black)}
+
+\item{cluster_rows}{boolean value determining if rows should be clustered}
+
+\item{cluster_cols}{boolean value determining if columns should be clustered}
+
+\item{annotation_color_list}{list specifying colors for columns (samples).
+Best created by `sample_annotation_to_colors`}
+
+\item{filename}{filepath where to save the image}
+
+\item{...}{other parameters of pheatmap}
+}
+\value{
+object returned by `pheatmap`
 }
 \description{
 Plot the heatmap of samples
+}
+\seealso{
+\code{\link{sample_annotation_to_colors}}, \code{\link{pheatmap}}
 }
