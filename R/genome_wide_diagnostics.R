@@ -272,9 +272,15 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRu
 #' @import ggfortify
 #'
 #' @examples
-plot_pca <- function(data_matrix, sample_annotation, factor_to_color,
-                     PC_to_plot = c(1,2), colors_for_factor = NULL, theme = 'classic'){
-  gg = autoplot(prcomp(t(data_matrix)), data = sample_annotation, colour = factor_to_color,
+plot_pca <- function(data_matrix, sample_annotation, color_by = 'MS_batch',
+                     PC_to_plot = c(1,2),
+                     colors_for_factor = NULL, theme = 'classic'){
+  if(length(color_by) > 1){
+    warning('Coloring by the first column specified')
+    color_by = color_by[1]
+  }
+  gg = autoplot(prcomp(t(data_matrix)), data = sample_annotation,
+                colour = color_by,
            x = PC_to_plot[1], y = PC_to_plot[2])
   if (theme == 'classic'){
     gg = gg + theme_classic()
