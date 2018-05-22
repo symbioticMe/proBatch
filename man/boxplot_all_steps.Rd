@@ -2,13 +2,29 @@
 % Please edit documentation in R/genome_wide_diagnostics.R
 \name{boxplot_all_steps}
 \alias{boxplot_all_steps}
-\title{Plot boxplots to compare various data normalization steps/approaches}
+\title{Plot boxplots to compare various data normalization steps/approaches
+WARNING: extremely slow for big dataframes}
 \usage{
-boxplot_all_steps(list_of_dfs, sample_annotation, batch_column, steps = NULL)
+boxplot_all_steps(list_of_dfs, sample_annotation, batch_column, step = NULL)
 }
 \arguments{
-\item{steps}{}
+\item{list_of_dfs}{list of data frames of format, specified in `plot_boxplot`}
+
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)}
+
+\item{batch_column}{column in `sample_annotation` that should be used for batch comparison}
+
+\item{step}{normalization step (e.g. `Raw` or `Quantile_normalized` or `qNorm_ComBat`).
+Useful if consecutive steps are compared in plots.
+Note that in plots these are usually ordered alphabetically, so it's worth naming with numbers, e.g. `1_raw`, `2_quantile`}
+}
+\value{
+ggplot object
 }
 \description{
 Plot boxplots to compare various data normalization steps/approaches
+WARNING: extremely slow for big dataframes
+}
+\seealso{
+\code{\link{plot_boxplot}}
 }
