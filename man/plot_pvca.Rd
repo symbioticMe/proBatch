@@ -2,16 +2,40 @@
 % Please edit documentation in R/genome_wide_diagnostics.R
 \name{plot_pvca}
 \alias{plot_pvca}
-\title{Quantify variance distribution by variable}
+\title{Plot variance distribution by variable}
 \usage{
 plot_pvca(data_matrix, sample_annotation, sample_id_column = "FullRunName",
-  technical_covariates = NULL, biological_covariates = NULL,
-  plot_title = NULL, colors_for_bars = NULL, threshold_pca = 0.6,
-  threshold_var = 0.01, theme = "classic")
+  technical_covariates = c("MS_batch", "instrument"),
+  biological_covariates = c("cell_line", "drug_dose"), title = NULL,
+  colors_for_bars = NULL, threshold_pca = 0.6, threshold_var = 0.01,
+  theme = "classic")
 }
 \arguments{
-\item{threshold_var}{}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix,
+with feature IDs in rownames and file/sample names as colnames.
+in most function, it is assumed that this is the log transformed version of the original data}
+
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)}
+
+\item{technical_covariates}{vector `sample_annotation` column names that are technical covariates}
+
+\item{biological_covariates}{vector `sample_annotation` column names, that are biologically meaningful covariates}
+
+\item{title}{Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))}
+
+\item{colors_for_bars}{four-item color vector, specifying colors for the following categories: c('residual', 'biological', 'biol:techn', 'technical')}
+
+\item{threshold_pca}{the percentile value of the minimum amount of the variabilities that the selected principal components need to explain}
+
+\item{threshold_var}{the percentile value of weight each of the covariates needs to explain
+(the rest will be lumped together)}
+}
+\value{
+list of two items: plot =gg, df = pvca_res
 }
 \description{
-Quantify variance distribution by variable
+Plot variance distribution by variable
+}
+\seealso{
+\code{\link{sample_annotation_to_colors}}
 }
