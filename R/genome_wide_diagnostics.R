@@ -18,9 +18,9 @@
 #' @param facet_column recommended if more than one batch covariate is present. Faceting is most suited to examine instruments separately
 #' @param theme ggplot theme, by default `classic`. Can be easily overriden (see examples)
 #' @param title Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))
+#' @param order_per_facet if order is defined ignoring facets (usually instrument), re-define order per-batch
 #' @return ggplot2 class object. Thus, all aesthetics can be overriden
 #' @name plot_sample_means_or_boxplots
-
 
 #' @name plot_sample_means_or_boxplots
 #'
@@ -37,7 +37,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              facet_column = 'instrument',
                              color_by_batch = F, color_scheme = 'brewer',
                              theme = 'classic',
-                             title = NULL){
+                             title = NULL, order_per_facet = F){
   sample_average = colMeans(data_matrix)
   names(sample_average) = colnames(data_matrix)
 
@@ -56,9 +56,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
       stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
                    check sample annotation data frame', facet_column))
     }
-    df_ave = df_ave %>%
-      group_by_at(vars(one_of(facet_column))) %>%
-      mutate(order = rank(UQ(rlang::sym(order_column))))
+    if (order_per_facet){
+      df_ave = df_ave %>%
+        group_by_at(vars(one_of(facet_column))) %>%
+        mutate(order = rank(UQ(rlang::sym(order_column))))
+    }
   }
   gg = ggplot(df_ave, aes_string(x = order_column, y = 'average'))+
                 geom_point()
@@ -82,7 +84,6 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   }
   if(!is.null(batch_column)){
     if (!is.null(facet_column)){
-      #ToDo: fix ordering by facet and order columns
       order_vars <- c(facet_column, order_column)
       batch_vars = c(facet_column, batch_column)
       tipping.points = df_ave %>%
@@ -128,7 +129,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                        facet_column = 'instrument',
                        color_by_batch = T, color_scheme = 'brewer',
                        theme = 'classic',
-                       title = NULL){
+                       title = NULL, order_per_facet = F){
   if (!all(c(batch_column, sample_id_column) %in% names(df_long))){
     if (!is.null(sample_annotation)){
       df_long = df_long %>% merge(sample_annotation,
@@ -151,6 +152,14 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     order_column = 'order_temp_col'
     df_long[[order_column]] = match(df_long[[sample_id_column]],
                                          unique(df_long[[sample_id_column]]))
+    order_per_facet = T
+  }
+
+  if (order_per_facet){
+    warning('defining order within each facet')
+    df_long = df_long %>%
+      group_by_at(vars(one_of(facet_column))) %>%
+      mutate(order = rank(UQ(rlang::sym(order_column))))
   }
 
   gg = ggplot(df_long, aes_string(x = order_column, y = measure_col,
