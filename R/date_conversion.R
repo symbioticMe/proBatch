@@ -12,7 +12,9 @@
 #' @export
 #'
 #' @examples
-dates_to_posix <- function(sample_annotation, time_column, new_time_column = NULL,
+dates_to_posix <- function(sample_annotation,
+                           time_column = c('RunDate','RunTime'),
+                           new_time_column = NULL,
                            dateTimeFormat = c("%b_%d", "%H:%M:%S")){
   if (length(time_column) == 1){
     if(is.null(new_time_column)) new_time_column = time_column
@@ -43,18 +45,30 @@ dates_to_posix <- function(sample_annotation, time_column, new_time_column = NUL
 #'
 #' @return sample annotation file with column names as 'new_time_column'
 #' with POSIX-formatted date & `order_column` used in some diagnostic plots (`plot_iRTs`, `plot_sample_mean`)
+#' @import dplyr
+#' @import rlang
 #' @export
 #'
 #' @examples
-date_to_sample_order <- function(sample_annotation, time_column,
+date_to_sample_order <- function(sample_annotation,
+                                 time_column = c('RunDate','RunTime'),
                                  new_time_column = 'DateTime',
                                  dateTimeFormat = c("%b_%d", "%H:%M:%S"),
-                                 order_column = 'order'){
+                                 order_column = 'order',
+                                 instrument_col = 'instrument'){
   sample_annotation = dates_to_posix(sample_annotation = sample_annotation,
                                      time_column = time_column,
                                      new_time_column = new_time_column,
                                      dateTimeFormat = dateTimeFormat)
-  sample_annotation[[order_column]] = rank(sample_annotation[[new_time_column]])
+  sample_annotation = sample_annotation %>% arrange(UQ(rlang::sym(new_time_column)))
+  if (!is.null(instrument_col)){
+    sample_annotation = sample_annotation %>%
+      group_by_at(vars(one_of(instrument_col))) %>%
+      mutate(UQ(rlang::sym(order_column)) := rank(!!rlang::sym(new_time_column))) %>%
+      ungroup()
+  } else {
+    sample_annotation[[order_column]] = rank(sample_annotation[[new_time_column]])
+  }
   return(sample_annotation)
 }
 
@@ -64,13 +78,13 @@ date_to_sample_order <- function(sample_annotation, time_column,
 #' MS profile acquisition timepoint
 #' @param threshold time difference that would mean there was an interruption
 #' @param minimal_batch_size minimal number of samples in a batch
-#' @param batch_name string with a self-explanatory name for the batch (e.g. `MS_batch` for MS-proteomics)
+#' @param batch_name string with a self-explanatory name for the batch (e.g. `MS_batch` for MS-proteomics) to which batch number will be added
 #'
 #' @return vector of batches for each sample
 #' @export
 #'
 #' @examples
-define_batches_by_MS_pauses <- function(date_vector, threshold,
+define_batches_by_MS_pauses_within_instrument <- function(date_vector, threshold,
                                         minimal_batch_size = 5,
                                         batch_name = 'MS_batch'){
   diff = diff(date_vector)
@@ -86,4 +100,47 @@ define_batches_by_MS_pauses <- function(date_vector, threshold,
                   times = diff(tipping_points))
   batch_ids = paste(batch_name, batch_idx, sep = '_')
   return(batch_ids)
+}
+
+#' convert by batch
+#'
+#' @param sample_annotation
+#' @param threshold
+#' @param runtime_col
+#' @param minimal_batch_size
+#' @param instrument_col
+#' @param batch_name
+#'
+#' @return
+#' @export
+#'
+#' @examples
+define_batches_by_MS_pauses <- function(sample_annotation,
+                                        threshold,
+                                        runtime_col = 'RunDateTime',
+                                        minimal_batch_size = 5,
+                                        instrument_col = 'instr',
+                                        batch_name = 'MS_batch'){
+
+  if (!is.null(instrument_col)){
+    #batch_name = paste(sample_annotation[[instrument_col]], batch_name, sep = ':')
+    sample_annotation = sample_annotation %>%
+      mutate(batch_name = paste(!!rlang::sym(instrument_col), batch_name, sep = ':')) %>%
+      arrange(UQ(rlang::sym(instrument_col)), UQ(rlang::sym(runtime_col))) %>%
+      group_by_at(vars(one_of(instrument_col))) %>%
+      mutate(batch_id = define_batches_by_MS_pauses_within_instrument(!!rlang::sym(runtime_col),
+                                                                        threshold = threshold,
+                                                                        minimal_batch_size = minimal_batch_size,
+                                                                        batch_name = batch_name))%>%
+        rename(!!batch_name := batch_id)
+
+  } else {
+    sample_annotation = sample_annotation
+      mutate(batch_id = define_batches_by_MS_pauses_within_instrument(!!rlang::sym(runtime_col),
+                                                                        threshold = threshold,
+                                                                        minimal_batch_size = minimal_batch_size,
+                                                                        batch_name = batch_name))%>%
+        rename(!!batch_name := batch_id)
+  }
+  return(sample_annotation)
 }
