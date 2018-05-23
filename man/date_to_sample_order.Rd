@@ -4,9 +4,9 @@
 \alias{date_to_sample_order}
 \title{convert date to order}
 \usage{
-date_to_sample_order(sample_annotation, time_column,
+date_to_sample_order(sample_annotation, time_column = c("RunDate", "RunTime"),
   new_time_column = "DateTime", dateTimeFormat = c("\%b_\%d",
-  "\%H:\%M:\%S"), order_column = "order")
+  "\%H:\%M:\%S"), order_column = "order", instrument_col = "instrument")
 }
 \arguments{
 \item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names)

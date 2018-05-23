@@ -5,8 +5,8 @@
 \title{convert date/time column of sample_annotation to POSIX format
 required to keep number-like behaviour}
 \usage{
-dates_to_posix(sample_annotation, time_column, new_time_column = NULL,
-  dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"))
+dates_to_posix(sample_annotation, time_column = c("RunDate", "RunTime"),
+  new_time_column = NULL, dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"))
 }
 \arguments{
 \item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names)
