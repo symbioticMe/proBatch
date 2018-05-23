@@ -5,8 +5,7 @@
 \alias{plot_sample_mean}
 \alias{plot_sample_means_or_boxplots}
 \alias{plot_boxplot}
-\title{Plot sample average or distribution (boxplot) vs order (if the real running order available)
-for quick assessment of trends associated, overall or specific covariate-associated (see `batch_column` and `facet_column`)}
+\title{Plot sample average or distribution (boxplot) vs order (if the real running order available)}
 \usage{
 plot_sample_mean(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", order_column = "order",
@@ -55,5 +54,7 @@ ggplot2 class object. Thus, all aesthetics can be overriden
 }
 \description{
 Plot sample average or distribution (boxplot) vs order (if the real running order available)
-for quick assessment of trends associated, overall or specific covariate-associated (see `batch_column` and `facet_column`)
+}
+\details{
+functions for quick visual assessment of trends associated, overall or specific covariate-associated (see `batch_column` and `facet_column`)
 }
