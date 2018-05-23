@@ -184,6 +184,13 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       gg = gg + scale_color_manual(values = color_scheme)
     }
   }
+  if(!is.null(facet_column)){
+    if(!(facet_column %in% names(df_long))){
+      stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
+                   check sample annotation data frame', facet_column))
+    }
+    gg = gg + facet_wrap(as.formula(paste("~", facet_column)), dir = 'v')
+  }
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
