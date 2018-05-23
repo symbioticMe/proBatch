@@ -181,24 +181,21 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   }
   if(color_by_batch){
     gg = gg + aes_string(fill = batch_column)
-    if (length(unique(df_long[[sample_id_column]])) > 100){
-      gg = gg + theme(legend.position="top")
-    }
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
       n_batches <- length(unique(df_long[[batch_column]]))
       if(n_batches < 9){
-        gg = gg + scale_color_brewer(palette = 'Set1')
+        gg = gg + scale_fill_brewer(palette = 'Set1')
 
       } else {
           if (n_batches <= 12){
-            gg = gg + scale_color_brewer(palette = 'Set3')
+            gg = gg + scale_fill_brewer(palette = 'Set3')
           } else {
             warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
                 consider defining color scheme with sample_annotation_to_colors function', n_batches))
       }
       }
     } else{
-      gg = gg + scale_color_manual(values = color_scheme)
+      gg = gg + scale_fill_manual(values = color_scheme)
     }
   }
   if(!is.null(facet_column)){
@@ -215,6 +212,9 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   if (!is.null(title)){
     gg = gg + ggtitle(title)+
       theme(plot.title = element_text(hjust = .5, face = 'bold', size = 16))
+  }
+  if (max(df_long[[order_column]]) > 100){
+    gg = gg + theme(legend.position="top")
   }
   return(gg)
 }
