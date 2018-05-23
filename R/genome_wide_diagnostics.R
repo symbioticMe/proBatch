@@ -1,5 +1,5 @@
-#' Plot sample average or distribution (boxplot) vs order (if the real running order available)
-#' for quick assessment of trends associated, overall or specific covariate-associated (see `batch_column` and `facet_column`)
+#' Plot per-sample average or boxplot (distribution) vs order (if the real running order available)
+#' @details functions for quick visual assessment of trends associated, overall or specific covariate-associated (see `batch_column` and `facet_column`)
 #' @param data_matrix features (in rows) vs samples (in columns) matrix,
 #' with feature IDs in rownames and file/sample names as colnames.
 #' in most function, it is assumed that this is the log transformed version of the original data
@@ -52,6 +52,10 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     order_column = 'order_temp_col'
   }
   if(!is.null(facet_column)){
+    if(!(facet_column %in% names(df_ave))){
+      stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
+                   check sample annotation data frame', facet_column))
+    }
     df_ave = df_ave %>%
       group_by_at(vars(one_of(facet_column))) %>%
       mutate(order = rank(UQ(rlang::sym(order_column))))
@@ -61,19 +65,34 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   if(color_by_batch & !is.null(batch_column)){
     gg = gg + aes_string(color = batch_column)
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
-      gg = gg + scale_color_brewer(palette = 'Set1')
+      if (length(unique(sample_annotation[[batch_column]])) <= 9){
+        gg = gg + scale_color_brewer(palette = 'Set1')
+      } else {
+        if (length(unique(sample_annotation[[batch_column]])) <= 12){
+          gg = gg + scale_color_brewer(palette = 'Set3')
+        } else {
+          warning('brewer palettes have maximally 12 colors, choose other palette
+                  or limit number of batches')
+        }
+      }
+
     } else{
       gg = gg + scale_color_manual(values = color_scheme)
     }
   }
   if(!is.null(batch_column)){
-    #TODO: check if this works for multi-instrument case
     if (!is.null(facet_column)){
+      #ToDo: fix ordering by facet and order columns
+      order_vars <- c(facet_column, order_column)
+      batch_vars = c(facet_column, batch_column)
       tipping.points = df_ave %>%
-        group_by_at(vars(one_of(facet_column))) %>%
-        arrange(!!! rlang::syms(order_column)) %>%
-        mutate(batch.tipping.points = cumsum(table(batch_column))+.5)
-      gg = gg + geom_vline(data = tipping.points, aes(xintersept = batch.tipping.points),
+        arrange(!!!rlang::syms(order_vars))%>%
+        group_by(!!! rlang::syms(batch_vars)) %>%
+        summarise(batch_size = n()) %>%
+        group_by(!!rlang::sym(facet_column)) %>%
+        mutate(tipping.points = cumsum(batch_size))%>%
+        mutate(tipping.poings = tipping.points+.5)
+      gg = gg + geom_vline(data = tipping.points, aes(xintercept = tipping.poings),
                            color = 'grey', linetype = 'dashed')
     } else {
       batch.tipping.points = cumsum(table(sample_annotation[[batch_column]]))+.5
@@ -82,7 +101,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     }
   }
   if(!is.null(facet_column)){
-    gg = gg + facet_wrap(as.formula(paste("~", facet_column)))
+    gg = gg + facet_wrap(as.formula(paste("~", facet_column)), dir = 'v')
   }
 
   if(theme == 'classic'){
