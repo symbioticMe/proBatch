@@ -2,24 +2,15 @@
 % Please edit documentation in R/date_conversion.R
 \name{define_batches_by_MS_pauses}
 \alias{define_batches_by_MS_pauses}
-\title{Identify stretches of time between runs that are long and split a batches by them}
+\title{convert by batch}
 \usage{
-define_batches_by_MS_pauses(date_vector, threshold, minimal_batch_size = 5,
-  batch_name = "MS_batch")
+define_batches_by_MS_pauses(sample_annotation, threshold,
+  runtime_col = "RunDateTime", minimal_batch_size = 5,
+  instrument_col = "instr", batch_name = "MS_batch")
 }
 \arguments{
-\item{date_vector}{POSIX or numeric-like vector corresponding to the sample
-MS profile acquisition timepoint}
-
-\item{threshold}{time difference that would mean there was an interruption}
-
-\item{minimal_batch_size}{minimal number of samples in a batch}
-
-\item{batch_name}{string with a self-explanatory name for the batch (e.g. `MS_batch` for MS-proteomics)}
-}
-\value{
-vector of batches for each sample
+\item{batch_name}{}
 }
 \description{
-Identify stretches of time between runs that are long and split a batches by them
+convert by batch
 }
