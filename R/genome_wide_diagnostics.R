@@ -67,14 +67,15 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   if(color_by_batch & !is.null(batch_column)){
     gg = gg + aes_string(color = batch_column)
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
-      if (length(unique(sample_annotation[[batch_column]])) <= 9){
+      n_batches <- length(unique(sample_annotation[[batch_column]]))
+      if (n_batches <= 9){
         gg = gg + scale_color_brewer(palette = 'Set1')
       } else {
-        if (length(unique(sample_annotation[[batch_column]])) <= 12){
+        if (n_batches <= 12){
           gg = gg + scale_color_brewer(palette = 'Set3')
         } else {
-          warning('brewer palettes have maximally 12 colors, choose other palette
-                  or limit number of batches')
+          warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
+                consider defining color scheme with sample_annotation_to_colors function', n_batches))
         }
       }
 
@@ -102,7 +103,8 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     }
   }
   if(!is.null(facet_column)){
-    gg = gg + facet_wrap(as.formula(paste("~", facet_column)), dir = 'v')
+    gg = gg + facet_wrap(as.formula(paste("~", facet_column)),
+                         dir = 'v', scales = "free_x")
   }
 
   if(theme == 'classic'){
@@ -184,11 +186,17 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     }
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
       n_batches <- length(unique(df_long[[batch_column]]))
-      if(n_batches > RColorBrewer::brewer.pal.info['Set1','maxcolors']){
-        warning('default Brewer palette Set1 has only 9 colors, you specifies %s batches,
-                consider defining color scheme with sample_annotation_to_colors function', n_batches)
+      if(n_batches < 9){
+        gg = gg + scale_color_brewer(palette = 'Set1')
+
+      } else {
+          if (n_batches <= 12){
+            gg = gg + scale_color_brewer(palette = 'Set3')
+          } else {
+            warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
+                consider defining color scheme with sample_annotation_to_colors function', n_batches))
       }
-      gg = gg + scale_color_brewer(palette = 'Set1')
+      }
     } else{
       gg = gg + scale_color_manual(values = color_scheme)
     }
@@ -198,7 +206,8 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
                    check sample annotation data frame', facet_column))
     }
-    gg = gg + facet_wrap(as.formula(paste("~", facet_column)), dir = 'v')
+    gg = gg + facet_wrap(as.formula(paste("~", facet_column)),
+                         dir = 'v', scales = "free_x")
   }
   if(theme == 'classic'){
     gg = gg + theme_classic()
