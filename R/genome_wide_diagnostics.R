@@ -158,10 +158,12 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   }
 
   if (order_per_facet){
-    warning('defining order within each facet')
-    df_long = df_long %>%
-      group_by_at(vars(one_of(facet_column))) %>%
-      mutate(order = rank(UQ(rlang::sym(order_column))))
+    if (!is.null(facet_column)){
+      warning('defining order within each facet')
+      df_long = df_long %>%
+        group_by_at(vars(one_of(facet_column))) %>%
+        mutate(order = rank(UQ(rlang::sym(order_column))))
+    }
   }
 
   gg = ggplot(df_long, aes_string(x = order_column, y = measure_col,
