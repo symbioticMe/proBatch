@@ -3,20 +3,24 @@
 #' single feature can also be spike-ins or iRT peptides (in DIA proteomics)
 #'
 #' @param pep_name name of the peptide for diagnostic profiling
-#' @param df_long data frame where each row is a single feature in a single sample,
-#' thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`,
-#' but usually also `m_score` (in OpenSWATH output result file)
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names)
-#' 2) biological and 3) technical covariates (batches etc)
+#' @param df_long data frame where each row is a single feature in a single
+#'   sample, thus it has minimally, `sample_id_col`, `feature_id_column` and
+#'   `measure_column`, but usually also `m_score` (in OpenSWATH output result
+#'   file)
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
 #' @param order_column sample injection order
-#' @param sample_id_col name of the column in sample_annotation file,
-#' where the filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for batch comparison
-#' @param measure_column if `df_long` is among the parameters, it is the column with
-#' expression/abundance/intensity, otherwise, it is used internally for consistency
-#' @param feature_id_column name of the column with feature/gene/peptide/protein ID
-#' used with long format matrix (`df_long`).
-#' Identical to wide format (`data_matrix`) to row name
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param batch_column column in `sample_annotation` that should be used for
+#'   batch comparison
+#' @param measure_column if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
+#' @param feature_id_column name of the column with feature/gene/peptide/protein
+#'   ID used with long format matrix (`df_long`). Identical to wide format
+#'   (`data_matrix`) to row name
 #' @name feature_level_diagnostics
 
 
@@ -25,12 +29,13 @@
 #' @param color_by_batch (logical) whether to color points by batch
 #' @param facet_by_batch (logical) whether to plot each batch in its own facet
 #' @param title the string indicating the source of the peptides
-#' @param requant if data frame: requant values;
-#' if logical: whether to indicate requant values (requires 'requant' or 'm_score' column in `df_long`)
-#' @param theme plot theme (default is 'classical'; other options not implemented)
+#' @param requant if data frame: requant values; if logical: whether to indicate
+#'   requant values (requires 'requant' or 'm_score' column in `df_long`)
+#' @param theme plot theme (default is 'classical'; other options not
+#'   implemented)
 #'
-#' @return ggplot2 type plot of `measure_column` vs `order`,
-#' faceted by peptide name and (optionally) by batch
+#' @return ggplot2 type plot of `measure_column` vs `order`, faceted by peptide
+#'   name and (optionally) by batch
 #' @export
 #' @import ggplot2
 #' @import dplyr
@@ -194,25 +199,29 @@ plot_iRTs <- function(df_long, sample_annotation,
 
 
 
-#' Plot Intensity for a few representative peptides for each step of the analysis including the fitting curve
+#' Plot Intensity for a few representative peptides for each step of the
+#' analysis including the fitting curve
 #'
 #' @param pep_name name of the peptide for diagnostic profiling
-#' @param data_df_all_steps data frame, similar to `df_long`,  where each row is a single feature in a single sample,
-#' at a certain step of the analysis (minimally raw and after linear normalization)
-#' thus it has minimally, `sample_id_col`, `feature_id_column`, `measure_column`  and `fit_step`,
-#' but usually also `m_score` (in OpenSWATH output result file)
+#' @param data_df_all_steps data frame, similar to `df_long`,  where each row is
+#'   a single feature in a single sample, at a certain step of the analysis
+#'   (minimally raw and after linear normalization) thus it has minimally,
+#'   `sample_id_col`, `feature_id_column`, `measure_column`  and `fit_step`, but
+#'   usually also `m_score` (in OpenSWATH output result file)
 #' @param fit_df
 #' @param fit_value_var
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names)
-#' 2) biological and 3) technical covariates (batches etc)
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
 #' @param order_column sample injection order
-#' @param sample_id_col name of the column in sample_annotation file,
-#' where the filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for batch comparison
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param batch_column column in `sample_annotation` that should be used for
+#'   batch comparison
 #' @param measure_column the column with expression/abundance/intensity.
-#' @param feature_id_column name of the column with feature/gene/peptide/protein ID
-#' used with long format matrix (`df_long`).
-#' Identical to wide format (`data_matrix`) to row name
+#' @param feature_id_column name of the column with feature/gene/peptide/protein
+#'   ID used with long format matrix (`df_long`). Identical to wide format
+#'   (`data_matrix`) to row name
 #' @param geom for the intensity (`measure_col`) profile:
 #' @param color_by_batch
 #' @param facet_by_batch
@@ -220,9 +229,9 @@ plot_iRTs <- function(df_long, sample_annotation,
 #' @param requant
 #' @param theme
 #'
-#' @return `ggplot`-class plot with minimally two facets (before and after non-linear fit)
-#' with `measure_column` (Intensity) vs `order_column` (injection order)
-#' for selected peptides (specified in `pep_name`)
+#' @return `ggplot`-class plot with minimally two facets (before and after
+#'   non-linear fit) with `measure_column` (Intensity) vs `order_column`
+#'   (injection order) for selected peptides (specified in `pep_name`)
 #' @export
 #' @import ggplot2
 #'
