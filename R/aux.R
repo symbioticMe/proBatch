@@ -1,22 +1,33 @@
 #' Auxiliary functions for data matrix manipulation
 #'
-#'  Converting from long to wide (matrix), wide (matrix) to long, joining the data matrices
+#' Converting from long to wide (matrix), wide (matrix) to long, joining the
+#' data matrices
 #'
-#' @param df_long data frame where each row is a single feature in a single sample,
-#' thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`, but usually also `m_score` (in OpenSWATH output result file)
-#' @param data_matrix features (in rows) vs samples (in columns) matrix,
-#' with feature IDs in rownames and file/sample names as colnames.
-#' Usually the log transformed version of the original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
-#' @param sample_id_col name of the column in sample_annotation file,
-#' where the filenames (colnames of the data matrix are found)
-#' @param measure_column if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
-#' otherwise, it is used internally for consistency
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
-#' @param feature_id_column name of the column with feature/gene/peptide/protein ID used with long format matrix (`df_long`). In wide format (`data_matrix`) this would be the row name
-#' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or `qNorm_ComBat`).
-#' Useful if consecutive steps are compared in plots.
-#' Note that in plots these are usually ordered alphabetically, so it's worth naming with numbers, e.g. `1_raw`, `2_quantile`
+#' @param df_long data frame where each row is a single feature in a single
+#'   sample, thus it has minimally, `sample_id_col`, `feature_id_column` and
+#'   `measure_column`, but usually also `m_score` (in OpenSWATH output result
+#'   file)
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. Usually the log
+#'   transformed version of the original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param measure_column if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
+#' @param feature_id_column name of the column with feature/gene/peptide/protein
+#'   ID used with long format matrix (`df_long`). In wide format (`data_matrix`)
+#'   this would be the row name
+#' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or
+#'   `qNorm_ComBat`). Useful if consecutive steps are compared in plots. Note
+#'   that in plots these are usually ordered alphabetically, so it's worth
+#'   naming with numbers, e.g. `1_raw`, `2_quantile`
 #' @name aux_config
 
 #' @name aux_config
