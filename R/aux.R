@@ -4,7 +4,7 @@
 #'
 #' @inheritParams proBatch
 #'
-#' @return \code{data_matrix} like matrix (features in rows, samples in columns)
+#' @return \code{data_matrix} (\link{proBatch}) like matrix (features in rows, samples in columns)
 #'
 #' @family matrix manipulation functions 
 #' 
@@ -33,7 +33,7 @@ convert_to_matrix <- function(df_long,
 #'   that in plots these are usually ordered alphabetically, so it's worth
 #'   naming with numbers, e.g. `1_raw`, `2_quantile`
 #' 
-#' @return \code{df_long}-like object
+#' @return \code{df_long} (\link{proBatch}) like data frame
 #'
 #' @family matrix manipulation functions 
 #' 
@@ -59,10 +59,10 @@ matrix_to_long <- function(data_matrix, sample_annotation,
 #' 
 #' @inheritParams proBatch
 #' @inheritParams matrix_to_long
-#' @param matrix_list list of matrices in \code{data_matrix} format
+#' @param matrices_list list of matrices in \code{data_matrix} format
 #"
-#' @return \code{df_long}-like data frame with a row, having entries for:
-#' \itemize{
+#' @return \code{df_long} (\link{proBatch}) like data frame with a row, having entries for:
+#' \enumerate{
 #'   \item \code{feature_id_col} (e.g. peptide name)
 #'   \item \code{sample_id_col} (e.g. filename)
 #'   \item \code{measure_col} (e.g. intensity/expression) 
@@ -71,10 +71,10 @@ matrix_to_long <- function(data_matrix, sample_annotation,
 #'
 #' @family matrix manipulation functions 
 #' 
-join_data_matrices <- function(matrix_list, step,
+join_data_matrices <- function(matrices_list, step,
                                sample_annotation, measure_column = 'Intensity'){
-  long_df_list = lapply(1:length(matrix_list), function(i){
-    matrix_to_long(matrix_list[[i]], sample_annotation = sample_annotation,
+  long_df_list = lapply(1:length(matrices_list), function(i){
+    matrix_to_long(matrices_list[[i]], sample_annotation = sample_annotation,
                    measure_col = measure_column, step = step[i])
   })
   joined_df = do.call(rbind, long_df_list)
