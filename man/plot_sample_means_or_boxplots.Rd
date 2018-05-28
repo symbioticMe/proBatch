@@ -5,18 +5,20 @@
 \alias{plot_sample_mean}
 \alias{plot_sample_means_or_boxplots}
 \alias{plot_boxplot}
-\title{Plot sample average or distribution (boxplot) vs order (if the real running order available)}
+\title{Plot per-sample average or boxplot (distribution) vs order (if the real running order available)}
 \usage{
 plot_sample_mean(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", order_column = "order",
   batch_column = NULL, facet_column = "instrument", color_by_batch = F,
-  color_scheme = "brewer", theme = "classic", title = NULL)
+  color_scheme = "brewer", theme = "classic", title = NULL,
+  order_per_facet = F)
 
 plot_boxplot(df_long, sample_annotation = NULL,
   sample_id_column = "FullRunName", measure_col = "Intensity",
   order_column = "order", batch_column = "MS_batch.final",
   facet_column = "instrument", color_by_batch = T,
-  color_scheme = "brewer", theme = "classic", title = NULL)
+  color_scheme = "brewer", theme = "classic", title = NULL,
+  order_per_facet = F)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix,
@@ -42,6 +44,8 @@ where the filenames (colnames of the data matrix are found)}
 
 \item{title}{Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))}
 
+\item{order_per_facet}{if order is defined ignoring facets (usually instrument), re-define order per-batch}
+
 \item{df_long}{data frame where each row is a single feature in a single sample,
 thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`,
 but usually also `m_score` (in OpenSWATH output result file)}
@@ -53,7 +57,7 @@ otherwise, it is used internally for consistency}
 ggplot2 class object. Thus, all aesthetics can be overriden
 }
 \description{
-Plot sample average or distribution (boxplot) vs order (if the real running order available)
+Plot per-sample average or boxplot (distribution) vs order (if the real running order available)
 }
 \details{
 functions for quick visual assessment of trends associated, overall or specific covariate-associated (see `batch_column` and `facet_column`)
