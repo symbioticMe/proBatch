@@ -14,13 +14,13 @@
 #' @section common arguments to the functions:
 #'
 #' @param df_long data frame where each row is a single feature in a single
-#'   sample. It minimally has a `sample_id_col`, a `feature_id_column` and
-#'   a `measure_column`, but usually also an `m_score` (in OpenSWATH output result
+#'   sample. It minimally has a `sample_id_col`, a `feature_id_column` and a
+#'   `measure_column`, but usually also an `m_score` (in OpenSWATH output result
 #'   file)
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
-#' @param sample_annotation data matrix with: \itemize{ \item `sample_id_col`
+#' @param sample_annotation data matrix with: \enumerate{ \item `sample_id_col`
 #'   (this can be repeated as row names) \item biological covariates \item
 #'   technical covariates (batches etc) }
 #' @param sample_id_col name of the column in sample_annotation file, where the
@@ -31,9 +31,13 @@
 #'   column with expression/abundance/intensity; otherwise, it is used
 #'   internally for consistency
 #' @param feature_id_column name of the column with feature/gene/peptide/protein
-#'   ID used in the long format representation (\code{df_long}). In the wide
-#'   formatted representation \code{data_matrix} this corresponds to the row names.
+#'   ID used in the long format representation \code{df_long}. In the wide
+#'   formatted representation \code{data_matrix} this corresponds to the row
+#'   names.
 #'
 #' @docType package
 #' @name proBatch
 NULL
+
+
+# TODO: refactor sample_id_col to sample_id_column for naming consistency
