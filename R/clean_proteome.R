@@ -1,14 +1,24 @@
-#' functions for preparing OpenSWATH proteome for batch effect correction and other downstream analyses
-#' Used to remove peptides with too many missing values, peptides that are missing in the whole batch (as this causes problems with ComBat) and also for peptide summary
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
-#' @param sample_id_col name of the column in sample_annotation file,
-#' where the filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for batch comparison
-#' @param measure_column if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
-#' otherwise, it is used internally for consistency
-#' @param df_long data frame where each row is a single feature in a single sample,
-#' thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`, but usually also `m_score` (in OpenSWATH output result file)
-#' @param feature_id_column name of the column with feature/gene/peptide/protein ID used with long format matrix (`df_long`). In wide format (`data_matrix`) this would be the row name
+#' functions for preparing OpenSWATH proteome for batch effect correction and
+#' other downstream analyses Used to remove peptides with too many missing
+#' values, peptides that are missing in the whole batch (as this causes problems
+#' with ComBat) and also for peptide summary
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param batch_column column in `sample_annotation` that should be used for
+#'   batch comparison
+#' @param measure_column if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
+#' @param df_long data frame where each row is a single feature in a single
+#'   sample, thus it has minimally, `sample_id_col`, `feature_id_column` and
+#'   `measure_column`, but usually also `m_score` (in OpenSWATH output result
+#'   file)
+#' @param feature_id_column name of the column with feature/gene/peptide/protein
+#'   ID used with long format matrix (`df_long`). In wide format (`data_matrix`)
+#'   this would be the row name
 #' @name clean_proteome
 
 #' @name clean_proteome
@@ -49,7 +59,8 @@ clean_requants <- function(df_long, sample_annotation,
 }
 
 
-#' @details useful for some downstream functions as ComBat normalization, that would not work otherwise
+#' @details useful for some downstream functions as ComBat normalization, that
+#'   would not work otherwise
 #'
 #' @name clean_proteome
 
@@ -76,11 +87,14 @@ remove_peptides_with_missing_batch <- function(df_long,
   return(proteome_clean)
 }
 
-#' @details summarize peptides by sample (ranking) and on the contrary, across peptide-wise across samples
+#' @details summarize peptides by sample (ranking) and on the contrary, across
+#'   peptide-wise across samples
 #'
 #' @name clean_proteome
 #'
-#' @return summarized proteome with columns such as: `RT_mean`, `Int_mean`, `numb_requants`, `median_m_score`, `mean_m_score`, `median_good_m_score` (median of `m_score` other than requants)
+#' @return summarized proteome with columns such as: `RT_mean`, `Int_mean`,
+#'   `numb_requants`, `median_m_score`, `mean_m_score`, `median_good_m_score`
+#'   (median of `m_score` other than requants)
 #' @export
 #' @importFrom magrittr %>%
 #'
