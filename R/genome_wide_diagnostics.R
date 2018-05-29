@@ -38,7 +38,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              color_by_batch = F, color_scheme = 'brewer',
                              theme = 'classic',
                              title = NULL, order_per_facet = F){
-  sample_average = colMeans(data_matrix)
+  sample_average = colMeans(data_matrix, na.rm = T)
   names(sample_average) = colnames(data_matrix)
 
   df_ave = data.frame(average = sample_average,
