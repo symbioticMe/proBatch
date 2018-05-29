@@ -59,7 +59,7 @@ matrix_to_long <- function(data_matrix, sample_annotation,
 #' 
 #' @inheritParams proBatch
 #' @inheritParams matrix_to_long
-#' @param matrices_list list of matrices in \code{data_matrix} format
+#' @param matrices_list list of matrices in \code{data_matrix} (\link{proBatch}) format to be joined
 #"
 #' @return \code{df_long} (\link{proBatch}) like data frame with a row, having entries for:
 #' \enumerate{
