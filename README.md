@@ -28,6 +28,12 @@ install.packages(dep)
 NOTE: You might need to also install the following linux packages:
 `apt-get install libxml2-dev libz-dev`
 
+Optionally also install:
+
+```
+install.packages("roxygen2")
+```
+
 
 Install proBatch from github:
 
