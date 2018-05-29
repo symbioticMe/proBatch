@@ -419,7 +419,8 @@ plot_pca <- function(data_matrix, sample_annotation, color_by = 'MS_batch',
     warning('Coloring by the first column specified')
     color_by = color_by[1]
   }
-  gg = autoplot(prcomp(t(data_matrix)), data = sample_annotation,
+  pr_comp_res <- prcomp(t(data_matrix))
+  gg = autoplot(pr_comp_res, data = sample_annotation,
                 colour = color_by,
            x = PC_to_plot[1], y = PC_to_plot[2])
   if (theme == 'classic'){
