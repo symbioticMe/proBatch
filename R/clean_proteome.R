@@ -1,28 +1,20 @@
-#' functions for preparing OpenSWATH proteome for batch effect correction and other downstream analyses
-#' Used to remove peptides with too many missing values, peptides that are missing in the whole batch (as this causes problems with ComBat) and also for peptide summary
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
-#' @param sample_id_col name of the column in sample_annotation file,
-#' where the filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for batch comparison
-#' @param measure_column if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
-#' otherwise, it is used internally for consistency
-#' @param df_long data frame where each row is a single feature in a single sample,
-#' thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`, but usually also `m_score` (in OpenSWATH output result file)
-#' @param feature_id_column name of the column with feature/gene/peptide/protein ID used with long format matrix (`df_long`). In wide format (`data_matrix`) this would be the row name
-#' @name clean_proteome
-
-#' @name clean_proteome
-#' @param threshold_batch maximal fraction of missing values for a feature for a batch
-#' @param threshold_global maximal fraction of missing values for a feature globally
+#' Remove requanted and sparse features
 #'
-#' @return `df_long`-like data frame with the requant values removed completely and peptides,
-#' missing in batch or globally beyond threshold are removed
-#' @export
-#' @import dplyr
-#' @importFrom magrittr %>%
-#' @importFrom dplyr one_of
+#' Cleans dataset \code{df_long} (\link{proBatch}) by removing requanted features and features not
+#' meeting user define sparsness criterias.
 #'
-#' @examples
+#' @inheritParams proBatch
+#' @param threshold_batch maximally tollerated fraction of missing values for a
+#'   feature in a batch
+#' @param threshold_global maximally tollerated fraction of globally missing
+#'   values for a feature
+#'
+#' @return \code{df_long} (\link{proBatch}) like data frame filtered as follow:
+#'   \itemize{ \item remove requant values \item remove features not meeting
+#'   batch or global sparsness thresholds }
+#'
+#' @family dataset cleaning functions
+#'   
 clean_requants <- function(df_long, sample_annotation,
                            batch_column = 'MS_batch.final',
                            feature_id_column = 'peptide_group_label',
@@ -49,15 +41,18 @@ clean_requants <- function(df_long, sample_annotation,
 }
 
 
-#' @details useful for some downstream functions as ComBat normalization, that would not work otherwise
+#' Remove features missing in at least one batch
+#' 
+#' Cleans dataset \code{df_long} (\link{proBatch}) by removing all features that are not present in every batch
+#' 
+#' @inheritParams proBatch
+#' @details useful for some downstream functions as ComBat normalization, that
+#'   would not work otherwise
 #'
-#' @name clean_proteome
-
-#' @return `df_long`-like data frame free of peptides that were not detected in each batch
-#' @export
-#' @import dplyr
-#' @importFrom tidyr complete
-#' @examples
+#' @return \code{df_long} (\link{proBatch}) like data frame freed of features that were not detected in each batch
+#' 
+#' @family dataset cleaning functions
+#' 
 remove_peptides_with_missing_batch <- function(df_long,
                                                batch_column = 'MS_batch.final',
                                                feature_id_column = 'peptide_group_label'){
@@ -76,20 +71,31 @@ remove_peptides_with_missing_batch <- function(df_long,
   return(proteome_clean)
 }
 
-#' @details summarize peptides by sample (ranking) and on the contrary, across peptide-wise across samples
+
+#' Summarize run features
 #'
-#' @name clean_proteome
+#' Summarizes various peptide properties on a per sample basis. By default will
+#' summarize RT, Intensity and m_score. If your feature does not have some of
+#' these set them to NULL when calling.
 #'
-#' @return summarized proteome with columns such as: `RT_mean`, `Int_mean`, `numb_requants`, `median_m_score`, `mean_m_score`, `median_good_m_score` (median of `m_score` other than requants)
-#' @export
-#' @importFrom magrittr %>%
+#' @details summarize peptides by sample (ranking) and on the contrary, across
+#'   peptide-wise across samples
 #'
-#' @examples
+#' @return a data frame summarizing features in a dataset on a per sample basis.
+#'   The following columns are returned: `RT_mean`, `Int_mean`, `numb_requants`,
+#'   `median_m_score`, `mean_m_score`, `median_good_m_score` (median of
+#'   `m_score` excluding requants)
+#'
+#' @family dataset cleaning functions
+#'   
 summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
-                               feature_id_column = 'peptide_group_label'){
+                               feature_id_column = 'peptide_group_label',
+                               RT="RT", 
+                               Intensity="Intensity",
+                               m_score="m_score"){
   peptide_summary = df_long %>%
     group_by_at(vars(one_of(sample_id_col)))  %>%
-    mutate(rank = rank(Intensity))  %>%
+    mutate(rank = rank(Intensity))  %>% 
     group_by_at(vars(one_of(feature_id_column))) %>%
     summarise(RT_mean = mean(RT),
               Int_mean = mean(Intensity), rank_mean = mean(rank),

@@ -1,24 +1,38 @@
-#' Plot per-sample average or boxplot (distribution) vs order (if the real running order available)
-#' @details functions for quick visual assessment of trends associated, overall or specific covariate-associated (see `batch_column` and `facet_column`)
-#' @param data_matrix features (in rows) vs samples (in columns) matrix,
-#' with feature IDs in rownames and file/sample names as colnames.
-#' in most function, it is assumed that this is the log transformed version of the original data
-#' @param df_long data frame where each row is a single feature in a single sample,
-#' thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`,
-#' but usually also `m_score` (in OpenSWATH output result file)
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
-#' @param sample_id_col name of the column in sample_annotation file,
-#' where the filenames (colnames of the data matrix are found)
-#' @param measure_column if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
-#' otherwise, it is used internally for consistency
-#' @param batch_column column in `sample_annotation` that should be used for batch comparison
+#' Plot per-sample average or boxplot (distribution) vs order (if the real
+#' running order available)
+#' @details functions for quick visual assessment of trends associated, overall
+#'   or specific covariate-associated (see `batch_column` and `facet_column`)
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. in most
+#'   function, it is assumed that this is the log transformed version of the
+#'   original data
+#' @param df_long data frame where each row is a single feature in a single
+#'   sample, thus it has minimally, `sample_id_col`, `feature_id_column` and
+#'   `measure_column`, but usually also `m_score` (in OpenSWATH output result
+#'   file)
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param measure_column if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
+#' @param batch_column column in `sample_annotation` that should be used for
+#'   batch comparison
 #' @param order_column column where running order is specified.
-#' @param color_by_batch should the each batch be represented with its own color?
-#' @param color_scheme named vector, names corresponding to unique batch values as specified in `sample_annotation`
-#' @param facet_column recommended if more than one batch covariate is present. Faceting is most suited to examine instruments separately
-#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see examples)
-#' @param title Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))
-#' @param order_per_facet if order is defined ignoring facets (usually instrument), re-define order per-batch
+#' @param color_by_batch should the each batch be represented with its own
+#'   color?
+#' @param color_scheme named vector, names corresponding to unique batch values
+#'   as specified in `sample_annotation`
+#' @param facet_column recommended if more than one batch covariate is present.
+#'   Faceting is most suited to examine instruments separately
+#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
+#'   examples)
+#' @param title Title of the plot (usually, processing step + representation
+#'   level (fragments, transitions, proteins))
+#' @param order_per_facet if order is defined ignoring facets (usually
+#'   instrument), re-define order per-batch
 #' @return ggplot2 class object. Thus, all aesthetics can be overriden
 #' @name plot_sample_means_or_boxplots
 
@@ -221,15 +235,19 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   return(gg)
 }
 
-#' Plot boxplots to compare various data normalization steps/approaches
-#' WARNING: extremely slow for big dataframes
+#' Plot boxplots to compare various data normalization steps/approaches WARNING:
+#' extremely slow for big dataframes
 #'
 #' @param list_of_dfs list of data frames of format, specified in `plot_boxplot`
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
-#' @param batch_column column in `sample_annotation` that should be used for batch comparison
-#' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or `qNorm_ComBat`).
-#' Useful if consecutive steps are compared in plots.
-#' Note that in plots these are usually ordered alphabetically, so it's worth naming with numbers, e.g. `1_raw`, `2_quantile`
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
+#' @param batch_column column in `sample_annotation` that should be used for
+#'   batch comparison
+#' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or
+#'   `qNorm_ComBat`). Useful if consecutive steps are compared in plots. Note
+#'   that in plots these are usually ordered alphabetically, so it's worth
+#'   naming with numbers, e.g. `1_raw`, `2_quantile`
 
 #'
 #' @return ggplot object
@@ -261,13 +279,16 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
 
 #' cluster the data matrix to visually inspect which confounder dominates
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix,
-#' with feature IDs in rownames and file/sample names as colnames.
-#' in most function, it is assumed that this is the log transformed version of the original data
-#' @param title Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. in most
+#'   function, it is assumed that this is the log transformed version of the
+#'   original data
+#' @param title Title of the plot (usually, processing step + representation
+#'   level (fragments, transitions, proteins))
 #' @param distance distance metric used for clustering
 #' @param agglomeration agglomeration methods as used by `hclust`
-#' @param color_df data frame of colors, as created by `sample_annotation_to_colors`
+#' @param color_df data frame of colors, as created by
+#'   `sample_annotation_to_colors`
 #' @param ... other parameters of `plotDendroAndColors` from `WGCNA` package
 #'
 #' @export
@@ -275,7 +296,7 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
 #'
 #' @examples
 #' @seealso \code{\link{hclust}}, \code{\link{sample_annotation_to_colors}},
-#' \code{\link{plotDendroAndColors}}
+#'   \code{\link{plotDendroAndColors}}
 plot_clustering <- function(data_matrix, color_df, title = 'Clustering of raw samples',
                             distance = "euclidean",
                             agglomeration = 'complete',
@@ -308,17 +329,26 @@ PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca
 
 #' Plot variance distribution by variable
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix,
-#' with feature IDs in rownames and file/sample names as colnames.
-#' in most function, it is assumed that this is the log transformed version of the original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
-#' @param technical_covariates vector `sample_annotation` column names that are technical covariates
-#' @param biological_covariates vector `sample_annotation` column names, that are biologically meaningful covariates
-#' @param title Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))
-#' @param colors_for_bars four-item color vector, specifying colors for the following categories: c('residual', 'biological', 'biol:techn', 'technical')
-#' @param threshold_pca the percentile value of the minimum amount of the variabilities that the selected principal components need to explain
-#' @param threshold_var the percentile value of weight each of the covariates needs to explain
-#'  (the rest will be lumped together)
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. in most
+#'   function, it is assumed that this is the log transformed version of the
+#'   original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
+#' @param technical_covariates vector `sample_annotation` column names that are
+#'   technical covariates
+#' @param biological_covariates vector `sample_annotation` column names, that
+#'   are biologically meaningful covariates
+#' @param title Title of the plot (usually, processing step + representation
+#'   level (fragments, transitions, proteins))
+#' @param colors_for_bars four-item color vector, specifying colors for the
+#'   following categories: c('residual', 'biological', 'biol:techn',
+#'   'technical')
+#' @param threshold_pca the percentile value of the minimum amount of the
+#'   variabilities that the selected principal components need to explain
+#' @param threshold_var the percentile value of weight each of the covariates
+#'   needs to explain (the rest will be lumped together)
 #'
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
@@ -397,16 +427,21 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRu
 
 #' plot PCA plot
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix,
-#' with feature IDs in rownames and file/sample names as colnames.
-#' in most function, it is assumed that this is the log transformed version of the original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. in most
+#'   function, it is assumed that this is the log transformed version of the
+#'   original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
 #' @param color_by column name (as in `sample_annotation`) to color by
 #' @param PC_to_plot principal component numbers for x and y axis
 #' @param colors_for_factor named vector of colors for the `color_by` variable
-#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see examples)
+#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
+#'   examples)
 #'
-#' @return ggplot scatterplot colored by factor levels of column specified in `factor_to_color`
+#' @return ggplot scatterplot colored by factor levels of column specified in
+#'   `factor_to_color`
 #' @export
 #' @import ggplot2
 #' @import ggfortify
@@ -434,15 +469,19 @@ plot_pca <- function(data_matrix, sample_annotation, color_by = 'MS_batch',
 
 #' Plot the heatmap of samples
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix,
-#' with feature IDs in rownames and file/sample names as colnames.
-#' in most function, it is assumed that this is the log transformed version of the original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
-#' @param fill_the_missing boolean value determining if missing values should be substituted with -1 (and colored with black)
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. in most
+#'   function, it is assumed that this is the log transformed version of the
+#'   original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
+#' @param fill_the_missing boolean value determining if missing values should be
+#'   substituted with -1 (and colored with black)
 #' @param cluster_rows boolean value determining if rows should be clustered
 #' @param cluster_cols boolean value determining if columns should be clustered
 #' @param annotation_color_list list specifying colors for columns (samples).
-#' Best created by `sample_annotation_to_colors`
+#'   Best created by `sample_annotation_to_colors`
 #' @param filename filepath where to save the image
 #' @param ... other parameters of pheatmap
 #'
