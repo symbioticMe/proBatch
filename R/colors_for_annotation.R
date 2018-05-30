@@ -78,36 +78,44 @@ map_numbers_to_colors <-
     
   }
 
-#' generates color list
+
+# TODO: is.POSIXct requires the lubridate package which is not declared as a dependency.
+
+# TODO: 
+
+#' Generates color list
 #'
-#' generates a list of colors for the dataframe with all columns numeric (or date)
+#' Generates a list of colors for a vector of numeric, POSIXct (i.e. the
+#' (signed) number of seconds since the beginning of 1970 , or factors
 #'
-#' @param num_col a vector of type numeric of factor to generate colors for 
+#' @param num_col a vector of type numeric of factor to generate colors for
 #' @param palette_type 'brewer' or 'viridis'
-#' @param i if \code{palette_type} is 'brewer' the palette argument to \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument to virids_pal ()
+#' @param i if \code{palette_type} is 'brewer' the palette argument to
+#'   \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument
+#'   to virids_pal ()
 #' @param granularity the breaks to use when generating colors for num_col
 #'
 #' @return
-#'
+#' 
 generate_colors_for_numeric <-
   function(num_col,
            palette_type = 'brewer',
            i = 1,
            granularity = 10) {
-    
-    if ((palette_type == 'viridis') && (i > 4 || i < 1)){
+    if ((palette_type == 'viridis') && (i > 4 || i < 1)) {
       warning('When using viridis palette i must be >= 1 and <= 4. Setting it to 1.')
       i = 1
     }
     
     color_for_column = switch(
       palette_type,
-      brewer = brewer_pal(type = "div", i)(5)[1:5],
+      brewer = scales::brewer_pal(type = "div", i)(5)[1:5],
       viridis = viridis::viridis_pal(option = LETTERS[5 - i])(5)
     )
     
     non_numeric_values = NULL
     if (is.factor(num_col)) {
+      # num_col is a vector of factors -> convert to numeric
       num_col_temp = as.character(num_col)
       if (all(is.na(as.numeric(num_col_temp)))) {
         warning('This column is not a numeric')
@@ -118,10 +126,18 @@ generate_colors_for_numeric <-
       factor_colors = scales::brewer_pal(palette = 'Set1')(n_non_numeric)
       names(factor_colors) = non_numeric_values
     }
+    # TODO: consider if something like this:
+    # if (is.factor(num_col)){
+    #   color_to_plot = colorRampPalette(color_for_column)(nlevels(num_col))[1:nlevels(num_col)]
+    #   names(color_to_plot) = levels(num_col)
+    # }
+    # wouldn't be sufficient for factors
     
     if (is.numeric(num_col)) {
+      # num_col is a numeric vector
       num_vec = cut(num_col, breaks = granularity)
     } else if (is.POSIXct(num_col)) {
+      # num_col is a vector of dates
       interval = (max(num_col, na.rm = T) - min(num_col, na.rm = T)) / granularity
       if (any(is.na(num_col))) {
         warning('NAs in the numeric vector')
@@ -130,7 +146,6 @@ generate_colors_for_numeric <-
       num_vec = cut(num_col, breaks = interval_char)
     }
     
-    #color_to_plot = colorRampPalette(color_for_column)(nlevels(num_vec))[1:nlevels(num_vec)]
     color_to_plot = colorRampPalette(color_for_column)(nlevels(num_vec))[1:nlevels(num_vec)]
     names(color_to_plot) = levels(num_vec)
     
@@ -154,6 +169,10 @@ check_rare_levels <- function(col) {
   return(is_rare)
 }
 
+
+#' Replaces rare levels with other
+#' 
+#' Replaces levels with a maximal occurence of 1 with other
 merge_rare_levels <- function(col) {
   is_factor_col = is.factor(col)
   tb_col = table(col)
@@ -165,18 +184,20 @@ merge_rare_levels <- function(col) {
   return(col)
 }
 
+
 #' Generate colors for sample annotation
 #' 
-#' convert the sample annotation data frame to list of colors
+#' Convert the sample annotation data frame to list of colors
 #' the list is named as columns included to use in potting functions
 #'
 #' @inheritParams proBatch
-#' @param columns_for_plotting
-#' @param factor_columns
-#' @param not_factor_columns
-#' @param rare_categories_to_other
-#' @param numerics_to_log
+#' @param columns_for_plotting only consider these columns from sample_annotation
+#' @param factor_columns columns of sample_annotation to be treated as factors. Note that factor and character columns are treated as factors by default.
+#' @param not_factor_columns don't treat these columns as factors. This can be used to override the default behaviour of considering factors and character columns as factors.
+#' @param rare_categories_to_other if True rare categories will be merged as other
+#' @param numerics_to_log NOT IMPLEMENTED!
 #' @param granularity number of colors to map to the number vector (equally spaced between minimum and maximum)
+#' @param numeric_palette_type palette to be used for numeric values coloring
 #'
 #' @return list of colors
 #'
@@ -219,6 +240,8 @@ sample_annotation_to_colors <- function(sample_annotation,
   }
   
   #TODO: check if this is absolutely required (convertion to factors)
+  
+  # Generate color mappings of factor variables
   list_of_col_for_factors = list()
   if (!is.null(factor_columns)) {
     factor_df = sample_annotation %>%
@@ -233,9 +256,10 @@ sample_annotation_to_colors <- function(sample_annotation,
     #generate factor mappings
     list_of_col_for_factors = map_factors_to_colors(factor_df)
   }
-  
-  
+    
   #generate color mappings of numeric variables
+  
+  # NOTE: this could be bit confusing: redefinition of a user parameter.
   non_factor_cols = setdiff(names(sample_annotation), factor_columns)
   #TODO: if numerics_to_log is a character vector of column names, convert corresponding annotation colors to log scale
   list_of_col_for_numeric = list()
