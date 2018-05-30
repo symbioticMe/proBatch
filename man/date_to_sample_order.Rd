@@ -9,22 +9,26 @@ date_to_sample_order(sample_annotation, time_column = c("RunDate", "RunTime"),
   "\%H:\%M:\%S"), order_column = "order", instrument_col = "instrument")
 }
 \arguments{
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names)
-2) biological and 3) technical covariates (batches etc)}
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
 
 \item{time_column}{name of the column(s) where run date & time are specified.
 These will be used to determine the run order}
 
-\item{new_time_column}{name of the new column to which date&time will be converted to}
+\item{new_time_column}{name of the new column to which date&time will be
+converted to}
 
-\item{dateTimeFormat}{POSIX format of the date and time. See `as.POSIXct` from base R for details}
+\item{dateTimeFormat}{POSIX format of the date and time. See `as.POSIXct`
+from base R for details}
 
-\item{order_column}{name of the new column that determines sample order.
-Will be used for certain diagnostics and normalisations}
+\item{order_column}{name of the new column that determines sample order. Will
+be used for certain diagnostics and normalisations}
 }
 \value{
-sample annotation file with column names as 'new_time_column'
-with POSIX-formatted date & `order_column` used in some diagnostic plots (`plot_iRTs`, `plot_sample_mean`)
+sample annotation file with column names as 'new_time_column' with
+  POSIX-formatted date & `order_column` used in some diagnostic plots
+  (`plot_iRTs`, `plot_sample_mean`)
 }
 \description{
 convert date to order
