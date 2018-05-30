@@ -1,21 +1,27 @@
 #' Data normalization and batch adjustment methods
-#' @param data_matrix features (in rows) vs samples (in columns) matrix,
-#' with feature IDs in rownames and file/sample names as colnames.
-#' Usually the log transformed version of the original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)
-#' @param sample_id_col name of the column in sample_annotation file,
-#' where the filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for batch comparison
-#' @param measure_column if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
-#' otherwise, it is used internally for consistency
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. Usually the log
+#'   transformed version of the original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param batch_column column in `sample_annotation` that should be used for
+#'   batch comparison
+#' @param measure_column if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
 #' @name config
 NULL
 #> NULL
 
 
-#' Quantile normalization of the data, ensuring that the row and column names are retained
+#' Quantile normalization of the data, ensuring that the row and column names
+#' are retained
 #'
-#' @param data_matrix log transformed data matrix (features in rows and samples in columns)
+#' @param data_matrix log transformed data matrix (features in rows and samples
+#'   in columns)
 #'
 #' @return `data_matrix`-size matrix, with columns quantile-normalized
 #' @export
@@ -87,9 +93,11 @@ normalize_medians_global <- function(data_long,
 #' normalize with the custom (continuous) fit
 #'
 #' @name config
-#' @param sample_order_col column, determining the order of sample MS run, used as covariate to fit the non-linear fit
+#' @param sample_order_col column, determining the order of sample MS run, used
+#'   as covariate to fit the non-linear fit
 #' @param fit_func function to fit the (non)-linear trend
-#' @param return_long whether the result should be the "long" data frame (as `df_long`) or "wide" (as `data_matrix`)
+#' @param return_long whether the result should be the "long" data frame (as
+#'   `df_long`) or "wide" (as `data_matrix`)
 #' @param ... other parameters, usually those of the `fit_func`
 #'
 #' @return
@@ -145,16 +153,19 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
 }
 
 
-#' Standardized input-output ComBat normalization
-#' ComBat allows users to adjust for batch effects in datasets where the batch covariate is known, using methodology
-#' described in Johnson et al. 2007. It uses either parametric or non-parametric empirical Bayes frameworks for adjusting data for
-#' batch effects.  Users are returned an expression matrix that has been corrected for batch effects. The input
-#' data are assumed to be cleaned and normalized before batch effect removal.
+#' Standardized input-output ComBat normalization ComBat allows users to adjust
+#' for batch effects in datasets where the batch covariate is known, using
+#' methodology described in Johnson et al. 2007. It uses either parametric or
+#' non-parametric empirical Bayes frameworks for adjusting data for batch
+#' effects.  Users are returned an expression matrix that has been corrected for
+#' batch effects. The input data are assumed to be cleaned and normalized before
+#' batch effect removal.
 #'
 #' @name config
 #' @param par.prior
 #'
-#' @return `data_matrix`-size data matrix with batch-effect corrected by `ComBat`
+#' @return `data_matrix`-size data matrix with batch-effect corrected by
+#'   `ComBat`
 #' @export
 #' @import sva
 #'

@@ -1,14 +1,18 @@
-#' convert date/time column of sample_annotation to POSIX format
-#' required to keep number-like behaviour
+#' convert date/time column of sample_annotation to POSIX format required to
+#' keep number-like behaviour
 #'
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names)
-#' 2) biological and 3) technical covariates (batches etc)
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
 #' @param time_column name of the column(s) where run date & time are specified.
-#' These will be used to determine the run order
-#' @param new_time_column name of the new column to which date&time will be converted to
-#' @param dateTimeFormat POSIX format of the date and time. See `as.POSIXct` from base R for details
+#'   These will be used to determine the run order
+#' @param new_time_column name of the new column to which date&time will be
+#'   converted to
+#' @param dateTimeFormat POSIX format of the date and time. See `as.POSIXct`
+#'   from base R for details
 #'
-#' @return sample annotation file with column names as 'new_time_column' with POSIX-formatted date
+#' @return sample annotation file with column names as 'new_time_column' with
+#'   POSIX-formatted date
 #' @export
 #'
 #' @examples
@@ -34,17 +38,21 @@ dates_to_posix <- function(sample_annotation,
 
 #' convert date to order
 #'
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be repeated as row names)
-#' 2) biological and 3) technical covariates (batches etc)
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
 #' @param time_column name of the column(s) where run date & time are specified.
-#' These will be used to determine the run order
-#' @param new_time_column name of the new column to which date&time will be converted to
-#' @param dateTimeFormat POSIX format of the date and time. See `as.POSIXct` from base R for details
-#' @param order_column name of the new column that determines sample order.
-#' Will be used for certain diagnostics and normalisations
+#'   These will be used to determine the run order
+#' @param new_time_column name of the new column to which date&time will be
+#'   converted to
+#' @param dateTimeFormat POSIX format of the date and time. See `as.POSIXct`
+#'   from base R for details
+#' @param order_column name of the new column that determines sample order. Will
+#'   be used for certain diagnostics and normalisations
 #'
-#' @return sample annotation file with column names as 'new_time_column'
-#' with POSIX-formatted date & `order_column` used in some diagnostic plots (`plot_iRTs`, `plot_sample_mean`)
+#' @return sample annotation file with column names as 'new_time_column' with
+#'   POSIX-formatted date & `order_column` used in some diagnostic plots
+#'   (`plot_iRTs`, `plot_sample_mean`)
 #' @import dplyr
 #' @import rlang
 #' @export
@@ -72,13 +80,15 @@ date_to_sample_order <- function(sample_annotation,
   return(sample_annotation)
 }
 
-#' Identify stretches of time between runs that are long and split a batches by them
+#' Identify stretches of time between runs that are long and split a batches by
+#' them
 #'
 #' @param date_vector POSIX or numeric-like vector corresponding to the sample
-#' MS profile acquisition timepoint
+#'   MS profile acquisition timepoint
 #' @param threshold time difference that would mean there was an interruption
 #' @param minimal_batch_size minimal number of samples in a batch
-#' @param batch_name string with a self-explanatory name for the batch (e.g. `MS_batch` for MS-proteomics) to which batch number will be added
+#' @param batch_name string with a self-explanatory name for the batch (e.g.
+#'   `MS_batch` for MS-proteomics) to which batch number will be added
 #'
 #' @return vector of batches for each sample
 #' @export
