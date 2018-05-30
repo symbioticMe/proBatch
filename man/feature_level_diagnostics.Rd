@@ -29,26 +29,30 @@ plot_iRTs(df_long, sample_annotation, order_column = NULL,
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
 
-\item{df_long}{data frame where each row is a single feature in a single sample,
-thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`,
-but usually also `m_score` (in OpenSWATH output result file)}
+\item{df_long}{data frame where each row is a single feature in a single
+sample, thus it has minimally, `sample_id_col`, `feature_id_column` and
+`measure_column`, but usually also `m_score` (in OpenSWATH output result
+file)}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names)
-2) biological and 3) technical covariates (batches etc)}
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
 
 \item{order_column}{sample injection order}
 
-\item{sample_id_col}{name of the column in sample_annotation file,
-where the filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 
-\item{batch_column}{column in `sample_annotation` that should be used for batch comparison}
+\item{batch_column}{column in `sample_annotation` that should be used for
+batch comparison}
 
-\item{measure_column}{if `df_long` is among the parameters, it is the column with
-expression/abundance/intensity, otherwise, it is used internally for consistency}
+\item{measure_column}{if `df_long` is among the parameters, it is the column
+with expression/abundance/intensity, otherwise, it is used internally for
+consistency}
 
-\item{feature_id_column}{name of the column with feature/gene/peptide/protein ID
-used with long format matrix (`df_long`).
-Identical to wide format (`data_matrix`) to row name}
+\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+ID used with long format matrix (`df_long`). Identical to wide format
+(`data_matrix`) to row name}
 
 \item{geom}{whether to show the feature as points and/or connect by lines}
 
@@ -58,18 +62,19 @@ Identical to wide format (`data_matrix`) to row name}
 
 \item{title}{the string indicating the source of the peptides}
 
-\item{requant}{if data frame: requant values;
-if logical: whether to indicate requant values (requires 'requant' or 'm_score' column in `df_long`)}
+\item{requant}{if data frame: requant values; if logical: whether to indicate
+requant values (requires 'requant' or 'm_score' column in `df_long`)}
 
-\item{theme}{plot theme (default is 'classical'; other options not implemented)}
+\item{theme}{plot theme (default is 'classical'; other options not
+implemented)}
 
 \item{spike_ins}{substring used to identify spike-in proteins in the column 'ProteinName'}
 
 \item{...}{additional arguments to plot_peptide_level function}
 }
 \value{
-ggplot2 type plot of `measure_column` vs `order`,
-faceted by peptide name and (optionally) by batch
+ggplot2 type plot of `measure_column` vs `order`, faceted by peptide
+  name and (optionally) by batch
 }
 \description{
 single feature can also be spike-ins or iRT peptides (in DIA proteomics)

@@ -2,12 +2,15 @@
 % Please edit documentation in R/colors_for_annotation.R
 \name{color_list_to_df}
 \alias{color_list_to_df}
-\title{Turn color list to df (some plotting functions require the latter)}
+\title{Color list to data frame}
 \usage{
 color_list_to_df(color_list, sample_annotation)
 }
 \arguments{
 \item{sample_annotation}{}
+}
+\value{
+a data frame representation of the input color list
 }
 \description{
 Turn color list to df (some plotting functions require the latter)
