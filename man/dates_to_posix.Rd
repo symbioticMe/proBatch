@@ -2,27 +2,31 @@
 % Please edit documentation in R/date_conversion.R
 \name{dates_to_posix}
 \alias{dates_to_posix}
-\title{convert date/time column of sample_annotation to POSIX format
-required to keep number-like behaviour}
+\title{convert date/time column of sample_annotation to POSIX format required to
+keep number-like behaviour}
 \usage{
 dates_to_posix(sample_annotation, time_column = c("RunDate", "RunTime"),
   new_time_column = NULL, dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"))
 }
 \arguments{
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names)
-2) biological and 3) technical covariates (batches etc)}
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
 
 \item{time_column}{name of the column(s) where run date & time are specified.
 These will be used to determine the run order}
 
-\item{new_time_column}{name of the new column to which date&time will be converted to}
+\item{new_time_column}{name of the new column to which date&time will be
+converted to}
 
-\item{dateTimeFormat}{POSIX format of the date and time. See `as.POSIXct` from base R for details}
+\item{dateTimeFormat}{POSIX format of the date and time. See `as.POSIXct`
+from base R for details}
 }
 \value{
-sample annotation file with column names as 'new_time_column' with POSIX-formatted date
+sample annotation file with column names as 'new_time_column' with
+  POSIX-formatted date
 }
 \description{
-convert date/time column of sample_annotation to POSIX format
-required to keep number-like behaviour
+convert date/time column of sample_annotation to POSIX format required to
+keep number-like behaviour
 }
