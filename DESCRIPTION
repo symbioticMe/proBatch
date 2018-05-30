@@ -22,6 +22,7 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     tidyverse (>= 1.2.1),
+    scales,
     reshape2,
     lazyeval,
     readr,
