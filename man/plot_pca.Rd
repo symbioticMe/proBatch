@@ -8,11 +8,14 @@ plot_pca(data_matrix, sample_annotation, color_by = "MS_batch",
   PC_to_plot = c(1, 2), colors_for_factor = NULL, theme = "classic")
 }
 \arguments{
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix,
-with feature IDs in rownames and file/sample names as colnames.
-in most function, it is assumed that this is the log transformed version of the original data}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. in most
+function, it is assumed that this is the log transformed version of the
+original data}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)}
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
 
 \item{color_by}{column name (as in `sample_annotation`) to color by}
 
@@ -20,10 +23,12 @@ in most function, it is assumed that this is the log transformed version of the 
 
 \item{colors_for_factor}{named vector of colors for the `color_by` variable}
 
-\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see examples)}
+\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
+examples)}
 }
 \value{
-ggplot scatterplot colored by factor levels of column specified in `factor_to_color`
+ggplot scatterplot colored by factor levels of column specified in
+  `factor_to_color`
 }
 \description{
 plot PCA plot

@@ -2,8 +2,7 @@
 % Please edit documentation in R/colors_for_annotation.R
 \name{sample_annotation_to_colors}
 \alias{sample_annotation_to_colors}
-\title{convert the sample annotation data frame to list of colors
-the list is named as columns included to use in potting functions}
+\title{Generate colors for sample annotation}
 \usage{
 sample_annotation_to_colors(sample_annotation, columns_for_plotting = NULL,
   sample_id_column = NULL, factor_columns = NULL,
@@ -11,7 +10,9 @@ sample_annotation_to_colors(sample_annotation, columns_for_plotting = NULL,
   numerics_to_log = F, numeric_palette_type = "brewer", granularity = 10)
 }
 \arguments{
-\item{sample_annotation}{}
+\item{sample_annotation}{data matrix with: \enumerate{ \item `sample_id_col`
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
 
 \item{granularity}{number of colors to map to the number vector (equally spaced between minimum and maximum)}
 }

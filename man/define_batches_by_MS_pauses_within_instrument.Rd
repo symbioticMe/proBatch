@@ -2,7 +2,8 @@
 % Please edit documentation in R/date_conversion.R
 \name{define_batches_by_MS_pauses_within_instrument}
 \alias{define_batches_by_MS_pauses_within_instrument}
-\title{Identify stretches of time between runs that are long and split a batches by them}
+\title{Identify stretches of time between runs that are long and split a batches by
+them}
 \usage{
 define_batches_by_MS_pauses_within_instrument(date_vector, threshold,
   minimal_batch_size = 5, batch_name = "MS_batch")
@@ -15,11 +16,13 @@ MS profile acquisition timepoint}
 
 \item{minimal_batch_size}{minimal number of samples in a batch}
 
-\item{batch_name}{string with a self-explanatory name for the batch (e.g. `MS_batch` for MS-proteomics) to which batch number will be added}
+\item{batch_name}{string with a self-explanatory name for the batch (e.g.
+`MS_batch` for MS-proteomics) to which batch number will be added}
 }
 \value{
 vector of batches for each sample
 }
 \description{
-Identify stretches of time between runs that are long and split a batches by them
+Identify stretches of time between runs that are long and split a batches by
+them
 }
