@@ -2,16 +2,19 @@
 % Please edit documentation in R/normalize.R
 \name{quantile_normalize}
 \alias{quantile_normalize}
-\title{Quantile normalization of the data, ensuring that the row and column names are retained}
+\title{Quantile normalization of the data, ensuring that the row and column names
+are retained}
 \usage{
 quantile_normalize(data_matrix)
 }
 \arguments{
-\item{data_matrix}{log transformed data matrix (features in rows and samples in columns)}
+\item{data_matrix}{log transformed data matrix (features in rows and samples
+in columns)}
 }
 \value{
 `data_matrix`-size matrix, with columns quantile-normalized
 }
 \description{
-Quantile normalization of the data, ensuring that the row and column names are retained
+Quantile normalization of the data, ensuring that the row and column names
+are retained
 }
