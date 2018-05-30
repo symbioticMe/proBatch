@@ -9,13 +9,17 @@ plot_heatmap(data_matrix, sample_annotation = NULL, fill_the_missing = T,
   filename = NA, ...)
 }
 \arguments{
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix,
-with feature IDs in rownames and file/sample names as colnames.
-in most function, it is assumed that this is the log transformed version of the original data}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. in most
+function, it is assumed that this is the log transformed version of the
+original data}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)}
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
 
-\item{fill_the_missing}{boolean value determining if missing values should be substituted with -1 (and colored with black)}
+\item{fill_the_missing}{boolean value determining if missing values should be
+substituted with -1 (and colored with black)}
 
 \item{cluster_rows}{boolean value determining if rows should be clustered}
 
