@@ -1,21 +1,19 @@
+#' Convert data/time to POSIXct
+#' 
 #' convert date/time column of sample_annotation to POSIX format required to
 #' keep number-like behaviour
 #'
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
+#' @inheritParams proBatch
 #' @param time_column name of the column(s) where run date & time are specified.
 #'   These will be used to determine the run order
 #' @param new_time_column name of the new column to which date&time will be
 #'   converted to
-#' @param dateTimeFormat POSIX format of the date and time. See `as.POSIXct`
+#' @param dateTimeFormat POSIX format of the date and time. See \code{\link{as.POSIXct}}
 #'   from base R for details
 #'
 #' @return sample annotation file with column names as 'new_time_column' with
 #'   POSIX-formatted date
-#' @export
-#'
-#' @examples
+#'   
 dates_to_posix <- function(sample_annotation,
                            time_column = c('RunDate','RunTime'),
                            new_time_column = NULL,
@@ -36,28 +34,20 @@ dates_to_posix <- function(sample_annotation,
   return(sample_annotation)
 }
 
-#' convert date to order
+
+#' Convert date/time to POSIXct and rank samples by it
 #'
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
-#' @param time_column name of the column(s) where run date & time are specified.
-#'   These will be used to determine the run order
-#' @param new_time_column name of the new column to which date&time will be
-#'   converted to
-#' @param dateTimeFormat POSIX format of the date and time. See `as.POSIXct`
-#'   from base R for details
+#' Converts date/time columns fo sample_annotation to POSIXct format and
+#' calculates sample run rank in order column
+#'
+#' @inheritParams dates_to_posix
 #' @param order_column name of the new column that determines sample order. Will
 #'   be used for certain diagnostics and normalisations
 #'
 #' @return sample annotation file with column names as 'new_time_column' with
-#'   POSIX-formatted date & `order_column` used in some diagnostic plots
-#'   (`plot_iRTs`, `plot_sample_mean`)
-#' @import dplyr
-#' @import rlang
-#' @export
-#'
-#' @examples
+#'   POSIX-formatted date & `order_column` used in some diagnostic plots (e.g.
+#'   \code{\link{plot_iRTs}}, \code{\link{plot_sample_mean}})
+#'   
 date_to_sample_order <- function(sample_annotation,
                                  time_column = c('RunDate','RunTime'),
                                  new_time_column = 'DateTime',
@@ -80,8 +70,12 @@ date_to_sample_order <- function(sample_annotation,
   return(sample_annotation)
 }
 
-#' Identify stretches of time between runs that are long and split a batches by
-#' them
+
+#' Batch by date/time
+#'
+#' Identify long stretches of time between samples and split them into batches.
+#' Most users are going to want to call define_batches_by_MS_pauses, rather then
+#' this function
 #'
 #' @param date_vector POSIX or numeric-like vector corresponding to the sample
 #'   MS profile acquisition timepoint
@@ -91,9 +85,7 @@ date_to_sample_order <- function(sample_annotation,
 #'   `MS_batch` for MS-proteomics) to which batch number will be added
 #'
 #' @return vector of batches for each sample
-#' @export
-#'
-#' @examples
+#'   
 define_batches_by_MS_pauses_within_instrument <- function(date_vector, threshold,
                                         minimal_batch_size = 5,
                                         batch_name = 'MS_batch'){
@@ -112,19 +104,24 @@ define_batches_by_MS_pauses_within_instrument <- function(date_vector, threshold
   return(batch_ids)
 }
 
-#' convert by batch
+
+#' Batch by date/time and instrument
 #'
-#' @param sample_annotation
-#' @param threshold
-#' @param runtime_col
-#' @param minimal_batch_size
-#' @param instrument_col
-#' @param batch_name
+#' Identify long stretches of time between samples on a per instrument basis and
+#' split them into batches.
 #'
-#' @return
-#' @export
 #'
-#' @examples
+#' @inheritParams proBatch
+#' @inheritParams define_batches_by_MS_pauses_within_instrument
+#' @param runtime_col POSIX or numeric-like column corresponding to the sample
+#'   MS profile acquisition timepoint
+#' @param instrument_col column specifying MS instrument used to acquired data
+#'   (to account for the presence of multiple instruments in
+#'   \code{sample_annotation})
+#'
+#' @return \code{sample_annotation} data matrix with an additional
+#'   column to indicate sample batching by MS run time and instrument.
+#'   
 define_batches_by_MS_pauses <- function(sample_annotation,
                                         threshold,
                                         runtime_col = 'RunDateTime',
@@ -133,7 +130,6 @@ define_batches_by_MS_pauses <- function(sample_annotation,
                                         batch_name = 'MS_batch'){
 
   if (!is.null(instrument_col)){
-    #batch_name = paste(sample_annotation[[instrument_col]], batch_name, sep = ':')
     sample_annotation = sample_annotation %>%
       mutate(batch_name = paste(!!rlang::sym(instrument_col), batch_name, sep = ':')) %>%
       arrange(UQ(rlang::sym(instrument_col)), UQ(rlang::sym(runtime_col))) %>%
