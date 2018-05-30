@@ -82,7 +82,7 @@ map_numbers_to_colors <-
 #'
 #' generates a list of colors for the dataframe with all columns numeric (or date)
 #'
-#' @param num_col a vector of type numeric of factor to generate colors for 
+#' @param num_col a vector of type numeric of factor to generate colors for
 #' @param palette_type 'brewer' or 'viridis'
 #' @param i if \code{palette_type} is 'brewer' the palette argument to \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument to virids_pal ()
 #' @param granularity the breaks to use when generating colors for num_col
@@ -94,12 +94,12 @@ generate_colors_for_numeric <-
            palette_type = 'brewer',
            i = 1,
            granularity = 10) {
-    
+
     if ((palette_type == 'viridis') && (i > 4 || i < 1)){
       warning('When using viridis palette i must be >= 1 and <= 4. Setting it to 1.')
       i = 1
     }
-    
+
     color_for_column = switch(
       palette_type,
       brewer = brewer_pal(type = "div", i)(5)[1:5],
@@ -146,23 +146,23 @@ generate_colors_for_numeric <-
                 new_annotation = num_vec))
   }
 
-check_rare_levels <- function(col) {
-  tb_col = table(col)
+check_rare_levels <- function(column) {
+  tb_col = table(column)
   freq_table = table(tb_col) / length(tb_col)
   is_rare = as.character(1) %in% names(freq_table) &
     freq_table[as.character(1)] > .5
   return(is_rare)
 }
 
-merge_rare_levels <- function(col) {
-  is_factor_col = is.factor(col)
-  tb_col = table(col)
+merge_rare_levels <- function(column) {
+  is_factor_col = is.factor(column)
+  tb_col = table(column)
   if (is_factor_col)
-    col = as.character(col)
-  col[col %in% names(tb_col)[tb_col == 1]] = 'other'
+    column = as.character(column)
+  column[column %in% names(tb_col)[tb_col == 1]] = 'other'
   if (is_factor_col)
-    col = as.factor(col)
-  return(col)
+    column = as.factor(column)
+  return(column)
 }
 
 #' Generate colors for sample annotation
@@ -178,7 +178,10 @@ merge_rare_levels <- function(col) {
 #' @param numerics_to_log
 #' @param granularity number of colors to map to the number vector (equally spaced between minimum and maximum)
 #'
+#' @importFrom lubridate is.POSIXct
+#' @importFrom scales brewer_pal
 #' @return list of colors
+#' @export
 #'
 sample_annotation_to_colors <- function(sample_annotation,
                                         columns_for_plotting = NULL,
@@ -206,9 +209,9 @@ sample_annotation_to_colors <- function(sample_annotation,
   }
 
   factor_like_columns = names(sample_annotation)[sapply(sample_annotation,
-                                                        function(col)
-                                                          is.factor(col) |
-                                                          is.character(col))]
+                                                        function(column)
+                                                          is.factor(column) |
+                                                          is.character(column))]
   if (!is.null(factor_columns)) {
     factor_columns = union(factor_columns, factor_like_columns)
   } else {
