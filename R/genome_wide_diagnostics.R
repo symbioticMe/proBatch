@@ -300,12 +300,27 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
 plot_clustering <- function(data_matrix, color_df, title = 'Clustering of raw samples',
                             distance = "euclidean",
                             agglomeration = 'complete',
+                            label_samples = T, label_font = .2,
+                            plot_title = NULL,
                               ...){
   dist_matrix = dist(t(as.matrix(data_matrix)), method = distance)
   hierarchical_clust = hclust(dist_matrix, method = agglomeration)
-  plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
-                      main = plot_title,
-                      hang = -0.1, addGuide = T, ...)
+  if (label_samples){
+    if (ncol(data_matrix) > 80){
+      warning('Too many samples, adjust the font with `label_font` argument or
+              remove labels by setting `label_samples = F` in function call')
+    }
+    plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
+                        main = plot_title,
+                        hang = -0.1, addGuide = T, dendroLabels = T,
+                        cex.dendroLabels = label_font, ...)
+
+  } else{
+    plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
+                        main = plot_title,
+                        hang = -0.1, addGuide = T, dendroLabels = F, ...)
+  }
+
 }
 
 PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca, threshold_var = Inf) {
