@@ -5,16 +5,20 @@
 \title{cluster the data matrix to visually inspect which confounder dominates}
 \usage{
 plot_clustering(data_matrix, color_df, title = "Clustering of raw samples",
-  distance = "euclidean", agglomeration = "complete", ...)
+  distance = "euclidean", agglomeration = "complete", label_samples = T,
+  label_font = 0.2, plot_title = NULL, ...)
 }
 \arguments{
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix,
-with feature IDs in rownames and file/sample names as colnames.
-in most function, it is assumed that this is the log transformed version of the original data}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. in most
+function, it is assumed that this is the log transformed version of the
+original data}
 
-\item{color_df}{data frame of colors, as created by `sample_annotation_to_colors`}
+\item{color_df}{data frame of colors, as created by
+`sample_annotation_to_colors`}
 
-\item{title}{Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))}
+\item{title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
 
 \item{distance}{distance metric used for clustering}
 
@@ -27,5 +31,5 @@ cluster the data matrix to visually inspect which confounder dominates
 }
 \seealso{
 \code{\link{hclust}}, \code{\link{sample_annotation_to_colors}},
-\code{\link{plotDendroAndColors}}
+  \code{\link{plotDendroAndColors}}
 }

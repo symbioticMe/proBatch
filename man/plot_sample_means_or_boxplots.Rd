@@ -5,7 +5,8 @@
 \alias{plot_sample_mean}
 \alias{plot_sample_means_or_boxplots}
 \alias{plot_boxplot}
-\title{Plot per-sample average or boxplot (distribution) vs order (if the real running order available)}
+\title{Plot per-sample average or boxplot (distribution) vs order (if the real
+running order available)}
 \usage{
 plot_sample_mean(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", order_column = "order",
@@ -21,44 +22,58 @@ plot_boxplot(df_long, sample_annotation = NULL,
   order_per_facet = F)
 }
 \arguments{
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix,
-with feature IDs in rownames and file/sample names as colnames.
-in most function, it is assumed that this is the log transformed version of the original data}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. in most
+function, it is assumed that this is the log transformed version of the
+original data}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)}
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
 
-\item{sample_id_col}{name of the column in sample_annotation file,
-where the filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 
 \item{order_column}{column where running order is specified.}
 
-\item{batch_column}{column in `sample_annotation` that should be used for batch comparison}
+\item{batch_column}{column in `sample_annotation` that should be used for
+batch comparison}
 
-\item{facet_column}{recommended if more than one batch covariate is present. Faceting is most suited to examine instruments separately}
+\item{facet_column}{recommended if more than one batch covariate is present.
+Faceting is most suited to examine instruments separately}
 
-\item{color_by_batch}{should the each batch be represented with its own color?}
+\item{color_by_batch}{should the each batch be represented with its own
+color?}
 
-\item{color_scheme}{named vector, names corresponding to unique batch values as specified in `sample_annotation`}
+\item{color_scheme}{named vector, names corresponding to unique batch values
+as specified in `sample_annotation`}
 
-\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see examples)}
+\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
+examples)}
 
-\item{title}{Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))}
+\item{title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
 
-\item{order_per_facet}{if order is defined ignoring facets (usually instrument), re-define order per-batch}
+\item{order_per_facet}{if order is defined ignoring facets (usually
+instrument), re-define order per-batch}
 
-\item{df_long}{data frame where each row is a single feature in a single sample,
-thus it has minimally, `sample_id_col`, `feature_id_column` and `measure_column`,
-but usually also `m_score` (in OpenSWATH output result file)}
+\item{df_long}{data frame where each row is a single feature in a single
+sample, thus it has minimally, `sample_id_col`, `feature_id_column` and
+`measure_column`, but usually also `m_score` (in OpenSWATH output result
+file)}
 
-\item{measure_column}{if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
-otherwise, it is used internally for consistency}
+\item{measure_column}{if `df_long` is among the parameters, it is the column
+with expression/abundance/intensity, otherwise, it is used internally for
+consistency}
 }
 \value{
 ggplot2 class object. Thus, all aesthetics can be overriden
 }
 \description{
-Plot per-sample average or boxplot (distribution) vs order (if the real running order available)
+Plot per-sample average or boxplot (distribution) vs order (if the real
+running order available)
 }
 \details{
-functions for quick visual assessment of trends associated, overall or specific covariate-associated (see `batch_column` and `facet_column`)
+functions for quick visual assessment of trends associated, overall
+  or specific covariate-associated (see `batch_column` and `facet_column`)
 }

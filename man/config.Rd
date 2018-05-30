@@ -29,32 +29,39 @@ correct_with_ComBat(data_matrix, sample_annotation,
   batch_column = "MS_batch.final", par.prior = TRUE)
 }
 \arguments{
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)}
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
 
-\item{batch_column}{column in `sample_annotation` that should be used for batch comparison}
+\item{batch_column}{column in `sample_annotation` that should be used for
+batch comparison}
 
-\item{measure_column}{if `df_long` is among the parameters, it is the column with expression/abundance/intensity,
-otherwise, it is used internally for consistency}
+\item{measure_column}{if `df_long` is among the parameters, it is the column
+with expression/abundance/intensity, otherwise, it is used internally for
+consistency}
 
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix,
-with feature IDs in rownames and file/sample names as colnames.
-Usually the log transformed version of the original data}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. Usually the log
+transformed version of the original data}
 
-\item{sample_order_col}{column, determining the order of sample MS run, used as covariate to fit the non-linear fit}
+\item{sample_order_col}{column, determining the order of sample MS run, used
+as covariate to fit the non-linear fit}
 
 \item{fit_func}{function to fit the (non)-linear trend}
 
-\item{return_long}{whether the result should be the "long" data frame (as `df_long`) or "wide" (as `data_matrix`)}
+\item{return_long}{whether the result should be the "long" data frame (as
+`df_long`) or "wide" (as `data_matrix`)}
 
 \item{...}{other parameters, usually those of the `fit_func`}
 
 \item{par.prior}{}
 
-\item{sample_id_col}{name of the column in sample_annotation file,
-where the filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 }
 \value{
-`data_matrix`-size data matrix with batch-effect corrected by `ComBat`
+`data_matrix`-size data matrix with batch-effect corrected by
+  `ComBat`
 }
 \description{
 Data normalization and batch adjustment methods
@@ -65,9 +72,11 @@ Median normalization of the data (global)
 
 normalize with the custom (continuous) fit
 
-Standardized input-output ComBat normalization
-ComBat allows users to adjust for batch effects in datasets where the batch covariate is known, using methodology
-described in Johnson et al. 2007. It uses either parametric or non-parametric empirical Bayes frameworks for adjusting data for
-batch effects.  Users are returned an expression matrix that has been corrected for batch effects. The input
-data are assumed to be cleaned and normalized before batch effect removal.
+Standardized input-output ComBat normalization ComBat allows users to adjust
+for batch effects in datasets where the batch covariate is known, using
+methodology described in Johnson et al. 2007. It uses either parametric or
+non-parametric empirical Bayes frameworks for adjusting data for batch
+effects.  Users are returned an expression matrix that has been corrected for
+batch effects. The input data are assumed to be cleaned and normalized before
+batch effect removal.
 }
