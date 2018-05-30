@@ -75,20 +75,24 @@ remove_peptides_with_missing_batch <- function(df_long,
 # TODO: This function assumes that we have a RT column for df_long, but this is neither documented nor checked
 
 #' Summarize run features
-#' 
+#'
 #' Summarizes various peptide properties on a per sample basis.
-#' 
+#'
 #' @details summarize peptides by sample (ranking) and on the contrary, across
 #'   peptide-wise across samples
 #'
-#' @return a data frame summarizing features in a dataset on a per sample basis. The following columns are returned: `RT_mean`, `Int_mean`,
-#'   `numb_requants`, `median_m_score`, `mean_m_score`, `median_good_m_score`
-#'   (median of `m_score` other than requants)
-#'   
+#' @return a data frame summarizing features in a dataset on a per sample basis.
+#'   The following columns are returned: `RT_mean`, `Int_mean`, `numb_requants`,
+#'   `median_m_score`, `mean_m_score`, `median_good_m_score` (median of
+#'   `m_score` excluding requants)
+#'
 #' @family dataset cleaning functions
-#' 
+#'   
 summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
-                               feature_id_column = 'peptide_group_label'){
+                               feature_id_column = 'peptide_group_label',
+                               RT="RT", 
+                               Intensity="Intensity",
+                               m_score="m_score"){
   peptide_summary = df_long %>%
     group_by_at(vars(one_of(sample_id_col)))  %>%
     mutate(rank = rank(Intensity))  %>% 
