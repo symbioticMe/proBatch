@@ -2,7 +2,8 @@
 % Please edit documentation in R/feature_level_diagnostics.R
 \name{plot_with_fitting_curve}
 \alias{plot_with_fitting_curve}
-\title{Plot Intensity for a few representative peptides for each step of the analysis including the fitting curve}
+\title{Plot Intensity for a few representative peptides for each step of the
+analysis including the fitting curve}
 \usage{
 plot_with_fitting_curve(pep_name, data_df_all_steps, sample_annotation, fit_df,
   fit_value_var = "fit", fit_step = "3_loess_fit", order_column = NULL,
@@ -14,36 +15,40 @@ plot_with_fitting_curve(pep_name, data_df_all_steps, sample_annotation, fit_df,
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
 
-\item{data_df_all_steps}{data frame, similar to `df_long`,  where each row is a single feature in a single sample,
-at a certain step of the analysis (minimally raw and after linear normalization)
-thus it has minimally, `sample_id_col`, `feature_id_column`, `measure_column`  and `fit_step`,
-but usually also `m_score` (in OpenSWATH output result file)}
+\item{data_df_all_steps}{data frame, similar to `df_long`,  where each row is
+a single feature in a single sample, at a certain step of the analysis
+(minimally raw and after linear normalization) thus it has minimally,
+`sample_id_col`, `feature_id_column`, `measure_column`  and `fit_step`, but
+usually also `m_score` (in OpenSWATH output result file)}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names)
-2) biological and 3) technical covariates (batches etc)}
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
 
 \item{order_column}{sample injection order}
 
-\item{sample_id_col}{name of the column in sample_annotation file,
-where the filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 
-\item{batch_column}{column in `sample_annotation` that should be used for batch comparison}
+\item{batch_column}{column in `sample_annotation` that should be used for
+batch comparison}
 
 \item{measure_column}{the column with expression/abundance/intensity.}
 
-\item{feature_id_column}{name of the column with feature/gene/peptide/protein ID
-used with long format matrix (`df_long`).
-Identical to wide format (`data_matrix`) to row name}
+\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+ID used with long format matrix (`df_long`). Identical to wide format
+(`data_matrix`) to row name}
 
 \item{geom}{for the intensity (`measure_col`) profile:}
 
 \item{theme}{}
 }
 \value{
-`ggplot`-class plot with minimally two facets (before and after non-linear fit)
-with `measure_column` (Intensity) vs `order_column` (injection order)
-for selected peptides (specified in `pep_name`)
+`ggplot`-class plot with minimally two facets (before and after
+  non-linear fit) with `measure_column` (Intensity) vs `order_column`
+  (injection order) for selected peptides (specified in `pep_name`)
 }
 \description{
-Plot Intensity for a few representative peptides for each step of the analysis including the fitting curve
+Plot Intensity for a few representative peptides for each step of the
+analysis including the fitting curve
 }
