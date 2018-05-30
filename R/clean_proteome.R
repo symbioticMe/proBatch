@@ -72,11 +72,11 @@ remove_peptides_with_missing_batch <- function(df_long,
 }
 
 
-# TODO: This function assumes that we have a RT column for df_long, but this is neither documented nor checked
-
 #' Summarize run features
 #'
-#' Summarizes various peptide properties on a per sample basis.
+#' Summarizes various peptide properties on a per sample basis. By default will
+#' summarize RT, Intensity and m_score. If your feature does not have some of
+#' these set them to NULL when calling.
 #'
 #' @details summarize peptides by sample (ranking) and on the contrary, across
 #'   peptide-wise across samples
