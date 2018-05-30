@@ -84,7 +84,6 @@ map_numbers_to_colors <-
 #'
 #' @param num_col
 #' @param palette_type
-#' @param column_to_log
 #' @param i
 #'
 #' @return
@@ -92,7 +91,6 @@ map_numbers_to_colors <-
 generate_colors_for_numeric <-
   function(num_col,
            palette_type = 'brewer',
-           column_to_log = F,
            i = 1,
            granularity = 10) {
     color_for_column = switch(
