@@ -11,24 +11,33 @@ plot_pvca(data_matrix, sample_annotation, sample_id_column = "FullRunName",
   theme = "classic")
 }
 \arguments{
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix,
-with feature IDs in rownames and file/sample names as colnames.
-in most function, it is assumed that this is the log transformed version of the original data}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. in most
+function, it is assumed that this is the log transformed version of the
+original data}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be repeated as row names) 2) biological and 3) technical covariates (batches etc)}
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
 
-\item{technical_covariates}{vector `sample_annotation` column names that are technical covariates}
+\item{technical_covariates}{vector `sample_annotation` column names that are
+technical covariates}
 
-\item{biological_covariates}{vector `sample_annotation` column names, that are biologically meaningful covariates}
+\item{biological_covariates}{vector `sample_annotation` column names, that
+are biologically meaningful covariates}
 
-\item{title}{Title of the plot (usually, processing step + representation level (fragments, transitions, proteins))}
+\item{title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
 
-\item{colors_for_bars}{four-item color vector, specifying colors for the following categories: c('residual', 'biological', 'biol:techn', 'technical')}
+\item{colors_for_bars}{four-item color vector, specifying colors for the
+following categories: c('residual', 'biological', 'biol:techn',
+'technical')}
 
-\item{threshold_pca}{the percentile value of the minimum amount of the variabilities that the selected principal components need to explain}
+\item{threshold_pca}{the percentile value of the minimum amount of the
+variabilities that the selected principal components need to explain}
 
-\item{threshold_var}{the percentile value of weight each of the covariates needs to explain
-(the rest will be lumped together)}
+\item{threshold_var}{the percentile value of weight each of the covariates
+needs to explain (the rest will be lumped together)}
 }
 \value{
 list of two items: plot =gg, df = pvca_res
