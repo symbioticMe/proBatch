@@ -82,9 +82,10 @@ map_numbers_to_colors <-
 #'
 #' generates a list of colors for the dataframe with all columns numeric (or date)
 #'
-#' @param num_col
-#' @param palette_type
-#' @param i
+#' @param num_col a vector of type numeric of factor to generate colors for 
+#' @param palette_type 'brewer' or 'viridis'
+#' @param i if \code{palette_type} is 'brewer' the palette argument to \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument to virids_pal ()
+#' @param granularity the breaks to use when generating colors for num_col
 #'
 #' @return
 #'
@@ -93,11 +94,16 @@ generate_colors_for_numeric <-
            palette_type = 'brewer',
            i = 1,
            granularity = 10) {
+    
+    if ((palette_type == 'viridis') && (i > 4 || i < 1)){
+      warning('When using viridis palette i must be >= 1 and <= 4. Setting it to 1.')
+      i = 1
+    }
+    
     color_for_column = switch(
       palette_type,
       brewer = brewer_pal(type = "div", i)(5)[1:5],
-      viridis = viridis::viridis_pal(option = LETTERS[5 -
-                                                        i])(5)
+      viridis = viridis::viridis_pal(option = LETTERS[5 - i])(5)
     )
 
     non_numeric_values = NULL
