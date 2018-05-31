@@ -2,7 +2,7 @@
 % Please edit documentation in R/colors_for_annotation.R
 \name{generate_colors_for_numeric}
 \alias{generate_colors_for_numeric}
-\title{generates color list}
+\title{Generates color list}
 \usage{
 generate_colors_for_numeric(num_col, palette_type = "brewer", i = 1,
   granularity = 10)
@@ -12,7 +12,9 @@ generate_colors_for_numeric(num_col, palette_type = "brewer", i = 1,
 
 \item{palette_type}{'brewer' or 'viridis'}
 
-\item{i}{if \code{palette_type} is 'brewer' the palette argument to \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument to virids_pal ()}
+\item{i}{if \code{palette_type} is 'brewer' the palette argument to
+\code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument
+to virids_pal ()}
 
 \item{granularity}{the breaks to use when generating colors for num_col}
 }
@@ -20,5 +22,6 @@ generate_colors_for_numeric(num_col, palette_type = "brewer", i = 1,
 
 }
 \description{
-generates a list of colors for the dataframe with all columns numeric (or date)
+Generates a list of colors for a vector of numeric, POSIXct (i.e. the
+(signed) number of seconds since the beginning of 1970 , or factors
 }
