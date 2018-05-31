@@ -14,19 +14,21 @@
 #' @section common arguments to the functions:
 #'
 #' @param df_long data frame where each row is a single feature in a single
-#'   sample. It minimally has a `sample_id_col`, a `feature_id_column` and a
-#'   `measure_column`, but usually also an `m_score` (in OpenSWATH output result
+#'   sample. It minimally has a \code{sample_id_col}, a \code{feature_id_column} and a
+#'   \code{measure_column}, but usually also an \code{m_score} (in OpenSWATH output result
 #'   file)
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
-#' @param sample_annotation data matrix with: \enumerate{ \item `sample_id_col`
+#' @param sample_annotation data matrix with: \enumerate{ \item \code{sample_id_col}
 #'   (this can be repeated as row names) \item biological covariates \item
 #'   technical covariates (batches etc) }
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for
+#' @param batch_column column in \code{sample_annotation} that should be used for
 #'   batch comparison
+#' @param order_column column in \code{sample_annotation} that determines sample order. It is
+#'    used for certain diagnostics and normalisations.
 #' @param measure_column if \code{df_long} is among the parameters, it is the
 #'   column with expression/abundance/intensity; otherwise, it is used
 #'   internally for consistency
