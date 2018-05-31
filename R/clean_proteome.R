@@ -13,8 +13,10 @@
 #'   \itemize{ \item remove requant values \item remove features not meeting
 #'   batch or global sparsness thresholds }
 #'
+#' @export
+#'
 #' @family dataset cleaning functions
-#'   
+#'
 clean_requants <- function(df_long, sample_annotation,
                            batch_column = 'MS_batch.final',
                            feature_id_column = 'peptide_group_label',
@@ -42,17 +44,19 @@ clean_requants <- function(df_long, sample_annotation,
 
 
 #' Remove features missing in at least one batch
-#' 
+#'
 #' Cleans dataset \code{df_long} (\link{proBatch}) by removing all features that are not present in every batch
-#' 
+#'
 #' @inheritParams proBatch
 #' @details useful for some downstream functions as ComBat normalization, that
 #'   would not work otherwise
 #'
 #' @return \code{df_long} (\link{proBatch}) like data frame freed of features that were not detected in each batch
-#' 
+#'
+#' @export
+#'
 #' @family dataset cleaning functions
-#' 
+#'
 remove_peptides_with_missing_batch <- function(df_long,
                                                batch_column = 'MS_batch.final',
                                                feature_id_column = 'peptide_group_label'){
@@ -87,15 +91,15 @@ remove_peptides_with_missing_batch <- function(df_long,
 #'   `m_score` excluding requants)
 #'
 #' @family dataset cleaning functions
-#'   
+#'
 summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
                                feature_id_column = 'peptide_group_label',
-                               RT="RT", 
+                               RT="RT",
                                Intensity="Intensity",
                                m_score="m_score"){
   peptide_summary = df_long %>%
     group_by_at(vars(one_of(sample_id_col)))  %>%
-    mutate(rank = rank(Intensity))  %>% 
+    mutate(rank = rank(Intensity))  %>%
     group_by_at(vars(one_of(feature_id_column))) %>%
     summarise(RT_mean = mean(RT),
               Int_mean = mean(Intensity), rank_mean = mean(rank),
