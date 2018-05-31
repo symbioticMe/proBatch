@@ -9,7 +9,7 @@ define_batches_by_MS_pauses(sample_annotation, threshold,
   instrument_col = "instr", batch_name = "MS_batch")
 }
 \arguments{
-\item{sample_annotation}{data matrix with: \enumerate{ \item `sample_id_col`
+\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 

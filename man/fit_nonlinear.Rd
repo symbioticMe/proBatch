@@ -8,7 +8,20 @@ fit_nonlinear(dataDF, response.var = "y", expl.var = "x",
   noFitRequants = F, fitFunc = "kernel_smooth", with_df = F, ...)
 }
 \arguments{
-\item{...}{}
+\item{response.var}{the name of the column in dataDF with the response variable}
+
+\item{expl.var}{the name of the column in dataDF with the explanatory variable}
+
+\item{noFitRequants}{(logical) whether to fit requanted values}
+
+\item{fitFunc}{function to use for the fit (`kernel_smooth`, `smooth_spline`, or `loess_regression`)}
+
+\item{with_df}{}
+
+\item{...}{additional paramters to be passed to the fitting function}
+}
+\value{
+vector of fitted response values
 }
 \description{
 Fit a non-linear trend
