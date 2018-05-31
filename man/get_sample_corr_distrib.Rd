@@ -2,15 +2,25 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{get_sample_corr_distrib}
 \alias{get_sample_corr_distrib}
-\title{calculate correlation distribution for all pairs of the replicated samples}
+\title{Calculates correlation distribution for all pairs of the replicated samples}
 \usage{
 get_sample_corr_distrib(cor_proteome, sample_annotation,
   sample_id_col = "FullRunName", biospecimen_id_col = "EarTag",
   batch_col = "MS_batch.final")
 }
 \arguments{
+\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
+
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
+
 \item{batch_col}{}
 }
+\value{
+
+}
 \description{
-calculate correlation distribution for all pairs of the replicated samples
+Calculates correlation distribution for all pairs of the replicated samples
 }

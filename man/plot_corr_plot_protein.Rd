@@ -2,22 +2,35 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{plot_corr_plot_protein}
 \alias{plot_corr_plot_protein}
-\title{plot correlation plot of a single protein}
+\title{Protein correlation plot}
 \usage{
 plot_corr_plot_protein(data_matrix, protein_name, peptide_annotation,
   prot.column = "ProteinName", peptide_col_name = "peptide_group_label",
   title = NULL, ...)
 }
 \arguments{
-\item{title}{}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. Usually the log
+transformed version of the original data}
+
+\item{protein_name}{the name of the protein}
+
+\item{prot.column}{the column name in \code{peptide_annotation} with protein names}
+
+\item{peptide_col_name}{the column name in \code{peptide_annotation} with peptide names}
+
+\item{title}{The title of the plot}
+
+\item{...}{parameters for the corrplot visualisation}
 }
 \description{
-plot correlation plot of a single protein
+Plots correlation plot of a single protein
 }
 \examples{
 plot_corr_plot(q_norm_proteome, protein_name = 'Haao',
-peptide_annotation = peptide_annotation, prot.column = 'Gene',
-title = 'Haao protein peptides after quantile norm',
-number.cex=0.75, tl.cex = .75
-mar=c(0,0,1,0))
+               peptide_annotation = peptide_annotation, prot.column = 'Gene',
+               title = 'Haao protein peptides after quantile norm',
+               number.cex=0.75, tl.cex = .75
+               mar=c(0,0,1,0))
+
 }
