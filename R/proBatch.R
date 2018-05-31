@@ -51,3 +51,5 @@ NULL
 
 
 # TODO: refactor sample_id_col to sample_id_column for naming consistency
+
+# TODO: Pick a variable naming stlye and refactor the rest out (at the moment we have a_b, aB, and a.b)
