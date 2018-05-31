@@ -79,10 +79,6 @@ map_numbers_to_colors <-
   }
 
 
-# TODO: is.POSIXct requires the lubridate package which is not declared as a dependency.
-
-# TODO:
-
 #' Generates color list
 #'
 #' Generates a list of colors for a vector of numeric, POSIXct (i.e. the
@@ -96,7 +92,6 @@ map_numbers_to_colors <-
 #' @param granularity the breaks to use when generating colors for num_col
 #'
 #' @return
-#'
 generate_colors_for_numeric <-
   function(num_col,
            palette_type = 'brewer',
@@ -136,7 +131,7 @@ generate_colors_for_numeric <-
     if (is.numeric(num_col)) {
       # num_col is a numeric vector
       num_vec = cut(num_col, breaks = granularity)
-    } else if (is.POSIXct(num_col)) {
+    } else if (lubridate::is.POSIXct(num_col)) {
       # num_col is a vector of dates
       interval = (max(num_col, na.rm = T) - min(num_col, na.rm = T)) / granularity
       if (any(is.na(num_col))) {
@@ -199,9 +194,9 @@ merge_rare_levels <- function(col) {
 #' @param granularity number of colors to map to the number vector (equally spaced between minimum and maximum)
 #' @param numeric_palette_type palette to be used for numeric values coloring
 #'
-#' @export
-#'
 #' @return list of colors
+#'
+#' @export
 #'
 sample_annotation_to_colors <- function(sample_annotation,
                                         columns_for_plotting = NULL,
@@ -294,6 +289,8 @@ sample_annotation_to_colors <- function(sample_annotation,
 #' @param sample_annotation
 #'
 #' @return a data frame representation of the input color list
+#'
+#' @export
 #'
 color_list_to_df <- function(color_list, sample_annotation) {
   list_df = lapply(names(sample_annotation), function(col_name) {
