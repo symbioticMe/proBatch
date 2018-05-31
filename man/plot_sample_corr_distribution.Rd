@@ -17,3 +17,6 @@ plot_sample_corr_distribution(data_matrix, sample_annotation,
 Create violin plot of correlation distribution
 Typically to visualize within batch vs within replicate vs non-related sample correlation
 }
+\examples{
+
+}

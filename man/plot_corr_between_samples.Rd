@@ -2,15 +2,17 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{plot_corr_between_samples}
 \alias{plot_corr_between_samples}
-\title{Plot correlation of selected samples}
+\title{Sample correlation plot}
 \usage{
 plot_corr_between_samples(data_matrix, samples_to_plot, flavor = "corrplot",
   ...)
 }
 \arguments{
-\item{data_matrix}{features x samples matrix, with sample IDs as colnames}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. Usually the log
+transformed version of the original data}
 
-\item{samples_to_plot}{string vector of samples from data_matrix}
+\item{samples_to_plot}{string vector of samples in \code{data_matrix} to be used in the plot}
 
 \item{...}{parameters for the corrplot visualisation}
 }
