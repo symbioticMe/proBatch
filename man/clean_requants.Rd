@@ -10,15 +10,15 @@ clean_requants(df_long, sample_annotation, batch_column = "MS_batch.final",
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a `sample_id_col`, a `feature_id_column` and a
-`measure_column`, but usually also an `m_score` (in OpenSWATH output result
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_column} and a
+\code{measure_column}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
-\item{sample_annotation}{data matrix with: \enumerate{ \item `sample_id_col`
+\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{batch_column}{column in `sample_annotation` that should be used for
+\item{batch_column}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
 \item{feature_id_column}{name of the column with feature/gene/peptide/protein

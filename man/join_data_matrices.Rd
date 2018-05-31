@@ -15,7 +15,7 @@ join_data_matrices(matrices_list, step, sample_annotation,
 that in plots these are usually ordered alphabetically, so it's worth
 naming with numbers, e.g. `1_raw`, `2_quantile`}
 
-\item{sample_annotation}{data matrix with: \enumerate{ \item `sample_id_col`
+\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 

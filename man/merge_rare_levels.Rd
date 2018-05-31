@@ -4,7 +4,7 @@
 \alias{merge_rare_levels}
 \title{Replaces rare levels with other}
 \usage{
-merge_rare_levels(col)
+merge_rare_levels(column)
 }
 \description{
 Replaces levels with a maximal occurence of 1 with other
