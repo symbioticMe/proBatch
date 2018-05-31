@@ -8,23 +8,26 @@
 primarily in proteomics}
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a `sample_id_col`, a `feature_id_column` and a
-`measure_column`, but usually also an `m_score` (in OpenSWATH output result
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_column} and a
+\code{measure_column}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
-\item{sample_annotation}{data matrix with: \enumerate{ \item `sample_id_col`
+\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
-\item{batch_column}{column in `sample_annotation` that should be used for
+\item{batch_column}{column in \code{sample_annotation} that should be used for
 batch comparison}
+
+\item{order_column}{column in \code{sample_annotation} that determines sample order. It is
+used for certain diagnostics and normalisations.}
 
 \item{measure_column}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
