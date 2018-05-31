@@ -8,7 +8,7 @@ dates_to_posix(sample_annotation, time_column = c("RunDate", "RunTime"),
   new_time_column = NULL, dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"))
 }
 \arguments{
-\item{sample_annotation}{data matrix with: \enumerate{ \item `sample_id_col`
+\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
