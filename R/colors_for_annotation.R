@@ -2,21 +2,21 @@ map_factors_to_colors <- function(annotation_df_factors) {
   #calculate number of colors to create
   nlev_covariate = mapply(nlevels, annotation_df_factors)
   n_colors_total = sum(nlev_covariate)
-  
+
   if (any(nlev_covariate > 20)) {
     warning('Some colors will be hard to distinguish\n')
   }
   if (any(nlev_covariate > 50)) {
     warning('Too many colors, consider merging some covariate values for better visualisation\n')
   }
-  
+
   colors = WGCNA::standardColors(n_colors_total)
   start_indxs = c(1, 1 + cumsum(nlev_covariate[-length(nlev_covariate)]))
   end_indx = cumsum(nlev_covariate)
   ann_colors_covariate = lapply(1:length(nlev_covariate),
                                 function(i)
                                   colors[start_indxs[i]:end_indx[i]])
-  
+
   names(ann_colors_covariate) = names(nlev_covariate)
   ann_colors_covariate <-
     Map(setNames,
@@ -36,7 +36,7 @@ map_numbers_to_colors <-
     if ((n_colors_to_create > 18)) {
       stop('Not enough color paletters to visualize the annotation')
     }
-    
+
     if (length(granularity) > 1 &
         length(granularity) != ncol(annotation_df_numbers)) {
       warning(
@@ -44,7 +44,7 @@ map_numbers_to_colors <-
       )
       granularity = granularity[1]
     }
-    
+
     if (length(granularity) == 1) {
       ann_col_covariate = lapply(1:ncol(annotation_df_numbers),
                                  function(i)
@@ -64,24 +64,24 @@ map_numbers_to_colors <-
                                      granularity = granularity[i]
                                    ))
     }
-    
+
     color_list = lapply(ann_col_covariate, function(item)
       item$color_vector)
     names(color_list) = names(annotation_df_numbers)
-    
+
     new_sample_annotation = data.frame(lapply(ann_col_covariate, function(item)
       item$new_annotation))
     names(new_sample_annotation) = names(annotation_df_numbers)
-    
+
     return(list(color_list = color_list,
                 new_sample_annotation = new_sample_annotation))
-    
+
   }
 
 
 # TODO: is.POSIXct requires the lubridate package which is not declared as a dependency.
 
-# TODO: 
+# TODO:
 
 #' Generates color list
 #'
@@ -96,7 +96,7 @@ map_numbers_to_colors <-
 #' @param granularity the breaks to use when generating colors for num_col
 #'
 #' @return
-#' 
+#'
 generate_colors_for_numeric <-
   function(num_col,
            palette_type = 'brewer',
@@ -106,13 +106,13 @@ generate_colors_for_numeric <-
       warning('When using viridis palette i must be >= 1 and <= 4. Setting it to 1.')
       i = 1
     }
-    
+
     color_for_column = switch(
       palette_type,
       brewer = scales::brewer_pal(type = "div", i)(5)[1:5],
       viridis = viridis::viridis_pal(option = LETTERS[5 - i])(5)
     )
-    
+
     non_numeric_values = NULL
     if (is.factor(num_col)) {
       # num_col is a vector of factors -> convert to numeric
@@ -132,7 +132,7 @@ generate_colors_for_numeric <-
     #   names(color_to_plot) = levels(num_col)
     # }
     # wouldn't be sufficient for factors
-    
+
     if (is.numeric(num_col)) {
       # num_col is a numeric vector
       num_vec = cut(num_col, breaks = granularity)
@@ -145,10 +145,10 @@ generate_colors_for_numeric <-
       interval_char = paste(as.integer(interval), units(interval), sep = ' ')
       num_vec = cut(num_col, breaks = interval_char)
     }
-    
+
     color_to_plot = colorRampPalette(color_for_column)(nlevels(num_vec))[1:nlevels(num_vec)]
     names(color_to_plot) = levels(num_vec)
-    
+
     if (!is.null(non_numeric_values)) {
       #merge the factors back together
       num_vec = as.character(num_vec)
@@ -156,7 +156,7 @@ generate_colors_for_numeric <-
       num_vec = as.factor(num_vec)
       color_to_plot = c(color_to_plot, factor_colors)
     }
-    
+
     return(list(color_vector = color_to_plot,
                 new_annotation = num_vec))
   }
@@ -171,7 +171,7 @@ check_rare_levels <- function(col) {
 
 
 #' Replaces rare levels with other
-#' 
+#'
 #' Replaces levels with a maximal occurence of 1 with other
 merge_rare_levels <- function(col) {
   is_factor_col = is.factor(col)
@@ -186,7 +186,7 @@ merge_rare_levels <- function(col) {
 
 
 #' Generate colors for sample annotation
-#' 
+#'
 #' Convert the sample annotation data frame to list of colors
 #' the list is named as columns included to use in potting functions
 #'
@@ -198,6 +198,8 @@ merge_rare_levels <- function(col) {
 #' @param numerics_to_log NOT IMPLEMENTED!
 #' @param granularity number of colors to map to the number vector (equally spaced between minimum and maximum)
 #' @param numeric_palette_type palette to be used for numeric values coloring
+#'
+#' @export
 #'
 #' @return list of colors
 #'
@@ -217,7 +219,7 @@ sample_annotation_to_colors <- function(sample_annotation,
         columns_for_plotting, sample_id_column
       )))
   }
-  
+
   factor_or_not <- intersect(factor_columns, not_factor_columns)
   if (length(factor_or_not) > 1) {
     stop(sprintf(
@@ -225,7 +227,7 @@ sample_annotation_to_colors <- function(sample_annotation,
       paste(factor_or_not, collapse = ', ')
     ))
   }
-  
+
   factor_like_columns = names(sample_annotation)[sapply(sample_annotation,
                                                         function(col)
                                                           is.factor(col) |
@@ -238,27 +240,27 @@ sample_annotation_to_colors <- function(sample_annotation,
   if (!is.null(not_factor_columns)) {
     factor_columns = setdiff(factor_columns, not_factor_columns)
   }
-  
+
   #TODO: check if this is absolutely required (convertion to factors)
-  
+
   # Generate color mappings of factor variables
   list_of_col_for_factors = list()
   if (!is.null(factor_columns)) {
     factor_df = sample_annotation %>%
       select(one_of(factor_columns)) %>%
       mutate_at(names(.), funs(as.factor))
-    
+
     if (rare_categories_to_other) {
       factor_df = factor_df %>%
         mutate_if(check_rare_levels, funs(merge_rare_levels(.)))
     }
-    
+
     #generate factor mappings
     list_of_col_for_factors = map_factors_to_colors(factor_df)
   }
-    
+
   #generate color mappings of numeric variables
-  
+
   # NOTE: this could be bit confusing: redefinition of a user parameter.
   non_factor_cols = setdiff(names(sample_annotation), factor_columns)
   #TODO: if numerics_to_log is a character vector of column names, convert corresponding annotation colors to log scale
@@ -274,7 +276,7 @@ sample_annotation_to_colors <- function(sample_annotation,
     numeric_factor_df = map_of_colors_to_num_vec$new_sample_annotation
     sample_annotation = cbind(factor_df, numeric_factor_df)
   }
-  
+
   #join two lists of colors
   list_of_colors = c(list_of_col_for_factors, list_of_col_for_numeric)
   rownames(sample_annotation) = rownames_ann
