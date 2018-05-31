@@ -1,17 +1,23 @@
+# TODO: Make sure all options work
+
+#' Fit a non-linear trend
+#'
 #' Fit a non-linear trend
 #'
 #' @param dataDF
-#' @param response.var
-#' @param expl.var
-#' @param noFitRequants
-#' @param fitFunc
-#' @param with_df
-#' @param ...
+#' @param response.var the name of the column in dataDF with the response variable
+#' @param expl.var the name of the column in dataDF with the explanatory variable
+#' @param noFitRequants (logical) whether to fit requanted values
+#' @param fitFunc function to use for the fit (`kernel_smooth`, `smooth_spline`, or `loess_regression`)
+#' @param with_df 
+#' @param ... additional paramters to be passed to the fitting function
 #'
-#' @return
+#' @return vector of fitted response values
+#' 
 #' @export
 #'
-#' @examples
+
+# TODO: Document dataDF and with_df
 fit_nonlinear <- function(dataDF, response.var = 'y', expl.var = 'x',
                           noFitRequants = F, fitFunc = 'kernel_smooth',
                           with_df = F, ...){
