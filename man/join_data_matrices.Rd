@@ -28,7 +28,7 @@ internally for consistency}
 \enumerate{
   \item \code{feature_id_col} (e.g. peptide name)
   \item \code{sample_id_col} (e.g. filename)
-  \item \code{measure_col} (e.g. intensity/expression) 
+  \item \code{measure_col} (e.g. intensity/expression)
   \item \code{step} (e.g. `raw`, `quantile_norm`)
 }
 }
