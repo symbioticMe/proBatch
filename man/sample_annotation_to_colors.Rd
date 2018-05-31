@@ -14,12 +14,24 @@ sample_annotation_to_colors(sample_annotation, columns_for_plotting = NULL,
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
+\item{columns_for_plotting}{only consider these columns from sample_annotation}
+
+\item{factor_columns}{columns of sample_annotation to be treated as factors. Note that factor and character columns are treated as factors by default.}
+
+\item{not_factor_columns}{don't treat these columns as factors. This can be used to override the default behaviour of considering factors and character columns as factors.}
+
+\item{rare_categories_to_other}{if True rare categories will be merged as other}
+
+\item{numerics_to_log}{NOT IMPLEMENTED!}
+
+\item{numeric_palette_type}{palette to be used for numeric values coloring}
+
 \item{granularity}{number of colors to map to the number vector (equally spaced between minimum and maximum)}
 }
 \value{
 list of colors
 }
 \description{
-convert the sample annotation data frame to list of colors
+Convert the sample annotation data frame to list of colors
 the list is named as columns included to use in potting functions
 }
