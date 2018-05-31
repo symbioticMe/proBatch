@@ -156,8 +156,8 @@ generate_colors_for_numeric <-
                 new_annotation = num_vec))
   }
 
-check_rare_levels <- function(col) {
-  tb_col = table(col)
+check_rare_levels <- function(column) {
+  tb_col = table(column)
   freq_table = table(tb_col) / length(tb_col)
   is_rare = as.character(1) %in% names(freq_table) &
     freq_table[as.character(1)] > .5
@@ -168,15 +168,15 @@ check_rare_levels <- function(col) {
 #' Replaces rare levels with other
 #'
 #' Replaces levels with a maximal occurence of 1 with other
-merge_rare_levels <- function(col) {
-  is_factor_col = is.factor(col)
-  tb_col = table(col)
+merge_rare_levels <- function(column) {
+  is_factor_col = is.factor(column)
+  tb_col = table(column)
   if (is_factor_col)
-    col = as.character(col)
-  col[col %in% names(tb_col)[tb_col == 1]] = 'other'
+    column = as.character(column)
+  column[column %in% names(tb_col)[tb_col == 1]] = 'other'
   if (is_factor_col)
-    col = as.factor(col)
-  return(col)
+    column = as.factor(column)
+  return(column)
 }
 
 
@@ -224,9 +224,9 @@ sample_annotation_to_colors <- function(sample_annotation,
   }
 
   factor_like_columns = names(sample_annotation)[sapply(sample_annotation,
-                                                        function(col)
-                                                          is.factor(col) |
-                                                          is.character(col))]
+                                                        function(column)
+                                                          is.factor(column) |
+                                                          is.character(column))]
   if (!is.null(factor_columns)) {
     factor_columns = union(factor_columns, factor_like_columns)
   } else {
