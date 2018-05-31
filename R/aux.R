@@ -6,21 +6,10 @@
 #'
 #' @return \code{data_matrix} (\link{proBatch}) like matrix (features in rows, samples in columns)
 #'
-<<<<<<< HEAD
-#' @export
-#'
-#' @family matrix manipulation functions
-#'
-=======
 #' @family matrix manipulation functions
 #'
 #' @export
-#' @import tibble
-#' @importFrom magrittr %>%
-#' @import dplyr
-#' @import reshape2
 #'
->>>>>>> f81d55e1139081fef18f4e9306967ce069471b96
 convert_to_matrix <- function(df_long,
                               feature_id_column = 'peptide_group_label',
                               measure_column = 'Intensity',
