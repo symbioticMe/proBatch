@@ -45,11 +45,9 @@ dates_to_posix <- function(sample_annotation,
 #' calculates sample run rank in order column
 #'
 #' @inheritParams dates_to_posix
-#' @param order_column name of the new column that determines sample order. Will
-#'   be used for certain diagnostics and normalisations
 #'
 #' @return sample annotation file with column names as 'new_time_column' with
-#'   POSIX-formatted date & `order_column` used in some diagnostic plots (e.g.
+#'   POSIX-formatted date & \code{order_column} used in some diagnostic plots (e.g.
 #'   \code{\link{plot_iRTs}}, \code{\link{plot_sample_mean}})
 #'
 #' @export
