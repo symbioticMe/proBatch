@@ -10,7 +10,7 @@ sample_annotation_to_colors(sample_annotation, columns_for_plotting = NULL,
   numerics_to_log = F, numeric_palette_type = "brewer", granularity = 10)
 }
 \arguments{
-\item{sample_annotation}{data matrix with: \enumerate{ \item `sample_id_col`
+\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
