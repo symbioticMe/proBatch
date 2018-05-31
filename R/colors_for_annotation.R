@@ -97,6 +97,9 @@ map_numbers_to_colors <-
 #'
 #' @return
 #' 
+#' @importFrom scales brewer_pal
+#' @importFrom lubridate is.POSIXct
+#' 
 generate_colors_for_numeric <-
   function(num_col,
            palette_type = 'brewer',
@@ -201,6 +204,11 @@ merge_rare_levels <- function(col) {
 #'
 #' @return list of colors
 #'
+#' @export
+#' @import dplyr
+#' @import WGCNA
+#' @importFrom magrittr %>%
+#' 
 sample_annotation_to_colors <- function(sample_annotation,
                                         columns_for_plotting = NULL,
                                         sample_id_column = NULL,
@@ -293,6 +301,8 @@ sample_annotation_to_colors <- function(sample_annotation,
 #'
 #' @return a data frame representation of the input color list
 #'
+#' @export
+#' 
 color_list_to_df <- function(color_list, sample_annotation) {
   list_df = lapply(names(sample_annotation), function(col_name) {
     col_values = sample_annotation[[col_name]]
