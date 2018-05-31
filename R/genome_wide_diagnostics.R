@@ -39,9 +39,6 @@
 #' @name plot_sample_means_or_boxplots
 #'
 #' @export
-#' @import ggplot2
-#' @import dplyr
-#' @import rlang
 #'
 #' @examples
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
@@ -73,7 +70,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     if (order_per_facet){
       df_ave = df_ave %>%
         group_by_at(vars(one_of(facet_column))) %>%
-        mutate(order = rank(UQ(rlang::sym(order_column))))
+        mutate(order = rank(UQ(sym(order_column))))
     }
   }
   gg = ggplot(df_ave, aes_string(x = order_column, y = 'average'))+
@@ -102,10 +99,10 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
       order_vars <- c(facet_column, order_column)
       batch_vars = c(facet_column, batch_column)
       tipping.points = df_ave %>%
-        arrange(!!!rlang::syms(order_vars))%>%
-        group_by(!!! rlang::syms(batch_vars)) %>%
+        arrange(!!!syms(order_vars))%>%
+        group_by(!!!syms(batch_vars)) %>%
         summarise(batch_size = n()) %>%
-        group_by(!!rlang::sym(facet_column)) %>%
+        group_by(!!sym(facet_column)) %>%
         mutate(tipping.points = cumsum(batch_size))%>%
         mutate(tipping.poings = tipping.points+.5)
       gg = gg + geom_vline(data = tipping.points, aes(xintercept = tipping.poings),
@@ -134,7 +131,6 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' @name plot_sample_means_or_boxplots
 #'
 #' @export
-#' @import tidyverse
 #'
 #' @examples
 plot_boxplot <- function(df_long, sample_annotation = NULL,
@@ -176,7 +172,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       warning('defining order within each facet')
       df_long = df_long %>%
         group_by_at(vars(one_of(facet_column))) %>%
-        mutate(order = rank(UQ(rlang::sym(order_column))))
+        mutate(order = rank(UQ(sym(order_column))))
     }
   }
 
@@ -252,7 +248,6 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
 #'
 #' @return ggplot object
 #' @export
-#' @import tidyverse
 #'
 #' @examples
 #' @seealso \code{\link{plot_boxplot}}
@@ -292,7 +287,6 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
 #' @param ... other parameters of `plotDendroAndColors` from `WGCNA` package
 #'
 #' @export
-#' @importFrom WGCNA plotDendroAndColors
 #'
 #' @examples
 #' @seealso \code{\link{hclust}}, \code{\link{sample_annotation_to_colors}},
@@ -310,7 +304,7 @@ plot_clustering <- function(data_matrix, color_df, title = 'Clustering of raw sa
       warning('Too many samples, adjust the font with `label_font` argument or
               remove labels by setting `label_samples = F` in function call')
     }
-    plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
+    WGCNA::plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
                         main = plot_title,
                         hang = -0.1, addGuide = T, dendroLabels = T,
                         cex.dendroLabels = label_font, ...)
@@ -326,7 +320,7 @@ plot_clustering <- function(data_matrix, color_df, title = 'Clustering of raw sa
 PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca, threshold_var = Inf) {
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
   expr_set = Biobase::ExpressionSet(data_matrix[,rownames(sample_annotation)], covrts.annodf)
-  pvcaAssess <- pvcaBatchAssess (expr_set, factors_for_PVCA, threshold = threshold_pca)
+  pvcaAssess <- pvca::pvcaBatchAssess (expr_set, factors_for_PVCA, threshold = threshold_pca)
   pvcaAssess_df = data.frame(weights = as.vector(pvcaAssess$dat),
                              label = pvcaAssess$label,
                              stringsAsFactors = F)
@@ -367,8 +361,6 @@ PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca
 #'
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
-#' @import ggplot2
-#' @importFrom pvca pvcaBatchAssess
 #'
 #' @examples
 #' @seealso \code{\link{sample_annotation_to_colors}}
@@ -458,8 +450,6 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRu
 #' @return ggplot scatterplot colored by factor levels of column specified in
 #'   `factor_to_color`
 #' @export
-#' @import ggplot2
-#' @import ggfortify
 #'
 #' @examples
 plot_pca <- function(data_matrix, sample_annotation, color_by = 'MS_batch',
@@ -502,7 +492,6 @@ plot_pca <- function(data_matrix, sample_annotation, color_by = 'MS_batch',
 #'
 #' @return object returned by `pheatmap`
 #' @export
-#' @import pheatmap
 #'
 #' @examples
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link{pheatmap}}
