@@ -2,15 +2,36 @@
 % Please edit documentation in R/date_conversion.R
 \name{define_batches_by_MS_pauses}
 \alias{define_batches_by_MS_pauses}
-\title{convert by batch}
+\title{Batch by date/time and instrument}
 \usage{
 define_batches_by_MS_pauses(sample_annotation, threshold,
   runtime_col = "RunDateTime", minimal_batch_size = 5,
   instrument_col = "instr", batch_name = "MS_batch")
 }
 \arguments{
-\item{batch_name}{}
+\item{sample_annotation}{data matrix with: \enumerate{ \item `sample_id_col`
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
+
+\item{threshold}{time difference that would mean there was an interruption}
+
+\item{runtime_col}{POSIX or numeric-like column corresponding to the sample
+MS profile acquisition timepoint}
+
+\item{minimal_batch_size}{minimal number of samples in a batch}
+
+\item{instrument_col}{column specifying MS instrument used to acquired data
+(to account for the presence of multiple instruments in
+\code{sample_annotation})}
+
+\item{batch_name}{string with a self-explanatory name for the batch (e.g.
+`MS_batch` for MS-proteomics) to which batch number will be added}
+}
+\value{
+\code{sample_annotation} data matrix with an additional
+  column to indicate sample batching by MS run time and instrument.
 }
 \description{
-convert by batch
+Identify long stretches of time between samples on a per instrument basis and
+split them into batches.
 }
