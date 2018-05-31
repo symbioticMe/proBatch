@@ -35,6 +35,14 @@
 #'   formatted representation \code{data_matrix} this corresponds to the row
 #'   names.
 #'
+#' @import dplyr
+#' @import ggplot2
+#' @import reshape2
+#' @import tibble
+#' @importFrom magrittr %>%
+#' @importFrom rlang UQ sym syms
+#' @importFrom tidyr complete
+#'
 #' @docType package
 #' @name proBatch
 NULL
