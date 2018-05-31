@@ -8,6 +8,12 @@
 #'
 #' @family matrix manipulation functions 
 #' 
+#' @export
+#' @import tibble
+#' @importFrom magrittr %>%
+#' @import dplyr
+#' @import reshape2
+#' 
 convert_to_matrix <- function(df_long,
                               feature_id_column = 'peptide_group_label',
                               measure_column = 'Intensity',
@@ -37,6 +43,11 @@ convert_to_matrix <- function(df_long,
 #'
 #' @family matrix manipulation functions 
 #' 
+#' @export
+#' @importFrom magrittr %>%
+#' @import dplyr
+#' @import reshape2
+#'
 matrix_to_long <- function(data_matrix, sample_annotation,
                            feature_id_column = 'peptide_group_label',
                            measure_column = 'Intensity', 
@@ -70,6 +81,8 @@ matrix_to_long <- function(data_matrix, sample_annotation,
 #' }
 #'
 #' @family matrix manipulation functions 
+#' 
+#' @export
 #' 
 join_data_matrices <- function(matrices_list, step,
                                sample_annotation, measure_column = 'Intensity'){
