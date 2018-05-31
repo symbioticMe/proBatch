@@ -25,11 +25,10 @@ NULL
 #'
 #' @return `data_matrix`-size matrix, with columns quantile-normalized
 #' @export
-#' @import preprocessCore
 #'
 #' @examples
 quantile_normalize <- function(data_matrix){
-  q_norm_proteome = normalize.quantiles(data_matrix)
+  q_norm_proteome = preprocessCore::normalize.quantiles(data_matrix)
   colnames(q_norm_proteome) = colnames(data_matrix)
   rownames(q_norm_proteome) = rownames(data_matrix)
   return(q_norm_proteome)
@@ -41,7 +40,6 @@ quantile_normalize <- function(data_matrix){
 #'
 #' @return
 #' @export
-#' @import tidyverse
 #' @import lazyeval
 #'
 #' @examples
@@ -56,11 +54,11 @@ normalize_medians_batch <- function(data_long, sample_annotation = NULL,
   }
   df_normalized = data_long %>%
     group_by_at(vars(one_of(batch_column, feature_id_col))) %>%
-    mutate(median_batch = median(UQ(rlang::sym(measure_column)), na.rm = T)) %>%
+    mutate(median_batch = median(UQ(sym(measure_column)), na.rm = T)) %>%
     ungroup() %>%
-    mutate(median_global = median(UQ(rlang::sym(measure_column)), na.rm = T)) %>%
+    mutate(median_global = median(UQ(sym(measure_column)), na.rm = T)) %>%
     mutate(diff = median_global - median_batch) %>%
-    mutate(Intensity_normalized = UQ(rlang::sym(measure_column))+diff)
+    mutate(Intensity_normalized = UQ(sym(measure_column))+diff)
 
   return(df_normalized)
 }
@@ -71,9 +69,7 @@ normalize_medians_batch <- function(data_long, sample_annotation = NULL,
 #'
 #' @return
 #' @export
-#' @import tidyverse
 #' @import lazyeval
-#' @importFrom rlang UQ
 #'
 #' @examples
 normalize_medians_global <- function(data_long,
@@ -81,12 +77,12 @@ normalize_medians_global <- function(data_long,
                                     measure_column = 'Intensity'){
   df_normalized = data_long  %>%
     group_by_at(vars(one_of(sample_id_column))) %>%
-    mutate(median_run = median(UQ(rlang::sym(measure_column)), na.rm = T)) %>%
+    mutate(median_run = median(UQ(sym(measure_column)), na.rm = T)) %>%
     ungroup()
   df_normalized = df_normalized %>%
-    mutate(median_global = median(UQ(rlang::sym(measure_column)), na.rm = T)) %>%
+    mutate(median_global = median(UQ(sym(measure_column)), na.rm = T)) %>%
     mutate(diff = median_global - median_run) %>%
-    mutate(Intensity_normalized = UQ(rlang::sym(measure_column))+diff)
+    mutate(Intensity_normalized = UQ(sym(measure_column))+diff)
   return(df_normalized)
 }
 
@@ -102,12 +98,7 @@ normalize_medians_global <- function(data_long,
 #'
 #' @return
 #' @export
-#' @import dplyr
-#' @importFrom tidyr nest
-#' @importFrom tidyr unnest
-#' @import reshape2
 #' @import lazyeval
-#' @importFrom  purrr map
 #'
 #' @examples
 normalize_custom_fit <- function(data_matrix, sample_annotation,
@@ -126,7 +117,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
   names(df_long) = c(feature_id_col, sample_id_column, measure_col)
 
   df_normalized = df_long %>%
-    filter(!is.na(rlang::UQ(as.name(measure_col)))) %>%
+    filter(!is.na(UQ(as.name(measure_col)))) %>%
     merge(sample_annotation) %>%
     arrange_(feature_id_col, sample_order_col) %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_column)))) %>%
@@ -167,14 +158,13 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
 #' @return `data_matrix`-size data matrix with batch-effect corrected by
 #'   `ComBat`
 #' @export
-#' @import sva
 #'
 #' @examples
 correct_with_ComBat <- function(data_matrix, sample_annotation,
                                 batch_column = 'MS_batch.final', par.prior = TRUE){
   batches = sample_annotation[[batch_column]]
   modCombat = model.matrix(~1, data = sample_annotation)
-  corrected_proteome = ComBat(dat = data_matrix, batch = batches,
+  corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
                               mod = modCombat, par.prior = par.prior)
   return(corrected_proteome)
 }
