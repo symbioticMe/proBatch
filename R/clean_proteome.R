@@ -14,6 +14,11 @@
 #'   batch or global sparsness thresholds }
 #'
 #' @family dataset cleaning functions
+#'
+#' @export
+#' @import dplyr
+#' @importFrom magrittr %>%
+#' @importFrom dplyr one_of
 #'   
 clean_requants <- function(df_long, sample_annotation,
                            batch_column = 'MS_batch.final',
@@ -53,6 +58,10 @@ clean_requants <- function(df_long, sample_annotation,
 #' 
 #' @family dataset cleaning functions
 #' 
+#' @export
+#' @import dplyr
+#' @importFrom tidyr complete
+#' 
 remove_peptides_with_missing_batch <- function(df_long,
                                                batch_column = 'MS_batch.final',
                                                feature_id_column = 'peptide_group_label'){
@@ -87,7 +96,10 @@ remove_peptides_with_missing_batch <- function(df_long,
 #'   `m_score` excluding requants)
 #'
 #' @family dataset cleaning functions
-#'   
+#'
+#' @export
+#' @importFrom magrittr %>%
+#'    
 summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
                                feature_id_column = 'peptide_group_label',
                                RT="RT", 
