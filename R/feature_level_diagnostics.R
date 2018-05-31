@@ -2,46 +2,35 @@
 #'
 #' single feature can also be spike-ins or iRT peptides (in DIA proteomics)
 #'
+
+
+#' Plot peptide measurements
+#'
+#' Creates a peptide facetted ggplot2 plot of the value in \code{measure_column}
+#' vs \code{order_column}. Additionally, the resulting plot can also be facetted
+#' by batch.
+#'
+#' @inheritParams proBatch
 #' @param pep_name name of the peptide for diagnostic profiling
-#' @param df_long data frame where each row is a single feature in a single
-#'   sample, thus it has minimally, `sample_id_col`, `feature_id_column` and
-#'   `measure_column`, but usually also `m_score` (in OpenSWATH output result
-#'   file)
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
-#' @param order_column sample injection order
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for
-#'   batch comparison
-#' @param measure_column if `df_long` is among the parameters, it is the column
-#'   with expression/abundance/intensity, otherwise, it is used internally for
-#'   consistency
-#' @param feature_id_column name of the column with feature/gene/peptide/protein
-#'   ID used with long format matrix (`df_long`). Identical to wide format
-#'   (`data_matrix`) to row name
-#' @name feature_level_diagnostics
-
-
-#' @name feature_level_diagnostics
 #' @param geom whether to show the feature as points and/or connect by lines
 #' @param color_by_batch (logical) whether to color points by batch
 #' @param facet_by_batch (logical) whether to plot each batch in its own facet
 #' @param title the string indicating the source of the peptides
 #' @param requant if data frame: requant values; if logical: whether to indicate
-#'   requant values (requires 'requant' or 'm_score' column in `df_long`)
+#'   requant values (requires 'requant' or 'm_score' column in \code{df_long})
 #' @param theme plot theme (default is 'classical'; other options not
 #'   implemented)
 #'
-#' @return ggplot2 type plot of `measure_column` vs `order`, faceted by peptide
-#'   name and (optionally) by batch
+#' @return ggplot2 type plot of \code{measure_column} vs \code{order_column},
+#'   faceted by \code{pep_name} and (optionally) by \code{batch_column}
+#'
+#' @family feature-level diagnostic functions
+#'
 #' @export
 #' @import ggplot2
 #' @import dplyr
 #' @importFrom magrittr %>%
-#'
-#' @examples
+#'   
 plot_peptide_level <- function(pep_name, df_long, sample_annotation,
                                order_column = NULL,
                                sample_id_col = 'FullRunName',
@@ -139,16 +128,28 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
   return(gg)
 }
 
-#' @name feature_level_diagnostics
-#' @param spike_ins substring used to identify spike-in proteins in the column 'ProteinName'
-#' @param ... additional arguments to plot_peptide_level function
+#' Plot spike-in measurements
+#'
+#' Creates a spike-in facetted ggplot2 plot of the value in
+#' \code{measure_column} vs \code{order_column} using
+#' \code{\link{plot_peptide_level}}. Additionally, the resulting plot can also
+#' be facetted by batch.
+#'
+#' @inheritParams plot_peptide_level
+#' @param spike_ins substring used to identify spike-in proteins in the column
+#'   'ProteinName'
+#' @param ... additional arguments to \code{\link{plot_peptide_level}} function
+#'
+#' @return ggplot2 type plot of \code{measure_column} vs \code{order_column},
+#'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_column}
+#'
+#' @family feature-level diagnostic functions
 #'
 #' @export
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom magrittr %>%
-#'
-#' @examples
+#'   
 plot_spike_ins <- function(df_long, sample_annotation,
                            order_column = 'order',
                            spike_ins = 'BOVIN',
@@ -170,7 +171,23 @@ plot_spike_ins <- function(df_long, sample_annotation,
   return(gg)
 }
 
-#' @name feature_level_diagnostics
+
+#' Plot iRT measurements
+#'
+#' Creates a iRT facetted ggplot2 plot of the value in
+#' \code{measure_column} vs \code{order_column} using
+#' \code{\link{plot_peptide_level}}. Additionally, the resulting plot can also
+#' be facetted by batch.
+#' 
+#' @inheritParams plot_peptide_level
+#' @param irt_pattern substring used to identify irts proteins in the column
+#'   'ProteinName'
+#' @param ... additional arguments to \code{\link{plot_peptide_level}} function
+#'
+#' @return ggplot2 type plot of \code{measure_column} vs \code{order_column},
+#'   faceted by \code{irt_pattern} containing proteins and (optionally) by \code{batch_column}
+#'
+#' @family feature-level diagnostic functions
 #'
 #' @export
 #' @importFrom magrittr %>%
@@ -179,13 +196,14 @@ plot_spike_ins <- function(df_long, sample_annotation,
 #' @examples
 plot_iRTs <- function(df_long, sample_annotation,
                       order_column = NULL,
+                      irt_pattern = 'iRT',
                       batch_column = 'MS_batch.final',
                       sample_id_col = 'FullRunName',
                       feature_id_column = 'peptide_group_label',
                       measure_column = 'Intensity',
                       title = 'iRT peptide profile', ...){
   iRT_peptides = df_long %>%
-    filter(grepl('iRT', ProteinName)) %>%
+    filter(grepl(irt_pattern, ProteinName)) %>%
     pull(feature_id_column)  %>% unique()
   gg = plot_peptide_level(iRT_peptides, df_long, sample_annotation,
                           order_column = order_column,
@@ -198,44 +216,34 @@ plot_iRTs <- function(df_long, sample_annotation,
 }
 
 
-
-#' Plot Intensity for a few representative peptides for each step of the
-#' analysis including the fitting curve
+#' Plot peptide measurements across multi-step analysis
 #'
+#' Plot Intensity of a few representative peptides for each step of the analysis
+#' including the fitting curve
+#'
+#' @inheritParams plot_peptide_level
 #' @param pep_name name of the peptide for diagnostic profiling
-#' @param data_df_all_steps data frame, similar to `df_long`,  where each row is
-#'   a single feature in a single sample, at a certain step of the analysis
-#'   (minimally raw and after linear normalization) thus it has minimally,
-#'   `sample_id_col`, `feature_id_column`, `measure_column`  and `fit_step`, but
-#'   usually also `m_score` (in OpenSWATH output result file)
+#' @param data_df_all_steps data frame, similar to \code{df_long}
+#'   \link{proBatch},  where each row is a single feature in a single sample, at
+#'   a certain step of the analysis (minimally raw and after linear
+#'   normalization) thus it has minimally the following columns:
+#'   \code{sample_id_col}, \code{feature_id_column}, \code{measure_column}, and
+#'   \code{fit_step}, but usually also \code{m_score}
 #' @param fit_df
 #' @param fit_value_var
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
-#' @param order_column sample injection order
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for
-#'   batch comparison
-#' @param measure_column the column with expression/abundance/intensity.
-#' @param feature_id_column name of the column with feature/gene/peptide/protein
-#'   ID used with long format matrix (`df_long`). Identical to wide format
-#'   (`data_matrix`) to row name
-#' @param geom for the intensity (`measure_col`) profile:
-#' @param color_by_batch
-#' @param facet_by_batch
-#' @param title
-#' @param requant
-#' @param theme
+#' @param geom for the intensity \code{measure_col} profile:
 #'
-#' @return `ggplot`-class plot with minimally two facets (before and after
-#'   non-linear fit) with `measure_column` (Intensity) vs `order_column`
-#'   (injection order) for selected peptides (specified in `pep_name`)
+#' @return \code{ggplot}-class plot with minimally two facets (before and after
+#'   non-linear fit) with \code{measure_column} (Intensity) vs \code{order_column}
+#'   (injection order) for selected peptides (specified in \code{pep_name})
+#'
+#' @family feature-level diagnostic functions
+#'
 #' @export
 #' @import ggplot2
-#'
-#' @examples
+#' 
+
+# TODO: Add descriptions of fit_df and fit_value_var
 plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                                     sample_annotation,
                                     fit_df,
