@@ -40,7 +40,6 @@ quantile_normalize <- function(data_matrix){
 #'
 #' @return
 #' @export
-#' @import lazyeval
 #'
 #' @examples
 normalize_medians_batch <- function(data_long, sample_annotation = NULL,
@@ -69,7 +68,6 @@ normalize_medians_batch <- function(data_long, sample_annotation = NULL,
 #'
 #' @return
 #' @export
-#' @import lazyeval
 #'
 #' @examples
 normalize_medians_global <- function(data_long,
