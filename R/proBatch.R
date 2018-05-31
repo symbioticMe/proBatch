@@ -38,12 +38,16 @@
 #'   names.
 #'
 #' @import dplyr
+#' @import ggfortify
 #' @import ggplot2
+#' @import pheatmap
 #' @import reshape2
 #' @import tibble
+#' @importFrom corrplot corrplot.mixed
 #' @importFrom magrittr %>%
+#' @importFrom  purrr map
 #' @importFrom rlang UQ sym syms
-#' @importFrom tidyr complete
+#' @importFrom tidyr complete nest unnest
 #'
 #' @docType package
 #' @name proBatch
