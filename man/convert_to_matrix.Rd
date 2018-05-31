@@ -9,8 +9,8 @@ convert_to_matrix(df_long, feature_id_column = "peptide_group_label",
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a `sample_id_col`, a `feature_id_column` and a
-`measure_column`, but usually also an `m_score` (in OpenSWATH output result
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_column} and a
+\code{measure_column}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
 \item{feature_id_column}{name of the column with feature/gene/peptide/protein

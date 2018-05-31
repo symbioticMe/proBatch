@@ -9,11 +9,11 @@ remove_peptides_with_missing_batch(df_long, batch_column = "MS_batch.final",
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a `sample_id_col`, a `feature_id_column` and a
-`measure_column`, but usually also an `m_score` (in OpenSWATH output result
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_column} and a
+\code{measure_column}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
-\item{batch_column}{column in `sample_annotation` that should be used for
+\item{batch_column}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
 \item{feature_id_column}{name of the column with feature/gene/peptide/protein
