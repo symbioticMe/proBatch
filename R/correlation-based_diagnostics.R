@@ -1,47 +1,69 @@
-#' plot correlation plot of a single protein
+#' Protein correlation plot
 #'
-#' @param data_matrix
-#' @param peptide_name
-#' @param title
+#' Plots correlation plot of a single protein
 #'
-#' @return
+#' @inheritParams proBatch
+#' @param protein_name the name of the protein
+#' @param prot.column the column name in \code{peptide_annotation} with protein names
+#' @param peptide_annotation 
+#' @param peptide_col_name the column name in \code{peptide_annotation} with peptide names
+#' @param title The title of the plot
+#' @param ... parameters for the corrplot visualisation
+#'
+#' @examples plot_corr_plot(q_norm_proteome, protein_name = 'Haao',
+#'                peptide_annotation = peptide_annotation, prot.column = 'Gene',
+#'                title = 'Haao protein peptides after quantile norm',
+#'                number.cex=0.75, tl.cex = .75
+#'                mar=c(0,0,1,0))
+#'                
 #' @export
 #' @import corrplot
 #' @importFrom magrittr %>%
 #' @import dplyr
-#'
-#' @examples plot_corr_plot(q_norm_proteome, protein_name = 'Haao',
-#' peptide_annotation = peptide_annotation, prot.column = 'Gene',
-#' title = 'Haao protein peptides after quantile norm',
-#' number.cex=0.75, tl.cex = .75
-#' mar=c(0,0,1,0))
-plot_corr_plot_protein <- function(data_matrix, protein_name, peptide_annotation,
-                           prot.column = 'ProteinName',
-                           peptide_col_name = 'peptide_group_label',
-                           title = NULL, ...){
-  peptides = peptide_annotation %>%
-    filter(rlang::UQ(as.name(peptide_col_name)) %in% rownames(data_matrix)) %>%
-    filter(rlang::UQ(as.name(prot.column)) == protein_name) %>%
-    pull(peptide_col_name)
+#' 
+plot_corr_plot_protein <-
+  function(data_matrix,
+           protein_name,
+           peptide_annotation,
+           prot.column = 'ProteinName',
+           peptide_col_name = 'peptide_group_label',
+           title = NULL,
+           ...) {
+    
+    # TOOD: describe peptide_annotation 
+    
+    peptides = peptide_annotation %>%
+      filter(rlang::UQ(as.name(peptide_col_name)) %in% rownames(data_matrix)) %>%
+      filter(rlang::UQ(as.name(prot.column)) == protein_name) %>%
+      pull(peptide_col_name)
     #peptide_annotation[[peptide_col_name]][peptide_annotation[[prot.column]] == protein_name]
-  data_matrix_sub = data_matrix[peptides, ]
-  corr_matrix = within_prot_correlation(data_matrix_sub)
-  corrplot.mixed(corr_matrix, lower = "ellipse", upper = "number",
-                 tl.col = "black", diag = 'l', tl.pos = "lt", ...)
-}
+    data_matrix_sub = data_matrix[peptides,]
+    corr_matrix = within_prot_correlation(data_matrix_sub)
+    corrplot.mixed(
+      corr_matrix,
+      lower = "ellipse",
+      upper = "number",
+      tl.col = "black",
+      diag = 'l',
+      tl.pos = "lt",
+      title = title,
+      ...
+    )
+  }
 
+
+#' Sample correlation plot
+#' 
 #' Plot correlation of selected samples
 #'
-#' @param data_matrix features x samples matrix, with sample IDs as colnames
-#' @param samples_to_plot string vector of samples from data_matrix
+#' @inheritParams proBatch
+#' @param samples_to_plot string vector of samples in \code{data_matrix} to be used in the plot
 #' @param ... parameters for the corrplot visualisation
 #'
-#' @return
 #' @export
 #' @importFrom corrplot corrplot.mixed
 #' @importFrom pheatmap pheatmap
-#'
-#' @examples
+#' 
 plot_corr_between_samples <- function(data_matrix, samples_to_plot,
                                       flavor = 'corrplot', ...){
   corr_matrix = cor(data_matrix[,samples_to_plot], use = 'complete.obs')
@@ -50,26 +72,22 @@ plot_corr_between_samples <- function(data_matrix, samples_to_plot,
                                    tl.col = "black", diag = 'l', tl.pos = "lt",
                                    number.cex=0.75, tl.cex = .75, ...),
          pheatmap = pheatmap(corr_matrix, ...))
-
-
 }
 
 
-#' calculate correlation distribution for all pairs of the replicated samples
+#' Calculates correlation distribution for all pairs of the replicated samples
 #'
+#' @inheritParams proBatch
 #' @param cor_proteome
-#' @param sample_annotation
-#' @param sample_id_col
 #' @param biospecimen_id_col
 #' @param batch_col
 #'
 #' @return
+#' 
 #' @export
 #' @importFrom magrittr %>%
 #' @import dplyr
-#'
-#'
-#' @examples
+#' 
 get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
                                    sample_id_col = 'FullRunName',
                                    biospecimen_id_col = 'EarTag',
@@ -119,6 +137,7 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' @import ggplot2
 #'
 #' @examples
+#' 
 plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                    repeated_samples = NULL,
                                    sample_id_col = 'FullRunName',
