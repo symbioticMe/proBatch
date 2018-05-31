@@ -5,7 +5,7 @@
 #' @inheritParams proBatch
 #' @param protein_name the name of the protein
 #' @param prot.column the column name in \code{peptide_annotation} with protein names
-#' @param peptide_annotation 
+#' @param peptide_annotation
 #' @param peptide_col_name the column name in \code{peptide_annotation} with peptide names
 #' @param title The title of the plot
 #' @param ... parameters for the corrplot visualisation
@@ -15,12 +15,9 @@
 #'                title = 'Haao protein peptides after quantile norm',
 #'                number.cex=0.75, tl.cex = .75
 #'                mar=c(0,0,1,0))
-#'                
+#'
 #' @export
-#' @import corrplot
-#' @importFrom magrittr %>%
-#' @import dplyr
-#' 
+#'
 plot_corr_plot_protein <-
   function(data_matrix,
            protein_name,
@@ -29,12 +26,12 @@ plot_corr_plot_protein <-
            peptide_col_name = 'peptide_group_label',
            title = NULL,
            ...) {
-    
-    # TOOD: describe peptide_annotation 
-    
+
+    # TOOD: describe peptide_annotation
+
     peptides = peptide_annotation %>%
-      filter(rlang::UQ(as.name(peptide_col_name)) %in% rownames(data_matrix)) %>%
-      filter(rlang::UQ(as.name(prot.column)) == protein_name) %>%
+      filter(UQ(as.name(peptide_col_name)) %in% rownames(data_matrix)) %>%
+      filter(UQ(as.name(prot.column)) == protein_name) %>%
       pull(peptide_col_name)
     #peptide_annotation[[peptide_col_name]][peptide_annotation[[prot.column]] == protein_name]
     data_matrix_sub = data_matrix[peptides,]
@@ -53,7 +50,7 @@ plot_corr_plot_protein <-
 
 
 #' Sample correlation plot
-#' 
+#'
 #' Plot correlation of selected samples
 #'
 #' @inheritParams proBatch
@@ -61,9 +58,7 @@ plot_corr_plot_protein <-
 #' @param ... parameters for the corrplot visualisation
 #'
 #' @export
-#' @importFrom corrplot corrplot.mixed
-#' @importFrom pheatmap pheatmap
-#' 
+#'
 plot_corr_between_samples <- function(data_matrix, samples_to_plot,
                                       flavor = 'corrplot', ...){
   corr_matrix = cor(data_matrix[,samples_to_plot], use = 'complete.obs')
@@ -83,11 +78,9 @@ plot_corr_between_samples <- function(data_matrix, samples_to_plot,
 #' @param batch_col
 #'
 #' @return
-#' 
+#'
 #' @export
-#' @importFrom magrittr %>%
-#' @import dplyr
-#' 
+#'
 get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
                                    sample_id_col = 'FullRunName',
                                    biospecimen_id_col = 'EarTag',
@@ -134,10 +127,9 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #'
 #' @return
 #' @export
-#' @import ggplot2
 #'
 #' @examples
-#' 
+#'
 plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                    repeated_samples = NULL,
                                    sample_id_col = 'FullRunName',
@@ -212,7 +204,6 @@ get_prot_corr_df <- function(data_martix){
 #'
 #' @return
 #' @export
-#' @import ggplot2
 #'
 #' @examples
 distribution_of_cor <- function(data_matrix_sub, facet_var = NULL, theme = 'classic'){
