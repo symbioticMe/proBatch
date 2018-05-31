@@ -6,8 +6,10 @@
 #'
 #' @return \code{data_matrix} (\link{proBatch}) like matrix (features in rows, samples in columns)
 #'
-#' @family matrix manipulation functions 
-#' 
+#' @export
+#'
+#' @family matrix manipulation functions
+#'
 convert_to_matrix <- function(df_long,
                               feature_id_column = 'peptide_group_label',
                               measure_column = 'Intensity',
@@ -23,24 +25,26 @@ convert_to_matrix <- function(df_long,
 
 
 #' Wide to long conversion
-#' 
+#'
 #' Convert from wide matrix to a long data frame representation
-#' 
+#'
 #' @inheritParams proBatch
-#' 
+#'
 #' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or
 #'   `qNorm_ComBat`). Useful if consecutive steps are compared in plots. Note
 #'   that in plots these are usually ordered alphabetically, so it's worth
 #'   naming with numbers, e.g. `1_raw`, `2_quantile`
-#' 
+#'
 #' @return \code{df_long} (\link{proBatch}) like data frame
 #'
-#' @family matrix manipulation functions 
-#' 
+#' @export
+#'
+#' @family matrix manipulation functions
+#'
 matrix_to_long <- function(data_matrix, sample_annotation,
                            feature_id_column = 'peptide_group_label',
-                           measure_column = 'Intensity', 
-                           sample_id_col = 'FullRunName', 
+                           measure_column = 'Intensity',
+                           sample_id_col = 'FullRunName',
                            step = NA){
   df_long = data_matrix %>%
     as.data.frame() %>%
@@ -54,9 +58,9 @@ matrix_to_long <- function(data_matrix, sample_annotation,
 
 
 #' Join data matrices
-#' 
+#'
 #' Joins 2 or more data matrices
-#' 
+#'
 #' @inheritParams proBatch
 #' @inheritParams matrix_to_long
 #' @param matrices_list list of matrices in \code{data_matrix} (\link{proBatch}) format to be joined
@@ -65,12 +69,14 @@ matrix_to_long <- function(data_matrix, sample_annotation,
 #' \enumerate{
 #'   \item \code{feature_id_col} (e.g. peptide name)
 #'   \item \code{sample_id_col} (e.g. filename)
-#'   \item \code{measure_col} (e.g. intensity/expression) 
+#'   \item \code{measure_col} (e.g. intensity/expression)
 #'   \item \code{step} (e.g. `raw`, `quantile_norm`)
 #' }
 #'
-#' @family matrix manipulation functions 
-#' 
+#' @export
+#'
+#' @family matrix manipulation functions
+#'
 join_data_matrices <- function(matrices_list, step,
                                sample_annotation, measure_column = 'Intensity'){
   long_df_list = lapply(1:length(matrices_list), function(i){
