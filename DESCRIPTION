@@ -23,6 +23,7 @@ Depends: R (>= 3.4.0),
 Encoding: UTF-8
 LazyData: true
 Imports:
+    Biobase,
     corrplot,
     ggfortify,
     lazyeval,
@@ -31,6 +32,7 @@ Imports:
     pheatmap,
     preprocessCore,
     pvca,
+    RColorBrewer,
     readr, 
     reshape2,
     rlang,
@@ -38,6 +40,7 @@ Imports:
     sva,
     tibble,
     tidyverse (>= 1.2.1),
+    wesanderson,
     WGCNA
 Suggests: knitr,
     rmarkdown,
