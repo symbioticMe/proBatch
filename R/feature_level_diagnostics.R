@@ -1,9 +1,3 @@
-#' Plot a single feature or several features each in its own facet
-#'
-#' single feature can also be spike-ins or iRT peptides (in DIA proteomics)
-#'
-
-
 #' Plot peptide measurements
 #'
 #' Creates a peptide facetted ggplot2 plot of the value in \code{measure_column}
