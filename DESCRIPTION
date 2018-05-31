@@ -17,22 +17,27 @@ Description: The proBatch package contains functions for diagnosing and removing
     section of this package. 
     The approaches are described in (Čuklina et al. 2019, MCP)
 License: What license is it under?
-Depends: R (>= 3.4.0)
+Depends: R (>= 3.4.0),
+    dplyr (>= 0.7.4),
+    ggplot2
 Encoding: UTF-8
 LazyData: true
 Imports:
-    tidyverse (>= 1.2.1),
-    scales,
-    reshape2,
-    lazyeval,
-    readr,
-    WGCNA,
-    rlang,
     corrplot,
     ggfortify,
-    pheatmap, 
+    lazyeval,
+    lubridate,
+    magrittr,
+    pheatmap,
+    preprocessCore,
+    pvca,
+    readr, 
+    reshape2,
+    rlang,
+    scales,
     sva,
-    pvca
+    tidyverse (>= 1.2.1),
+    WGCNA
 Suggests: knitr,
     rmarkdown,
     SWATH2stats
