@@ -6,10 +6,21 @@
 #'
 #' @return \code{data_matrix} (\link{proBatch}) like matrix (features in rows, samples in columns)
 #'
+<<<<<<< HEAD
 #' @export
 #'
 #' @family matrix manipulation functions
 #'
+=======
+#' @family matrix manipulation functions
+#'
+#' @export
+#' @import tibble
+#' @importFrom magrittr %>%
+#' @import dplyr
+#' @import reshape2
+#'
+>>>>>>> f81d55e1139081fef18f4e9306967ce069471b96
 convert_to_matrix <- function(df_long,
                               feature_id_column = 'peptide_group_label',
                               measure_column = 'Intensity',
@@ -37,9 +48,9 @@ convert_to_matrix <- function(df_long,
 #'
 #' @return \code{df_long} (\link{proBatch}) like data frame
 #'
-#' @export
-#'
 #' @family matrix manipulation functions
+#'
+#' @export
 #'
 matrix_to_long <- function(data_matrix, sample_annotation,
                            feature_id_column = 'peptide_group_label',
@@ -73,15 +84,15 @@ matrix_to_long <- function(data_matrix, sample_annotation,
 #'   \item \code{step} (e.g. `raw`, `quantile_norm`)
 #' }
 #'
-#' @export
-#'
 #' @family matrix manipulation functions
+#'
+#' @export
 #'
 join_data_matrices <- function(matrices_list, step,
                                sample_annotation, measure_column = 'Intensity'){
   long_df_list = lapply(1:length(matrices_list), function(i){
     matrix_to_long(matrices_list[[i]], sample_annotation = sample_annotation,
-                   measure_col = measure_column, step = step[i])
+                   measure_column = measure_column, step = step[i])
   })
   joined_df = do.call(rbind, long_df_list)
 

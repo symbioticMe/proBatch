@@ -1,5 +1,5 @@
 #' Convert data/time to POSIXct
-#' 
+#'
 #' convert date/time column of sample_annotation to POSIX format required to
 #' keep number-like behaviour
 #'
@@ -13,7 +13,11 @@
 #'
 #' @return sample annotation file with column names as 'new_time_column' with
 #'   POSIX-formatted date
-#'   
+#'
+#' @family date
+#'
+#' @export
+#'
 dates_to_posix <- function(sample_annotation,
                            time_column = c('RunDate','RunTime'),
                            new_time_column = NULL,
@@ -47,7 +51,9 @@ dates_to_posix <- function(sample_annotation,
 #' @return sample annotation file with column names as 'new_time_column' with
 #'   POSIX-formatted date & `order_column` used in some diagnostic plots (e.g.
 #'   \code{\link{plot_iRTs}}, \code{\link{plot_sample_mean}})
-#'   
+#'
+#' @export
+#'
 date_to_sample_order <- function(sample_annotation,
                                  time_column = c('RunDate','RunTime'),
                                  new_time_column = 'DateTime',
@@ -85,7 +91,9 @@ date_to_sample_order <- function(sample_annotation,
 #'   `MS_batch` for MS-proteomics) to which batch number will be added
 #'
 #' @return vector of batches for each sample
-#'   
+#'
+#' @export
+#'
 define_batches_by_MS_pauses_within_instrument <- function(date_vector, threshold,
                                         minimal_batch_size = 5,
                                         batch_name = 'MS_batch'){
@@ -121,7 +129,9 @@ define_batches_by_MS_pauses_within_instrument <- function(date_vector, threshold
 #'
 #' @return \code{sample_annotation} data matrix with an additional
 #'   column to indicate sample batching by MS run time and instrument.
-#'   
+#'
+#' @export
+#'
 define_batches_by_MS_pauses <- function(sample_annotation,
                                         threshold,
                                         runtime_col = 'RunDateTime',
