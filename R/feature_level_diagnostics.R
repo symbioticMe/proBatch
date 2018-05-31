@@ -21,10 +21,7 @@
 #' @family feature-level diagnostic functions
 #'
 #' @export
-#' @import ggplot2
-#' @import dplyr
-#' @importFrom magrittr %>%
-#'   
+#'
 plot_peptide_level <- function(pep_name, df_long, sample_annotation,
                                order_column = NULL,
                                sample_id_col = 'FullRunName',
@@ -40,7 +37,7 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
 
 
   plot_df = df_long %>%
-    filter(rlang::UQ(as.name(feature_id_column)) %in% pep_name)
+    filter(UQ(as.name(feature_id_column)) %in% pep_name)
   if (!all(names(sample_annotation) %in% names(df_long))){
     sample_annotation = sample_annotation %>% arrange_(order_column)
     #remove annotation columns, except the sample_id_column
@@ -111,7 +108,7 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
       }
     }
     data_requant = data_requant %>%
-      filter(rlang::UQ(as.name(feature_id_column)) %in% pep_name)
+      filter(UQ(as.name(feature_id_column)) %in% pep_name)
     gg = gg + geom_point(data = data_requant,
                          aes_string(x = order_column, y = measure_column),
                          color = 'red', size = .3, shape = 8)
@@ -140,10 +137,7 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
 #' @family feature-level diagnostic functions
 #'
 #' @export
-#' @import dplyr
-#' @import ggplot2
-#' @importFrom magrittr %>%
-#'   
+#'
 plot_spike_ins <- function(df_long, sample_annotation,
                            order_column = 'order',
                            spike_ins = 'BOVIN',
@@ -172,7 +166,7 @@ plot_spike_ins <- function(df_long, sample_annotation,
 #' \code{measure_column} vs \code{order_column} using
 #' \code{\link{plot_peptide_level}}. Additionally, the resulting plot can also
 #' be facetted by batch.
-#' 
+#'
 #' @inheritParams plot_peptide_level
 #' @param irt_pattern substring used to identify irts proteins in the column
 #'   'ProteinName'
@@ -184,8 +178,6 @@ plot_spike_ins <- function(df_long, sample_annotation,
 #' @family feature-level diagnostic functions
 #'
 #' @export
-#' @importFrom magrittr %>%
-#' @import dplyr
 #'
 #' @examples
 plot_iRTs <- function(df_long, sample_annotation,
@@ -234,8 +226,7 @@ plot_iRTs <- function(df_long, sample_annotation,
 #' @family feature-level diagnostic functions
 #'
 #' @export
-#' @import ggplot2
-#' 
+#'
 
 # TODO: Add descriptions of fit_df and fit_value_var
 plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
@@ -272,7 +263,7 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
     }
   }
   fit_df = fit_df %>%
-    filter(rlang::UQ(as.name(feature_id_column)) %in% pep_name) %>%
+    filter(UQ(as.name(feature_id_column)) %in% pep_name) %>%
     merge(sample_annotation, by = c(sample_id_col, batch_column))
   if(identical(color_by_batch, FALSE)){
     gg = gg + geom_line(data = fit_df,

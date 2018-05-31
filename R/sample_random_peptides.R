@@ -16,8 +16,6 @@ cut_into_groups <- function(vect, groups, quantile = T){
 #'
 #' @return
 #' @export
-#' @importFrom magrittr %>%
-#' @import dplyr
 #'
 #' @examples
 sample_random_peptides <- function(proteome, seed = 1, pep_per_group = 3,
