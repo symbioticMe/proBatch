@@ -275,8 +275,12 @@ sample_annotation_to_colors <- function(sample_annotation,
   #join two lists of colors
   list_of_colors = c(list_of_col_for_factors, list_of_col_for_numeric)
   rownames(sample_annotation) = rownames_ann
+
+  #transform list into dataframe:
+  color_df = color_list_to_df(list_of_colors, sample_annotation)
+
   return(list(list_of_colors = list_of_colors,
-              #TODO: df_of_colors = df_of_colors,
+              color_df = color_df,
               sample_annotation = sample_annotation))
 }
 
