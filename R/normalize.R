@@ -130,6 +130,8 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     mutate_(Intensity_normalized = interp(~`+`(x, y),
                                           x = as.name('diff'),
                                           y = as.name(measure_col)))
+    #TODO: try to get rid of rlang by the following expression:
+    #mutate(Intensity_normalized = diff + UQ(sym(measure_col)))
     #if only the fitted data table is required (not recommended)
     if(!return_long){
       casting_formula =  as.formula(paste(feature_id_col, sample_id_column,
