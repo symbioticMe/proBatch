@@ -310,7 +310,7 @@ plot_clustering <- function(data_matrix, color_df, title = 'Clustering of raw sa
                         cex.dendroLabels = label_font, ...)
 
   } else{
-    plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
+    WGCNA::plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
                         main = plot_title,
                         hang = -0.1, addGuide = T, dendroLabels = F, ...)
   }
