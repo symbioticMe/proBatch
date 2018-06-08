@@ -30,6 +30,9 @@ Best created by `sample_annotation_to_colors`}
 
 \item{filename}{filepath where to save the image}
 
+\item{plot_title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
+
 \item{...}{other parameters of pheatmap}
 }
 \value{
