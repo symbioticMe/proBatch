@@ -51,6 +51,9 @@ as specified in `sample_annotation`}
 \item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
 examples)}
 
+\item{plot_title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
+
 \item{order_per_facet}{if order is defined ignoring facets (usually
 instrument), re-define order per-batch}
 
@@ -62,9 +65,6 @@ file)}
 \item{measure_column}{if `df_long` is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
-
-\item{title}{Title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
 }
 \value{
 ggplot2 class object. Thus, all aesthetics can be overriden
