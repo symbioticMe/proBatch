@@ -48,7 +48,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              facet_column = 'instrument',
                              color_by_batch = F, color_scheme = 'brewer',
                              theme = 'classic',
-                             title = NULL, order_per_facet = F){
+                             plot_title = NULL, order_per_facet = F){
   sample_average = colMeans(data_matrix, na.rm = T)
   names(sample_average) = colnames(data_matrix)
 
@@ -121,7 +121,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
-  if(!is.null(title)) gg = gg + ggtitle(title)+
+  if(!is.null(plot_title)) gg = gg + ggtitle(plot_title)+
     theme(plot.title = element_text(face = 'bold',hjust = .5))
 
 
@@ -141,7 +141,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                        facet_column = 'instrument',
                        color_by_batch = T, color_scheme = 'brewer',
                        theme = 'classic',
-                       title = NULL, order_per_facet = F){
+                       plot_title = NULL, order_per_facet = F){
   if (!all(c(batch_column, sample_id_column) %in% names(df_long))){
     if (!is.null(sample_annotation)){
       df_long = df_long %>% merge(sample_annotation,
@@ -221,8 +221,8 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
-  if (!is.null(title)){
-    gg = gg + ggtitle(title)+
+  if (!is.null(plot_title)){
+    gg = gg + ggtitle(plot_title)+
       theme(plot.title = element_text(hjust = .5, face = 'bold', size = 16))
   }
   if (max(df_long[[order_column]]) > 100){
@@ -454,7 +454,8 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_column = 'FullRu
 #' @examples
 plot_pca <- function(data_matrix, sample_annotation, color_by = 'MS_batch',
                      PC_to_plot = c(1,2),
-                     colors_for_factor = NULL, theme = 'classic'){
+                     colors_for_factor = NULL, theme = 'classic',
+                     plot_title = NULL){
   if(length(color_by) > 1){
     warning('Coloring by the first column specified')
     color_by = color_by[1]
@@ -468,6 +469,9 @@ plot_pca <- function(data_matrix, sample_annotation, color_by = 'MS_batch',
   }
   if(!is.null(colors_for_factor)){
     gg = gg + scale_color_manual(values = colors_for_factor)
+  }
+  if(!is.null(plot_title)){
+    gg = gg + ggtitle(plot_title)
   }
   return(gg)
 }
@@ -498,7 +502,7 @@ plot_pca <- function(data_matrix, sample_annotation, color_by = 'MS_batch',
 plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing = T,
                          cluster_rows = F, cluster_cols = F,
                          annotation_color_list = NA,
-                         filename = NA,
+                         filename = NA, plot_title = NA,
                          ...){
   if(fill_the_missing) {
     data_matrix[is.na(data_matrix)] = -1
@@ -513,6 +517,6 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing
   p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
            color = heatmap_color,
            annotation_col = sample_annotation, annotation_colors = annotation_color_list,
-           filename = filename, ...)
+           filename = filename, main = plot_title, ...)
   return(p)
 }
