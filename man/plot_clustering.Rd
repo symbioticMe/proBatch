@@ -17,19 +17,21 @@ original data}
 \item{color_df}{data frame of colors, as created by
 `sample_annotation_to_colors`}
 
-\item{title}{Title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
-
 \item{distance}{distance metric used for clustering}
 
 \item{agglomeration}{agglomeration methods as used by `hclust`}
 
+\item{plot_title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
+
 \item{...}{other parameters of `plotDendroAndColors` from `WGCNA` package}
+
+\item{plot_title}{}
 }
 \description{
 cluster the data matrix to visually inspect which confounder dominates
 }
 \seealso{
-\code{\link{hclust}}, \code{\link{sample_annotation_to_colors}},
-  \code{\link{plotDendroAndColors}}
+\code{\link{[stats]:hclust}}, \code{\link{sample_annotation_to_colors}},
+  \code{\link{[WGCNA]plotDendroAndColors}}
 }
