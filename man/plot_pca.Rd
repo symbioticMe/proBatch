@@ -6,7 +6,8 @@
 \usage{
 plot_pca(data_matrix, sample_annotation, color_by = "MS_batch",
   PC_to_plot = c(1, 2), colors_for_factor = NULL, theme = "classic",
-  plot_title = NULL)
+  plot_title = NULL, fill_the_missing = NULL,
+  sample_id_col = "FullRunName")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -26,6 +27,12 @@ etc)}
 
 \item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
 examples)}
+
+\item{plot_title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
+
+\item{fill_the_missing}{boolean value determining if missing values should be
+substituted with -1 (and colored with black)}
 }
 \value{
 ggplot scatterplot colored by factor levels of column specified in
