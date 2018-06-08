@@ -4,7 +4,7 @@
 \alias{plot_pvca}
 \title{Plot variance distribution by variable}
 \usage{
-plot_pvca(data_matrix, sample_annotation, sample_id_column = "FullRunName",
+plot_pvca(data_matrix, sample_annotation, sample_id_col = "FullRunName",
   technical_covariates = c("MS_batch", "instrument"),
   biological_covariates = c("cell_line", "drug_dose"), title = NULL,
   colors_for_bars = NULL, threshold_pca = 0.6, threshold_var = 0.01,
@@ -19,6 +19,9 @@ original data}
 \item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
+
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 
 \item{technical_covariates}{vector `sample_annotation` column names that are
 technical covariates}
@@ -38,6 +41,9 @@ variabilities that the selected principal components need to explain}
 
 \item{threshold_var}{the percentile value of weight each of the covariates
 needs to explain (the rest will be lumped together)}
+
+\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
+examples)}
 }
 \value{
 list of two items: plot =gg, df = pvca_res
