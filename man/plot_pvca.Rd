@@ -6,9 +6,9 @@
 \usage{
 plot_pvca(data_matrix, sample_annotation, sample_id_col = "FullRunName",
   technical_covariates = c("MS_batch", "instrument"),
-  biological_covariates = c("cell_line", "drug_dose"), title = NULL,
+  biological_covariates = c("cell_line", "drug_dose"),
   colors_for_bars = NULL, threshold_pca = 0.6, threshold_var = 0.01,
-  theme = "classic")
+  theme = "classic", plot_title = NULL)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -29,9 +29,6 @@ technical covariates}
 \item{biological_covariates}{vector `sample_annotation` column names, that
 are biologically meaningful covariates}
 
-\item{title}{Title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
-
 \item{colors_for_bars}{four-item color vector, specifying colors for the
 following categories: c('residual', 'biological', 'biol:techn',
 'technical')}
@@ -44,6 +41,9 @@ needs to explain (the rest will be lumped together)}
 
 \item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
 examples)}
+
+\item{title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
 }
 \value{
 list of two items: plot =gg, df = pvca_res
