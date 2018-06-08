@@ -4,10 +4,9 @@
 \alias{plot_pca}
 \title{plot PCA plot}
 \usage{
-plot_pca(data_matrix, sample_annotation, color_by = "MS_batch",
-  PC_to_plot = c(1, 2), colors_for_factor = NULL, theme = "classic",
-  plot_title = NULL, fill_the_missing = NULL,
-  sample_id_col = "FullRunName")
+plot_pca(data_matrix, sample_annotation, sample_id_col = "FullRunName",
+  color_by = "MS_batch", PC_to_plot = c(1, 2), colors_for_factor = NULL,
+  fill_the_missing = NULL, theme = "classic", plot_title = NULL)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -19,20 +18,23 @@ original data}
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
 
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
+
 \item{color_by}{column name (as in `sample_annotation`) to color by}
 
 \item{PC_to_plot}{principal component numbers for x and y axis}
 
 \item{colors_for_factor}{named vector of colors for the `color_by` variable}
 
+\item{fill_the_missing}{boolean value determining if missing values should be
+substituted with -1 (and colored with black)}
+
 \item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
 examples)}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
-
-\item{fill_the_missing}{boolean value determining if missing values should be
-substituted with -1 (and colored with black)}
 }
 \value{
 ggplot scatterplot colored by factor levels of column specified in
