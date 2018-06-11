@@ -4,21 +4,21 @@
 \alias{convert_to_matrix}
 \title{Long to wide conversion}
 \usage{
-convert_to_matrix(df_long, feature_id_column = "peptide_group_label",
-  measure_column = "Intensity", sample_id_col = "FullRunName")
+convert_to_matrix(df_long, feature_id_col = "peptide_group_label",
+  measure_col = "Intensity", sample_id_col = "FullRunName")
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_column} and a
-\code{measure_column}, but usually also an \code{m_score} (in OpenSWATH output result
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
-\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{measure_column}{if \code{df_long} is among the parameters, it is the
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency}
 
