@@ -7,7 +7,9 @@
 color_list_to_df(color_list, sample_annotation)
 }
 \arguments{
-\item{sample_annotation}{}
+\item{color_list}{list of colors}
+
+\item{sample_annotation}{factor-based configuration of the sample annotation}
 }
 \value{
 a data frame representation of the input color list
