@@ -9,13 +9,13 @@
 #' @param expl.var the name of the column in dataDF with the explanatory variable
 #' @param noFitRequants (logical) whether to fit requanted values
 #' @param fitFunc function to use for the fit (`kernel_smooth`, `smooth_spline`, or `loess_regression`)
-#' @param with_df 
+#' @param with_df
 #' @param ... additional paramters to be passed to the fitting function
 #'
 #' @return vector of fitted response values
-#' 
-#' @export
 #'
+#' @export
+#' @keywords internal
 
 # TODO: Document dataDF and with_df
 fit_nonlinear <- function(dataDF, response.var = 'y', expl.var = 'x',

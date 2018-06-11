@@ -12,7 +12,7 @@
 #' @param measure_column if `df_long` is among the parameters, it is the column
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
-#' @name config
+#' @name normalize
 NULL
 #> NULL
 
@@ -36,7 +36,7 @@ quantile_normalize <- function(data_matrix){
 
 #' Median normalization of the data (per batch median)
 #'
-#' @name config
+#' @name normalize
 #'
 #' @return
 #' @export
@@ -64,7 +64,7 @@ normalize_medians_batch <- function(data_long, sample_annotation = NULL,
 
 #' Median normalization of the data (global)
 #'
-#' @name config
+#' @name normalize
 #'
 #' @return
 #' @export
@@ -86,7 +86,7 @@ normalize_medians_global <- function(data_long,
 
 #' normalize with the custom (continuous) fit
 #'
-#' @name config
+#' @name normalize
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
 #' @param fit_func function to fit the (non)-linear trend
@@ -152,7 +152,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
 #' batch effects. The input data are assumed to be cleaned and normalized before
 #' batch effect removal.
 #'
-#' @name config
+#' @name normalize
 #' @param par.prior
 #'
 #' @return `data_matrix`-size data matrix with batch-effect corrected by
