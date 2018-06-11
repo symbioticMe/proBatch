@@ -18,6 +18,13 @@ to virids_pal ()}
 
 \item{granularity}{the breaks to use when generating colors for num_col}
 }
+\value{
+list, containing the following items:
+\enumerate{
+\item `color_vector` - string-like vector of colors
+\item `new_annotation` - factor representation of numeric vector (factor with number of levels equal to "granularity")
+}
+}
 \description{
 Generates a list of colors for a vector of numeric, POSIXct (i.e. the
 (signed) number of seconds since the beginning of 1970 , or factors

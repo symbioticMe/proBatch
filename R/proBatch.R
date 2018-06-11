@@ -36,6 +36,10 @@
 #'   ID used in the long format representation \code{df_long}. In the wide
 #'   formatted representation \code{data_matrix} this corresponds to the row
 #'   names.
+#' @param plot_title Title of the plot (usually, processing step + representation
+#'   level (fragments, transitions, proteins))
+#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
+#'   examples)
 #'
 #' @import dplyr
 #' @import ggfortify
