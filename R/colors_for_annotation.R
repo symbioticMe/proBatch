@@ -194,7 +194,7 @@ merge_rare_levels <- function(column) {
 #' @param columns_for_plotting only consider these columns from sample_annotation
 #' @param factor_columns columns of sample_annotation to be treated as factors. Note that factor and character columns are treated as factors by default.
 #' @param not_factor_columns don't treat these columns as factors. This can be used to override the default behaviour of considering factors and character columns as factors.
-#' @param rare_categories_to_other if True rare categories will be merged as other
+#' @param rare_categories_to_other if True rare categories will be merged as 'other'
 #' @param numerics_to_log NOT IMPLEMENTED!
 #' @param granularity number of colors to map to the number vector (equally spaced between minimum and maximum)
 #' @param numeric_palette_type palette to be used for numeric values coloring
