@@ -24,7 +24,7 @@ filenames (colnames of the data matrix are found)}
 
 \item{not_factor_columns}{don't treat these columns as factors. This can be used to override the default behaviour of considering factors and character columns as factors.}
 
-\item{rare_categories_to_other}{if True rare categories will be merged as other}
+\item{rare_categories_to_other}{if True rare categories will be merged as 'other'}
 
 \item{numerics_to_log}{NOT IMPLEMENTED!}
 
