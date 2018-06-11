@@ -91,7 +91,12 @@ map_numbers_to_colors <-
 #'   to virids_pal ()
 #' @param granularity the breaks to use when generating colors for num_col
 #'
-#' @return
+#' @return list, containing the following items:
+#' \enumerate{
+#' \item `color_vector` - string-like vector of colors
+#' \item `new_annotation` - factor representation of numeric vector (factor with number of levels equal to "granularity")
+#' }
+
 generate_colors_for_numeric <-
   function(num_col,
            palette_type = 'brewer',
@@ -289,12 +294,10 @@ sample_annotation_to_colors <- function(sample_annotation,
 #'
 #' Turn color list to df (some plotting functions require the latter)
 #'
-#' @param color_list
-#' @param sample_annotation
+#' @param color_list list of colors
+#' @param sample_annotation factor-based configuration of the sample annotation
 #'
 #' @return a data frame representation of the input color list
-#'
-#' @export
 #'
 color_list_to_df <- function(color_list, sample_annotation) {
   list_df = lapply(names(sample_annotation), function(col_name) {

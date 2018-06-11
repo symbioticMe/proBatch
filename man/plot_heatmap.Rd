@@ -5,8 +5,10 @@
 \title{Plot the heatmap of samples}
 \usage{
 plot_heatmap(data_matrix, sample_annotation = NULL, fill_the_missing = T,
-  cluster_rows = F, cluster_cols = F, annotation_color_list = NA,
-  filename = NA, plot_title = NA, ...)
+  cluster_rows = T, cluster_cols = F, annotation_color_list = NA,
+  heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name =
+  "RdYlBu")))(100), color_for_missing = "black", filename = NA,
+  plot_title = NA, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -14,9 +16,12 @@ feature IDs in rownames and file/sample names as colnames. in most
 function, it is assumed that this is the log transformed version of the
 original data}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
-repeated as row names) 2) biological and 3) technical covariates (batches
-etc)}
+\item{sample_annotation}{data matrix with \enumerate{
+\item  `sample_id_col` (this can be repeated as row names)
+  \item  biological and
+  \item  technical covariates (batches etc)
+}; each column of sample annotation will get it's own row. If `cluster_cols = T` this will indicate,
+whether sample proximity is driven by one of biolical or technical factors}
 
 \item{fill_the_missing}{boolean value determining if missing values should be
 substituted with -1 (and colored with black)}
@@ -28,19 +33,23 @@ substituted with -1 (and colored with black)}
 \item{annotation_color_list}{list specifying colors for columns (samples).
 Best created by `sample_annotation_to_colors`}
 
+\item{heatmap_color}{vector of colors used in heatmap (typicall a gradient)}
+
+\item{color_for_missing}{special color to make missing values. Usually black or white, depending on `heatmap_color`}
+
 \item{filename}{filepath where to save the image}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
-\item{...}{other parameters of pheatmap}
+\item{...}{other parameters of \code{link[pheatmap]{pheatmap}}}
 }
 \value{
-object returned by `pheatmap`
+object returned by \code{link[pheatmap]{pheatmap}}
 }
 \description{
 Plot the heatmap of samples
 }
 \seealso{
-\code{\link{sample_annotation_to_colors}}, \code{\link{pheatmap}}
+\code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
 }
