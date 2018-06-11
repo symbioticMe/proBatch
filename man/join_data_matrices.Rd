@@ -5,7 +5,7 @@
 \title{Join data matrices}
 \usage{
 join_data_matrices(matrices_list, step, sample_annotation,
-  measure_column = "Intensity")
+  measure_col = "Intensity")
 }
 \arguments{
 \item{matrices_list}{list of matrices in \code{data_matrix} (\link{proBatch}) format to be joined}
@@ -19,7 +19,7 @@ naming with numbers, e.g. `1_raw`, `2_quantile`}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{measure_column}{if \code{df_long} is among the parameters, it is the
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency}
 }
