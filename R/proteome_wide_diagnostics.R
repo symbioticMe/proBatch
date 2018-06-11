@@ -547,11 +547,16 @@ plot_pca <- function(data_matrix, sample_annotation,
   }
 
   if (any(is.na(as.vector(data_matrix)))){
+<<<<<<< HEAD
     warning('PCA cannot operate with missing values in the matrix')
     if(!is.null(fill_the_missing)){
       if (!is.numeric(fill_the_missing)){
         fill_the_missing = 0
       }
+=======
+    warning('PVCA cannot operate with missing values')
+    if(!is.null(fill_the_missing)){
+>>>>>>> 631d3a0f36d479c14576b568ef1f6a3ae08cddab
       warning(sprintf('filling missing value with %s', fill_the_missing))
       data_matrix[is.na(data_matrix)] = fill_the_missing
     } else {
