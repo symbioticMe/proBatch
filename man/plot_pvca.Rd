@@ -5,9 +5,10 @@
 \title{Plot variance distribution by variable}
 \usage{
 plot_pvca(data_matrix, sample_annotation, sample_id_col = "FullRunName",
+  feature_id_col = "peptide_group_label",
   technical_covariates = c("MS_batch", "instrument"),
-  biological_covariates = c("cell_line", "drug_dose"),
-  colors_for_bars = NULL, threshold_pca = 0.6, threshold_var = 0.01,
+  biological_covariates = c("cell_line", "drug_dose"), fill_the_missing = 0,
+  threshold_pca = 0.6, threshold_var = 0.01, colors_for_bars = NULL,
   theme = "classic", plot_title = NULL)
 }
 \arguments{
@@ -23,15 +24,16 @@ etc)}
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
+
 \item{technical_covariates}{vector `sample_annotation` column names that are
 technical covariates}
 
 \item{biological_covariates}{vector `sample_annotation` column names, that
 are biologically meaningful covariates}
-
-\item{colors_for_bars}{four-item color vector, specifying colors for the
-following categories: c('residual', 'biological', 'biol:techn',
-'technical')}
 
 \item{threshold_pca}{the percentile value of the minimum amount of the
 variabilities that the selected principal components need to explain}
@@ -39,11 +41,18 @@ variabilities that the selected principal components need to explain}
 \item{threshold_var}{the percentile value of weight each of the covariates
 needs to explain (the rest will be lumped together)}
 
+\item{colors_for_bars}{four-item color vector, specifying colors for the
+following categories: c('residual', 'biological', 'biol:techn',
+'technical')}
+
 \item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
 examples)}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
+
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
