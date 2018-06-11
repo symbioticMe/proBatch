@@ -77,3 +77,6 @@ running order available)
 functions for quick visual assessment of trends associated, overall
   or specific covariate-associated (see `batch_column` and `facet_column`)
 }
+\seealso{
+\code{\link[ggplot2]{ggplot}}
+}
