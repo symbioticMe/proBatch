@@ -2,7 +2,6 @@
 
 export(boxplot_all_steps)
 export(clean_requants)
-export(color_list_to_df)
 export(convert_to_matrix)
 export(correct_with_ComBat)
 export(date_to_sample_order)
