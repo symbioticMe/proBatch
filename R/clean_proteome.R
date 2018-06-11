@@ -18,22 +18,22 @@
 #' @family dataset cleaning functions
 #'
 clean_requants <- function(df_long, sample_annotation,
-                           batch_column = 'MS_batch.final',
-                           feature_id_column = 'peptide_group_label',
+                           batch_col = 'MS_batch.final',
+                           feature_id_col = 'peptide_group_label',
                            threshold_batch = .3, threshold_global = .3){
   #for dplyr version 0.7 and higher, this is the way to call the functions
   n_samples = nrow(sample_annotation)
   df_clean = df_long %>%
     filter(m_score != 2) %>%
     merge(sample_annotation) %>%
-    group_by_at(vars(one_of(c(c(feature_id_column, batch_column))))) %>%
+    group_by_at(vars(one_of(c(c(feature_id_col, batch_col))))) %>%
     mutate(n_samples_in_batch = n()) %>%
     ungroup() %>%
-    group_by_at(vars(one_of(batch_column))) %>%
+    group_by_at(vars(one_of(batch_col))) %>%
     mutate(n_batch = max(n_samples_in_batch)) %>%
     mutate(requant_fraction_batch = 1 - n_samples_in_batch/n_batch) %>%
     ungroup() %>%
-    group_by_at(vars(one_of(c(feature_id_column)))) %>%
+    group_by_at(vars(one_of(c(feature_id_col)))) %>%
     mutate(n_samples_for_peptide = n()) %>%
     mutate(requant_fraction = 1 - n_samples_for_peptide/n_samples) %>%
     filter(requant_fraction < (1 - threshold_global)) %>%
@@ -57,20 +57,20 @@ clean_requants <- function(df_long, sample_annotation,
 #'
 #' @family dataset cleaning functions
 remove_peptides_with_missing_batch <- function(df_long,
-                                               batch_column = 'MS_batch.final',
-                                               feature_id_column = 'peptide_group_label'){
+                                               batch_col = 'MS_batch.final',
+                                               feature_id_col = 'peptide_group_label'){
   features_consistent = df_long %>%
-    group_by_at(vars(one_of(c(feature_id_column, batch_column)))) %>%
+    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     summarize(n = n()) %>%
     ungroup () %>%
-    complete(!!!rlang::syms(c(feature_id_column, batch_column)))%>%
-    group_by_at(vars(one_of(c(feature_id_column)))) %>%
+    complete(!!!rlang::syms(c(feature_id_col, batch_col)))%>%
+    group_by_at(vars(one_of(c(feature_id_col)))) %>%
     summarize(full_batches = all(!is.na(n))) %>%
     filter(full_batches) %>%
-    pull(feature_id_column)
+    pull(feature_id_col)
 
   proteome_clean = df_long %>%
-    filter(rlang::UQ(as.name(feature_id_column)) %in% features_consistent)
+    filter(rlang::UQ(as.name(feature_id_col)) %in% features_consistent)
   return(proteome_clean)
 }
 
@@ -93,16 +93,16 @@ remove_peptides_with_missing_batch <- function(df_long,
 #'
 #' @export
 summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
-                               feature_id_column = 'peptide_group_label',
+                               feature_id_col = 'peptide_group_label',
                                RT="RT",
-                               Intensity="Intensity",
+                               measure_col="Intensity",
                                m_score="m_score"){
   peptide_summary = df_long %>%
     group_by_at(vars(one_of(sample_id_col)))  %>%
-    mutate(rank = rank(Intensity))  %>%
-    group_by_at(vars(one_of(feature_id_column))) %>%
+    mutate(rank = rank(measure_col))  %>%
+    group_by_at(vars(one_of(feature_id_col))) %>%
     summarise(RT_mean = mean(RT),
-              Int_mean = mean(Intensity), rank_mean = mean(rank),
+              Int_mean = mean(measure_col), rank_mean = mean(rank),
               numb_requants = sum(m_score > 1),
               mean_m_score = mean(m_score),
               median_m_score = median(m_score),

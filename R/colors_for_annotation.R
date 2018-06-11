@@ -205,18 +205,18 @@ merge_rare_levels <- function(column) {
 #'
 sample_annotation_to_colors <- function(sample_annotation,
                                         columns_for_plotting = NULL,
-                                        sample_id_column = NULL,
-                                        factor_columns = NULL,
-                                        not_factor_columns = NULL,
+                                        sample_id_col = 'FullRunName',
+                                        factor_columns = c('subtype','caseControl'),
+                                        not_factor_columns = c('RunDate','ProteinPrepDate'),
                                         rare_categories_to_other = T,
                                         numerics_to_log = F,
                                         numeric_palette_type = 'brewer',
                                         granularity = 10) {
-  rownames_ann = as.character(sample_annotation[[sample_id_column]])
+  rownames_ann = as.character(sample_annotation[[sample_id_col]])
   if (!is.null(columns_for_plotting)) {
     sample_annotation = sample_annotation %>%
       select(one_of(setdiff(
-        columns_for_plotting, sample_id_column
+        columns_for_plotting, sample_id_col
       )))
   }
 

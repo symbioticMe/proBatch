@@ -4,36 +4,39 @@
 \alias{plot_spike_ins}
 \title{Plot spike-in measurements}
 \usage{
-plot_spike_ins(df_long, sample_annotation, order_column = "order",
-  spike_ins = "BOVIN", sample_id_column = "FullRunName",
-  batch_column = "MS_batch", measure_column = "Intensity",
-  feature_id_column = "peptide_group_label",
+plot_spike_ins(df_long, sample_annotation, order_col = "order",
+  spike_ins = "BOVIN", sample_id_col = "FullRunName",
+  batch_col = "MS_batch", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label",
   title = "Spike-in BOVINE protein peptides", ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_column} and a
-\code{measure_column}, but usually also an \code{m_score} (in OpenSWATH output result
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{order_column}{column in \code{sample_annotation} that determines sample order. It is
+\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for certain diagnostics and normalisations.}
 
 \item{spike_ins}{substring used to identify spike-in proteins in the column
 'ProteinName'}
 
-\item{batch_column}{column in \code{sample_annotation} that should be used for
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
+
+\item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
-\item{measure_column}{if \code{df_long} is among the parameters, it is the
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency}
 
-\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
@@ -43,12 +46,12 @@ names.}
 \item{...}{additional arguments to \code{\link{plot_peptide_level}} function}
 }
 \value{
-ggplot2 type plot of \code{measure_column} vs \code{order_column},
-  faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_column}
+ggplot2 type plot of \code{measure_col} vs \code{order_col},
+  faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
 }
 \description{
 Creates a spike-in facetted ggplot2 plot of the value in
-\code{measure_column} vs \code{order_column} using
+\code{measure_col} vs \code{order_col} using
 \code{\link{plot_peptide_level}}. Additionally, the resulting plot can also
 be facetted by batch.
 }
