@@ -5,7 +5,7 @@
 \title{Plot boxplots to compare various data normalization steps/approaches WARNING:
 extremely slow for big dataframes}
 \usage{
-boxplot_all_steps(list_of_dfs, sample_annotation, batch_column, step = NULL)
+boxplot_all_steps(list_of_dfs, sample_annotation, batch_col, step = NULL)
 }
 \arguments{
 \item{list_of_dfs}{list of data frames of format, specified in `plot_boxplot`}
@@ -14,7 +14,7 @@ boxplot_all_steps(list_of_dfs, sample_annotation, batch_column, step = NULL)
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
 
-\item{batch_column}{column in `sample_annotation` that should be used for
+\item{batch_col}{column in `sample_annotation` that should be used for
 batch comparison}
 
 \item{step}{normalization step (e.g. `Raw` or `Quantile_normalized` or

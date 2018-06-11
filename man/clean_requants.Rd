@@ -4,24 +4,24 @@
 \alias{clean_requants}
 \title{Remove requanted and sparse features}
 \usage{
-clean_requants(df_long, sample_annotation, batch_column = "MS_batch.final",
-  feature_id_column = "peptide_group_label", threshold_batch = 0.3,
+clean_requants(df_long, sample_annotation, batch_col = "MS_batch.final",
+  feature_id_col = "peptide_group_label", threshold_batch = 0.3,
   threshold_global = 0.3)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_column} and a
-\code{measure_column}, but usually also an \code{m_score} (in OpenSWATH output result
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{batch_column}{column in \code{sample_annotation} that should be used for
+\item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
-\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}

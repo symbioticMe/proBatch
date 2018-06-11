@@ -9,17 +9,15 @@
 running order available)}
 \usage{
 plot_sample_mean(data_matrix, sample_annotation = NULL,
-  sample_id_col = "FullRunName", order_column = "order",
-  batch_column = NULL, facet_column = "instrument", color_by_batch = F,
-  color_scheme = "brewer", theme = "classic", plot_title = NULL,
-  order_per_facet = F)
+  sample_id_col = "FullRunName", order_col = "order", batch_col = NULL,
+  facet_col = "instrument", color_by_batch = F, color_scheme = "brewer",
+  theme = "classic", plot_title = NULL, order_per_facet = F)
 
 plot_boxplot(df_long, sample_annotation = NULL,
-  sample_id_column = "FullRunName", measure_col = "Intensity",
-  order_column = "order", batch_column = "MS_batch.final",
-  facet_column = "instrument", color_by_batch = T,
-  color_scheme = "brewer", theme = "classic", plot_title = NULL,
-  order_per_facet = F)
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  order_col = "order", batch_col = "MS_batch.final",
+  facet_col = "instrument", color_by_batch = T, color_scheme = "brewer",
+  theme = "classic", plot_title = NULL, order_per_facet = F)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -34,12 +32,12 @@ etc)}
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
-\item{order_column}{column where running order is specified.}
+\item{order_col}{column where running order is specified.}
 
-\item{batch_column}{column in `sample_annotation` that should be used for
+\item{batch_col}{column in `sample_annotation` that should be used for
 batch comparison}
 
-\item{facet_column}{recommended if more than one batch covariate is present.
+\item{facet_col}{recommended if more than one batch covariate is present.
 Faceting is most suited to examine instruments separately}
 
 \item{color_by_batch}{should the each batch be represented with its own
@@ -58,11 +56,11 @@ level (fragments, transitions, proteins))}
 instrument), re-define order per-batch}
 
 \item{df_long}{data frame where each row is a single feature in a single
-sample, thus it has minimally, `sample_id_col`, `feature_id_column` and
-`measure_column`, but usually also `m_score` (in OpenSWATH output result
+sample, thus it has minimally, `sample_id_col`, `feature_id_col` and
+`measure_col`, but usually also `m_score` (in OpenSWATH output result
 file)}
 
-\item{measure_column}{if `df_long` is among the parameters, it is the column
+\item{measure_col}{if `df_long` is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
 }
@@ -75,7 +73,7 @@ running order available)
 }
 \details{
 functions for quick visual assessment of trends associated, overall
-  or specific covariate-associated (see `batch_column` and `facet_column`)
+  or specific covariate-associated (see `batch_col` and `facet_col`)
 }
 \seealso{
 \code{\link[ggplot2]{ggplot}}
