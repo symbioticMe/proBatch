@@ -16,8 +16,6 @@ fit_nonlinear(dataDF, response.var = "y", expl.var = "x",
 
 \item{fitFunc}{function to use for the fit (`kernel_smooth`, `smooth_spline`, or `loess_regression`)}
 
-\item{with_df}{}
-
 \item{...}{additional paramters to be passed to the fitting function}
 }
 \value{
@@ -26,3 +24,4 @@ vector of fitted response values
 \description{
 Fit a non-linear trend
 }
+\keyword{internal}
