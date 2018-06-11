@@ -7,9 +7,9 @@
 #'   etc)
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param batch_column column in `sample_annotation` that should be used for
+#' @param batch_col column in `sample_annotation` that should be used for
 #'   batch comparison
-#' @param measure_column if `df_long` is among the parameters, it is the column
+#' @param measure_col if `df_long` is among the parameters, it is the column
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
 #' @name normalize
@@ -43,21 +43,21 @@ quantile_normalize <- function(data_matrix){
 #'
 #' @examples
 normalize_medians_batch <- function(data_long, sample_annotation = NULL,
-                                    sample_id_column = 'FullRunName',
-                                    batch_column = 'MS_batch.final',
+                                    sample_id_col = 'FullRunName',
+                                    batch_col = 'MS_batch.final',
                                     feature_id_col = 'peptide_group_label',
-                                    measure_column = 'Intensity'){
-  if (!(sample_id_column %in% names(data_long) & batch_column %in% names(data_long)) &
+                                    measure_col = 'Intensity'){
+  if (!(sample_id_col %in% names(data_long) & batch_col %in% names(data_long)) &
       !is.null(sample_annotation)){
     data_long = data_long %>% merge(sample_annotation)
   }
   df_normalized = data_long %>%
-    group_by_at(vars(one_of(batch_column, feature_id_col))) %>%
-    mutate(median_batch = median(UQ(sym(measure_column)), na.rm = T)) %>%
+    group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
+    mutate(median_batch = median(UQ(sym(measure_col)), na.rm = T)) %>%
     ungroup() %>%
-    mutate(median_global = median(UQ(sym(measure_column)), na.rm = T)) %>%
+    mutate(median_global = median(UQ(sym(measure_col)), na.rm = T)) %>%
     mutate(diff = median_global - median_batch) %>%
-    mutate(Intensity_normalized = UQ(sym(measure_column))+diff)
+    mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
 
   return(df_normalized)
 }
@@ -71,16 +71,16 @@ normalize_medians_batch <- function(data_long, sample_annotation = NULL,
 #'
 #' @examples
 normalize_medians_global <- function(data_long,
-                                     sample_id_column = 'FullRunName',
-                                    measure_column = 'Intensity'){
+                                     sample_id_col = 'FullRunName',
+                                    measure_col = 'Intensity'){
   df_normalized = data_long  %>%
-    group_by_at(vars(one_of(sample_id_column))) %>%
-    mutate(median_run = median(UQ(sym(measure_column)), na.rm = T)) %>%
+    group_by_at(vars(one_of(sample_id_col))) %>%
+    mutate(median_run = median(UQ(sym(measure_col)), na.rm = T)) %>%
     ungroup()
   df_normalized = df_normalized %>%
-    mutate(median_global = median(UQ(sym(measure_column)), na.rm = T)) %>%
+    mutate(median_global = median(UQ(sym(measure_col)), na.rm = T)) %>%
     mutate(diff = median_global - median_run) %>%
-    mutate(Intensity_normalized = UQ(sym(measure_column))+diff)
+    mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
   return(df_normalized)
 }
 
@@ -100,9 +100,9 @@ normalize_medians_global <- function(data_long,
 #'
 #' @examples
 normalize_custom_fit <- function(data_matrix, sample_annotation,
-                                 batch_column = 'MS_batch.final',
+                                 batch_col = 'MS_batch.final',
                                  feature_id_col = 'peptide_group_label',
-                                 sample_id_column = 'FullRunName',
+                                 sample_id_col = 'FullRunName',
                                  measure_col = 'Intensity',
                                  sample_order_col = 'order',
                                  fit_func = fit_nonlinear,
@@ -112,19 +112,19 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
   data_matrix[[feature_id_col]] = rownames(data_matrix)
   df_long = data_matrix %>%
     melt(id.vars = feature_id_col)
-  names(df_long) = c(feature_id_col, sample_id_column, measure_col)
+  names(df_long) = c(feature_id_col, sample_id_col, measure_col)
 
   df_normalized = df_long %>%
     filter(!is.na(UQ(as.name(measure_col)))) %>%
     merge(sample_annotation) %>%
     arrange_(feature_id_col, sample_order_col) %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_column)))) %>%
+    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     nest() %>%
     mutate(fit = map(data, fit_func, response.var = measure_col,
                      expl.var = sample_order_col, ...)) %>%
     unnest() %>%
     #change the fit to the corrected data
-    group_by_at(vars(one_of(c(feature_id_col, batch_column)))) %>%
+    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     mutate(mean_fit = mean(fit)) %>%
     mutate(diff = mean_fit - fit) %>%
     mutate_(Intensity_normalized = interp(~`+`(x, y),
@@ -134,7 +134,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     #mutate(Intensity_normalized = diff + UQ(sym(measure_col)))
     #if only the fitted data table is required (not recommended)
     if(!return_long){
-      casting_formula =  as.formula(paste(feature_id_col, sample_id_column,
+      casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
                                           sep =  " ~ "))
       df_normalized = dcast(df_normalized, formula = casting_formula,
                             value.var = 'Intensity_normalized')
@@ -161,8 +161,8 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
 #'
 #' @examples
 correct_with_ComBat <- function(data_matrix, sample_annotation,
-                                batch_column = 'MS_batch.final', par.prior = TRUE){
-  batches = sample_annotation[[batch_column]]
+                                batch_col = 'MS_batch.final', par.prior = TRUE){
+  batches = sample_annotation[[batch_col]]
   modCombat = model.matrix(~1, data = sample_annotation)
   corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
                               mod = modCombat, par.prior = par.prior)
