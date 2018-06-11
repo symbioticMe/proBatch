@@ -5,9 +5,10 @@
 \title{Generate colors for sample annotation}
 \usage{
 sample_annotation_to_colors(sample_annotation, columns_for_plotting = NULL,
-  sample_id_column = NULL, factor_columns = NULL,
-  not_factor_columns = NULL, rare_categories_to_other = T,
-  numerics_to_log = F, numeric_palette_type = "brewer", granularity = 10)
+  sample_id_col = "FullRunName", factor_columns = c("subtype",
+  "caseControl"), not_factor_columns = c("RunDate", "ProteinPrepDate"),
+  rare_categories_to_other = T, numerics_to_log = F,
+  numeric_palette_type = "brewer", granularity = 10)
 }
 \arguments{
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
@@ -15,6 +16,9 @@ sample_annotation_to_colors(sample_annotation, columns_for_plotting = NULL,
 technical covariates (batches etc) }}
 
 \item{columns_for_plotting}{only consider these columns from sample_annotation}
+
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 
 \item{factor_columns}{columns of sample_annotation to be treated as factors. Note that factor and character columns are treated as factors by default.}
 
