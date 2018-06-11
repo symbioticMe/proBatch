@@ -4,9 +4,10 @@
 \alias{plot_pca}
 \title{plot PCA plot}
 \usage{
-plot_pca(data_matrix, sample_annotation, sample_id_col = "FullRunName",
-  color_by = "MS_batch", PC_to_plot = c(1, 2), colors_for_factor = NULL,
-  fill_the_missing = NULL, theme = "classic", plot_title = NULL)
+plot_pca(data_matrix, sample_annotation,
+  feature_id_column = "peptide_group_label", color_by = "MS_batch",
+  PC_to_plot = c(1, 2), colors_for_factor = NULL, fill_the_missing = NULL,
+  theme = "classic", plot_title = NULL)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -18,8 +19,10 @@ original data}
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
 
 \item{color_by}{column name (as in `sample_annotation`) to color by}
 
@@ -42,4 +45,7 @@ ggplot scatterplot colored by factor levels of column specified in
 }
 \description{
 plot PCA plot
+}
+\seealso{
+\code{\link[ggfortify]{autoplot.pca_common}}, \code{\link[ggplot2]{ggplot}}
 }

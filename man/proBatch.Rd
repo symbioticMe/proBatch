@@ -37,6 +37,12 @@ internally for consistency}
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
+
+\item{plot_title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
+
+\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
+examples)}
 }
 \description{
 It adresses the following needs: \itemize{ \item prepare the original data

@@ -34,6 +34,8 @@
 #' @param order_per_facet if order is defined ignoring facets (usually
 #'   instrument), re-define order per-batch
 #' @return ggplot2 class object. Thus, all aesthetics can be overriden
+#'
+#' @seealso \code{\link[ggplot2]{ggplot}}
 #' @name plot_sample_means_or_boxplots
 
 #' @name plot_sample_means_or_boxplots
@@ -278,23 +280,22 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
 #'   feature IDs in rownames and file/sample names as colnames. in most
 #'   function, it is assumed that this is the log transformed version of the
 #'   original data
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
-#' @param distance distance metric used for clustering
-#' @param agglomeration agglomeration methods as used by `hclust`
 #' @param color_df data frame of colors, as created by
 #'   `sample_annotation_to_colors`
+#' @param distance distance metric used for clustering
+#' @param agglomeration agglomeration methods as used by `hclust`
+#' @param label_samples if \code{TRUE} sample IDs (column names of \code{data_matrix}) will be printed
+#' @param label_font size of the font. Is active if \code{label_samples} is \code{TRUE}, ignored otherwise
+#' @param plot_title Title of the plot (usually, processing step + representation
+#'   level (fragments, transitions, proteins))
 #' @param ... other parameters of `plotDendroAndColors` from `WGCNA` package
-#' @param label_samples
-#' @param label_font
-#' @param plot_title
 #'
 #' @export
 #'
 #' @examples
-#' @seealso \code{\link{[stats]:hclust}}, \code{\link{sample_annotation_to_colors}},
-#'   \code{\link{[WGCNA]plotDendroAndColors}}
-plot_clustering <- function(data_matrix, color_df, title = 'Clustering of raw samples',
+#' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
+#'   \code{\link[WGCNA]{plotDendroAndColors}}
+plot_clustering <- function(data_matrix, color_df,
                             distance = "euclidean",
                             agglomeration = 'complete',
                             label_samples = T, label_font = .2,
@@ -352,8 +353,6 @@ PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca
 #'   technical covariates
 #' @param biological_covariates vector `sample_annotation` column names, that
 #'   are biologically meaningful covariates
-#' @param title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
 #' @param colors_for_bars four-item color vector, specifying colors for the
 #'   following categories: c('residual', 'biological', 'biol:techn',
 #'   'technical')
@@ -363,15 +362,20 @@ PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca
 #'   needs to explain (the rest will be lumped together)
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-
+#' @param feature_id_column name of the column with feature/gene/peptide/protein
+#'   ID used in the long format representation \code{df_long}. In the wide
+#'   formatted representation \code{data_matrix} this corresponds to the row
+#'   names.
 #' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
 #'   examples)
+#' @param plot_title Title of the plot (usually, processing step + representation
+#'   level (fragments, transitions, proteins))
 #'
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
 #'
 #' @examples
-#' @seealso \code{\link{sample_annotation_to_colors}}
+#' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
 plot_pvca <- function(data_matrix, sample_annotation, sample_id_col = 'FullRunName',
                  technical_covariates = c('MS_batch', 'instrument'),
                  biological_covariates = c('cell_line','drug_dose'), colors_for_bars = NULL,
@@ -460,8 +464,10 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_col = 'FullRunNa
 #' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
+#' @param feature_id_column name of the column with feature/gene/peptide/protein
+#'   ID used in the long format representation \code{df_long}. In the wide
+#'   formatted representation \code{data_matrix} this corresponds to the row
+#'   names.
 #' @param color_by column name (as in `sample_annotation`) to color by
 #' @param PC_to_plot principal component numbers for x and y axis
 #' @param colors_for_factor named vector of colors for the `color_by` variable
@@ -477,23 +483,24 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_col = 'FullRunNa
 #' @export
 #'
 #' @examples
+#' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, \code{\link[ggplot2]{ggplot}}
 plot_pca <- function(data_matrix, sample_annotation,
-                     sample_id_col = 'FullRunName',
+                     feature_id_column = 'peptide_group_label',
                      color_by = 'MS_batch',
                      PC_to_plot = c(1,2),
                      colors_for_factor = NULL, fill_the_missing = NULL,
                      theme = 'classic',
                      plot_title = NULL){
 
-  if(!is.null(sample_id_col)){
-    if(sample_id_col %in% colnames(data_matrix)){
+  if(!is.null(feature_id_column)){
+    if(feature_id_column %in% colnames(data_matrix)){
       if(is.data.frame(data_matrix)){
         warning(sprintf('sample_id_col with name %s in data matrix instead of rownames,
                         this might cause errors in other diagnostic functions,
                         assign values of this column to rowname and remove from the data frame!', sample_id_col))
       }
-      rownames(data_matrix) = data_matrix[[sample_id_col]]
-      data_matrix[[sample_id_col]] = NULL
+      rownames(data_matrix) = data_matrix[[feature_id_column]]
+      data_matrix[[feature_id_column]] = NULL
       data_matrix = as.matrix(data_matrix)
       }
       if(!is.null(fill_the_missing)){
@@ -527,39 +534,45 @@ plot_pca <- function(data_matrix, sample_annotation,
 #'   feature IDs in rownames and file/sample names as colnames. in most
 #'   function, it is assumed that this is the log transformed version of the
 #'   original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
+#' @param sample_annotation data matrix with \enumerate{
+#' \item  `sample_id_col` (this can be repeated as row names)
+#'   \item  biological and
+#'   \item  technical covariates (batches etc)
+#' }; each column of sample annotation will get it's own row. If `cluster_cols = T` this will indicate,
+#' whether sample proximity is driven by one of biolical or technical factors
 #' @param fill_the_missing boolean value determining if missing values should be
 #'   substituted with -1 (and colored with black)
 #' @param cluster_rows boolean value determining if rows should be clustered
 #' @param cluster_cols boolean value determining if columns should be clustered
 #' @param annotation_color_list list specifying colors for columns (samples).
 #'   Best created by `sample_annotation_to_colors`
+#' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
+#' @param color_for_missing special color to make missing values. Usually black or white, depending on `heatmap_color`
 #' @param filename filepath where to save the image
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
-#' @param ... other parameters of pheatmap
+#' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
 
-#'
-#' @return object returned by `pheatmap`
+#' @return object returned by \code{link[pheatmap]{pheatmap}}
 #' @export
 #'
 #' @examples
-#' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link{pheatmap}}
+#' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
 plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing = T,
-                         cluster_rows = F, cluster_cols = F,
+                         cluster_rows = T, cluster_cols = F,
                          annotation_color_list = NA,
+                         heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100),
+                         color_for_missing = 'black',
                          filename = NA, plot_title = NA,
                          ...){
   if(fill_the_missing) {
     data_matrix[is.na(data_matrix)] = 0
-    heatmap_color = c('black', colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100))
+    warning('substituting missing values with 0, this might affect the clustering!')
+    heatmap_color = c(color_for_missing, heatmap_color)
   }
-  else {
-    heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100)
-  }
+
   if (is.null(sample_annotation)){
+    #for consistency: other functions rely on NULL
     sample_annotation = NA
   }
   p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
