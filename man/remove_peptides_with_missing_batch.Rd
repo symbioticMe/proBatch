@@ -4,19 +4,19 @@
 \alias{remove_peptides_with_missing_batch}
 \title{Remove features missing in at least one batch}
 \usage{
-remove_peptides_with_missing_batch(df_long, batch_column = "MS_batch.final",
-  feature_id_column = "peptide_group_label")
+remove_peptides_with_missing_batch(df_long, batch_col = "MS_batch.final",
+  feature_id_col = "peptide_group_label")
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_column} and a
-\code{measure_column}, but usually also an \code{m_score} (in OpenSWATH output result
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
-\item{batch_column}{column in \code{sample_annotation} that should be used for
+\item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
-\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}

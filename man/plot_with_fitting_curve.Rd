@@ -5,9 +5,9 @@
 \title{Plot peptide measurements across multi-step analysis}
 \usage{
 plot_with_fitting_curve(pep_name, data_df_all_steps, sample_annotation, fit_df,
-  fit_value_var = "fit", fit_step = "3_loess_fit", order_column = NULL,
-  sample_id_col = "FullRunName", batch_column = "MS_batch",
-  measure_column = "Intensity", feature_id_column = "peptide_group_label",
+  fit_value_var = "fit", fit_step = "3_loess_fit", order_col = NULL,
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
+  measure_col = "Intensity", feature_id_col = "peptide_group_label",
   geom = c("point", "line"), color_by_batch = F, facet_by_batch = F,
   title = NULL, requant = NULL, theme = "classic")
 }
@@ -18,27 +18,27 @@ plot_with_fitting_curve(pep_name, data_df_all_steps, sample_annotation, fit_df,
 \link{proBatch},  where each row is a single feature in a single sample, at
 a certain step of the analysis (minimally raw and after linear
 normalization) thus it has minimally the following columns:
-\code{sample_id_col}, \code{feature_id_column}, \code{measure_column}, and
+\code{sample_id_col}, \code{feature_id_col}, \code{measure_col}, and
 \code{fit_step}, but usually also \code{m_score}}
 
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{order_column}{column in \code{sample_annotation} that determines sample order. It is
+\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for certain diagnostics and normalisations.}
 
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
-\item{batch_column}{column in \code{sample_annotation} that should be used for
+\item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
-\item{measure_column}{if \code{df_long} is among the parameters, it is the
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency}
 
-\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
@@ -59,7 +59,7 @@ implemented)}
 }
 \value{
 \code{ggplot}-class plot with minimally two facets (before and after
-  non-linear fit) with \code{measure_column} (Intensity) vs \code{order_column}
+  non-linear fit) with \code{measure_col} (Intensity) vs \code{order_col}
   (injection order) for selected peptides (specified in \code{pep_name})
 }
 \description{

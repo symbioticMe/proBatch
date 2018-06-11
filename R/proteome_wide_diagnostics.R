@@ -1,31 +1,31 @@
 #' Plot per-sample average or boxplot (distribution) vs order (if the real
 #' running order available)
 #' @details functions for quick visual assessment of trends associated, overall
-#'   or specific covariate-associated (see `batch_column` and `facet_column`)
+#'   or specific covariate-associated (see `batch_col` and `facet_col`)
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. in most
 #'   function, it is assumed that this is the log transformed version of the
 #'   original data
 #' @param df_long data frame where each row is a single feature in a single
-#'   sample, thus it has minimally, `sample_id_col`, `feature_id_column` and
-#'   `measure_column`, but usually also `m_score` (in OpenSWATH output result
+#'   sample, thus it has minimally, `sample_id_col`, `feature_id_col` and
+#'   `measure_col`, but usually also `m_score` (in OpenSWATH output result
 #'   file)
 #' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param measure_column if `df_long` is among the parameters, it is the column
+#' @param measure_col if `df_long` is among the parameters, it is the column
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
-#' @param batch_column column in `sample_annotation` that should be used for
+#' @param batch_col column in `sample_annotation` that should be used for
 #'   batch comparison
-#' @param order_column column where running order is specified.
+#' @param order_col column where running order is specified.
 #' @param color_by_batch should the each batch be represented with its own
 #'   color?
 #' @param color_scheme named vector, names corresponding to unique batch values
 #'   as specified in `sample_annotation`
-#' @param facet_column recommended if more than one batch covariate is present.
+#' @param facet_col recommended if more than one batch covariate is present.
 #'   Faceting is most suited to examine instruments separately
 #' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
 #'   examples)
@@ -45,9 +45,9 @@
 #' @examples
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              sample_id_col = 'FullRunName',
-                             order_column = 'order',
-                             batch_column = NULL,
-                             facet_column = 'instrument',
+                             order_col = 'order',
+                             batch_col = NULL,
+                             facet_col = 'instrument',
                              color_by_batch = F, color_scheme = 'brewer',
                              theme = 'classic',
                              plot_title = NULL, order_per_facet = F){
@@ -60,27 +60,27 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
   df_ave = df_ave %>%
     merge(sample_annotation, by = sample_id_col)
-  if (!(order_column %in% names(sample_annotation))){
+  if (!(order_col %in% names(sample_annotation))){
     warning('order column not found in sample annotation, taking order of files in the data matrix instead')
-    order_column = 'order_temp_col'
+    order_col = 'order_temp_col'
   }
-  if(!is.null(facet_column)){
-    if(!(facet_column %in% names(df_ave))){
+  if(!is.null(facet_col)){
+    if(!(facet_col %in% names(df_ave))){
       stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
-                   check sample annotation data frame', facet_column))
+                   check sample annotation data frame', facet_col))
     }
     if (order_per_facet){
       df_ave = df_ave %>%
-        group_by_at(vars(one_of(facet_column))) %>%
-        mutate(order = rank(UQ(sym(order_column))))
+        group_by_at(vars(one_of(facet_col))) %>%
+        mutate(order = rank(UQ(sym(order_col))))
     }
   }
-  gg = ggplot(df_ave, aes_string(x = order_column, y = 'average'))+
+  gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
                 geom_point()
-  if(color_by_batch & !is.null(batch_column)){
-    gg = gg + aes_string(color = batch_column)
+  if(color_by_batch & !is.null(batch_col)){
+    gg = gg + aes_string(color = batch_col)
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
-      n_batches <- length(unique(sample_annotation[[batch_column]]))
+      n_batches <- length(unique(sample_annotation[[batch_col]]))
       if (n_batches <= 9){
         gg = gg + scale_color_brewer(palette = 'Set1')
       } else {
@@ -96,27 +96,27 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
       gg = gg + scale_color_manual(values = color_scheme)
     }
   }
-  if(!is.null(batch_column)){
-    if (!is.null(facet_column)){
-      order_vars <- c(facet_column, order_column)
-      batch_vars = c(facet_column, batch_column)
+  if(!is.null(batch_col)){
+    if (!is.null(facet_col)){
+      order_vars <- c(facet_col, order_col)
+      batch_vars = c(facet_col, batch_col)
       tipping.points = df_ave %>%
         arrange(!!!syms(order_vars))%>%
         group_by(!!!syms(batch_vars)) %>%
         summarise(batch_size = n()) %>%
-        group_by(!!sym(facet_column)) %>%
+        group_by(!!sym(facet_col)) %>%
         mutate(tipping.points = cumsum(batch_size))%>%
         mutate(tipping.poings = tipping.points+.5)
       gg = gg + geom_vline(data = tipping.points, aes(xintercept = tipping.poings),
                            color = 'grey', linetype = 'dashed')
     } else {
-      batch.tipping.points = cumsum(table(sample_annotation[[batch_column]]))+.5
+      batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
       gg = gg + geom_vline(xintercept = batch.tipping.points,
                            color = 'grey', linetype = 'dashed')
     }
   }
-  if(!is.null(facet_column)){
-    gg = gg + facet_wrap(as.formula(paste("~", facet_column)),
+  if(!is.null(facet_col)){
+    gg = gg + facet_wrap(as.formula(paste("~", facet_col)),
                          dir = 'v', scales = "free_x")
   }
 
@@ -136,18 +136,18 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #'
 #' @examples
 plot_boxplot <- function(df_long, sample_annotation = NULL,
-                       sample_id_column = 'FullRunName',
+                       sample_id_col = 'FullRunName',
                        measure_col = 'Intensity',
-                       order_column = 'order',
-                       batch_column = 'MS_batch.final',
-                       facet_column = 'instrument',
+                       order_col = 'order',
+                       batch_col = 'MS_batch.final',
+                       facet_col = 'instrument',
                        color_by_batch = T, color_scheme = 'brewer',
                        theme = 'classic',
                        plot_title = NULL, order_per_facet = F){
-  if (!all(c(batch_column, sample_id_column) %in% names(df_long))){
+  if (!all(c(batch_col, sample_id_col) %in% names(df_long))){
     if (!is.null(sample_annotation)){
       df_long = df_long %>% merge(sample_annotation,
-                                            by = sample_id_column)
+                                            by = sample_id_col)
     } else {
       if (color_by_batch){
         stop('batches cannot be colored if the batch column cannot be defined,
@@ -155,48 +155,48 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       }
     }
   }
-  if (is.null(order_column)){
+  if (is.null(order_col)){
     warning('order column not defined, taking order of files in the data matrix instead')
-    order_column = 'order_temp_col'
-    df_long[[order_column]] = match(df_long[[sample_id_column]],
-                                         unique(df_long[[sample_id_column]]))
-  } else if (!(order_column %in% names(sample_annotation)) &
-             !(order_column %in% names(df_long))){
+    order_col = 'order_temp_col'
+    df_long[[order_col]] = match(df_long[[sample_id_col]],
+                                         unique(df_long[[sample_id_col]]))
+  } else if (!(order_col %in% names(sample_annotation)) &
+             !(order_col %in% names(df_long))){
     warning('order column not found in sample annotation, taking order of files in the data matrix instead')
-    order_column = 'order_temp_col'
-    df_long[[order_column]] = match(df_long[[sample_id_column]],
-                                         unique(df_long[[sample_id_column]]))
+    order_col = 'order_temp_col'
+    df_long[[order_col]] = match(df_long[[sample_id_col]],
+                                         unique(df_long[[sample_id_col]]))
     order_per_facet = T
   }
 
   if (order_per_facet){
-    if (!is.null(facet_column)){
+    if (!is.null(facet_col)){
       warning('defining order within each facet')
       df_long = df_long %>%
-        group_by_at(vars(one_of(facet_column))) %>%
-        mutate(order = rank(UQ(sym(order_column))))
+        group_by_at(vars(one_of(facet_col))) %>%
+        mutate(order = rank(UQ(sym(order_col))))
     }
   }
 
-  gg = ggplot(df_long, aes_string(x = order_column, y = measure_col,
-                                       group = order_column))+
+  gg = ggplot(df_long, aes_string(x = order_col, y = measure_col,
+                                       group = order_col))+
     geom_boxplot(outlier.size = .15)+
     theme_bw()+
     theme(plot.title = element_text(face = 'bold', hjust = .5))
 
 
-  if (!is.numeric(df_long[[order_column]])){
+  if (!is.numeric(df_long[[order_col]])){
     warning(sprintf('order column is not numeric, assuming the order is irrelevant
-                    of %s order follows the run order.', order_column))
-    df_long[[order_column]] = factor(df_long[[order_column]],
-                                              levels = df_long[[order_column]])
+                    of %s order follows the run order.', order_col))
+    df_long[[order_col]] = factor(df_long[[order_col]],
+                                              levels = df_long[[order_col]])
     gg = gg +
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
   }
   if(color_by_batch){
-    gg = gg + aes_string(fill = batch_column)
+    gg = gg + aes_string(fill = batch_col)
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
-      n_batches <- length(unique(df_long[[batch_column]]))
+      n_batches <- length(unique(df_long[[batch_col]]))
       if(n_batches < 9){
         gg = gg + scale_fill_brewer(palette = 'Set1')
 
@@ -212,12 +212,12 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       gg = gg + scale_fill_manual(values = color_scheme)
     }
   }
-  if(!is.null(facet_column)){
-    if(!(facet_column %in% names(df_long))){
+  if(!is.null(facet_col)){
+    if(!(facet_col %in% names(df_long))){
       stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
-                   check sample annotation data frame', facet_column))
+                   check sample annotation data frame', facet_col))
     }
-    gg = gg + facet_wrap(as.formula(paste("~", facet_column)),
+    gg = gg + facet_wrap(as.formula(paste("~", facet_col)),
                          dir = 'v', scales = "free_x")
   }
   if(theme == 'classic'){
@@ -227,7 +227,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     gg = gg + ggtitle(plot_title)+
       theme(plot.title = element_text(hjust = .5, face = 'bold', size = 16))
   }
-  if (max(df_long[[order_column]]) > 100){
+  if (max(df_long[[order_col]]) > 100){
     gg = gg + theme(legend.position="top")
   }
   return(gg)
@@ -240,7 +240,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
 #' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
-#' @param batch_column column in `sample_annotation` that should be used for
+#' @param batch_col column in `sample_annotation` that should be used for
 #'   batch comparison
 #' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or
 #'   `qNorm_ComBat`). Useful if consecutive steps are compared in plots. Note
@@ -253,7 +253,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
 #'
 #' @examples
 #' @seealso \code{\link{plot_boxplot}}
-boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
+boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_col,
                               step = NULL){
   if(`*`(dim(list_of_dfs[[1]])[1], dim(list_of_dfs[[1]])[2]) * length(list_of_dfs) > 5*10^5){
     warning('Data matrices are huge, be patient, this might take a while (or crash)')
@@ -269,7 +269,7 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_column,
   }
 
   joined_proteome = do.call(rbind, list_of_dfs)
-  gg = gg_boxplot(joined_proteome, sample_annotation, batch_column) +
+  gg = gg_boxplot(joined_proteome, sample_annotation, batch_col) +
     facet_grid(.~step)
   return(gg)
 }
@@ -362,7 +362,7 @@ PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca
 #'   needs to explain (the rest will be lumped together)
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param feature_id_column name of the column with feature/gene/peptide/protein
+#' @param feature_id_col name of the column with feature/gene/peptide/protein
 #'   ID used in the long format representation \code{df_long}. In the wide
 #'   formatted representation \code{data_matrix} this corresponds to the row
 #'   names.
@@ -464,7 +464,7 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_col = 'FullRunNa
 #' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
-#' @param feature_id_column name of the column with feature/gene/peptide/protein
+#' @param feature_id_col name of the column with feature/gene/peptide/protein
 #'   ID used in the long format representation \code{df_long}. In the wide
 #'   formatted representation \code{data_matrix} this corresponds to the row
 #'   names.
@@ -485,22 +485,22 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_col = 'FullRunNa
 #' @examples
 #' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, \code{\link[ggplot2]{ggplot}}
 plot_pca <- function(data_matrix, sample_annotation,
-                     feature_id_column = 'peptide_group_label',
+                     feature_id_col = 'peptide_group_label',
                      color_by = 'MS_batch',
                      PC_to_plot = c(1,2),
                      colors_for_factor = NULL, fill_the_missing = NULL,
                      theme = 'classic',
                      plot_title = NULL){
 
-  if(!is.null(feature_id_column)){
-    if(feature_id_column %in% colnames(data_matrix)){
+  if(!is.null(feature_id_col)){
+    if(feature_id_col %in% colnames(data_matrix)){
       if(is.data.frame(data_matrix)){
         warning(sprintf('sample_id_col with name %s in data matrix instead of rownames,
                         this might cause errors in other diagnostic functions,
                         assign values of this column to rowname and remove from the data frame!', sample_id_col))
       }
-      rownames(data_matrix) = data_matrix[[feature_id_column]]
-      data_matrix[[feature_id_column]] = NULL
+      rownames(data_matrix) = data_matrix[[feature_id_col]]
+      data_matrix[[feature_id_col]] = NULL
       data_matrix = as.matrix(data_matrix)
       }
       if(!is.null(fill_the_missing)){
