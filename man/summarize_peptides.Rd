@@ -5,8 +5,8 @@
 \title{Summarize run features}
 \usage{
 summarize_peptides(df_long, sample_id_col = "FullRunName",
-  feature_id_column = "peptide_group_label", RT = "RT",
-  Intensity = "Intensity", m_score = "m_score")
+  feature_id_col = "peptide_group_label", RT = "RT",
+  measure_col = "Intensity", m_score = "m_score")
 }
 \value{
 a data frame summarizing features in a dataset on a per sample basis.

@@ -5,7 +5,7 @@
 \title{plot PCA plot}
 \usage{
 plot_pca(data_matrix, sample_annotation,
-  feature_id_column = "peptide_group_label", color_by = "MS_batch",
+  feature_id_col = "peptide_group_label", color_by = "MS_batch",
   PC_to_plot = c(1, 2), colors_for_factor = NULL, fill_the_missing = NULL,
   theme = "classic", plot_title = NULL)
 }
@@ -19,7 +19,7 @@ original data}
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
 
-\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
