@@ -13,30 +13,33 @@
 \title{Data normalization and batch adjustment methods}
 \usage{
 normalize_medians_batch(data_long, sample_annotation = NULL,
-  sample_id_column = "FullRunName", batch_column = "MS_batch.final",
-  feature_id_col = "peptide_group_label", measure_column = "Intensity")
+  sample_id_col = "FullRunName", batch_col = "MS_batch.final",
+  feature_id_col = "peptide_group_label", measure_col = "Intensity")
 
-normalize_medians_global(data_long, sample_id_column = "FullRunName",
-  measure_column = "Intensity")
+normalize_medians_global(data_long, sample_id_col = "FullRunName",
+  measure_col = "Intensity")
 
 normalize_custom_fit(data_matrix, sample_annotation,
-  batch_column = "MS_batch.final", feature_id_col = "peptide_group_label",
-  sample_id_column = "FullRunName", measure_col = "Intensity",
+  batch_col = "MS_batch.final", feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName", measure_col = "Intensity",
   sample_order_col = "order", fit_func = fit_nonlinear, return_long = F,
   ...)
 
 correct_with_ComBat(data_matrix, sample_annotation,
-  batch_column = "MS_batch.final", par.prior = TRUE)
+  batch_col = "MS_batch.final", par.prior = TRUE)
 }
 \arguments{
 \item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
 
-\item{batch_column}{column in `sample_annotation` that should be used for
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
+
+\item{batch_col}{column in `sample_annotation` that should be used for
 batch comparison}
 
-\item{measure_column}{if `df_long` is among the parameters, it is the column
+\item{measure_col}{if `df_long` is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
 
@@ -55,9 +58,6 @@ as covariate to fit the non-linear fit}
 \item{...}{other parameters, usually those of the `fit_func`}
 
 \item{par.prior}{}
-
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
 }
 \value{
 `data_matrix`-size data matrix with batch-effect corrected by

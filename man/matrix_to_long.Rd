@@ -5,7 +5,7 @@
 \title{Wide to long conversion}
 \usage{
 matrix_to_long(data_matrix, sample_annotation,
-  feature_id_column = "peptide_group_label", measure_column = "Intensity",
+  feature_id_col = "peptide_group_label", measure_col = "Intensity",
   sample_id_col = "FullRunName", step = NA)
 }
 \arguments{
@@ -17,12 +17,12 @@ transformed version of the original data}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{measure_column}{if \code{df_long} is among the parameters, it is the
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency}
 

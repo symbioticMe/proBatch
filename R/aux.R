@@ -11,14 +11,14 @@
 #' @export
 #'
 convert_to_matrix <- function(df_long,
-                              feature_id_column = 'peptide_group_label',
-                              measure_column = 'Intensity',
+                              feature_id_col = 'peptide_group_label',
+                              measure_col = 'Intensity',
                               sample_id_col = 'FullRunName') {
-  casting_formula =  as.formula(paste(feature_id_column, sample_id_col,
+  casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
                                       sep =  " ~ "))
   proteome_wide = dcast(df_long, formula = casting_formula,
-                        value.var = measure_column) %>%
-    column_to_rownames(feature_id_column) %>%
+                        value.var = measure_col) %>%
+    column_to_rownames(feature_id_col) %>%
     as.matrix()
   return(proteome_wide)
 }
@@ -42,14 +42,14 @@ convert_to_matrix <- function(df_long,
 #' @export
 #'
 matrix_to_long <- function(data_matrix, sample_annotation,
-                           feature_id_column = 'peptide_group_label',
-                           measure_column = 'Intensity',
+                           feature_id_col = 'peptide_group_label',
+                           measure_col = 'Intensity',
                            sample_id_col = 'FullRunName',
                            step = NA){
   df_long = data_matrix %>%
     as.data.frame() %>%
-    rownames_to_column(var = feature_id_column) %>%
-    melt(id.var = feature_id_column, value.name = measure_column,
+    rownames_to_column(var = feature_id_col) %>%
+    melt(id.var = feature_id_col, value.name = measure_col,
          variable.name = sample_id_col, factorsAsStrings = F) %>%
     mutate(Step = step) %>%
     merge(sample_annotation)
@@ -78,10 +78,10 @@ matrix_to_long <- function(data_matrix, sample_annotation,
 #' @export
 #'
 join_data_matrices <- function(matrices_list, step,
-                               sample_annotation, measure_column = 'Intensity'){
+                               sample_annotation, measure_col = 'Intensity'){
   long_df_list = lapply(1:length(matrices_list), function(i){
     matrix_to_long(matrices_list[[i]], sample_annotation = sample_annotation,
-                   measure_column = measure_column, step = step[i])
+                   measure_col = measure_col, step = step[i])
   })
   joined_df = do.call(rbind, long_df_list)
 
