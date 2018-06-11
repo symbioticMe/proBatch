@@ -6,7 +6,7 @@
 \usage{
 plot_pca(data_matrix, sample_annotation,
   feature_id_col = "peptide_group_label", color_by = "MS_batch",
-  PC_to_plot = c(1, 2), colors_for_factor = NULL, fill_the_missing = NULL,
+  PC_to_plot = c(1, 2), fill_the_missing = 0, colors_for_factor = NULL,
   theme = "classic", plot_title = NULL)
 }
 \arguments{
@@ -28,10 +28,10 @@ names.}
 
 \item{PC_to_plot}{principal component numbers for x and y axis}
 
-\item{colors_for_factor}{named vector of colors for the `color_by` variable}
-
 \item{fill_the_missing}{boolean value determining if missing values should be
 substituted with -1 (and colored with black)}
+
+\item{colors_for_factor}{named vector of colors for the `color_by` variable}
 
 \item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
 examples)}
