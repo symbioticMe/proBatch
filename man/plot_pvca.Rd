@@ -42,8 +42,13 @@ needs to explain (the rest will be lumped together)}
 \item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
 examples)}
 
-\item{title}{Title of the plot (usually, processing step + representation
+\item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
+
+\item{feature_id_column}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
 }
 \value{
 list of two items: plot =gg, df = pvca_res
@@ -52,5 +57,5 @@ list of two items: plot =gg, df = pvca_res
 Plot variance distribution by variable
 }
 \seealso{
-\code{\link{sample_annotation_to_colors}}
+\code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
 }

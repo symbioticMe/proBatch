@@ -4,9 +4,9 @@
 \alias{plot_clustering}
 \title{cluster the data matrix to visually inspect which confounder dominates}
 \usage{
-plot_clustering(data_matrix, color_df, title = "Clustering of raw samples",
-  distance = "euclidean", agglomeration = "complete", label_samples = T,
-  label_font = 0.2, plot_title = NULL, ...)
+plot_clustering(data_matrix, color_df, distance = "euclidean",
+  agglomeration = "complete", label_samples = T, label_font = 0.2,
+  plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -21,17 +21,19 @@ original data}
 
 \item{agglomeration}{agglomeration methods as used by `hclust`}
 
+\item{label_samples}{if \code{TRUE} sample IDs (column names of \code{data_matrix}) will be printed}
+
+\item{label_font}{size of the font. Is active if \code{label_samples} is \code{TRUE}, ignored otherwise}
+
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
 \item{...}{other parameters of `plotDendroAndColors` from `WGCNA` package}
-
-\item{plot_title}{}
 }
 \description{
 cluster the data matrix to visually inspect which confounder dominates
 }
 \seealso{
-\code{\link{[stats]:hclust}}, \code{\link{sample_annotation_to_colors}},
-  \code{\link{[WGCNA]plotDendroAndColors}}
+\code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
+  \code{\link[WGCNA]{plotDendroAndColors}}
 }
