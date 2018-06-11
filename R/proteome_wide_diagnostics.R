@@ -321,10 +321,12 @@ plot_clustering <- function(data_matrix, color_df,
 
 }
 
-PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca, threshold_var = Inf) {
+PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
+                 threshold_pca, threshold_var = Inf) {
+
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
   expr_set = Biobase::ExpressionSet(data_matrix[,rownames(sample_annotation)], covrts.annodf)
-  pvcaAssess <- pvca::pvcaBatchAssess (expr_set, factors_for_PVCA, threshold = threshold_pca)
+  pvcaAssess = pvca::pvcaBatchAssess (expr_set, factors_for_PVCA, threshold = threshold_pca)
   pvcaAssess_df = data.frame(weights = as.vector(pvcaAssess$dat),
                              label = pvcaAssess$label,
                              stringsAsFactors = F)
@@ -335,8 +337,9 @@ PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca
     pvca_res = pvcaAssess_df[pvcaAssess_df$weights >= threshold_var, ]
     pvca_res_add = data.frame(weights = pvca_res_small, label = label_of_small)
     pvca_res = rbind(pvca_res, pvca_res_add)
-  }
-  else {pvca_res = pvcaAssess_df}
+  } else {
+    pvca_res = pvcaAssess_df
+    }
   return(pvca_res)
 }
 
@@ -349,6 +352,12 @@ PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca
 #' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param feature_id_col name of the column with feature/gene/peptide/protein
+#'   ID used in the long format representation \code{df_long}. In the wide
+#'   formatted representation \code{data_matrix} this corresponds to the row
+#'   names.
 #' @param technical_covariates vector `sample_annotation` column names that are
 #'   technical covariates
 #' @param biological_covariates vector `sample_annotation` column names, that
@@ -376,28 +385,53 @@ PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA, threshold_pca
 #'
 #' @examples
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
-plot_pvca <- function(data_matrix, sample_annotation, sample_id_col = 'FullRunName',
-                 technical_covariates = c('MS_batch', 'instrument'),
-                 biological_covariates = c('cell_line','drug_dose'), colors_for_bars = NULL,
-                 threshold_pca = .6, threshold_var = .01,
-                 theme = 'classic', plot_title = NULL){
+plot_pvca <- function(data_matrix, sample_annotation,
+                      sample_id_col = 'FullRunName',
+                      feature_id_col = 'peptide_group_label',
+                      technical_covariates = c('MS_batch', 'instrument'),
+                      biological_covariates = c('cell_line','drug_dose'),
+                      fill_the_missing = 0, threshold_pca = .6, threshold_var = .01,
+                      colors_for_bars = NULL,
+                      theme = 'classic', plot_title = NULL){
   factors_for_PVCA = c(technical_covariates, biological_covariates)
+
+  sample_names = sample_annotation[[sample_id_col]]
+  sample_annotation = sample_annotation %>% select(one_of(factors_for_PVCA)) %>%
+    mutate_if(lubridate::is.POSIXct, as.numeric)
+  sample_annotation = as.data.frame(sample_annotation)
+  rownames(sample_annotation) = sample_names
+
   if (!is.null(sample_id_col)){
     if(sample_id_col %in% names(sample_annotation)){
       rownames(sample_annotation) = sample_annotation[[sample_id_col]]
     }
-    if(sample_id_col %in% colnames(data_matrix)){
+    if(feature_id_col %in% colnames(data_matrix)){
       if(is.data.frame(data_matrix)){
-        warning(sprintf('sample_id_col with name %s in data matrix instead of rownames,
+        warning(sprintf('feature_id_col with name %s in data matrix instead of rownames,
                         this might cause errors in other diagnostic functions,
-                        assign values of this column to rowname and remove from the data frame!', sample_id_col))
-        rownames(data_matrix) = data_matrix[[sample_id_col]]
-        data_matrix[[sample_id_col]] = NULL
+                        assign values of this column to rowname and remove from the data frame!', feature_id_col))
+        rownames(data_matrix) = data_matrix[[feature_id_col]]
+        data_matrix[[feature_id_col]] = NULL
         data_matrix = as.matrix(data_matrix)
         }
 
       }
+  } else {
+      if (!all(rownames(sample_annotation) %in% colnames(data_matrix))){
+        stop('sample names differ between data matrix and sample annotation')
+      }
+  }
+
+  if (any(is.na(as.vector(data_matrix)))){
+    warning('PVCA cannot operate with missing values in the matrix')
+    if(!is.null(fill_the_missing)){
+      warning(sprintf('filling missing value with %s', fill_the_missing))
+      data_matrix[is.na(data_matrix)] = fill_the_missing
+    } else {
+      warning('filling value is NULL, removing features with missing values')
+      data_matrix = data_matrix[complete.cases(data_matrix),]
     }
+  }
 
   pvca_res = PVCA(data_matrix, sample_annotation, factors_for_PVCA,
                    threshold_pca, threshold_var = threshold_var)
@@ -424,6 +458,8 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_col = 'FullRunNa
     arrange(desc(weights)) %>%
     arrange(label == label_of_small) %>%
     arrange(label == 'resid')
+  pvca_res = pvca_res %>%
+    mutate(label = factor(label, levels=label))
 
   pvca_res$label = factor(pvca_res$label, levels = pvca_res$label)
 
@@ -438,6 +474,11 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_col = 'FullRunNa
     colors_for_bars = c('grey', wesanderson::wes_palettes$Rushmore[3:5])
     names(colors_for_bars) = c('residual', 'biological', 'biol:techn', 'technical')
 
+  } else {
+    if (length(colors_for_bars) != 4){
+      color_names = paste(c('residual', 'biological', 'biol:techn', 'technical'), collapse = ' ')
+      warning(sprintf('four colors for: %s were expected', color_names))
+    }
   }
   gg = gg + scale_fill_manual(values = colors_for_bars)
 
@@ -487,25 +528,36 @@ plot_pvca <- function(data_matrix, sample_annotation, sample_id_col = 'FullRunNa
 plot_pca <- function(data_matrix, sample_annotation,
                      feature_id_col = 'peptide_group_label',
                      color_by = 'MS_batch',
-                     PC_to_plot = c(1,2),
-                     colors_for_factor = NULL, fill_the_missing = NULL,
+                     PC_to_plot = c(1,2), fill_the_missing = 0,
+                     colors_for_factor = NULL,
                      theme = 'classic',
                      plot_title = NULL){
 
   if(!is.null(feature_id_col)){
     if(feature_id_col %in% colnames(data_matrix)){
       if(is.data.frame(data_matrix)){
-        warning(sprintf('sample_id_col with name %s in data matrix instead of rownames,
+        warning(sprintf('feature_id_col with name %s in data matrix instead of rownames,
                         this might cause errors in other diagnostic functions,
-                        assign values of this column to rowname and remove from the data frame!', sample_id_col))
+                        assign values of this column to rowname and remove from the data frame!', feature_id_col))
       }
       rownames(data_matrix) = data_matrix[[feature_id_col]]
       data_matrix[[feature_id_col]] = NULL
       data_matrix = as.matrix(data_matrix)
       }
-      if(!is.null(fill_the_missing)){
-        data_matrix[is.na(data_matrix)] <- 0
+  }
+
+  if (any(is.na(as.vector(data_matrix)))){
+    warning('PCA cannot operate with missing values in the matrix')
+    if(!is.null(fill_the_missing)){
+      if (!is.numeric(fill_the_missing)){
+        fill_the_missing = 0
       }
+      warning(sprintf('filling missing value with %s', fill_the_missing))
+      data_matrix[is.na(data_matrix)] = fill_the_missing
+    } else {
+      warning('filling value is NULL, removing features with missing values')
+      data_matrix = data_matrix[complete.cases(data_matrix),]
+    }
   }
 
   if(length(color_by) > 1){
