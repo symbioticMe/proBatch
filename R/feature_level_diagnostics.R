@@ -9,7 +9,7 @@
 #' @param geom whether to show the feature as points and/or connect by lines
 #' @param color_by_batch (logical) whether to color points by batch
 #' @param facet_by_batch (logical) whether to plot each batch in its own facet
-#' @param title the string indicating the source of the peptides
+#' @param plot_title the string indicating the source of the peptides
 #' @param requant if data frame: requant values; if logical: whether to indicate
 #'   requant values (requires 'requant' or 'm_score' column in \code{df_long})
 #' @param theme plot theme (default is 'classical'; other options not
@@ -30,7 +30,8 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
                                feature_id_col = 'peptide_group_label',
                                geom = c('point', 'line'),
                                color_by_batch = F, facet_by_batch = F,
-                               title = NULL, requant = NULL, theme = 'classic'){
+                               plot_title = NULL, requant = NULL,
+                               theme = 'classic'){
   #TODO: suggest faceting by instrument
   #TODO: plot fit after LOESS
 
@@ -90,8 +91,8 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
   if (length(pep_name) > 1){
     gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
   }
-  if(!is.null(title)){
-    gg = gg + ggtitle(title)
+  if(!is.null(plot_title)){
+    gg = gg + ggtitle(plot_title)
   }
   if (!is.null(requant)){
     if (is.data.frame(requant)){
@@ -145,7 +146,7 @@ plot_spike_ins <- function(df_long, sample_annotation,
                            batch_col = 'MS_batch',
                            measure_col = 'Intensity',
                            feature_id_col = 'peptide_group_label',
-                           title = 'Spike-in BOVINE protein peptides', ...){
+                           plot_title = 'Spike-in BOVINE protein peptides', ...){
   spike_in_peptides = df_long %>%
     filter(grepl(spike_ins, ProteinName)) %>%
     pull(feature_id_col) %>% unique()
@@ -155,7 +156,7 @@ plot_spike_ins <- function(df_long, sample_annotation,
                           sample_id_col = sample_id_col,
                           batch_col = batch_col, measure_col = measure_col,
                           feature_id_col = feature_id_col,
-                          title = title, ...)
+                          plot_title = plot_title, ...)
   return(gg)
 }
 
@@ -187,7 +188,7 @@ plot_iRTs <- function(df_long, sample_annotation,
                       sample_id_col = 'FullRunName',
                       feature_id_col = 'peptide_group_label',
                       measure_col = 'Intensity',
-                      title = 'iRT peptide profile', ...){
+                      plot_title = 'iRT peptide profile', ...){
   iRT_peptides = df_long %>%
     filter(grepl(irt_pattern, ProteinName)) %>%
     pull(feature_id_col)  %>% unique()
@@ -197,7 +198,7 @@ plot_iRTs <- function(df_long, sample_annotation,
                           batch_col = batch_col,
                           feature_id_col = feature_id_col,
                           measure_col = measure_col,
-                          title = 'iRT_peptides', ...)
+                          plot_title = plot_title, ...)
   return(gg)
 }
 
@@ -240,7 +241,7 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                                     feature_id_col = 'peptide_group_label',
                                     geom = c('point', 'line'),
                                     color_by_batch = F, facet_by_batch = F,
-                                    title = NULL, requant = NULL,
+                                    plot_title = NULL, requant = NULL,
                                     theme = 'classic'){
   #TODO: in non-linear fit, change "Intensity_normalized" to "Intensity", but rename "Intensity" as "Intensity_before_fit"
   if(length(pep_name) > 10){
@@ -254,7 +255,7 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                           batch_col = batch_col,
                           measure_col = measure_col,
                           feature_id_col = feature_id_col,
-                          title = title,
+                          plot_title = plot_title,
                           facet_by_batch = facet_by_batch)
   if(!("Step" %in% names(fit_df))){
     fit_df$Step = fit_step

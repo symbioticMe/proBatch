@@ -8,7 +8,7 @@ plot_spike_ins(df_long, sample_annotation, order_col = "order",
   spike_ins = "BOVIN", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
   feature_id_col = "peptide_group_label",
-  title = "Spike-in BOVINE protein peptides", ...)
+  plot_title = "Spike-in BOVINE protein peptides", ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -41,7 +41,7 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{title}{the string indicating the source of the peptides}
+\item{plot_title}{the string indicating the source of the peptides}
 
 \item{...}{additional arguments to \code{\link{plot_peptide_level}} function}
 }
