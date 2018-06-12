@@ -390,7 +390,8 @@ plot_pvca <- function(data_matrix, sample_annotation,
                       feature_id_col = 'peptide_group_label',
                       technical_covariates = c('MS_batch', 'instrument'),
                       biological_covariates = c('cell_line','drug_dose'),
-                      fill_the_missing = 0, threshold_pca = .6, threshold_var = .01,
+                      fill_the_missing = 0,
+                      threshold_pca = .6, threshold_var = .01,
                       colors_for_bars = NULL,
                       theme = 'classic', plot_title = NULL){
   factors_for_PVCA = c(technical_covariates, biological_covariates)
@@ -447,6 +448,7 @@ plot_pvca <- function(data_matrix, sample_annotation,
     stop('check data matrix column names or these in sample annotation')
   }
 
+  label_of_small = sprintf('Below %1.0f%%', 100*threshold_var)
   technical_covariates = c(technical_covariates, tech_interactions)
   biological_covariates = c(biological_covariates, biol_interactions)
   pvca_res = pvca_res %>% mutate(category = ifelse(label %in% technical_covariates, 'technical',
