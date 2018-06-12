@@ -7,7 +7,7 @@
 plot_iRTs(df_long, sample_annotation, order_col = NULL, irt_pattern = "iRT",
   batch_col = "MS_batch.final", sample_id_col = "FullRunName",
   feature_id_col = "peptide_group_label", measure_col = "Intensity",
-  title = "iRT peptide profile", ...)
+  plot_title = "iRT peptide profile", ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -40,7 +40,7 @@ names.}
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency}
 
-\item{title}{the string indicating the source of the peptides}
+\item{plot_title}{the string indicating the source of the peptides}
 
 \item{...}{additional arguments to \code{\link{plot_peptide_level}} function}
 }
