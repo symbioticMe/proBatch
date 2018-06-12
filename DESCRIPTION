@@ -26,6 +26,7 @@ Imports:
     Biobase,
     corrplot,
     ggfortify,
+    data.table,
     lazyeval,
     lubridate,
     magrittr,
