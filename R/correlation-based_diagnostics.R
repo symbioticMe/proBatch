@@ -310,44 +310,226 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 }
 
 
-
-within_prot_correlation <- function(data_matrix_sub){
-  cor_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
-  return(cor_matrix)
-}
-
-get_prot_corr_df <- function(data_martix){
-  cor_matrix = within_prot_correlation(data_martix)
-  cor_vector = cor_matrix[upper.tri(cor_matrix)]
-  corr_df = data.frame(correlation = cor_vector)
-  return(corr_df)
-}
-
-#' Plot distribution of correlations
+#' Transform square correlation matrix into long data frame of correlations
 #'
-#' @param data_matrix_sub
+#' @param cor_proteome
+#' @param peptide_annotation
+#' @param protein_col
+#' @param feature_id_col
 #'
 #' @return
 #' @export
 #'
 #' @examples
-distribution_of_cor <- function(data_matrix_sub, facet_var = NULL, theme = 'classic'){
-  corr_df = get_prot_corr_df(data_matrix_sub)
-  gg = ggplot(corr_df,
-              aes(x = correlation))+
-    geom_histogram()
+get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = 'ProteinName',
+                             feature_id_col = 'peptide_group_label'){
+  #since we only need unique pairs of samples, we create df of combinations to keep
+  comb_to_keep = data.frame(t(combn(colnames(peptide_cor), 2)))
+  names(comb_to_keep) = paste(feature_id_col, 1:2, sep = '_')
+
+  #transforming square matrix to long format
+  corr_distribution = melt(peptide_cor,
+                           varnames = paste(feature_id_col,1:2, sep = '_'),
+                           value.name = 'correlation') %>%
+    merge(comb_to_keep) %>%
+    #merging with sample annotation, where we keep only sample_id_col, batch_col and biospecimen_col
+    merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
+          by.x = paste(feature_id_col,'1', sep = '_'),
+          by.y = feature_id_col, all.x = T) %>%
+    #to make it unambiguous, we rename columns, related to info of the left hand sample with "1" suffix, e.g. "Batch_1" meaning "batch of sample 1"
+    data.table::setnames(old = protein_col, new = paste(protein_col, 1, sep = '')) %>%
+    merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
+          by.x = paste(feature_id_col,'2', sep = '_'),
+          by.y = feature_id_col, all.x = T) %>%
+    data.table::setnames(old = protein_col, new = paste(protein_col, 2, sep = '')) %>%
+    #if protein_1 and protein_2 are the same
+    mutate(same_protein = (!!sym(paste(protein_col,'1', sep = '')) ==
+                          !!sym(paste(protein_col,'2', sep = ''))))
+  return(corr_distribution)
+}
+
+#' Plot distribution of peptide correlations within one protein and between proteins
+#'
+#' @param data_matrix
+#' @param peptide_annotation
+#' @param protein_col
+#' @param feature_id_col
+#' @param plot_title
+#' @param theme
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_prot_corr_distribution <- function(data_matrix, peptide_annotation,
+                                        protein_col = 'ProteinName',
+                                        feature_id_col = 'peptide_group_label',
+                                        plot_title = 'Distribution of peptide correlation',
+                                        theme = 'classic'){
+  corr_distribution_prot <- function(data_matrix, peptide_annotation, protein_col, feature_id_col)
+ {
+    corr_matrix = cor(t(data_matrix), use = "pairwise.complete.obs")
+
+    corr_distribution = get_peptide_corr_df(peptide_cor = corr_matrix,
+                                            peptide_annotation = peptide_annotation,
+                                            protein_col = protein_col,
+                                            feature_id_col = feature_id_col)
+    return(corr_distribution)
+  }
+  if (!is.list(data_matrix)){
+    corr_distribution = corr_distribution_prot(data_matrix, peptide_annotation,
+                                               protein_col, feature_id_col)
+  } else {
+    corr_distribution = lapply(1:length(data_matrix), function(i) {
+      dm = data_matrix[[i]]
+      corr_distribution = corr_distribution_prot(dm, peptide_annotation,
+                                                 protein_col, feature_id_col)
+      corr_distribution$Step = names(data_matrix)[i]
+      return(corr_distribution)
+    })
+    corr_distribution = do.call(rbind, corr_distribution)%>%
+      mutate(Step = factor(Step, levels = names(data_matrix)))
+  }
+  p <- ggplot(corr_distribution, aes_string(x = 'same_protein', y = 'correlation'))+
+    geom_violin()+
+    geom_boxplot(width = .1)+
+    ggtitle(plot_title)+
+    theme_classic()
+
+  if(is.list(data_matrix)){
+    if(length(data_matrix) <= 4){
+      p = p + theme_bw() + facet_grid(.~Step)
+    }
+    else {
+      p = p + theme_bw()+facet_grid(Step ~ .)
+    }
+  }
+  p = p + theme(plot.title = element_text(hjust = .5, face = 'bold'))
+  return(p)
+}
+
+#' Plot distribution of median correlations of peptides within same protein
+#'
+#' @param data_matrix
+#' @param peptide_annotation
+#' @param protein_col
+#' @param feature_id_col
+#' @param plot_title
+#' @param theme
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#'
+plot_within_prot_corr_distribution <- function(data_matrix_list, peptide_annotation,
+                                               protein_col = 'ProteinName',
+                                               feature_id_col = 'peptide_group_label',
+                                               plot_title = 'Distribution of peptide correlation',
+                                               theme = 'classic'){
+  summarize_prot_corr_distribution <- function(data_matrix, peptide_annotation,
+                                               protein_col, feature_id_col){
+    corr_matrix = cor(t(data_matrix), use = "pairwise.complete.obs")
+
+    corr_distribution = get_peptide_corr_df(peptide_cor = corr_matrix,
+                                            peptide_annotation = peptide_annotation,
+                                            protein_col = protein_col,
+                                            feature_id_col = feature_id_col)
+    corr_distribution = corr_distribution %>%
+      filter(same_protein == T) %>%
+      group_by(!!sym(paste(feature_id_col,'1', sep = '_'))) %>%
+      summarize(median_correlation = median(correlation, na.rm = T))
+    return(corr_distribution)
+  }
+  corr_distribution_list = lapply(1:length(data_matrix_list), function(i) {
+    dm = data_matrix_list[[i]]
+    corr_median_distribution = summarize_prot_corr_distribution(dm, peptide_annotation,
+                                                         protein_col, feature_id_col)
+    corr_median_distribution$Step = names(data_matrix_list)[i]
+    return(corr_median_distribution)
+  })
+  corr_median_distribution_final = do.call(rbind, corr_distribution_list)
+  corr_median_distribution_final = corr_median_distribution_final %>%
+    mutate(Step = factor(Step, levels = names(data_matrix_list)))
+
+  gg <- ggplot(corr_median_distribution_final, aes(y = median_correlation,
+                                                   x = Step))+
+    geom_violin()+
+    geom_boxplot(width = .1)
+
+  if(!is.null(plot_title))
+    gg = gg + ggtitle(plot_title)
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
-  if(!is.null(facet_var)){
-    if (length(facet_var) == 1){
-      gg = gg + facet_wrap(as.formula(paste("~", facet_var)))
-    } else {
-      if(length(facet_var) == 2){
-        gg = gg + facet_grid(as.formula(paste(facet_var, collapse = ' ~ ')))
-      }
-    }
 
+  return(gg)
+}
+
+#' Plot distribution curves for each step to see if they shift by data normalization
+#'
+#' @param data_matrix_list
+#' @param protein_name name of the protein, as specified in \code{protein_col}
+#' of \code{peptide_annotation}
+#' @param peptide_annotation
+#' @param protein_col
+#' @param feature_id_col
+#' @param plot_title
+#' @param theme
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_peptide_correlation_distr_one_protein <- function(data_matrix_list,
+                                                       protein_name,
+                                                       peptide_annotation,
+                                                       protein_col = 'ProteinName',
+                                                       feature_id_col = 'peptide_group_label',
+                                                       plot_title = sprintf('Distribution of peptide correlation at different correction steps,
+                                                                            %s protein',protein_name),
+                                                       theme = 'classic'){
+  for(i in 2:length(data_matrix_list)){
+    if (!all(rownames(data_matrix_list)[[1]] == rownames(data_matrix_list[[i]])))
+        stop("rownames of different data matrices don't match, please check!")
+  }
+  feature_ids = rownames(data_matrix_list[[1]])
+  peptides = peptide_annotation %>%
+    filter(UQ(sym(feature_id_col)) %in% feature_ids) %>%
+    filter(UQ(sym(protein_col)) == protein_name) %>%
+    pull(feature_id_col)
+
+  data_matrix_list = lapply(data_matrix_list, function(dm) {
+    dm_sub = dm[peptides,]
+    return(dm_sub)
+  })
+
+  corr_distribution_prot <- function(data_matrix, peptide_annotation, protein_col, feature_id_col)
+  {
+    corr_matrix = cor(t(data_matrix), use = 'complete.obs')
+
+    corr_distribution = get_peptide_corr_df(peptide_cor = corr_matrix,
+                                            peptide_annotation = peptide_annotation,
+                                            protein_col = protein_col,
+                                            feature_id_col = feature_id_col)
+    return(corr_distribution)
+  }
+  corr_distribution = lapply(1:length(data_matrix_list), function(i) {
+    dm = data_matrix_list[[i]]
+    corr_distribution = corr_distribution_prot(dm, peptide_annotation, protein_col,
+                                          feature_id_col)
+    corr_distribution$Step = names(data_matrix_list)[i]
+    return(corr_distribution)
+  })
+
+  corr_distribution = do.call(rbind, corr_distribution)
+  gg <- ggplot(corr_distribution, aes(linetype = Step, x = correlation))+
+    geom_line(stat="density")
+  if(!is.null(plot_title))
+    gg = gg + ggtitle(plot_title)
+  if(theme == 'classic'){
+    gg = gg + theme_classic()
   }
   return(gg)
 }
