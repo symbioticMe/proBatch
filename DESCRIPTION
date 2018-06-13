@@ -17,6 +17,8 @@ Description: The proBatch package contains functions for diagnosing and removing
     section of this package. 
     The approaches are described in (Čuklina et al. 2019, MCP)
 License: What license is it under?
+URL: https://github.com/jelenachuklina/proBatch
+BugReports: https://github.com/jelenachuklina/proBatch/issues
 Depends: R (>= 3.4.0),
     dplyr (>= 0.7.4),
     ggplot2
