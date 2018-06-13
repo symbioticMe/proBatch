@@ -5,10 +5,12 @@
 \title{Calculates correlation distribution for all pairs of the replicated samples}
 \usage{
 get_sample_corr_distrib(cor_proteome, sample_annotation,
-  sample_id_col = "FullRunName", biospecimen_id_col = "EarTag",
-  batch_col = "MS_batch.final")
+  sample_id_col = "sample_id", biospecimen_id_col = "EarTag",
+  batch_col = "batch")
 }
 \arguments{
+\item{cor_proteome}{sample correlation matrix (square)}
+
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
@@ -16,10 +18,23 @@ technical covariates (batches etc) }}
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
-\item{batch_col}{}
+\item{batch_col}{column in `sample_annotation` that should be used for
+batch comparison}
 }
 \value{
-
+dataframe with the following columns, that are suggested to use for
+plotting in \code{\link{plot_sample_corr_distribution}} as \code{plot_param}:
+\enumerate{
+\item \code{replicate}
+\item \code{batch_the_same}
+\item \code{batch_replicate}
+\item \code{batches}
+}
+other columns are: \enumerate{
+\item \code{sample_id_1} & \code{sample_id_2}, both generated from \code{sample_id_col} variable
+\item \code{correlation} - correlation of two corresponding samples
+\item \code{batch_1} & \code{batch_2} or analogous, created the same as \code{sample_id_1}
+}
 }
 \description{
 Calculates correlation distribution for all pairs of the replicated samples
