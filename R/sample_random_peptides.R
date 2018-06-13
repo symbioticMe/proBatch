@@ -12,7 +12,15 @@ cut_into_groups <- function(vect, groups, quantile = T){
 
 #' sample random peptides for diagnostics
 #'
-#' @param summarized_proteome
+#' @param proteome required columns: \enumerate{
+#' \item \code{m_score}
+#' \item \code{Intensity}
+#' \item \code{peptide_group_label}
+#' \item \code{RT}}
+#' @param seed
+#' @param pep_per_group number of peptides to sample per group
+#' @param groups_RT
+#' @param groups_intensity
 #'
 #' @return
 #' @export
