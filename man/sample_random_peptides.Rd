@@ -8,7 +8,15 @@ sample_random_peptides(proteome, seed = 1, pep_per_group = 3,
   groups_RT = 10, groups_intensity = 5)
 }
 \arguments{
-\item{summarized_proteome}{}
+\item{proteome}{required columns: \enumerate{
+\item \code{m_score}
+\item \code{Intensity}
+\item \code{peptide_group_label}
+\item \code{RT}}}
+
+\item{pep_per_group}{number of peptides to sample per group}
+
+\item{groups_intensity}{}
 }
 \description{
 sample random peptides for diagnostics
