@@ -56,6 +56,7 @@ be facetted by batch.
 }
 \seealso{
 Other feature-level diagnostic functions: \code{\link{plot_peptide_level}},
+  \code{\link{plot_peptides_of_one_protein}},
   \code{\link{plot_spike_ins}},
   \code{\link{plot_with_fitting_curve}}
 }
