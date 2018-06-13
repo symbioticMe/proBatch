@@ -120,6 +120,54 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
   return(gg)
 }
 
+#' Plot peptides of one protein
+#'
+#' Creates a spike-in facetted ggplot2 plot of the value in
+#' \code{measure_col} vs \code{order_col} using
+#' \code{\link{plot_peptide_level}}. Additionally, the resulting plot can also
+#' be facetted by batch.
+#'
+#' @inheritParams plot_peptide_level
+#' @param proteinName name of the protein as defined in \code{ProteinName}
+#' @param protein_col column where protein names are specified
+#' @param ... additional arguments to \code{\link{plot_peptide_level}} function
+#'
+#' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
+#'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
+#'
+#' @family feature-level diagnostic functions
+#'
+#' @export
+#'
+plot_peptides_of_one_protein <- function(proteinName, protein_col = 'ProteinName',
+                                         df_long, sample_annotation,
+                                         peptide_annotation = NULL,
+                                         order_col = 'order',
+                                         sample_id_col = 'FullRunName',
+                                         batch_col = 'MS_batch',
+                                         measure_col = 'Intensity',
+                                         feature_id_col = 'peptide_group_label',
+                                         plot_title = sprintf('Peptides of %s protein', proteinName), ...){
+  if (!is.null(peptide_annotation)){
+    peptides = peptide_annotation %>%
+      filter((!!sym(protein_col)) == proteinName) %>%
+      pull(!!sym(feature_id_col)) %>% unique()
+    peptides = peptides[peptides %in% df_long[[feature_id_col]]]
+  } else {
+    peptides = df_long %>%
+      filter((!!sym(protein_col)) == proteinName) %>%
+      pull(feature_id_col) %>% unique()
+  }
+  gg = plot_peptide_level(peptides, df_long = df_long,
+                          sample_annotation = sample_annotation,
+                          order_col = order_col,
+                          sample_id_col = sample_id_col,
+                          batch_col = batch_col, measure_col = measure_col,
+                          feature_id_col = feature_id_col,
+                          plot_title = plot_title, ...)
+  return(gg)
+}
+
 #' Plot spike-in measurements
 #'
 #' Creates a spike-in facetted ggplot2 plot of the value in
