@@ -86,3 +86,27 @@ join_data_matrices <- function(matrices_list, step,
   joined_df = do.call(rbind, long_df_list)
 
 }
+
+#' Create light-weight peptide annotation data frame for selection of illustrative proteins
+#'
+#' @param df_long
+#' @param peptide_col column containing peptide ID
+#' @param protein_col one or more columns contatining protein ID
+#'
+#' @return
+#' @export
+#'
+#' @examples \donotrun{
+#' peptide_annotation = create_peptide_annotation(example_proteome)
+#' peptide_summary =
+#' }
+#'
+#' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_corrplot_protein}},
+#' \code{\link{plot_within_prot_distribution}}
+create_peptide_annotation <- function(df_long, peptide_col = 'peptide_group_label',
+                                      protein_col = c('Uniprot_ID', 'Gene')){
+  peptide_annotation = df_long %>%
+    select(one_of(c(peptide_col, protein_col))) %>%
+    distinct()
+  return(peptide_annotation)
+}
