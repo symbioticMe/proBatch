@@ -2,21 +2,39 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{plot_sample_corr_distribution}
 \alias{plot_sample_corr_distribution}
-\title{Create violin plot of correlation distribution
-Typically to visualize within batch vs within replicate vs non-related sample correlation}
+\title{Create violin plot of correlation distribution}
 \usage{
 plot_sample_corr_distribution(data_matrix, sample_annotation,
-  repeated_samples = NULL, sample_id_col = "FullRunName",
-  batch_col = "MS_batch.final", covariate = "EarTag",
-  title = "Correlation_distribution", plot_param = "batch_the_same")
+  repeated_samples = NULL, sample_id_col = "sample_id",
+  batch_col = "batch", biospecimen_id_col = "EarTag",
+  plot_title = "Correlation distribution", plot_param = "batch_replicate")
 }
 \arguments{
-\item{plot_param}{}
+\item{repeated_samples}{if `NULL`, only repeated sample correlation is plotted}
+
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
+
+\item{batch_col}{column in \code{sample_annotation} that should be used for
+batch comparison}
+
+\item{plot_title}{Title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
+
+\item{plot_param}{columns, defined in correlation_df, which is output of
+\code{get_sample_corr_distrib}, specifically, #' \enumerate{
+\item \code{replicate}
+\item \code{batch_the_same}
+\item \code{batch_replicate}
+\item \code{batches}
+};}
+}
+\value{
+\code{ggplot} type object with violin plot for each \code{plot_param}
 }
 \description{
-Create violin plot of correlation distribution
-Typically to visualize within batch vs within replicate vs non-related sample correlation
+Useful to visualize within batch vs within replicate vs non-related sample correlation
 }
-\examples{
-
+\seealso{
+\code{\link{get_sample_corr_distrib}}, \code{\link[ggplot2]{ggplot}}
 }
