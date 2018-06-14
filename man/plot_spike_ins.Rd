@@ -7,7 +7,7 @@
 plot_spike_ins(df_long, sample_annotation, order_col = "order",
   spike_ins = "BOVIN", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
-  feature_id_col = "peptide_group_label",
+  feature_id_col = "peptide_group_label", requant = NULL,
   plot_title = "Spike-in BOVINE protein peptides", ...)
 }
 \arguments{
@@ -40,6 +40,9 @@ internally for consistency}
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
+
+\item{requant}{if data frame: requant values; if logical: whether to indicate
+requant values (requires 'requant' or 'm_score' column in \code{df_long})}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
