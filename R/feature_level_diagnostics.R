@@ -30,12 +30,10 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
                                feature_id_col = 'peptide_group_label',
                                geom = c('point', 'line'),
                                color_by_batch = F, facet_by_batch = F,
-                               plot_title = NULL, requant = NULL,
+                               requant = NULL,
+                               plot_title = NULL,
                                theme = 'classic'){
   #TODO: suggest faceting by instrument
-  #TODO: plot fit after LOESS
-
-
 
   plot_df = df_long %>%
     filter(UQ(as.name(feature_id_col)) %in% pep_name)
@@ -98,18 +96,20 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
     if (is.data.frame(requant)){
       data_requant = requant
     } else {
-      if('requant' %in% names(df_long)){
-        data_requant = plot_df %>% filter(requant)
-      } else {
-        if('m_score' %in% names(df_long)){
-          data_requant = plot_df %>% filter(m_score == 2)
-        } else{
-          stop('requant cannot be plotted without requant table or m_scores!')
-        }
-      }
+      data_requant = plot_df
     }
     data_requant = data_requant %>%
       filter(UQ(as.name(feature_id_col)) %in% pep_name)
+    if('requant' %in% names(df_long)){
+      data_requant = plot_df %>% filter(requant)
+    } else {
+      if('m_score' %in% names(df_long)){
+        data_requant = plot_df %>% filter(m_score == 2)
+      } else{
+        stop('requant cannot be plotted without requant table or m_scores!')
+      }
+    }
+
     gg = gg + geom_point(data = data_requant,
                          aes_string(x = order_col, y = measure_col),
                          color = 'red', size = .3, shape = 8)
@@ -147,7 +147,8 @@ plot_peptides_of_one_protein <- function(proteinName, protein_col = 'ProteinName
                                          batch_col = 'MS_batch',
                                          measure_col = 'Intensity',
                                          feature_id_col = 'peptide_group_label',
-                                         plot_title = sprintf('Peptides of %s protein', proteinName), ...){
+                                         requant = NULL,
+                                         plot_title = sprintf('Peptides of %s protein', proteinName),...){
   if (!is.null(peptide_annotation)){
     peptides = peptide_annotation %>%
       filter((!!sym(protein_col)) == proteinName) %>%
@@ -194,6 +195,7 @@ plot_spike_ins <- function(df_long, sample_annotation,
                            batch_col = 'MS_batch',
                            measure_col = 'Intensity',
                            feature_id_col = 'peptide_group_label',
+                           requant = NULL,
                            plot_title = 'Spike-in BOVINE protein peptides', ...){
   spike_in_peptides = df_long %>%
     filter(grepl(spike_ins, ProteinName)) %>%
@@ -232,10 +234,11 @@ plot_spike_ins <- function(df_long, sample_annotation,
 plot_iRTs <- function(df_long, sample_annotation,
                       order_col = NULL,
                       irt_pattern = 'iRT',
-                      batch_col = 'MS_batch.final',
                       sample_id_col = 'FullRunName',
-                      feature_id_col = 'peptide_group_label',
+                      batch_col = 'MS_batch.final',
                       measure_col = 'Intensity',
+                      feature_id_col = 'peptide_group_label',
+                      requant = NULL,
                       plot_title = 'iRT peptide profile', ...){
   iRT_peptides = df_long %>%
     filter(grepl(irt_pattern, ProteinName)) %>%
