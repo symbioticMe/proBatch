@@ -1,12 +1,12 @@
 #' Remove requanted and sparse features
 #'
-#' Cleans dataset \code{df_long} (\link{proBatch}) by removing requanted features and features not
-#' meeting user define sparsness criterias.
+#' Cleans dataset \code{df_long} (\link{proBatch}) by removing requanted features
+#' and features not meeting user defined sparsness criterias.
 #'
 #' @inheritParams proBatch
-#' @param threshold_batch maximally tollerated fraction of missing values for a
+#' @param missing_frac_batch maximally tolerated fraction of missing values for a
 #'   feature in a batch
-#' @param threshold_global maximally tollerated fraction of globally missing
+#' @param missing_frac_total maximally tolerated fraction of globally missing
 #'   values for a feature
 #'
 #' @return \code{df_long} (\link{proBatch}) like data frame filtered as follow:
@@ -20,7 +20,7 @@
 clean_requants <- function(df_long, sample_annotation,
                            batch_col = 'MS_batch.final',
                            feature_id_col = 'peptide_group_label',
-                           threshold_batch = .3, threshold_global = .3){
+                           missing_frac_batch = .3, missing_frac_total = .3){
   #for dplyr version 0.7 and higher, this is the way to call the functions
   n_samples = nrow(sample_annotation)
   df_clean = df_long %>%
@@ -36,8 +36,8 @@ clean_requants <- function(df_long, sample_annotation,
     group_by_at(vars(one_of(c(feature_id_col)))) %>%
     mutate(n_samples_for_peptide = n()) %>%
     mutate(requant_fraction = 1 - n_samples_for_peptide/n_samples) %>%
-    filter(requant_fraction < (1 - threshold_global)) %>%
-    filter(requant_fraction_batch < (1 - threshold_batch)) %>%
+    filter(requant_fraction < (1 - missing_frac_total)) %>%
+    filter(requant_fraction_batch < (1 - missing_frac_batch)) %>%
     ungroup()
   return(df_clean)
 }
@@ -63,14 +63,14 @@ remove_peptides_with_missing_batch <- function(df_long,
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     summarize(n = n()) %>%
     ungroup () %>%
-    complete(!!!rlang::syms(c(feature_id_col, batch_col)))%>%
+    complete(!!!syms(c(feature_id_col, batch_col)))%>%
     group_by_at(vars(one_of(c(feature_id_col)))) %>%
     summarize(full_batches = all(!is.na(n))) %>%
     filter(full_batches) %>%
     pull(feature_id_col)
 
   proteome_clean = df_long %>%
-    filter(rlang::UQ(as.name(feature_id_col)) %in% features_consistent)
+    filter(UQ(sym(feature_id_col)) %in% features_consistent)
   return(proteome_clean)
 }
 
