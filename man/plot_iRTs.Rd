@@ -5,9 +5,9 @@
 \title{Plot iRT measurements}
 \usage{
 plot_iRTs(df_long, sample_annotation, order_col = NULL, irt_pattern = "iRT",
-  batch_col = "MS_batch.final", sample_id_col = "FullRunName",
-  feature_id_col = "peptide_group_label", measure_col = "Intensity",
-  plot_title = "iRT peptide profile", ...)
+  sample_id_col = "FullRunName", batch_col = "MS_batch.final",
+  measure_col = "Intensity", feature_id_col = "peptide_group_label",
+  requant = NULL, plot_title = "iRT peptide profile", ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -25,20 +25,23 @@ used for certain diagnostics and normalisations.}
 \item{irt_pattern}{substring used to identify irts proteins in the column
 'ProteinName'}
 
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
+
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
+column with expression/abundance/intensity; otherwise, it is used
+internally for consistency}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{measure_col}{if \code{df_long} is among the parameters, it is the
-column with expression/abundance/intensity; otherwise, it is used
-internally for consistency}
+\item{requant}{if data frame: requant values; if logical: whether to indicate
+requant values (requires 'requant' or 'm_score' column in \code{df_long})}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
