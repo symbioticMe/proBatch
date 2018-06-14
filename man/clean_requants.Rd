@@ -5,8 +5,8 @@
 \title{Remove requanted and sparse features}
 \usage{
 clean_requants(df_long, sample_annotation, batch_col = "MS_batch.final",
-  feature_id_col = "peptide_group_label", threshold_batch = 0.3,
-  threshold_global = 0.3)
+  feature_id_col = "peptide_group_label", missing_frac_batch = 0.3,
+  missing_frac_total = 0.3)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -26,10 +26,10 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{threshold_batch}{maximally tollerated fraction of missing values for a
+\item{missing_frac_batch}{maximally tolerated fraction of missing values for a
 feature in a batch}
 
-\item{threshold_global}{maximally tollerated fraction of globally missing
+\item{missing_frac_total}{maximally tolerated fraction of globally missing
 values for a feature}
 }
 \value{
@@ -38,8 +38,8 @@ values for a feature}
   batch or global sparsness thresholds }
 }
 \description{
-Cleans dataset \code{df_long} (\link{proBatch}) by removing requanted features and features not
-meeting user define sparsness criterias.
+Cleans dataset \code{df_long} (\link{proBatch}) by removing requanted features
+and features not meeting user defined sparsness criterias.
 }
 \seealso{
 Other dataset cleaning functions: \code{\link{remove_peptides_with_missing_batch}},
