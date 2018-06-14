@@ -8,7 +8,7 @@ plot_peptide_level(pep_name, df_long, sample_annotation, order_col = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch.final",
   measure_col = "Intensity", feature_id_col = "peptide_group_label",
   geom = c("point", "line"), color_by_batch = F, facet_by_batch = F,
-  plot_title = NULL, requant = NULL, theme = "classic")
+  requant = NULL, plot_title = NULL, theme = "classic")
 }
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
@@ -46,10 +46,10 @@ names.}
 
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
-\item{plot_title}{the string indicating the source of the peptides}
-
 \item{requant}{if data frame: requant values; if logical: whether to indicate
 requant values (requires 'requant' or 'm_score' column in \code{df_long})}
+
+\item{plot_title}{the string indicating the source of the peptides}
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
