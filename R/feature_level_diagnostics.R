@@ -36,9 +36,10 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
   #TODO: suggest faceting by instrument
 
   plot_df = df_long %>%
-    filter(UQ(as.name(feature_id_col)) %in% pep_name)
+    filter(UQ(sym(feature_id_col)) %in% pep_name)
   if (!all(names(sample_annotation) %in% names(df_long))){
-    sample_annotation = sample_annotation %>% arrange_(order_col)
+    sample_annotation = sample_annotation %>%
+      arrange(!!sym(order_col))
     #remove annotation columns, except the sample_id_col
     common_cols = intersect(names(sample_annotation), names(plot_df))
     cols_to_remove = setdiff(common_cols, sample_id_col)
@@ -294,7 +295,7 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                                     color_by_batch = F, facet_by_batch = F,
                                     plot_title = NULL, requant = NULL,
                                     theme = 'classic'){
-  #TODO: in non-linear fit, change "Intensity_normalized" to "Intensity", but rename "Intensity" as "Intensity_before_fit"
+
   if(length(pep_name) > 10){
     warning("Visualisation of individual features can be suboptimal,
             consider exploring no more than 5 features at a time")
