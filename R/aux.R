@@ -41,7 +41,7 @@ convert_to_matrix <- function(df_long,
 #'
 #' @export
 #'
-matrix_to_long <- function(data_matrix, sample_annotation,
+matrix_to_long <- function(data_matrix, sample_annotation = NULL,
                            feature_id_col = 'peptide_group_label',
                            measure_col = 'Intensity',
                            sample_id_col = 'FullRunName',
@@ -51,8 +51,10 @@ matrix_to_long <- function(data_matrix, sample_annotation,
     rownames_to_column(var = feature_id_col) %>%
     melt(id.var = feature_id_col, value.name = measure_col,
          variable.name = sample_id_col, factorsAsStrings = F) %>%
-    mutate(Step = step) %>%
-    merge(sample_annotation)
+    mutate(Step = step)
+  if(!is.null(sample_annotation))
+    df_long = df_long %>%
+      merge(sample_annotation)
   return(df_long)
 }
 
@@ -77,14 +79,22 @@ matrix_to_long <- function(data_matrix, sample_annotation,
 #'
 #' @export
 #'
-join_data_matrices <- function(matrices_list, step,
-                               sample_annotation, measure_col = 'Intensity'){
+join_data_matrices <- function(matrices_list, step = NULL,
+                               sample_annotation = NULL,
+                               feature_id_col = 'peptide_group_label',
+                               measure_col = 'Intensity',
+                               sample_id_col = 'FullRunName'){
+  if(is.null(step)) step = names(matrices_list)
+  if(length(step) != length(matrices_list)){
+    stop('check the step names and list of matrices')
+  }
   long_df_list = lapply(1:length(matrices_list), function(i){
     matrix_to_long(matrices_list[[i]], sample_annotation = sample_annotation,
-                   measure_col = measure_col, step = step[i])
+                   measure_col = measure_col, step = step[i],
+                   feature_id_col = feature_id_col, sample_id_col = sample_id_col)
   })
   joined_df = do.call(rbind, long_df_list)
-
+  return(joined_df)
 }
 
 #' Create light-weight peptide annotation data frame for selection of illustrative proteins
