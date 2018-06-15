@@ -4,8 +4,9 @@
 \alias{join_data_matrices}
 \title{Join data matrices}
 \usage{
-join_data_matrices(matrices_list, step, sample_annotation,
-  measure_col = "Intensity")
+join_data_matrices(matrices_list, step = NULL, sample_annotation = NULL,
+  feature_id_col = "peptide_group_label", measure_col = "Intensity",
+  sample_id_col = "FullRunName")
 }
 \arguments{
 \item{matrices_list}{list of matrices in \code{data_matrix} (\link{proBatch}) format to be joined}
@@ -19,9 +20,17 @@ naming with numbers, e.g. `1_raw`, `2_quantile`}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
+
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency}
+
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 }
 \value{
 \code{df_long} (\link{proBatch}) like data frame with a row, having entries for:
