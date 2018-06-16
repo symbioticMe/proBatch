@@ -46,7 +46,8 @@ plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
       corrplot.mixed(corr_matrix, title = plot_title, ...)
       dev.off()
     } else{
-      pheatmap(corr_matrix, filename = paste(filename, '.pdf', sep = ''), width = width, main = plot_title, ...)
+      pheatmap(corr_matrix, filename = paste(filename, '.pdf', sep = ''),
+               width = width, height = height, main = plot_title, ...)
     }
 
   }
