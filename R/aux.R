@@ -54,7 +54,7 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
     mutate(Step = step)
   if(!is.null(sample_annotation))
     df_long = df_long %>%
-      merge(sample_annotation)
+      merge(sample_annotation, by = sample_id_col)
   return(df_long)
 }
 
