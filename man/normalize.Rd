@@ -22,8 +22,7 @@ normalize_medians_global(data_long, sample_id_col = "FullRunName",
 normalize_custom_fit(data_matrix, sample_annotation,
   batch_col = "MS_batch.final", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  sample_order_col = "order", fit_func = fit_nonlinear, return_long = F,
-  ...)
+  sample_order_col = "order", fit_func = fit_nonlinear, ...)
 
 correct_with_ComBat(data_matrix, sample_annotation,
   batch_col = "MS_batch.final", par.prior = TRUE)
@@ -52,12 +51,12 @@ as covariate to fit the non-linear fit}
 
 \item{fit_func}{function to fit the (non)-linear trend}
 
-\item{return_long}{whether the result should be the "long" data frame (as
-`df_long`) or "wide" (as `data_matrix`)}
-
 \item{...}{other parameters, usually those of the `fit_func`}
 
 \item{par.prior}{}
+
+\item{return_long}{whether the result should be the "long" data frame (as
+`df_long`) or "wide" (as `data_matrix`)}
 }
 \value{
 `data_matrix`-size data matrix with batch-effect corrected by
@@ -79,4 +78,10 @@ non-parametric empirical Bayes frameworks for adjusting data for batch
 effects.  Users are returned an expression matrix that has been corrected for
 batch effects. The input data are assumed to be cleaned and normalized before
 batch effect removal.
+}
+\examples{
+
+}
+\seealso{
+\code{\link{fit_nonlinear}}
 }
