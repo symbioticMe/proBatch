@@ -67,8 +67,8 @@ Plot Intensity of a few representative peptides for each step of the analysis
 including the fitting curve
 }
 \seealso{
-Other feature-level diagnostic functions: \code{\link{plot_iRTs}},
-  \code{\link{plot_peptide_level}},
+Other feature-level diagnostic functions: \code{\link{plot_iRT_trend}},
+  \code{\link{plot_peptide_trend}},
   \code{\link{plot_peptides_of_one_protein}},
-  \code{\link{plot_spike_ins}}
+  \code{\link{plot_spike_ins_trend}}
 }
