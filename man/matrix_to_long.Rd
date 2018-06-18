@@ -6,7 +6,7 @@
 \usage{
 matrix_to_long(data_matrix, sample_annotation = NULL,
   feature_id_col = "peptide_group_label", measure_col = "Intensity",
-  sample_id_col = "FullRunName", step = NA)
+  sample_id_col = "FullRunName", step = NULL)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
