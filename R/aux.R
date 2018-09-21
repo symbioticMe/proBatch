@@ -45,13 +45,16 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
                            feature_id_col = 'peptide_group_label',
                            measure_col = 'Intensity',
                            sample_id_col = 'FullRunName',
-                           step = NA){
+                           step = NULL){
   df_long = data_matrix %>%
     as.data.frame() %>%
     rownames_to_column(var = feature_id_col) %>%
     melt(id.var = feature_id_col, value.name = measure_col,
-         variable.name = sample_id_col, factorsAsStrings = F) %>%
-    mutate(Step = step)
+         variable.name = sample_id_col, factorsAsStrings = F)
+  if(!is.null(step)){
+    df_long = df_long %>%
+      mutate(Step = step)
+  }
   if(!is.null(sample_annotation))
     df_long = df_long %>%
       merge(sample_annotation, by = sample_id_col)
