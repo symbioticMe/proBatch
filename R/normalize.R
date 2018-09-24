@@ -99,17 +99,19 @@ normalize_medians_global <- function(data_long,
 #' @import lazyeval
 #'
 #' @examples
+#'
+#' @seealso \code{\link{fit_nonlinear}}
 normalize_custom_fit <- function(data_matrix, sample_annotation,
                                  batch_col = 'MS_batch.final',
                                  feature_id_col = 'peptide_group_label',
                                  sample_id_col = 'FullRunName',
                                  measure_col = 'Intensity',
                                  sample_order_col = 'order',
-                                 fit_func = fit_nonlinear,
-                                 return_long = F, ...){
+                                 fit_func = fit_nonlinear, ...){
 
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
+  #TODO: change to matrix_to_long
   df_long = data_matrix %>%
     melt(id.vars = feature_id_col)
   names(df_long) = c(feature_id_col, sample_id_col, measure_col)
@@ -133,14 +135,16 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     #TODO: try to get rid of rlang by the following expression:
     #mutate(Intensity_normalized = diff + UQ(sym(measure_col)))
     #if only the fitted data table is required (not recommended)
-    if(!return_long){
-      casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
-                                          sep =  " ~ "))
-      df_normalized = dcast(df_normalized, formula = casting_formula,
-                            value.var = 'Intensity_normalized')
-      df_normalized = as.matrix(df_normalized[,2:ncol(df_normalized)])
-                     }
-  return(df_normalized)
+    fit_df = df_normalized %>% select(one_of(c('fit', feature_id_col,
+                                               sample_id_col, batch_col)))
+
+    casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
+                                        sep =  " ~ "))
+    df_normalized = dcast(df_normalized, formula = casting_formula,
+                          value.var = 'Intensity_normalized')
+    df_normalized = as.matrix(df_normalized[,2:ncol(df_normalized)])
+  return(list(data_matrix = df_normalized,
+              fit_df = fit_df))
 }
 
 
