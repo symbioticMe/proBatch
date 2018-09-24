@@ -50,7 +50,8 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              facet_col = 'instrument',
                              color_by_batch = F, color_scheme = 'brewer',
                              theme = 'classic',
-                             plot_title = NULL, order_per_facet = F){
+                             plot_title = NULL, order_per_facet = F,
+                             vline_color = 'grey'){
   sample_average = colMeans(data_matrix, na.rm = T)
   names(sample_average) = colnames(data_matrix)
 
@@ -108,11 +109,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
         mutate(tipping.points = cumsum(batch_size))%>%
         mutate(tipping.poings = tipping.points+.5)
       gg = gg + geom_vline(data = tipping.points, aes(xintercept = tipping.poings),
-                           color = 'grey', linetype = 'dashed')
+                           color = vline_color, linetype = 'dashed')
     } else {
       batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
       gg = gg + geom_vline(xintercept = batch.tipping.points,
-                           color = 'grey', linetype = 'dashed')
+                           color = vline_color, linetype = 'dashed')
     }
   }
   if(!is.null(facet_col)){
@@ -295,7 +296,7 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_col,
 #' @examples
 #' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
 #'   \code{\link[WGCNA]{plotDendroAndColors}}
-plot_clustering <- function(data_matrix, color_df,
+plot_sample_clustering <- function(data_matrix, color_df,
                             distance = "euclidean",
                             agglomeration = 'complete',
                             label_samples = T, label_font = .2,
@@ -319,6 +320,60 @@ plot_clustering <- function(data_matrix, color_df,
                         hang = -0.1, addGuide = T, dendroLabels = F, ...)
   }
 
+}
+
+#' Plot the heatmap of samples
+#'
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. in most
+#'   function, it is assumed that this is the log transformed version of the
+#'   original data
+#' @param sample_annotation data matrix with \enumerate{
+#' \item  `sample_id_col` (this can be repeated as row names)
+#'   \item  biological and
+#'   \item  technical covariates (batches etc)
+#' }; each column of sample annotation will get it's own row. If `cluster_cols = T` this will indicate,
+#' whether sample proximity is driven by one of biolical or technical factors
+#' @param fill_the_missing boolean value determining if missing values should be
+#'   substituted with -1 (and colored with black)
+#' @param cluster_rows boolean value determining if rows should be clustered
+#' @param cluster_cols boolean value determining if columns should be clustered
+#' @param annotation_color_list list specifying colors for columns (samples).
+#'   Best created by `sample_annotation_to_colors`
+#' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
+#' @param color_for_missing special color to make missing values. Usually black or white, depending on `heatmap_color`
+#' @param filename filepath where to save the image
+#' @param plot_title Title of the plot (usually, processing step + representation
+#'   level (fragments, transitions, proteins))
+#' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
+
+#' @return object returned by \code{link[pheatmap]{pheatmap}}
+#' @export
+#'
+#' @examples
+#' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
+plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing = T,
+                         cluster_rows = T, cluster_cols = F,
+                         annotation_color_list = NA,
+                         heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100),
+                         color_for_missing = 'black',
+                         filename = NA, plot_title = NA,
+                         ...){
+  if(fill_the_missing) {
+    data_matrix[is.na(data_matrix)] = 0
+    warning('substituting missing values with 0, this might affect the clustering!')
+    heatmap_color = c(color_for_missing, heatmap_color)
+  }
+
+  if (is.null(sample_annotation)){
+    #for consistency: other functions rely on NULL
+    sample_annotation = NA
+  }
+  p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
+                color = heatmap_color,
+                annotation_col = sample_annotation, annotation_colors = annotation_color_list,
+                filename = filename, main = plot_title, ...)
+  return(p)
 }
 
 PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
@@ -527,7 +582,7 @@ plot_pvca <- function(data_matrix, sample_annotation,
 #'
 #' @examples
 #' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, \code{\link[ggplot2]{ggplot}}
-plot_pca <- function(data_matrix, sample_annotation,
+plot_PCA <- function(data_matrix, sample_annotation,
                      feature_id_col = 'peptide_group_label',
                      color_by = 'MS_batch',
                      PC_to_plot = c(1,2), fill_the_missing = 0,
@@ -582,56 +637,4 @@ plot_pca <- function(data_matrix, sample_annotation,
   return(gg)
 }
 
-#' Plot the heatmap of samples
-#'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. in most
-#'   function, it is assumed that this is the log transformed version of the
-#'   original data
-#' @param sample_annotation data matrix with \enumerate{
-#' \item  `sample_id_col` (this can be repeated as row names)
-#'   \item  biological and
-#'   \item  technical covariates (batches etc)
-#' }; each column of sample annotation will get it's own row. If `cluster_cols = T` this will indicate,
-#' whether sample proximity is driven by one of biolical or technical factors
-#' @param fill_the_missing boolean value determining if missing values should be
-#'   substituted with -1 (and colored with black)
-#' @param cluster_rows boolean value determining if rows should be clustered
-#' @param cluster_cols boolean value determining if columns should be clustered
-#' @param annotation_color_list list specifying colors for columns (samples).
-#'   Best created by `sample_annotation_to_colors`
-#' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
-#' @param color_for_missing special color to make missing values. Usually black or white, depending on `heatmap_color`
-#' @param filename filepath where to save the image
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
-#' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
 
-#' @return object returned by \code{link[pheatmap]{pheatmap}}
-#' @export
-#'
-#' @examples
-#' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
-plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing = T,
-                         cluster_rows = T, cluster_cols = F,
-                         annotation_color_list = NA,
-                         heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100),
-                         color_for_missing = 'black',
-                         filename = NA, plot_title = NA,
-                         ...){
-  if(fill_the_missing) {
-    data_matrix[is.na(data_matrix)] = 0
-    warning('substituting missing values with 0, this might affect the clustering!')
-    heatmap_color = c(color_for_missing, heatmap_color)
-  }
-
-  if (is.null(sample_annotation)){
-    #for consistency: other functions rely on NULL
-    sample_annotation = NA
-  }
-  p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
-           color = heatmap_color,
-           annotation_col = sample_annotation, annotation_colors = annotation_color_list,
-           filename = filename, main = plot_title, ...)
-  return(p)
-}
