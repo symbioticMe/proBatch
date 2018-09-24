@@ -9,7 +9,8 @@ plot_with_fitting_curve(pep_name, data_df_all_steps, sample_annotation, fit_df,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   measure_col = "Intensity", feature_id_col = "peptide_group_label",
   geom = c("point", "line"), color_by_batch = F, facet_by_batch = F,
-  plot_title = NULL, requant = NULL, theme = "classic")
+  plot_title = NULL, requant = NULL, theme = "classic",
+  vline_color = "grey", ...)
 }
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
