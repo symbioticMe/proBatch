@@ -8,7 +8,8 @@ plot_peptide_trend(pep_name, df_long, sample_annotation, order_col = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch.final",
   measure_col = "Intensity", feature_id_col = "peptide_group_label",
   geom = c("point", "line"), color_by_batch = F, facet_by_batch = F,
-  requant = NULL, plot_title = NULL, theme = "classic")
+  requant = NULL, plot_title = NULL, vline_color = "red",
+  theme = "classic")
 }
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
