@@ -96,7 +96,7 @@ plot_protein_corrplot <- function(data_matrix,
     peptides = peptide_annotation %>%
       filter(UQ(sym(peptide_col_name)) %in% rownames(data_matrix)) %>%
       filter(UQ(sym(protein_col)) == protein_name) %>%
-      pull(peptide_col_name)
+      pull(peptide_col_name) %>% as.character()
     #peptide_annotation[[peptide_col_name]][peptide_annotation[[prot.column]] == protein_name]
     data_matrix_sub = data_matrix[peptides,]
     corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
@@ -499,7 +499,7 @@ plot_peptide_correlation_distr_one_protein <- function(data_matrix_list,
   peptides = peptide_annotation %>%
     filter(UQ(sym(feature_id_col)) %in% feature_ids) %>%
     filter(UQ(sym(protein_col)) == protein_name) %>%
-    pull(feature_id_col)
+    pull(feature_id_col) %>% as.character()
 
   data_matrix_list = lapply(data_matrix_list, function(dm) {
     dm_sub = dm[peptides,]
