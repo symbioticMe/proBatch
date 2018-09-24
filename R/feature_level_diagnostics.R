@@ -22,7 +22,7 @@
 #'
 #' @export
 #'
-plot_peptide_level <- function(pep_name, df_long, sample_annotation,
+plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
                                order_col = NULL,
                                sample_id_col = 'FullRunName',
                                batch_col = 'MS_batch.final',
@@ -32,6 +32,7 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
                                color_by_batch = F, facet_by_batch = F,
                                requant = NULL,
                                plot_title = NULL,
+                               vline_color ='red',
                                theme = 'classic'){
   #TODO: suggest faceting by instrument
 
@@ -76,7 +77,7 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
   if(!color_by_batch & !is.null(batch_col)){
     batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
     gg = gg + geom_vline(xintercept = batch.tipping.points,
-                         color = 'grey', linetype = 'dashed')
+                         color = vline_color, linetype = 'dashed')
   } else {
     gg = gg + geom_point(aes_string(color = batch_col))
     if(facet_by_batch){
@@ -125,13 +126,13 @@ plot_peptide_level <- function(pep_name, df_long, sample_annotation,
 #'
 #' Creates a spike-in facetted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_peptide_level}}. Additionally, the resulting plot can also
+#' \code{\link{plot_peptide_trend }}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
-#' @inheritParams plot_peptide_level
+#' @inheritParams plot_peptide_trend
 #' @param proteinName name of the protein as defined in \code{ProteinName}
 #' @param protein_col column where protein names are specified
-#' @param ... additional arguments to \code{\link{plot_peptide_level}} function
+#' @param ... additional arguments to \code{\link{plot_peptide_trend }} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
@@ -160,7 +161,7 @@ plot_peptides_of_one_protein <- function(proteinName, protein_col = 'ProteinName
       filter((!!sym(protein_col)) == proteinName) %>%
       pull(feature_id_col) %>% unique()
   }
-  gg = plot_peptide_level(peptides, df_long = df_long,
+  gg = plot_peptide_trend(peptides, df_long = df_long,
                           sample_annotation = sample_annotation,
                           order_col = order_col,
                           sample_id_col = sample_id_col,
@@ -174,13 +175,13 @@ plot_peptides_of_one_protein <- function(proteinName, protein_col = 'ProteinName
 #'
 #' Creates a spike-in facetted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_peptide_level}}. Additionally, the resulting plot can also
+#' \code{\link{plot_peptide_trend}}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
-#' @inheritParams plot_peptide_level
+#' @inheritParams plot_peptide_trend
 #' @param spike_ins substring used to identify spike-in proteins in the column
 #'   'ProteinName'
-#' @param ... additional arguments to \code{\link{plot_peptide_level}} function
+#' @param ... additional arguments to \code{\link{plot_peptide_trend}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
@@ -189,19 +190,25 @@ plot_peptides_of_one_protein <- function(proteinName, protein_col = 'ProteinName
 #'
 #' @export
 #'
-plot_spike_ins <- function(df_long, sample_annotation,
-                           order_col = 'order',
-                           spike_ins = 'BOVIN',
-                           sample_id_col = 'FullRunName',
-                           batch_col = 'MS_batch',
-                           measure_col = 'Intensity',
-                           feature_id_col = 'peptide_group_label',
-                           requant = NULL,
-                           plot_title = 'Spike-in BOVINE protein peptides', ...){
+plot_spike_ins_trend <- function(df_long, sample_annotation,
+                                 peptide_annotation = NULL,
+                                 protein_col = 'ProteinName',
+                                 order_col = 'order',
+                                 spike_ins = 'BOVIN',
+                                 sample_id_col = 'FullRunName',
+                                 batch_col = 'MS_batch',
+                                 measure_col = 'Intensity',
+                                 feature_id_col = 'peptide_group_label',
+                                 requant = NULL,
+                                 plot_title = 'Spike-in BOVINE protein peptides', ...){
+  if (!is.null(peptide_annotation)){
+    df_long = df_long %>%
+      merge(peptide_annotation, by = protein_col)
+  }
   spike_in_peptides = df_long %>%
-    filter(grepl(spike_ins, ProteinName)) %>%
-    pull(feature_id_col) %>% unique()
-  gg = plot_peptide_level(spike_in_peptides, df_long = df_long,
+    filter(grepl(spike_ins, !!sym(protein_col))) %>%
+    pull(feature_id_col) %>% as.character() %>% unique()
+  gg = plot_peptide_trend(spike_in_peptides, df_long = df_long,
                           sample_annotation = sample_annotation,
                           order_col = order_col,
                           sample_id_col = sample_id_col,
@@ -216,13 +223,13 @@ plot_spike_ins <- function(df_long, sample_annotation,
 #'
 #' Creates a iRT facetted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_peptide_level}}. Additionally, the resulting plot can also
+#' \code{\link{plot_peptide_trend}}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
-#' @inheritParams plot_peptide_level
+#' @inheritParams plot_peptide_trend
 #' @param irt_pattern substring used to identify irts proteins in the column
 #'   'ProteinName'
-#' @param ... additional arguments to \code{\link{plot_peptide_level}} function
+#' @param ... additional arguments to \code{\link{plot_peptide_trend}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{irt_pattern} containing proteins and (optionally) by \code{batch_col}
@@ -232,19 +239,25 @@ plot_spike_ins <- function(df_long, sample_annotation,
 #' @export
 #'
 #' @examples
-plot_iRTs <- function(df_long, sample_annotation,
-                      order_col = NULL,
-                      irt_pattern = 'iRT',
-                      sample_id_col = 'FullRunName',
-                      batch_col = 'MS_batch.final',
-                      measure_col = 'Intensity',
-                      feature_id_col = 'peptide_group_label',
-                      requant = NULL,
-                      plot_title = 'iRT peptide profile', ...){
+plot_iRT_trend <- function(df_long, sample_annotation,
+                           peptide_annotation = NULL,
+                           protein_col = 'ProteinName',
+                           order_col = NULL,
+                           irt_pattern = 'iRT',
+                           sample_id_col = 'FullRunName',
+                           batch_col = 'MS_batch.final',
+                           measure_col = 'Intensity',
+                           feature_id_col = 'peptide_group_label',
+                           requant = NULL,
+                           plot_title = 'iRT peptide profile', ...){
+  if (!is.null(peptide_annotation)){
+    df_long = df_long %>%
+      merge(peptide_annotation, by = protein_col)
+  }
   iRT_peptides = df_long %>%
-    filter(grepl(irt_pattern, ProteinName)) %>%
+    filter(grepl(irt_pattern, !!sym(protein_col))) %>%
     pull(feature_id_col)  %>% unique()
-  gg = plot_peptide_level(iRT_peptides, df_long, sample_annotation,
+  gg = plot_peptide_trend(iRT_peptides, df_long, sample_annotation,
                           order_col = order_col,
                           sample_id_col = sample_id_col,
                           batch_col = batch_col,
@@ -260,7 +273,7 @@ plot_iRTs <- function(df_long, sample_annotation,
 #' Plot Intensity of a few representative peptides for each step of the analysis
 #' including the fitting curve
 #'
-#' @inheritParams plot_peptide_level
+#' @inheritParams plot_peptide_trend
 #' @param pep_name name of the peptide for diagnostic profiling
 #' @param data_df_all_steps data frame, similar to \code{df_long}
 #'   \link{proBatch},  where each row is a single feature in a single sample, at
@@ -294,13 +307,13 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                                     geom = c('point', 'line'),
                                     color_by_batch = F, facet_by_batch = F,
                                     plot_title = NULL, requant = NULL,
-                                    theme = 'classic'){
+                                    theme = 'classic', vline_color = 'grey', ...){
 
   if(length(pep_name) > 10){
     warning("Visualisation of individual features can be suboptimal,
             consider exploring no more than 5 features at a time")
   }
-  gg = plot_peptide_level(pep_name, df_long = data_df_all_steps,
+  gg = plot_peptide_trend(pep_name, df_long = data_df_all_steps,
                           sample_annotation = sample_annotation,
                           order_col = order_col,
                           sample_id_col = sample_id_col,
@@ -308,7 +321,8 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                           measure_col = measure_col,
                           feature_id_col = feature_id_col,
                           plot_title = plot_title,
-                          facet_by_batch = facet_by_batch)
+                          facet_by_batch = facet_by_batch,
+                          vline_color = vline_color, ...)
   if(!("Step" %in% names(fit_df))){
     fit_df$Step = fit_step
     if (!(fit_step %in% data_df_all_steps$Step)){
@@ -316,7 +330,7 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
     }
   }
   fit_df = fit_df %>%
-    filter(UQ(as.name(feature_id_col)) %in% pep_name) %>%
+    filter(UQ(sym(feature_id_col)) %in% pep_name) %>%
     merge(sample_annotation, by = c(sample_id_col, batch_col))
   if(identical(color_by_batch, FALSE)){
     gg = gg + geom_line(data = fit_df,
