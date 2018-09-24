@@ -11,7 +11,8 @@ running order available)}
 plot_sample_mean(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", order_col = "order", batch_col = NULL,
   facet_col = "instrument", color_by_batch = F, color_scheme = "brewer",
-  theme = "classic", plot_title = NULL, order_per_facet = F)
+  theme = "classic", plot_title = NULL, order_per_facet = F,
+  vline_color = "grey")
 
 plot_boxplot(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
