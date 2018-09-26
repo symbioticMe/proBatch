@@ -96,7 +96,6 @@ normalize_medians_global <- function(data_long,
 #'
 #' @return
 #' @export
-#' @import lazyeval
 #'
 #' @examples
 #'
