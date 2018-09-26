@@ -47,6 +47,7 @@
 #' @import pheatmap
 #' @import reshape2
 #' @import tibble
+#' @import lazyeval
 #' @importFrom corrplot corrplot.mixed
 #' @importFrom magrittr %>%
 #' @importFrom  purrr map
