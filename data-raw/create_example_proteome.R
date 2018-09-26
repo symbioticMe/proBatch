@@ -10,6 +10,8 @@ proteome <- read_csv("data/OpenSWATH_proteome.csv")
 #extract the QTL proteins
 QTLproteins = c("Cat", "Glo1", "Cox7a2l", "Lrpprc", "Pm20d1" , "Dhtkd1" , "Haao" ,
                 "Tpmt", "Hdhd3" , "D2hgdh" )
+##ADD LATER: diffexpressed protein between diets - Ces2a? -> ask Evan
+
 
 #extract a hanful of proteins with overfitting problem
 overfitting_prots = c('Mtch1','Cyfip1', 'Nnt', 'Gclm')
