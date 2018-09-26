@@ -1,0 +1,21 @@
+citHeader("To cite proBatch in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Tools for batch effects diagnostics and correction",
+  author       = personList(as.person("Jelena Čuklina"),
+                   as.person("Chloe H. Lee"),
+                   as.person("Patrick Pedrioli"),
+                   as.person("Ruedi Aebersold")),
+  journal      = "Bioinformatics",
+  year         = "2019",
+  volume       = "###",
+  number       = "##",
+  pages        = "##--##",
+  url          = "https://academic.oup.com/bioinformatics/article/XX/XX/XXXX/XXXXXXX",
+
+  textVersion  =
+  paste("Jelena Čuklina, Chloe H. Lee,  Patrick Pedrioli, Ruedi Aebersold (2019).",
+        "Tools for batch effects diagnostics and correction.",
+        "Bioinformatics, XX(X), X-XX.",
+        "URL https://academic.oup.com/bioinformatics/article/XX/XX/XXXX/XXXXXXX/.")
+)
