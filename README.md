@@ -45,6 +45,7 @@ install_github("symbioticMe/proBatch.git"")
 
 ## Getting started
 
+POINT TO THE VIGNETTE
 ADD A FEW EXAMPLES
 
 ## Citing
