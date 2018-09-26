@@ -116,10 +116,10 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
   names(df_long) = c(feature_id_col, sample_id_col, measure_col)
 
   df_normalized = df_long %>%
-    filter(!is.na(UQ(as.name(measure_col)))) %>%
+    filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
     merge(sample_annotation) %>%
     arrange_(feature_id_col, sample_order_col) %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
+    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>% #group_by(peptide_group_label, MS_batch.final) )
     nest() %>%
     mutate(fit = map(data, fit_func, response.var = measure_col,
                      expl.var = sample_order_col, ...)) %>%
