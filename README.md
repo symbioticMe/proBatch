@@ -19,7 +19,7 @@ Install dependencies:
 source("http://bioconductor.org/biocLite.R")
 
 bioc_deps <- c("GO.db", "preprocessCore", "impute", "sva", "pvca")
-cran_deps <- c("tidyverse", "reshape2", "lazyeval", "readr", "WGCNA", "rlang", "corrplot", "ggfortify", "pheatmap")
+cran_deps <- c("tidyverse", "reshape2", "lazyeval", "readr", "WGCNA", "rlang", "corrplot", "ggfortify", "pheatmap", "wesanderson")
 
 biocLite(biov_deps) 
 install.packages(dep)
