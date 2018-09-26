@@ -49,7 +49,8 @@ ADD A FEW EXAMPLES
 
 ## Citing
 
-If you use this package in your analysis please reference [^2]
+To reference the pipeline please cite [^1].
+If you use tools of this package in your analysis please reference [^2]. 
     
-[^1]: Johnson et al. 2007 Biostatistics
-[^2]: Čuklina et al. 2019, MCP
+[^1]: Čuklina et al. 2019, MSB
+[^2]: Čuklina et al., 2019, Bioinformatics
