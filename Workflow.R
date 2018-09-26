@@ -278,8 +278,8 @@ plot_PCA(data_4, sample_annotation_order,
          plot_title = NULL) 
 
 
-# plot PVCA - Run!!
-plot_pvca(data_1, sample_annotation_order,
+# plot PVCA - works
+pvca1 = plot_pvca(data_1, sample_annotation_order,
          sample_id_col = 'FullRunName',
          feature_id_col = 'peptide_group_label',
          technical_covariates = c('MS_batch.final', 'ProteinPrepDate'),
@@ -289,7 +289,7 @@ plot_pvca(data_1, sample_annotation_order,
          colors_for_bars = NULL,
          theme = 'classic', plot_title = NULL)
 
-plot_pvca(data_2, sample_annotation_order,
+pvca2 = plot_pvca(data_2, sample_annotation_order,
           sample_id_col = 'FullRunName',
           feature_id_col = 'peptide_group_label',
           technical_covariates = c('MS_batch.final', 'ProteinPrepDate'),
@@ -299,7 +299,7 @@ plot_pvca(data_2, sample_annotation_order,
           colors_for_bars = NULL,
           theme = 'classic', plot_title = NULL)
 
-plot_pvca(data_3, sample_annotation_order,
+pvca3 = plot_pvca(data_3, sample_annotation_order,
           sample_id_col = 'FullRunName',
           feature_id_col = 'peptide_group_label',
           technical_covariates = c('MS_batch.final', 'ProteinPrepDate'),
@@ -309,7 +309,7 @@ plot_pvca(data_3, sample_annotation_order,
           colors_for_bars = NULL,
           theme = 'classic', plot_title = NULL)
 
-plot_pvca(data_4, sample_annotation_order,
+pvca4 = plot_pvca(data_4, sample_annotation_order,
           sample_id_col = 'FullRunName',
           feature_id_col = 'peptide_group_label',
           technical_covariates = c('MS_batch.final', 'ProteinPrepDate'),
