@@ -31,12 +31,14 @@ dates_to_posix <- function(sample_annotation,
   else {
     sample_annotation = sample_annotation %>%
       mutate(dateTime = paste(!!!syms(time_column), sep=" ")) %>%
-      mutate(dateTime = lubridate::as.POSIXct(dateTime,
+      mutate(dateTime = as.POSIXct(dateTime,
                                    format = paste(dateTimeFormat, collapse = ' '))) %>%
       rename(!!new_time_column := dateTime)
   }
   return(sample_annotation)
 }
+
+
 
 
 #' Convert date/time to POSIXct and rank samples by it
