@@ -56,10 +56,13 @@ clean_requants <- function(df_long, sample_annotation,
 #' @export
 #'
 #' @family dataset cleaning functions
-remove_peptides_with_missing_batch <- function(df_long,
+remove_peptides_with_missing_batch <- function(df_long,sample_annotation,
                                                batch_col = 'MS_batch.final',
                                                feature_id_col = 'peptide_group_label'){
+  
+  n_samples = nrow(sample_annotation)
   features_consistent = df_long %>%
+    merge(sample_annotation) %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     summarize(n = n()) %>%
     ungroup () %>%
