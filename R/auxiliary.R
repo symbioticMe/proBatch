@@ -117,7 +117,7 @@ join_data_matrices <- function(matrices_list, step = NULL,
 #' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_corrplot_protein}},
 #' \code{\link{plot_within_prot_distribution}}
 create_peptide_annotation <- function(df_long, peptide_col = 'peptide_group_label',
-                                      annotation_col = c('Uniprot_ID', 'Gene')){
+                                      annotation_col = c('RT', 'Intensity', "ProteinName" )){
   peptide_annotation = df_long %>%
     select(one_of(c(peptide_col, annotation_col))) %>%
     distinct()
