@@ -141,8 +141,10 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
                                         sep =  " ~ "))
     df_normalized = dcast(df_normalized, formula = casting_formula,
                           value.var = 'Intensity_normalized')
-    df_normalized = as.matrix(df_normalized[,2:ncol(df_normalized)])
-  return(list(data_matrix = df_normalized,
+    df_normalized_matrix = as.matrix(df_normalized[,2:ncol(df_normalized)])
+    rownames(df_normalized_matrix) = df_normalized[,1]
+
+  return(list(data_matrix = df_normalized_matrix,
               fit_df = fit_df))
 }
 
