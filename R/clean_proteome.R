@@ -17,13 +17,15 @@
 #'
 #' @family dataset cleaning functions
 #'
-clean_requants <- function(df_long, sample_annotation,
+clean_requants <- function(df_long, sample_annotation, peptide_annotation,
                            batch_col = 'MS_batch.final',
                            feature_id_col = 'peptide_group_label',
+                           m_score = "m_score",
                            missing_frac_batch = .3, missing_frac_total = .3){
   #for dplyr version 0.7 and higher, this is the way to call the functions
   n_samples = nrow(sample_annotation)
   df_clean = df_long %>%
+    merge(peptide_annotation) %>%
     filter(m_score != 2) %>%
     merge(sample_annotation) %>%
     group_by_at(vars(one_of(c(c(feature_id_col, batch_col))))) %>%
