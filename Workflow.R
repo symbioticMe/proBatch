@@ -31,9 +31,6 @@ load("~/R/proBatch/data/example_proteome.RData")
 peptide_annotation = create_peptide_annotation(example_proteome, 
                                                peptide_col = "peptide_group_label", 
                                                protein_col = c("Uniprot_ID", "Gene")) 
-  ##comment: May need ot input the expmale protein_col dataset with uniprot_ID and Gene names attached 
-  ##so that users can know the format of peptide annotation file to input in order to generate the 
-  ##"example_peptide_annotation" dataframe. 
 
 # convert proteome into matrix - works 
 data_matrix = convert_to_matrix(example_proteome, feature_id_col = 'peptide_group_label',
@@ -61,9 +58,6 @@ example_proteome_wSample = merge(example_proteome, example_sample_annotation1,
 example_proteome_wPeptide_wSample = merge(example_proteome_wPeptide, example_sample_annotation1,
                                  by.x = "FullRunName" , by.y = "FullRunName")
 
-  ## for the following analysis with pre-processing and analysis, the example_proteome_wPeptide_wSample utilized. 
-  ## especially for the functions that require annotations within input dataframe 
-  ## (e.g. remove_peptides_with_missing_batch)
 
 # remove peptides with missing batch - works 
 example_proteome_wPeptide_wSample = remove_peptides_with_missing_batch(example_proteome_wPeptide_wSample)
@@ -82,27 +76,7 @@ sample_annotation_order = date_to_sample_order (sample_annotation = example_samp
                                                 order_col = 'order',
                                                 instrument_col = NULL)
   
-  ## Error in mutate_impl(.data, dots) : 
-  ## Evaluation error: 'as.POSIXct' is not an exported object from 'namespace:lubridate'. 
-  dates_to_posix <- function(sample_annotation,
-                             time_column = c('RunDate','RunTime'),
-                             new_time_column = NULL,
-                             dateTimeFormat = c("%b_%d", "%H:%M:%S")){
-    if (length(time_column) == 1){
-      if(is.null(new_time_column)) new_time_column = time_column
-      time_col = as.character(sample_annotation[[time_column]])
-      sample_annotation[[new_time_column]] = as.POSIXct(time_col ,
-                                                        format=dateTimeFormat)
-    } else {
-      sample_annotation = sample_annotation %>%
-        mutate(dateTime = paste(!!!syms(time_column), sep=" ")) %>%
-        #mutate(dateTime = lubridate::as.POSIXct(dateTime,
-        #                                        format = paste(dateTimeFormat, collapse = ' '))) %>%
-        mutate(dateTime = as.POSIXct(dateTime, format = paste(dateTimeFormat, collapse = ' '))) %>%        
-        rename(!!new_time_column := dateTime)
-    }
-    return(sample_annotation)
-  }
+
   
   
 
@@ -123,9 +97,6 @@ log2qnormfit = normalize_custom_fit(data_matrix_log2qnorm, sample_annotation_ord
                                                 fit_func = fit_nonlinear,
                                                 fitFunc = 'loess_regression')
 data_matrix_log2qnormfit = log2qnormfit$data_matrix
-  ## after the LOESs fitting, rownames (peptides) are lost from the matrix. Confirm if anything done wrong 
-  ## rownames were added manually from the matrix it was normalized from. 
-  rownames(data_matrix_log2qnormfit) = rownames(data_matrix_log2qnorm)
 
 
 # Batch correction with LOESS+ ComBat 
@@ -378,38 +349,6 @@ plot_spike_ins_trend(df_long = df_long_1,
                      requant = NULL,
                      plot_title = 'Spike-in BOVINE protein peptides')
 
-  ## Error in fix.by(by.x, x) : 'by' must specify a uniquely valid column 
-  ## it requires the df_long_1 to have "Gene" column already in the data frame to align with the same data frame 
-  ## edited the function to remove the error 
-  plot_spike_ins_trend <- function(df_long, sample_annotation,
-                                   peptide_annotation = NULL,
-                                   protein_col = 'ProteinName',
-                                   order_col = 'order',
-                                   spike_ins = 'BOVIN',
-                                   sample_id_col = 'FullRunName',
-                                   batch_col = 'MS_batch',
-                                   measure_col = 'Intensity',
-                                   feature_id_col = 'peptide_group_label',
-                                   requant = NULL,
-                                   plot_title = 'Spike-in BOVINE protein peptides', ...){
-    if (!is.null(peptide_annotation)){
-      df_long = df_long %>%
-        #merge(peptide_annotation, by = protein_col)
-        merge(peptide_annotation)
-    }
-    spike_in_peptides = df_long %>%
-      filter(grepl(spike_ins, !!sym(protein_col))) %>%
-      pull(feature_id_col) %>% as.character() %>% unique()
-    gg = plot_peptide_trend(spike_in_peptides, df_long = df_long,
-                            sample_annotation = sample_annotation,
-                            order_col = order_col,
-                            sample_id_col = sample_id_col,
-                            batch_col = batch_col, measure_col = measure_col,
-                            feature_id_col = feature_id_col,
-                            plot_title = plot_title, ...)
-    return(gg)
-  }
-  
 
 #### workflow to generate corrletion-based plots ####
 #	Plot_protein_corrplot - works but visually difficult to understand 
