@@ -56,7 +56,7 @@ clean_requants <- function(df_long, sample_annotation,
 #' @export
 #'
 #' @family dataset cleaning functions
-remove_peptides_with_missing_batch <- function(df_long,sample_annotation,
+remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
                                                batch_col = 'MS_batch.final',
                                                feature_id_col = 'peptide_group_label'){
   
