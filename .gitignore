@@ -3,6 +3,7 @@
 .Rhistory
 .RData
 .Ruserdata
+*.Rapp.history
 inst/doc
 vignettes/
 proBatch_marked_copy.pdf
