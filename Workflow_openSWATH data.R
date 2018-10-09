@@ -83,7 +83,7 @@ SWATH_matrix_fit = SWATH_matrix_fit$data_matrix
 # ComBat noramlization 
 SWATH_matrix_ComBat = correct_with_ComBat (SWATH_matrix_fit, sample_annotation,
                                                       batch_col = 'MS_batch.final', par.prior = TRUE)
-
+  #does sample_annotation and samples in matrix need to be in the same order? 
 
 ################### convert to data_long for plotting #########################
 # matrix: SWATH_matrix_log2, SWATH_matrix_qnorm, SWATH_matrix_fit, SWATH_matrix_ComBat
@@ -101,7 +101,7 @@ SWATH_long_ComBat = matrix_to_long(SWATH_matrix_ComBat, feature_id_col = 'peptid
                                  measure_col = 'Intensity', sample_id_col = 'FullRunName')
 
 
-
+################## plotting diagnostics of normalization ###########################
 
 
 
