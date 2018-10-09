@@ -63,7 +63,7 @@ example_proteome_wPeptide_wSample = merge(example_proteome_wPeptide, example_sam
 example_proteome_wPeptide_wSample = remove_peptides_with_missing_batch(example_proteome_wPeptide_wSample)
 
 # clean requants - works 
-example_proteom_requants = clean_requants(example_proteome, example_sample_annotation1, 
+example_proteom_requants = clean_requants(proteome_long, example_sample_annotation1, example_peptide_annotation,
                            batch_col = 'MS_batch.final',
                            feature_id_col = 'peptide_group_label',
                            missing_frac_batch = .3, missing_frac_total = .3)
@@ -99,7 +99,7 @@ log2qnormfit = normalize_custom_fit(data_matrix_log2qnorm, sample_annotation_ord
 data_matrix_log2qnormfit = log2qnormfit$data_matrix
 
 
-# Batch correction with LOESS+ ComBat 
+# Batch correction with LOESS + ComBat 
 data_matrix_log2qnormfitCombat = correct_with_ComBat (data_matrix_log2qnormfit, sample_annotation_order,
                                           batch_col = 'MS_batch.final', par.prior = TRUE)
 
