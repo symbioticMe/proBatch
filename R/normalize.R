@@ -120,7 +120,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     merge(sample_annotation) %>%
     arrange_(feature_id_col, sample_order_col) %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>% #group_by(peptide_group_label, MS_batch.final) )
-    filter(n() >2)%>%
+    filter(n() >3)%>%
     nest() %>%
     mutate(fit = map(data, fit_func, response.var = measure_col,
                      expl.var = sample_order_col, ...)) %>%
