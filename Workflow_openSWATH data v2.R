@@ -1,8 +1,8 @@
 # Workflow with Allruns_requant from OpenSWATH output data 
 
 # OpenSWATH Data 
-Allruns_requant = read.table(file = "S:/html/AllRuns_Evosep_feature_alignment_requant.tsv", sep = '\t', header = TRUE)
-Allruns_requant = Allruns_requant %>% mutate(FullRunName = gsub('wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
+# Allruns_requant = read.table(file = "S:/html/AllRuns_Evosep_feature_alignment_requant.tsv", sep = '\t', header = TRUE)
+# Allruns_requant = Allruns_requant %>% mutate(FullRunName = gsub('wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
 
 peptide_annotation <- read.csv("C:/Users/Chloe/Desktop/Aebersold Lab/2. Batch correction/Data/peptide_annotations_6600evosep.csv")
 sample_annotation <- read.csv("C:/Users/Chloe/Desktop/Aebersold Lab/2. Batch correction/Data/sample_annotation_6600evosep.csv")
@@ -52,8 +52,12 @@ SWATH_list_fit = normalize_custom_fit(SWATH_matrix_qnorm, sample_annotation,
                                       fit_func = fit_nonlinear,
                                       fitFunc = 'loess_regression')
 SWATH_matrix_fit = SWATH_matrix_fit$data_matrix
+#########################################
+
 
 # ComBat noramlization 
+#   see which ones are filtered and replace filtered ones with original data 
+#   the loess fitting is done for 
 SWATH_matrix_ComBat = correct_with_ComBat (SWATH_matrix_fit, sample_annotation,
                                                       batch_col = 'MS_batch.final', par.prior = TRUE)
 
