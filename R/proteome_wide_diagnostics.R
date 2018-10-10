@@ -51,7 +51,8 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              color_by_batch = F, color_scheme = 'brewer',
                              theme = 'classic',
                              plot_title = NULL, order_per_facet = F,
-                             vline_color = 'grey'){
+                             vline_color = 'grey',
+                             ylimits = NULL){
   sample_average = colMeans(data_matrix, na.rm = T)
   names(sample_average) = colnames(data_matrix)
 
@@ -76,8 +77,16 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
         mutate(order = rank(UQ(sym(order_col))))
     }
   }
-  gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
-                geom_point()
+  #gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
+  #              geom_point()
+    if(!is.null(ylimits)){
+      gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
+        geom_point()+
+        ylim(ylimits)
+      }else{
+        gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
+          geom_point()
+      }
   if(color_by_batch & !is.null(batch_col)){
     gg = gg + aes_string(color = batch_col)
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
