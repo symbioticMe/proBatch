@@ -77,16 +77,16 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
         mutate(order = rank(UQ(sym(order_col))))
     }
   }
-  #gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
-  #              geom_point()
-    if(!is.null(ylimits)){
+  
+  if(!is.null(ylimits)){
+    gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
+      geom_point()+
+      ylim(ylimits)
+    }else{
       gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
-        geom_point()+
-        ylim(ylimits)
-      }else{
-        gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
-          geom_point()
-      }
+        geom_point()
+    }
+  
   if(color_by_batch & !is.null(batch_col)){
     gg = gg + aes_string(color = batch_col)
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
