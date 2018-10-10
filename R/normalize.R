@@ -135,7 +135,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     #TODO: try to get rid of rlang by the following expression:
     #mutate(Intensity_normalized = diff + UQ(sym(measure_col)))
     #if only the fitted data table is required (not recommended)
-    fit_df = df_normalized %>% select(one_of(c('fit', feature_id_col,
+    fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
                                                sample_id_col, batch_col)))
 
     casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
@@ -166,8 +166,15 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
 #' @export
 #'
 #' @examples
-correct_with_ComBat <- function(data_matrix, sample_annotation,
-                                batch_col = 'MS_batch.final', par.prior = TRUE){
+correct_with_ComBat <- function(data_matrix, sample_annotation, 
+                                sample_id_col = 'FullRunName',
+                                batch_col = 'MS_batch.final', 
+                                par.prior = TRUE){
+
+  sampleNames = colnames(data_matrix)
+  sample_annotation = sample_annotation %>%
+    filter(UQ(as.name(sample_id_col)) %in% sampleNames) 
+  
   batches = sample_annotation[[batch_col]]
   modCombat = model.matrix(~1, data = sample_annotation)
   corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
