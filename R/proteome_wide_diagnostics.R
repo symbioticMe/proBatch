@@ -154,10 +154,15 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                        color_by_batch = T, color_scheme = 'brewer',
                        theme = 'classic',
                        plot_title = NULL, order_per_facet = F){
+  
+  
   if (!all(c(batch_col, sample_id_col) %in% names(df_long))){
     if (!is.null(sample_annotation)){
       df_long = df_long %>% merge(sample_annotation,
                                             by = sample_id_col)
+      if(is.numeric(df_long[[batch_col]])){
+        df_long[batch_col] <- lapply(df_long[batch_col] , factor)
+      }
     } else {
       if (color_by_batch){
         stop('batches cannot be colored if the batch column cannot be defined,
