@@ -1,35 +1,46 @@
-# Workflow with Allruns_requant from OpenSWATH output data 
+# Set library directory  
+.libPaths("C:/Users/leech/Documents/proBatch/%HOMESHARE%/R3UserLibs")
 
-# OpenSWATH Data 
-# Allruns_requant = read.table(file = "S:/html/AllRuns_Evosep_feature_alignment_requant.tsv", sep = '\t', header = TRUE)
-# Allruns_requant = Allruns_requant %>% mutate(FullRunName = gsub('wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
+# Install dependencies 
+bioc_deps <- c("GO.db", "preprocessCore", "impute", "sva", "pvca")
+cran_deps <- c("roxygen2","lubridate","tidyverse","reshape2","lazyeval","readr","WGCNA", "rlang", 
+              "corrplot","ggfortify","pheatmap","dplyr","data.table","wesanderson")
+biocLite(bioc_deps); 
+install.packages(cran_deps); 
+lapply(bioc_deps, require, character.only = TRUE)
+lapply(cran_deps, require, character.only = TRUE)
 
-peptide_annotation <- read.csv("C:/Users/Chloe/Desktop/Aebersold Lab/2. Batch correction/Data/peptide_annotations_6600evosep.csv")
-sample_annotation <- read.csv("C:/Users/Chloe/Desktop/Aebersold Lab/2. Batch correction/Data/sample_annotation_6600evosep.csv")
+# OpenSWATH Data (load data of interest)
+Allruns_requant = read.table(file = "S:/html/AllRuns_Evosep_feature_alignment_requant.tsv", sep = '\t', header = TRUE)
+Allruns_requant = Allruns_requant %>% mutate(FullRunName = gsub('wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
 
+library(readr) #this is full Evan's dataset
+Fullruns_dataset = read_delim("S:/E1801171630_feature_alignment_requant.tsv", "\t", escape_double = FALSE)
+Fullruns_dataset = Fullruns_dataset %>% mutate(FullRunName = gsub('/scratch/55808263.tmpdir/wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
 
-Fullruns_requant = read.table(file = "S:/html/E1801171630_feature_alignment_requant.tsv", sep = '\t', header = TRUE)
-Fullruns_requant = Fullruns_requant %>% mutate(FullRunName = gsub('wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
+Fullruns_dataset = read_tsv("S:/html/E1801171630_feature_alignment_requant.tsv", "\t")
 
-############## pre-processing ##################
-# retrieve sample annotation data frame + add order 
+# Peptide annotation 
+peptide_annotation = read.csv("S:/html/peptide_annotations_6600evosep.csv")
+
+# Sample annotation 
+sample_annotation = read.csv("S:/html/sample_annotation_6600evosep.csv")
 sample_annotation = date_to_sample_order (sample_annotation,
-                                                time_column = c('RunDate','RunTime'),
-                                                new_time_column = 'DateTime',
-                                                dateTimeFormat = c("%b_%d", "%H:%M:%S"),
-                                                order_col = 'order',
-                                                instrument_col = NULL)
+                                          time_column = c('RunDate','RunTime'),
+                                          new_time_column = 'DateTime',
+                                          dateTimeFormat = c("%b_%d", "%H:%M:%S"),
+                                          order_col = 'order',
+                                          instrument_col = NULL)
 
-# remove peptides with missing batch 
-Fullruns_requant = remove_peptides_with_missing_batch(Fullruns_requant, sample_annotation,
+############## pre-processing #############################
+openSWATH_data = Fullruns_dataset
+
+# remove peptides with missing batch - crashes
+openSWATH_data = remove_peptides_with_missing_batch(openSWATH_data, sample_annotation,
                                                             batch_col = 'MS_batch.final',
                                                             feature_id_col = 'peptide_group_label')
 
-
-
 ############## normalization ###############################
-openSWATH_data = Fullruns_requant
-
 # Generate data_matrix from SWATH_long
 SWATH_matrix = convert_to_matrix(openSWATH_data, feature_id_col = 'peptide_group_label',
                                  measure_col = 'Intensity',
