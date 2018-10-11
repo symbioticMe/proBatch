@@ -104,28 +104,9 @@ data_matrix_medianCentering = convert_to_matrix(data_long_medianCentering, featu
 
 
 
-############################### Combat debugged script #########################
-correct_with_ComBat <- function(data_matrix, sample_annotation, 
-                                sample_id_col = 'FullRunName',
-                                batch_col = 'MS_batch.final', 
-                                par.prior = TRUE){
-  
-  sampleNames = colnames(data_matrix)
-  sample_annotation = sample_annotation %>%
-    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
-    arrange(match(UQ(as.name(sample_id_col)), sampleNames))
-  
-  batches = sample_annotation[[batch_col]]
-  modCombat = model.matrix(~1, data = sample_annotation)
-  corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
-                                   mod = modCombat, par.prior = par.prior)
-  return(corrected_proteome)
-}  
-
-#####################################################################################
 
 
-#### Plot diagnostics for each of the steps ####
+########### Plot diagnostics for each of the steps ###################
 data_1 = data_matrix_log2
 data_2 = data_matrix_qnorm
 data_3 = data_matrix_fit
