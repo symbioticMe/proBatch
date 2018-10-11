@@ -173,7 +173,8 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 
   sampleNames = colnames(data_matrix)
   sample_annotation = sample_annotation %>%
-    filter(UQ(as.name(sample_id_col)) %in% sampleNames) 
+    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
+    arrange(match(UQ(as.name(sample_id_col)), sampleNames))
   
   batches = sample_annotation[[batch_col]]
   modCombat = model.matrix(~1, data = sample_annotation)
