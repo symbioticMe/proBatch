@@ -15,10 +15,12 @@ Allruns_requant = read.table(file = "S:/html/AllRuns_Evosep_feature_alignment_re
 Allruns_requant = Allruns_requant %>% mutate(FullRunName = gsub('wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
 
 library(readr) #this is full Evan's dataset
-Fullruns_dataset = read_delim("S:/E1801171630_feature_alignment_requant.tsv", "\t", escape_double = FALSE)
+Fullruns_dataset = read_delim("S:/html/E1801171630_feature_alignment_requant.tsv", "\t", escape_double = FALSE)
 Fullruns_dataset = Fullruns_dataset %>% mutate(FullRunName = gsub('/scratch/55808263.tmpdir/wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
 
-Fullruns_dataset = read_tsv("S:/html/E1801171630_feature_alignment_requant.tsv", "\t")
+Fullruns_dataset = read.table("S:/html/E1801171630_feature_alignment_requant.tsv", "\t")
+Fullruns_dataset = read.table(file = "S:/html/E1801171630_feature_alignment_requant.tsv", sep = '\t', header = TRUE)
+
 
 # Peptide annotation 
 peptide_annotation = read.csv("S:/html/peptide_annotations_6600evosep.csv")
