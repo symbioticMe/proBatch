@@ -21,7 +21,6 @@ Fullruns_dataset = Fullruns_dataset %>% mutate(FullRunName = gsub('/scratch/5580
 Fullruns_dataset = read.table("S:/E1801171630_feature_alignment_requant.tsv", "\t",header = TRUE)
 Fullruns_dataset = read.table(file = "S:/html/E1801171630_feature_alignment_requant.tsv", sep = '\t', header = TRUE)
 
-
 # Peptide annotation 
 peptide_annotation = read.csv("S:/html/peptide_annotations_6600evosep.csv")
 
@@ -63,7 +62,7 @@ SWATH_list_fit = normalize_custom_fit(SWATH_matrix_qnorm, sample_annotation,
                                       sample_order_col = 'order',
                                       fit_func = fit_nonlinear,
                                       fitFunc = 'loess_regression')
-SWATH_matrix_fit = SWATH_matrix_fit$data_matrix
+SWATH_matrix_fit = SWATH_list_fit$data_matrix
 SWATH_long_fit = matrix_to_long(SWATH_matrix_fit, feature_id_col = 'peptide_group_label',
                                 measure_col = 'Intensity', sample_id_col = 'FullRunName')
 
