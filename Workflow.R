@@ -1,4 +1,4 @@
-# Workflow based on exmaple proteome, sample anotation and peptide annotation files in proBatch package 
+# Workflow based on example proteome, sample anotation and peptide annotation files in proBatch package 
 
 #### install dependencies ####
 #library(ProjectTemplate)
@@ -15,7 +15,7 @@ install.packages("lubridate");
 lapply(bioc_deps, require, character.only = TRUE)
 lapply(cran_deps, require, character.only = TRUE)
 require(roxygen2)
-require(lubridate)
+require(lubridate) 
 
 
 #### Load data 
