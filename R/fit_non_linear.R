@@ -10,6 +10,7 @@
 #' @param noFitRequants (logical) whether to fit requanted values
 #' @param fitFunc function to use for the fit (`kernel_smooth`, `smooth_spline`, or `loess_regression`)
 #' @param with_df
+#' @param removefew (logical) whether to remove small span measurements 
 #' @param ... additional paramters to be passed to the fitting function
 #'
 #' @return vector of fitted response values
