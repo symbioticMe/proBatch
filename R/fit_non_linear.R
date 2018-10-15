@@ -45,11 +45,7 @@ fit_nonlinear <- function(dataDF, response.var = 'y', expl.var = 'x',
                        loess_regression = loess_regression_opt(x_all, y, x_to_fit, df, ...))
     }
   }else{
-    if(removefew == TRUE){
-      fit_res = rep(NA, length(x_to_fit))
-    }else{
-      fit_res = y
-    }
+    fit_res = rep(NA, length(x_to_fit))
   }
   return(fit_res)
 }
