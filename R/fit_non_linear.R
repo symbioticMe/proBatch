@@ -20,30 +20,40 @@
 # TODO: Document dataDF and with_df
 fit_nonlinear <- function(dataDF, response.var = 'y', expl.var = 'x',
                           noFitRequants = F, fitFunc = 'kernel_smooth',
-                          with_df = F, ...){
+                          with_df = F, removefew = T, ...){
   dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
   x_to_fit = dataDF[[expl.var]]
   y = dataDF[[response.var]]
-  x_all = x_to_fit
-  if(noFitRequants){
-    x_all[dataDF$requant] = NA
-  }
-  if(!with_df){
-    fit_res = switch(fitFunc,
-           kernel_smooth = kernel_smooth(x_all, y, x_to_fit, ...),
-           smooth_spline = smooth_spline(x_all, y, x_to_fit, ...),
-           loess_regression = loess_regression(x_all, y, x_to_fit, ...)
-    )
-  } else {
-    bw = optimise_bw(dataDF, response.var = response.var, expl.var = expl.var)
-    df = optimise_df(dataDF, bw, response.var = response.var, expl.var = expl.var)
-    fit_res = switch(fitFunc,
-                     kernel_smooth = kernel_smooth_opt(x_all, y, x_to_fit, bw, ...),
-                     smooth_spline = smooth_spline_opt(x_all, y, x_to_fit, df, ...),
-                     loess_regression = loess_regression_opt(x_all, y, x_to_fit, df, ...))
+  if(length(x_to_fit) >= 3){
+    x_all = x_to_fit
+    if(noFitRequants){
+      x_all[dataDF$requant] = NA
+    }
+    if(!with_df){
+      fit_res = switch(fitFunc,
+                       kernel_smooth = kernel_smooth(x_all, y, x_to_fit, ...),
+                       smooth_spline = smooth_spline(x_all, y, x_to_fit, ...),
+                       loess_regression = loess_regression(x_all, y, x_to_fit, ...)
+      )
+    } else {
+      bw = optimise_bw(dataDF, response.var = response.var, expl.var = expl.var)
+      df = optimise_df(dataDF, bw, response.var = response.var, expl.var = expl.var)
+      fit_res = switch(fitFunc,
+                       kernel_smooth = kernel_smooth_opt(x_all, y, x_to_fit, bw, ...),
+                       smooth_spline = smooth_spline_opt(x_all, y, x_to_fit, df, ...),
+                       loess_regression = loess_regression_opt(x_all, y, x_to_fit, df, ...))
+    }
+  }else{
+    if(removefew == TRUE){
+      fit_res = rep(NA, length(x_to_fit))
+    }else{
+      fit_res = y
+    }
   }
   return(fit_res)
 }
+
+
 
 
 loocv.nw <- function(reg.data, bw = 1.5, kernel = "normal",
