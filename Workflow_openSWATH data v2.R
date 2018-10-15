@@ -1,5 +1,5 @@
 # Set library directory  
-.libPaths("C:/Users/leech/Documents/proBatch/%HOMESHARE%/R3UserLibs")
+.libPaths("S:/proBatch/%HOMESHARE%/R3UserLibs")
 
 # Install dependencies 
 bioc_deps <- c("GO.db", "preprocessCore", "impute", "sva", "pvca")
@@ -18,7 +18,7 @@ library(readr) #this is full Evan's dataset
 Fullruns_dataset = read_delim("S:/html/E1801171630_feature_alignment_requant.tsv", "\t", escape_double = FALSE)
 Fullruns_dataset = Fullruns_dataset %>% mutate(FullRunName = gsub('/scratch/55808263.tmpdir/wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
 
-Fullruns_dataset = read.table("S:/html/E1801171630_feature_alignment_requant.tsv", "\t")
+Fullruns_dataset = read.table("S:/E1801171630_feature_alignment_requant.tsv", "\t",header = TRUE)
 Fullruns_dataset = read.table(file = "S:/html/E1801171630_feature_alignment_requant.tsv", sep = '\t', header = TRUE)
 
 
@@ -48,7 +48,6 @@ SWATH_matrix = convert_to_matrix(openSWATH_data, feature_id_col = 'peptide_group
                                  measure_col = 'Intensity',
                                  sample_id_col = 'FullRunName')
 
-
 # log2 transformation of data_matrix 
 SWATH_matrix_log2 = log2(SWATH_matrix + 1) 
 
@@ -65,15 +64,23 @@ SWATH_list_fit = normalize_custom_fit(SWATH_matrix_qnorm, sample_annotation,
                                       fit_func = fit_nonlinear,
                                       fitFunc = 'loess_regression')
 SWATH_matrix_fit = SWATH_matrix_fit$data_matrix
-#########################################
+SWATH_long_fit = matrix_to_long(SWATH_matrix_fit, feature_id_col = 'peptide_group_label',
+                                measure_col = 'Intensity', sample_id_col = 'FullRunName')
+
+# Median centering
+data_long_medianCentering = normalize_medians_batch(SWATH_long_fit, sample_annotation,
+                                                    sample_id_col = 'FullRunName',
+                                                    batch_col = 'MS_batch.final',
+                                                    feature_id_col = 'peptide_group_label',
+                                                    measure_col = 'Intensity')
+data_matrix_medianCentering = convert_to_matrix(data_long_medianCentering, feature_id_col = 'peptide_group_label',
+                                                measure_col = 'Intensity',
+                                                sample_id_col = 'FullRunName')
 
 
-# ComBat noramlization 
-#   see which ones are filtered and replace filtered ones with original data 
-#   the loess fitting is done for 
+# ComBat noramlization (on hold, median centering should be good enough)
 SWATH_matrix_ComBat = correct_with_ComBat (SWATH_matrix_fit, sample_annotation,
                                                       batch_col = 'MS_batch.final', par.prior = TRUE)
-
 
 
 ################### convert to data_long for plotting #########################
@@ -85,11 +92,11 @@ SWATH_long_log2 = matrix_to_long(SWATH_matrix_log2, feature_id_col = 'peptide_gr
 SWATH_long_qnorm = matrix_to_long(SWATH_matrix_qnorm, feature_id_col = 'peptide_group_label',
                                  measure_col = 'Intensity', sample_id_col = 'FullRunName')
 
-SWATH_long_fit = matrix_to_long(SWATH_matrix_fit, feature_id_col = 'peptide_group_label',
-                                 measure_col = 'Intensity', sample_id_col = 'FullRunName')
+#SWATH_long_fit = matrix_to_long(SWATH_matrix_fit, feature_id_col = 'peptide_group_label',
+#                                 measure_col = 'Intensity', sample_id_col = 'FullRunName')
 
-SWATH_long_ComBat = matrix_to_long(SWATH_matrix_ComBat, feature_id_col = 'peptide_group_label',
-                                 measure_col = 'Intensity', sample_id_col = 'FullRunName')
+#SWATH_long_ComBat = matrix_to_long(SWATH_matrix_ComBat, feature_id_col = 'peptide_group_label',
+#                                 measure_col = 'Intensity', sample_id_col = 'FullRunName')
 
 
 ################## plotting diagnostics of normalization ###########################
