@@ -10,7 +10,7 @@
 #' @param noFitRequants (logical) whether to fit requanted values
 #' @param fitFunc function to use for the fit (`kernel_smooth`, `smooth_spline`, or `loess_regression`)
 #' @param with_df
-#' @param removefew (logical) whether to remove small span measurements 
+#' @param loess.span the parameter α which controls the degree of smoothing for loess
 #' @param ... additional paramters to be passed to the fitting function
 #'
 #' @return vector of fitted response values
@@ -21,32 +21,46 @@
 # TODO: Document dataDF and with_df
 fit_nonlinear <- function(dataDF, response.var = 'y', expl.var = 'x',
                           noFitRequants = F, fitFunc = 'kernel_smooth',
-                          with_df = F, removefew = T, ...){
+                          with_df = F, loess.span = 0.75, ...){
   dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
   x_to_fit = dataDF[[expl.var]]
   y = dataDF[[response.var]]
-  if(length(x_to_fit) >= 3){
-    x_all = x_to_fit
-    if(noFitRequants){
-      x_all[dataDF$requant] = NA
-    }
-    if(!with_df){
-      fit_res = switch(fitFunc,
-                       kernel_smooth = kernel_smooth(x_all, y, x_to_fit, ...),
-                       smooth_spline = smooth_spline(x_all, y, x_to_fit, ...),
-                       loess_regression = loess_regression(x_all, y, x_to_fit, ...)
-      )
-    } else {
-      bw = optimise_bw(dataDF, response.var = response.var, expl.var = expl.var)
-      df = optimise_df(dataDF, bw, response.var = response.var, expl.var = expl.var)
-      fit_res = switch(fitFunc,
-                       kernel_smooth = kernel_smooth_opt(x_all, y, x_to_fit, bw, ...),
-                       smooth_spline = smooth_spline_opt(x_all, y, x_to_fit, df, ...),
-                       loess_regression = loess_regression_opt(x_all, y, x_to_fit, df, ...))
+  if(fitFunc == "loess_regression"){
+    if(length(x_to_fit)*loess.span >= 3){
+      x_all = x_to_fit
+      if(noFitRequants){
+        x_all[dataDF$requant] = NA
+      }
+      if(!with_df){
+        fit_res = switch(fitFunc,
+                         loess_regression = loess_regression(x_all, y, x_to_fit, span = loess.span,...)
+        )
+      } else {
+        bw = optimise_bw(dataDF, response.var = response.var, expl.var = expl.var)
+        df = optimise_df(dataDF, bw, response.var = response.var, expl.var = expl.var)
+        fit_res = switch(fitFunc,
+                         loess_regression = loess_regression_opt(x_all, y, x_to_fit, df, span = loess.span,...))
+      }
+    }else{
+      fit_res = rep(NA, length(x_to_fit))
     }
   }else{
-    fit_res = rep(NA, length(x_to_fit))
-  }
+      x_all = x_to_fit
+      if(noFitRequants){
+        x_all[dataDF$requant] = NA
+      }
+      if(!with_df){
+        fit_res = switch(fitFunc,
+                         kernel_smooth = kernel_smooth(x_all, y, x_to_fit, ...),
+                         smooth_spline = smooth_spline(x_all, y, x_to_fit, ...))
+      } else {
+        bw = optimise_bw(dataDF, response.var = response.var, expl.var = expl.var)
+        df = optimise_df(dataDF, bw, response.var = response.var, expl.var = expl.var)
+        fit_res = switch(fitFunc,
+                         kernel_smooth = kernel_smooth_opt(x_all, y, x_to_fit, bw, ...),
+                         smooth_spline = smooth_spline_opt(x_all, y, x_to_fit, df, ...))
+      }
+    }
   return(fit_res)
 }
 
