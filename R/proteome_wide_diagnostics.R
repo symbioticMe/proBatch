@@ -76,7 +76,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
         group_by_at(vars(one_of(facet_col))) %>%
         mutate(order = rank(UQ(sym(order_col))))
     }
-    }
+  }
   
   if(!is.null(ylimits)){
     gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
@@ -100,11 +100,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
           warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
                           consider defining color scheme with sample_annotation_to_colors function', n_batches))
         }
-        }
-      
-      } else{
-        gg = gg + scale_color_manual(values = color_scheme)
       }
+  
+    } else{
+        gg = gg + scale_color_manual(values = color_scheme)
+    }
   }
   if(!is.null(batch_col)){
     if (!is.null(facet_col)){
