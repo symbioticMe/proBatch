@@ -42,16 +42,16 @@ quantile_normalize <- function(data_matrix){
 #' @export
 #'
 #' @examples
-normalize_medians_batch <- function(data_long, sample_annotation = NULL,
+normalize_medians_batch <- function(df_long, sample_annotation = NULL,
                                     sample_id_col = 'FullRunName',
                                     batch_col = 'MS_batch.final',
                                     feature_id_col = 'peptide_group_label',
                                     measure_col = 'Intensity'){
-  if (!(sample_id_col %in% names(data_long) & batch_col %in% names(data_long)) &
+  if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
       !is.null(sample_annotation)){
-    data_long = data_long %>% merge(sample_annotation)
+    df_long = df_long %>% merge(sample_annotation)
   }
-  df_normalized = data_long %>%
+  df_normalized = df_long %>%
     group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
     mutate(median_batch = median(UQ(sym(measure_col)), na.rm = T)) %>%
     ungroup() %>%
@@ -70,10 +70,10 @@ normalize_medians_batch <- function(data_long, sample_annotation = NULL,
 #' @export
 #'
 #' @examples
-normalize_medians_global <- function(data_long,
+normalize_medians_global <- function(df_long,
                                      sample_id_col = 'FullRunName',
                                     measure_col = 'Intensity'){
-  df_normalized = data_long  %>%
+  df_normalized = df_long  %>%
     group_by_at(vars(one_of(sample_id_col))) %>%
     mutate(median_run = median(UQ(sym(measure_col)), na.rm = T)) %>%
     ungroup()
