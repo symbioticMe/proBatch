@@ -31,6 +31,7 @@ sample_annotation = example_sample_annotation1
 peptide_annotation = example_peptide_annotation
 proteome_dataset = example_proteome
 
+
 # generate peptide annotation file from the proteome data 
 peptide_annotation = create_peptide_annotation(proteome_dataset, 
                                                peptide_col = "peptide_group_label", 
@@ -65,7 +66,7 @@ sample_annotation = date_to_sample_order (sample_annotation,
 
 ############# Data transformation, normalization and batch correction ##############
 sample_annotation = fix_sample_annotation
-data_matrix = fix_data_matrix
+data_matrix = data_matrix[,1:200]
 
 # log2 transformation of data_matrix 
 data_matrix_log2 = log2(data_matrix + 1) 
@@ -92,6 +93,7 @@ data_long_fit = matrix_to_long(data_matrix_fit, feature_id_col = 'peptide_group_
 data_matrix_combat = correct_with_ComBat (data_matrix_fit, sample_annotation,
                                           batch_col = 'MS_batch.final', par.prior = TRUE)
 
+
 # Median centering
 data_long_medianCentering = normalize_medians_batch(data_long_fit, sample_annotation,
                                                     sample_id_col = 'FullRunName',
@@ -103,14 +105,11 @@ data_matrix_medianCentering = convert_to_matrix(data_long_medianCentering, featu
                                                 sample_id_col = 'FullRunName')
 
 
-
-
-
 ########### Plot diagnostics for each of the steps ###################
 data_1 = data_matrix_log2
 data_2 = data_matrix_qnorm
 data_3 = data_matrix_fit
-data_4 = data_matrix_combat
+data_4 = data_matrix_medianCentering
 
 ## the matrix has been converted back to df_long for some diagnostics that require long data frames 
 df_long_1 = matrix_to_long(data_1, feature_id_col = 'peptide_group_label',
@@ -122,7 +121,7 @@ df_long_3 = matrix_to_long(data_3, feature_id_col = 'peptide_group_label',
 df_long_4 = matrix_to_long(data_4, feature_id_col = 'peptide_group_label',
                            measure_col = 'Intensity', sample_id_col = 'FullRunName')
 
-# plot sample mean - works
+# plot sample mean - works, double check of the change 
 plot_sample_mean(data_1, sample_annotation = sample_annotation, sample_id_col = 'FullRunName',
                  order_col = 'order',batch_col = "MS_batch.final", facet_col = NULL, ylimits = c(12,17))
 
@@ -290,13 +289,28 @@ pvca4 = plot_pvca(data_4, sample_annotation,
                   theme = 'classic', plot_title = NULL)
 
 # plot peptide levels of one protein - works 
-plot_peptides_of_one_protein (proteinName = "Haao",  protein_col = "Gene", df_long_1, 
-                              sample_annotation,example_peptide_annotation,
+plot_peptides_of_one_protein (proteinName = "Haao",  protein_col = "Gene", df_long = df_long_1, 
+                              sample_annotation, peptide_annotation,
                               order_col = 'order',
                               sample_id_col = 'FullRunName',
                               batch_col = 'MS_batch.final',
                               measure_col = 'Intensity',
                               feature_id_col = 'peptide_group_label')
+
+plot_peptide_trend (pep_name = peptides, 
+                    df_long = df_long_1, 
+                    sample_annotation = sample_annotation,
+                    order_col = "order",
+                    sample_id_col = 'FullRunName',
+                    batch_col = 'MS_batch.final',
+                    measure_col = 'Intensity',
+                    feature_id_col = 'peptide_group_label',
+                    geom = c('point', 'line'),
+                    color_by_batch = F, facet_by_batch = F,
+                    requant = NULL,
+                    plot_title = NULL,
+                    vline_color ='red',
+                    theme = 'classic')
 
 
 # plot peptide trend - Works
@@ -388,7 +402,7 @@ plot_samples_corrplot(data_matrix = data_1,
                       plot_title = 'Correlation matrix of samples')
 
 #	Plot_sample_corr_distribution - works
-plot_sample_corr_distribution(data_matrix = data_1, sample_annotation,
+plot_sample_corr_distribution(data_matrix = data_4, sample_annotation,
                               repeated_samples = NULL,
                               sample_id_col = 'FullRunName',
                               batch_col = 'MS_batch.final',
