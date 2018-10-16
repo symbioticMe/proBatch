@@ -120,7 +120,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
       gg = gg + geom_vline(data = tipping.points, aes(xintercept = tipping.poings),
                            color = vline_color, linetype = 'dashed')
     } else {
-      batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
+      batch.tipping.points = cumsum(table(droplevels(df_ave[[batch_col]])))+.5
       gg = gg + geom_vline(xintercept = batch.tipping.points,
                            color = vline_color, linetype = 'dashed')
     }
