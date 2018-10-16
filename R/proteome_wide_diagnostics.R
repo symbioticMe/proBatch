@@ -55,7 +55,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              ylimits = NULL){
   sample_average = colMeans(data_matrix, na.rm = T)
   names(sample_average) = colnames(data_matrix)
-
+  
   df_ave = data.frame(average = sample_average,
                       order_temp_col = 1:length(sample_average),
                       sample_id_col = colnames(data_matrix))
@@ -76,16 +76,16 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
         group_by_at(vars(one_of(facet_col))) %>%
         mutate(order = rank(UQ(sym(order_col))))
     }
-  }
+    }
   
   if(!is.null(ylimits)){
     gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
       geom_point()+
       ylim(ylimits)
-    }else{
-      gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
-        geom_point()
-    }
+  }else{
+    gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
+      geom_point()
+  }
   
   if(color_by_batch & !is.null(batch_col)){
     gg = gg + aes_string(color = batch_col)
@@ -98,13 +98,13 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
           gg = gg + scale_color_brewer(palette = 'Set3')
         } else {
           warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
-                consider defining color scheme with sample_annotation_to_colors function', n_batches))
+                          consider defining color scheme with sample_annotation_to_colors function', n_batches))
         }
+        }
+      
+      } else{
+        gg = gg + scale_color_manual(values = color_scheme)
       }
-
-    } else{
-      gg = gg + scale_color_manual(values = color_scheme)
-    }
   }
   if(!is.null(batch_col)){
     if (!is.null(facet_col)){
@@ -129,16 +129,17 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     gg = gg + facet_wrap(as.formula(paste("~", facet_col)),
                          dir = 'v', scales = "free_x")
   }
-
+  
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
   if(!is.null(plot_title)) gg = gg + ggtitle(plot_title)+
     theme(plot.title = element_text(face = 'bold',hjust = .5))
-
-
+  
+  
   return(gg)
 }
+
 
 #' @name plot_sample_means_or_boxplots
 #'
