@@ -56,7 +56,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   sample_average = colMeans(data_matrix, na.rm = T)
   names(sample_average) = colnames(data_matrix)
   
-  df_ave = data.frame(average = sample_average,
+  df_ave = data.frame(Average_Intensity = sample_average,
                       order_temp_col = 1:length(sample_average),
                       sample_id_col = colnames(data_matrix))
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
@@ -79,11 +79,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   }
   
   if(!is.null(ylimits)){
-    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average Intensity'))+
+    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
       geom_point()+
       ylim(ylimits)
   }else{
-    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average Intensity'))+
+    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
       geom_point()
   }
   
