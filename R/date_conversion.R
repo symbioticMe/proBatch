@@ -87,8 +87,8 @@ date_to_sample_order <- function(sample_annotation,
 #'   MS profile acquisition timepoint
 #' @param threshold time difference that would mean there was an interruption
 #' @param minimal_batch_size minimal number of samples in a batch
-#' @param batch_name string with a self-explanatory name for the batch (e.g.
-#'   `MS_batch` for MS-proteomics) to which batch number will be added
+#' @param batch_col string with a self-explanatory name for the batch (e.g.
+#'   `MS_batch.final` for MS-proteomics) to which batch number will be added
 #'
 #' @return vector of batches for each sample
 #'
@@ -96,7 +96,7 @@ date_to_sample_order <- function(sample_annotation,
 #'
 define_batches_by_MS_pauses_within_instrument <- function(date_vector, threshold,
                                         minimal_batch_size = 5,
-                                        batch_name = 'MS_batch'){
+                                        batch_col = 'MS_batch.final'){
   diff = diff(date_vector)
   tipping_points = which(diff > threshold)
   batch_size = diff(tipping_points)
@@ -108,7 +108,7 @@ define_batches_by_MS_pauses_within_instrument <- function(date_vector, threshold
   tipping_points = c(0, tipping_points, length(date_vector))
   batch_idx = rep(1:(length(tipping_points) -1),
                   times = diff(tipping_points))
-  batch_ids = paste(batch_name, batch_idx, sep = '_')
+  batch_ids = paste(batch_col, batch_idx, sep = '_')
   return(batch_ids)
 }
 
@@ -137,26 +137,26 @@ define_batches_by_MS_pauses <- function(sample_annotation,
                                         runtime_col = 'RunDateTime',
                                         minimal_batch_size = 5,
                                         instrument_col = 'instr',
-                                        batch_name = 'MS_batch'){
+                                        batch_col = 'MS_batch.final'){
 
   if (!is.null(instrument_col)){
     sample_annotation = sample_annotation %>%
-      mutate(batch_name = paste(!!sym(instrument_col), batch_name, sep = ':')) %>%
+      mutate(batch_col = paste(!!sym(instrument_col), batch_col, sep = ':')) %>%
       arrange(UQ(sym(instrument_col)), UQ(sym(runtime_col))) %>%
       group_by_at(vars(one_of(instrument_col))) %>%
       mutate(batch_id = define_batches_by_MS_pauses_within_instrument(!!sym(runtime_col),
                                                                         threshold = threshold,
                                                                         minimal_batch_size = minimal_batch_size,
-                                                                        batch_name = batch_name))%>%
-        rename(!!batch_name := batch_id)
+                                                                        batch_col = batch_col))%>%
+        rename(!!batch_col := batch_id)
 
   } else {
     sample_annotation = sample_annotation
       mutate(batch_id = define_batches_by_MS_pauses_within_instrument(!!sym(runtime_col),
                                                                         threshold = threshold,
                                                                         minimal_batch_size = minimal_batch_size,
-                                                                        batch_name = batch_name))%>%
-        rename(!!batch_name := batch_id)
+                                                                        batch_col = batch_col))%>%
+        rename(!!batch_col := batch_id)
   }
   return(sample_annotation)
 }
