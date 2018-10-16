@@ -62,6 +62,10 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
   df_ave = df_ave %>%
     merge(sample_annotation, by = sample_id_col)
+  
+  sample_annotation = sample_annotation %>%
+    subset(sample_annotation[[sample_id_col]] %in% df_ave[[sample_id_col]])
+  
   if (!(order_col %in% names(sample_annotation))){
     warning('order column not found in sample annotation, taking order of files in the data matrix instead')
     order_col = 'order_temp_col'
@@ -120,7 +124,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
       gg = gg + geom_vline(data = tipping.points, aes(xintercept = tipping.poings),
                            color = vline_color, linetype = 'dashed')
     } else {
-      batch.tipping.points = cumsum(table(droplevels(df_ave[[batch_col]])))+.5
+      batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
       gg = gg + geom_vline(xintercept = batch.tipping.points,
                            color = vline_color, linetype = 'dashed')
     }
