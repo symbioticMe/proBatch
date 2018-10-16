@@ -5,6 +5,8 @@
 bioc_deps <- c("GO.db", "preprocessCore", "impute", "sva", "pvca")
 cran_deps <- c("roxygen2","lubridate","tidyverse","reshape2","lazyeval","readr","WGCNA", "rlang", 
               "corrplot","ggfortify","pheatmap","dplyr","data.table","wesanderson")
+
+source("http://bioconductor.org/biocLite.R") 
 biocLite(bioc_deps); 
 install.packages(cran_deps); 
 lapply(bioc_deps, require, character.only = TRUE)
@@ -18,6 +20,7 @@ library(readr) #this is full Evan's dataset
 Fullruns_dataset = read_delim("S:/html/E1801171630_feature_alignment_requant.tsv", "\t", escape_double = FALSE)
 Fullruns_dataset = Fullruns_dataset %>% mutate(FullRunName = gsub('/scratch/55808263.tmpdir/wevan_(.+)\\.mzXML\\.gz', '\\1', filename))
 
+#Fullrun
 Fullruns_dataset = read.table("S:/E1801171630_feature_alignment_requant.tsv", "\t",header = TRUE)
 Fullruns_dataset = read.table(file = "S:/html/E1801171630_feature_alignment_requant.tsv", sep = '\t', header = TRUE)
 
