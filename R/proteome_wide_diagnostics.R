@@ -79,11 +79,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   }
   
   if(!is.null(ylimits)){
-    gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
+    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average Intensity'))+
       geom_point()+
       ylim(ylimits)
   }else{
-    gg = ggplot(df_ave, aes_string(x = order_col, y = 'average'))+
+    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average Intensity'))+
       geom_point()
   }
   
