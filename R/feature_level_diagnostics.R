@@ -50,7 +50,9 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
       merge(sample_annotation, by = sample_id_col)
   }
 
-
+  sample_annotation = sample_annotation %>%
+    subset(sample_annotation[[sample_id_col]] %in% plot_df[[sample_id_col]])
+  
   if(is.null(order_col)){
     warning("order column wasn't specified, putting row number as an order within a batch")
     plot_df = plot_df %>%
@@ -58,8 +60,6 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
       mutate(order = row_number())
     order_col = 'order'
   }
-
-
 
   gg = ggplot(plot_df,
               aes_string(x = order_col, y = measure_col))
@@ -75,7 +75,7 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
       geom_line(color = 'black', alpha = .7, linetype = 'dashed')
   }
   if(!color_by_batch & !is.null(batch_col)){
-    batch.tipping.points = cumsum(table(droplevels(plot_df[[batch_col]])))+.5
+    batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
     gg = gg + geom_vline(xintercept = batch.tipping.points,
                          color = vline_color, linetype = 'dashed')
   } else {
