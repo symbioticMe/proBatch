@@ -17,6 +17,22 @@ NULL
 #> NULL
 
 
+#' Log transformation of the data, ensuring that the row and column names
+#' are retained
+#'
+#' @param data_matrix raw data matrix (features in rows and samples
+#'   in columns)
+#'
+#' @return `data_matrix`-size matrix, with columns log2 transformed
+#' @export
+#'
+#' @examples
+
+log_transform <- function(data_matrix){
+  data_matrix_log2 = log2(data_matrix + 1) 
+  return(data_matrix_log2)
+}
+
 #' Quantile normalization of the data, ensuring that the row and column names
 #' are retained
 #'
