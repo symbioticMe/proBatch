@@ -27,7 +27,6 @@ NULL
 #' @export
 #'
 #' @examples
-
 log_transform <- function(data_matrix){
   data_matrix_log2 = log2(data_matrix + 1) 
   return(data_matrix_log2)
