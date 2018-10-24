@@ -81,14 +81,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
         mutate(order = rank(UQ(sym(order_col))))
     }
   }
-  
+  gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
+    geom_point()
   if(!is.null(ylimits)){
-    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
-      geom_point()+
+    gg = gg +
       ylim(ylimits)
-  }else{
-    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
-      geom_point()
   }
   
   if(color_by_batch & !is.null(batch_col)){
