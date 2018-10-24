@@ -96,12 +96,12 @@ remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
 #'
 #' @family dataset cleaning functions
 #'
-#' @export
+#' @keywords internal
 summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
                                feature_id_col = 'peptide_group_label',
-                               RT="RT",
-                               measure_col="Intensity",
-                               m_score="m_score"){
+                               RT_col = "RT",
+                               measure_col = "Intensity",
+                               m_score = "m_score"){
   peptide_summary = df_long %>%
     group_by_at(vars(one_of(sample_id_col)))  %>%
     mutate(rank = rank(measure_col))  %>%
