@@ -19,21 +19,22 @@ Description: The proBatch package contains functions for diagnosing and removing
 License: What license is it under?
 URL: https://github.com/jelenachuklina/proBatch
 BugReports: https://github.com/jelenachuklina/proBatch/issues
-Depends: R (>= 3.4.0),
-    dplyr (>= 0.7.4),
-    ggplot2
+Depends: R (>= 3.4.0)
 Encoding: UTF-8
 LazyData: true
 Imports:
     Biobase,
     corrplot,
-    ggfortify,
     data.table,
+    dplyr (>= 0.7.4),
+    ggfortify,
+    ggplot2,
     lazyeval,
     lubridate,
     magrittr,
     pheatmap,
     preprocessCore,
+    purrr,
     pvca,
     RColorBrewer,
     readr, 
@@ -42,7 +43,7 @@ Imports:
     scales,
     sva,
     tibble,
-    tidyverse (>= 1.2.1),
+    tidyr,
     wesanderson,
     WGCNA
 Suggests: knitr,
