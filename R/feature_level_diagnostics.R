@@ -190,7 +190,7 @@ plot_peptides_of_one_protein <- function(proteinName, protein_col = 'ProteinName
 #'
 #' @export
 #'
-plot_spike_ins_trend <- function(df_long, sample_annotation,
+plot_spike_in_protein <- function(df_long, sample_annotation,
                                  peptide_annotation = NULL,
                                  protein_col = 'ProteinName',
                                  order_col = 'order',
