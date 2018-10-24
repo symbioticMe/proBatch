@@ -96,6 +96,7 @@ map_numbers_to_colors <-
 #' \item `color_vector` - string-like vector of colors
 #' \item `new_annotation` - factor representation of numeric vector (factor with number of levels equal to "granularity")
 #' }
+#' @keywords internal
 
 generate_colors_for_numeric <-
   function(num_col,
@@ -173,6 +174,7 @@ check_rare_levels <- function(column) {
 #' Replaces rare levels with other
 #'
 #' Replaces levels with a maximal occurence of 1 with other
+#' @keywords internal
 merge_rare_levels <- function(column) {
   is_factor_col = is.factor(column)
   tb_col = table(column)
