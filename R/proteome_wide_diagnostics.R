@@ -1,4 +1,4 @@
-#' Plot per-sample average or boxplot (distribution) vs order (if the real
+#' Plot per-sample mean or boxplot (showing median and quantiles) vs order (if the real
 #' running order available)
 #' @details functions for quick visual assessment of trends associated, overall
 #'   or specific covariate-associated (see `batch_col` and `facet_col`)
@@ -150,7 +150,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' @export
 #'
 #' @examples
-plot_boxplot <- function(df_long, sample_annotation = NULL,
+plot_boxplots <- function(df_long, sample_annotation = NULL,
                        sample_id_col = 'FullRunName',
                        measure_col = 'Intensity',
                        order_col = 'order',
@@ -395,7 +395,7 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing
   return(p)
 }
 
-PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
+calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
                  threshold_pca, threshold_var = Inf) {
 
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
