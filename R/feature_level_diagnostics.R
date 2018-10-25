@@ -203,7 +203,7 @@ plot_spike_in_protein <- function(df_long, sample_annotation,
                                  plot_title = 'Spike-in BOVINE protein peptides', ...){
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
-      merge(peptide_annotation)
+      merge(peptide_annotation, by = protein_col)
   }
   spike_in_peptides = df_long %>%
     filter(grepl(spike_ins, !!sym(protein_col))) %>%
