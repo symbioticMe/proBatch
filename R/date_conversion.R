@@ -92,7 +92,7 @@ date_to_sample_order <- function(sample_annotation,
 #'
 #' @return vector of batches for each sample
 #'
-#' @export
+#' @keywords internal
 #'
 define_batches_by_MS_pauses_within_instrument <- function(date_vector, threshold,
                                         minimal_batch_size = 5,
