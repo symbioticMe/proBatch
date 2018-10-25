@@ -23,7 +23,6 @@ clean_requants <- function(df_long, sample_annotation, peptide_annotation,
                            m_score = "m_score",
                            missing_frac_batch = .3, missing_frac_total = .3){
   #for dplyr version 0.7 and higher, this is the way to call the functions
-  n_samples = nrow(sample_annotation)
   df_clean = df_long %>%
     merge(peptide_annotation) %>%
     filter(m_score != 2) %>%
