@@ -106,7 +106,7 @@ summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
     group_by_at(vars(one_of(sample_id_col)))  %>%
     mutate(rank = rank(measure_col))  %>%
     group_by_at(vars(one_of(feature_id_col))) %>%
-    summarise(RT_mean = mean(RT),
+    summarise(RT_mean = mean(RT_col ),
               Int_mean = mean(measure_col), rank_mean = mean(rank),
               numb_requants = sum(m_score > 1),
               mean_m_score = mean(m_score),
