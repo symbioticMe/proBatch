@@ -116,7 +116,7 @@ normalize_medians_global <- function(df_long,
 #'
 #' @seealso \code{\link{fit_nonlinear}}
 normalize_custom_fit <- function(data_matrix, sample_annotation,
-                                 batch_col = 'MS_batch.final',
+                                 batch_col = 'MS_batch',
                                  feature_id_col = 'peptide_group_label',
                                  sample_id_col = 'FullRunName',
                                  measure_col = 'Intensity',
