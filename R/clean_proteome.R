@@ -25,7 +25,7 @@ clean_requants <- function(df_long, sample_annotation, peptide_annotation,
   #for dplyr version 0.7 and higher, this is the way to call the functions
   df_clean = df_long %>%
     merge(peptide_annotation) %>%
-    filter(m_score != 2) %>%
+    filter(UQ(sym(m_score) != 2) %>%
     merge(sample_annotation) %>%
     group_by_at(vars(one_of(c(c(feature_id_col, batch_col))))) %>%
     mutate(n_samples_in_batch = n()) %>%
