@@ -190,7 +190,7 @@ plot_peptides_of_one_protein <- function(proteinName, protein_col = 'ProteinName
 #'
 #' @export
 #'
-plot_spike_ins_trend <- function(df_long, sample_annotation,
+plot_spike_in_protein <- function(df_long, sample_annotation,
                                  peptide_annotation = NULL,
                                  protein_col = 'ProteinName',
                                  order_col = 'order',
@@ -203,7 +203,7 @@ plot_spike_ins_trend <- function(df_long, sample_annotation,
                                  plot_title = 'Spike-in BOVINE protein peptides', ...){
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
-      merge(peptide_annotation)
+      merge(peptide_annotation, by = protein_col)
   }
   spike_in_peptides = df_long %>%
     filter(grepl(spike_ins, !!sym(protein_col))) %>%
