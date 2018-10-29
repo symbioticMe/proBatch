@@ -1,4 +1,4 @@
-#' Plot per-sample average or boxplot (distribution) vs order (if the real
+#' Plot per-sample mean or boxplot (showing median and quantiles) vs order (if the real
 #' running order available)
 #' @details functions for quick visual assessment of trends associated, overall
 #'   or specific covariate-associated (see `batch_col` and `facet_col`)
@@ -81,14 +81,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
         mutate(order = rank(UQ(sym(order_col))))
     }
   }
-  
+  gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
+    geom_point()
   if(!is.null(ylimits)){
-    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
-      geom_point()+
+    gg = gg +
       ylim(ylimits)
-  }else{
-    gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
-      geom_point()
   }
   
   if(color_by_batch & !is.null(batch_col)){
@@ -150,7 +147,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' @export
 #'
 #' @examples
-plot_boxplot <- function(df_long, sample_annotation = NULL,
+plot_boxplots <- function(df_long, sample_annotation = NULL,
                        sample_id_col = 'FullRunName',
                        measure_col = 'Intensity',
                        order_col = 'order',
@@ -166,7 +163,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       df_long = df_long %>% merge(sample_annotation,
                                             by = sample_id_col)
       if(is.numeric(df_long[[batch_col]])){
-        df_long[batch_col] <- lapply(df_long[batch_col] , factor)
+        #df_long[batch_col] <- lapply(df_long[batch_col] , factor)
       }
     } else {
       if (color_by_batch){
@@ -395,7 +392,7 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing
   return(p)
 }
 
-PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
+calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
                  threshold_pca, threshold_var = Inf) {
 
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
