@@ -17,16 +17,14 @@
 #'
 #' @family dataset cleaning functions
 #'
-clean_requants <- function(df_long, sample_annotation, peptide_annotation,
+clean_requants <- function(df_long, sample_annotation,
                            batch_col = 'MS_batch.final',
                            feature_id_col = 'peptide_group_label',
                            m_score = "m_score",
                            missing_frac_batch = .3, missing_frac_total = .3){
   #for dplyr version 0.7 and higher, this is the way to call the functions
-  n_samples = nrow(sample_annotation)
   df_clean = df_long %>%
-    merge(peptide_annotation) %>%
-    filter(m_score != 2) %>%
+    filter(UQ(sym(m_score)) != 2) %>%
     merge(sample_annotation) %>%
     group_by_at(vars(one_of(c(c(feature_id_col, batch_col))))) %>%
     mutate(n_samples_in_batch = n()) %>%
@@ -96,17 +94,17 @@ remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
 #'
 #' @family dataset cleaning functions
 #'
-#' @export
+#' @keywords internal
 summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
                                feature_id_col = 'peptide_group_label',
-                               RT="RT",
-                               measure_col="Intensity",
-                               m_score="m_score"){
+                               RT_col = "RT",
+                               measure_col = "Intensity",
+                               m_score = "m_score"){
   peptide_summary = df_long %>%
     group_by_at(vars(one_of(sample_id_col)))  %>%
     mutate(rank = rank(measure_col))  %>%
     group_by_at(vars(one_of(feature_id_col))) %>%
-    summarise(RT_mean = mean(RT),
+    summarise(RT_mean = mean(RT_col ),
               Int_mean = mean(measure_col), rank_mean = mean(rank),
               numb_requants = sum(m_score > 1),
               mean_m_score = mean(m_score),

@@ -1,4 +1,5 @@
 *.Rproj
+*.Rapp*
 .Rproj.user
 .Rhistory
 .RData
