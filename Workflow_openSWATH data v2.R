@@ -46,7 +46,7 @@ openSWATH_data = remove_peptides_with_missing_batch(openSWATH_data, sample_annot
 
 ############## normalization ###############################
 # Generate data_matrix from SWATH_long
-SWATH_matrix = convert_to_matrix(openSWATH_data, feature_id_col = 'peptide_group_label',
+SWATH_matrix = convert_to_matrix(Allruns_requant, feature_id_col = 'peptide_group_label',
                                  measure_col = 'Intensity',
                                  sample_id_col = 'FullRunName')
 
@@ -76,13 +76,24 @@ data_long_medianCentering = normalize_medians_batch(SWATH_long_fit, sample_annot
                                                     feature_id_col = 'peptide_group_label',
                                                     measure_col = 'Intensity')
 data_matrix_medianCentering = convert_to_matrix(data_long_medianCentering, feature_id_col = 'peptide_group_label',
-                                                measure_col = 'Intensity',
+                                                measure_col = 'Intensity_normalized',
                                                 sample_id_col = 'FullRunName')
 
 
 # ComBat noramlization (on hold, median centering should be good enough)
 SWATH_matrix_ComBat = correct_with_ComBat (SWATH_matrix_fit, sample_annotation,
                                                       batch_col = 'MS_batch.final', par.prior = TRUE)
+
+
+# prepare full dataset for Wenguang's pipeline as openSWATH output - qnorm + loess + medianCentering 
+normalized_long = data.frame(FullRunName = data_long_medianCentering$FullRunName,
+                             peptide_group_label = data_long_medianCentering$peptide_group_label,
+                             Intensity_normalized = data_long_medianCentering$Intensity_normalized)
+
+noramlized_openSWATH = merge(normalized_long, Allruns_requant)
+write.csv(noramlized_openSWATH, "~/R/AllRuns; qnorm_loess_medianCenter.csv", row.names=T)
+write.csv(peptide_annotation, "~/R/peptide_annotation_6600.csv", row.names=T)
+write.csv(sample_annotation, "~/R/sample_annotation_6600.csv", row.names=T)
 
 
 ################### convert to data_long for plotting #########################
@@ -100,8 +111,86 @@ SWATH_long_qnorm = matrix_to_long(SWATH_matrix_qnorm, feature_id_col = 'peptide_
 #SWATH_long_ComBat = matrix_to_long(SWATH_matrix_ComBat, feature_id_col = 'peptide_group_label',
 #                                 measure_col = 'Intensity', sample_id_col = 'FullRunName')
 
+######################### Data preparation #############################################
+df_long_1 = matrix_to_long(data_1, feature_id_col = 'peptide_group_label',
+                           measure_col = 'Intensity', sample_id_col = 'FullRunName' )
+df_long_2 = matrix_to_long(data_2, feature_id_col = 'peptide_group_label',
+                           measure_col = 'Intensity', sample_id_col = 'FullRunName')
+df_long_3 = matrix_to_long(data_3, feature_id_col = 'peptide_group_label',
+                           measure_col = 'Intensity', sample_id_col = 'FullRunName')
+df_long_4 = matrix_to_long(data_4, feature_id_col = 'peptide_group_label',
+                           measure_col = 'Intensity', sample_id_col = 'FullRunName')
+
 
 ################## plotting diagnostics of normalization ###########################
 
+# plot sample mean - works, double check of the change 
+plot_sample_mean(SWATH_matrix_log2, sample_annotation = sample_annotation, sample_id_col = 'FullRunName',
+                 order_col = 'order',batch_col = "MS_batch.final", facet_col = NULL, ylimits = c(15.5, 17.0))
 
+plot_sample_mean(SWATH_matrix_qnorm, sample_annotation = sample_annotation, sample_id_col = 'FullRunName',
+                 order_col = 'order',batch_col = "MS_batch.final", facet_col = NULL)
 
+plot_sample_mean(SWATH_matrix_fit, sample_annotation = sample_annotation, sample_id_col = 'FullRunName',
+                 order_col = 'order',batch_col = "MS_batch.final", facet_col = NULL)
+
+plot_sample_mean(data_matrix_medianCentering, sample_annotation = sample_annotation, sample_id_col = 'FullRunName',
+                 order_col = 'order',batch_col = "MS_batch.final", facet_col = NULL)
+
+# boxplots 
+plot_boxplot(SWATH_long_log2,  sample_annotation = sample_annotation,
+             sample_id_col = 'FullRunName',
+             measure_col = 'Intensity',
+             order_col = "order",
+             batch_col = 'MS_batch.final',
+             facet_col = NULL,
+             color_by_batch = T, color_scheme = 'brewer',
+             theme = 'classic',
+             plot_title = NULL, order_per_facet = F)
+
+plot_boxplot(SWATH_long_qnorm,  sample_annotation = sample_annotation,
+             sample_id_col = 'FullRunName',
+             measure_col = 'Intensity',
+             order_col = "order",
+             batch_col = 'MS_batch.final',
+             facet_col = NULL,
+             color_by_batch = T, color_scheme = 'brewer',
+             theme = 'classic',
+             plot_title = NULL, order_per_facet = F)
+
+plot_boxplot(SWATH_long_fit,  sample_annotation = sample_annotation,
+             sample_id_col = 'FullRunName',
+             measure_col = 'Intensity',
+             order_col = "order",
+             batch_col = 'MS_batch.final',
+             facet_col = NULL,
+             color_by_batch = T, color_scheme = 'brewer',
+             theme = 'classic',
+             plot_title = NULL, order_per_facet = F)
+
+plot_boxplot(data_long_medianCentering,  sample_annotation = sample_annotation,
+             sample_id_col = 'FullRunName',
+             measure_col = 'Intensity',
+             order_col = "order",
+             batch_col = 'MS_batch.final',
+             facet_col = NULL,
+             color_by_batch = T, color_scheme = 'brewer',
+             theme = 'classic',
+             plot_title = NULL, order_per_facet = F)
+
+# plot peptides of one protein 
+plot_peptides_of_one_protein (proteinName = "Haao",  protein_col = "Gene", df_long = SWATH_long_qnorm, 
+                              sample_annotation, peptide_annotation,
+                              order_col = 'order',
+                              sample_id_col = 'FullRunName',
+                              batch_col = 'MS_batch.final',
+                              measure_col = 'Intensity',
+                              feature_id_col = 'peptide_group_label')
+
+plot_peptides_of_one_protein (proteinName = "Haao",  protein_col = "Gene", df_long = data_long_medianCentering, 
+                              sample_annotation, peptide_annotation,
+                              order_col = 'order',
+                              sample_id_col = 'FullRunName',
+                              batch_col = 'MS_batch.final',
+                              measure_col = 'Intensity_normalized',
+                              feature_id_col = 'peptide_group_label')
