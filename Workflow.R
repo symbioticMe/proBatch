@@ -1,22 +1,19 @@
 # Workflow based on example proteome, sample anotation and peptide annotation files in proBatch package 
+.libPaths("C:/Users/Chloe/Documents/R/proBatch/%HOMESHARE%/R3UserLibs")
 
 #### install dependencies ####
 #library(ProjectTemplate)
 #load.project()
 
-source("http://bioconductor.org/biocLite.R") # from README.md
 bioc_deps <- c("GO.db", "preprocessCore", "impute", "sva", "pvca")
-cran_deps <- c("tidyverse", "reshape2", "lazyeval", "readr", "WGCNA", "rlang", "corrplot", "ggfortify", "pheatmap")
+cran_deps <- c("roxygen2","lubridate","tidyverse","reshape2","lazyeval","readr","WGCNA", "rlang", 
+               "corrplot","ggfortify","pheatmap","dplyr","data.table","wesanderson")
+
+source("http://bioconductor.org/biocLite.R") 
 biocLite(bioc_deps); 
 install.packages(cran_deps); 
-install.packages("roxygen2"); 
-install.packages("lubridate"); 
-
 lapply(bioc_deps, require, character.only = TRUE)
 lapply(cran_deps, require, character.only = TRUE)
-require(roxygen2)
-require(lubridate) 
-
 
 #### Load data 
 load("~/R/proBatch/data/example_peptide_annotation.RData")
@@ -24,7 +21,7 @@ load("~/R/proBatch/data/example_sample_annotation1.rda")
 load("~/R/proBatch/data/example_proteome.RData")
 
 load("//pasteur/SysBC-Home/leech/Desktop/proBatch/data/example_peptide_annotation.RData")
-load("//pasteur/SysBC-Home/leech/Desktop/proBatch/data/example_sample_annotation.rda")
+load("//pasteur/SysBC-Home/leech/Desktop/proBatch/data/example_sample_annotation1.rda")
 load("//pasteur/SysBC-Home/leech/Desktop/proBatch/data/example_proteome.RData")
 
 sample_annotation = example_sample_annotation1
@@ -56,7 +53,7 @@ data_long = matrix_to_long(data_matrix, feature_id_col = 'peptide_group_label',
                            measure_col = 'Intensity', sample_id_col = 'FullRunName')
 
 # make order in sample_annotation file - works (fixed)
-sample_annotation = date_to_sample_order (sample_annotation,
+sample_annotation = date_to_sample_order(sample_annotation,
                                           time_column = c('RunDate','RunTime'),
                                           new_time_column = 'DateTime',
                                           dateTimeFormat = c("%b_%d", "%H:%M:%S"),
@@ -66,10 +63,9 @@ sample_annotation = date_to_sample_order (sample_annotation,
 
 ############# Data transformation, normalization and batch correction ##############
 sample_annotation = fix_sample_annotation
-data_matrix = data_matrix[,1:200]
 
 # log2 transformation of data_matrix 
-data_matrix_log2 = log2(data_matrix + 1) 
+data_matrix_log2 = log2(data_matrix + 1)
 
 # quantile normalization of the log2 transformed data 
 data_matrix_qnorm = quantile_normalize(data_matrix_log2)
@@ -92,6 +88,10 @@ data_long_fit = matrix_to_long(data_matrix_fit, feature_id_col = 'peptide_group_
 # Batch correction with LOESS + ComBat 
 data_matrix_combat = correct_with_ComBat (data_matrix_fit, sample_annotation,
                                           batch_col = 'MS_batch.final', par.prior = TRUE)
+data_long_combat = matrix_to_long(data_matrix_combat, feature_id_col = 'peptide_group_label',
+                               measure_col = 'Intensity',
+                               sample_id_col = 'FullRunName')
+
 
 
 # Median centering
@@ -103,6 +103,13 @@ data_long_medianCentering = normalize_medians_batch(data_long_fit, sample_annota
 data_matrix_medianCentering = convert_to_matrix(data_long_medianCentering, feature_id_col = 'peptide_group_label',
                                                 measure_col = 'Intensity',
                                                 sample_id_col = 'FullRunName')
+
+write.csv(data_matrix_combat, "~/R/example_proteome; qnorm_loess_combat.csv", row.names=T)
+write.csv(data_matrix, "~/R/example_proteome.csv",row.names=T)
+write.csv(sample_annotation, "~/R/sample_annotation.csv",row.names=T)
+write.csv(peptide_annotation, "~/R/peptide_annotation.csv",row.names=T)
+write.csv(data_long_combat, "~/R/long_proteome; qnorm_loess_combat.csv",  row.names=T)
+
 
 
 ########### Plot diagnostics for each of the steps ###################
@@ -187,10 +194,10 @@ colors_list = sample_annotation_to_colors(sample_annotation,  columns_for_plotti
                                           numeric_palette_type = 'brewer',
                                           granularity = 10)
 
-color_alldf = colors_list$color_df
-color_df = data.frame(MS_batch = color_df$MS_batch.final,
-                      Diet = color_df$Diet,
-                      Order = color_df$order)
+color_df = colors_list$color_df
+covariate_col = c("MS_batch.final", "Diet", "order")
+color_covariates = subset(color_df, select=covariate_col)
+
 
 plot_sample_clustering(data_1, color_df,  distance = "euclidean", agglomeration = 'complete',  
                        label_samples = T, label_font = .2, plot_title = NULL)
@@ -315,7 +322,7 @@ plot_peptide_trend (pep_name = peptides,
 
 # plot peptide trend - Works
 rows = which(peptide_annotation$Gene == "Haao")
-peptide_Haao = example_peptide_annotation$peptide_group_label[rows]
+peptide_Haao = peptide_annotation$peptide_group_label[rows]
 
 plot_peptide_trend (pep_name = peptide_Haao[1], 
                     df_long = df_long_1, 
