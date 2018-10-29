@@ -10,10 +10,10 @@
 #'
 #' @export
 #'
-convert_to_matrix <- function(df_long,
-                              feature_id_col = 'peptide_group_label',
-                              measure_col = 'Intensity',
-                              sample_id_col = 'FullRunName') {
+long_to_matrix <- function(df_long,
+                           feature_id_col = 'peptide_group_label',
+                           measure_col = 'Intensity',
+                           sample_id_col = 'FullRunName') {
   casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
                                       sep =  " ~ "))
   proteome_wide = dcast(df_long, formula = casting_formula,
