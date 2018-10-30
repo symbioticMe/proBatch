@@ -20,7 +20,7 @@
 
 # TODO: Document dataDF and with_df
 fit_nonlinear <- function(dataDF, response.var = 'y', expl.var = 'x',
-                          noFitRequants = F, fitFunc = 'kernel_smooth',
+                          noFitRequants = F, fitFunc = 'loess_regression',
                           with_df = F, loess.span = 0.75, ...){
   dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
   x_to_fit = dataDF[[expl.var]]
