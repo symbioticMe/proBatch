@@ -199,3 +199,69 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
                               mod = modCombat, par.prior = par.prior)
   return(corrected_proteome)
 }
+
+#' Batch correction method allows correction of continuous sigal drift within batch and 
+#' discrete difference across batches. 
+#'
+#' @name batch_correct
+#' @param fitFunct function to use for the fit (currently only `loess_regression` available)
+#' @param discreteFunc function to use fo discrete batch correction (`MedianCentering` or `ComBat`)
+#' @param ... other parameters, usually of `normalize_custom_fit`, and `fit_func`
+#'
+#' @return `data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
+#' @export
+#'
+#' @examples
+batch_correct <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
+                          discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
+                          feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
+                          measure_col = 'Intensity',  sample_order_col = 'order',...){
+  
+  fit_list = normalize_custom_fit(data_matrix, sample_annotation = sample_annotation,
+                                  batch_col = batch_col,
+                                  feature_id_col = feature_id_col,
+                                  sample_id_col = sample_id_col,
+                                  measure_col = measure_col,
+                                  sample_order_col = sample_order_col,
+                                  fit_func = fit_nonlinear,
+                                  fitFunc = fitFunc)
+  fit_matrix = fit_list$data_matrix
+  fit_long = matrix_to_long(fit_matrix, feature_id_col = feature_id_col,
+                            measure_col = measure_col, sample_id_col = sample_id_col)
+  
+  if(discreteFunc == 'MedianCentering'){
+    median_long = normalize_medians_batch(df_long = fit_long, sample_annotation = sample_annotation,
+                                          sample_id_col = sample_id_col,
+                                          batch_col = batch_col,
+                                          feature_id_col = feature_id_col,
+                                          measure_col = measure_col)
+    normalized_matrix = convert_to_matrix(median_long, feature_id_col = feature_id_col,
+                                          measure_col = measure_col, sample_id_col = sample_id_col)
+  }
+  
+  if(discreteFunc == 'ComBat'){
+    batches = unique(sample_annotation[[batch_col]])
+    matrix_batch = list()
+    for(i in 1:length(batches)){
+      samples = sample_annotation[[sample_id_col]][sample_annotation[[batch_col]] == batches[[i]]]
+      matrix = fit_matrix[,samples]
+      matrix_batch[[i]] = matrix[rowSums(is.na(matrix)) != ncol(matrix), ]
+    }
+    
+    df = Reduce(function(x, y) merge(x, y, all = FALSE), 
+                lapply(matrix_batch, function(y) data.table(y, keep.rownames=TRUE, key = "rn")))
+    
+    filtered_matrix <-as.matrix(df[,-1])
+    rownames(filtered_matrix)<-unlist(df[,1])
+    
+    nfiltered = nrow(fit_matrix) - nrow(filtered_matrix)
+    if(nfiltered > 0){
+      warning(sprintf("%i rows have no measurement for one or more batches and are removed for ComBat batch correction", nfiltered))
+    }
+    normalized_matrix = correct_with_ComBat(filtered_matrix, sample_annotation = sample_annotation,
+                                            batch_col = batch_col, par.prior = TRUE)
+  }
+  
+  return(normalized_matrix)
+}
+
