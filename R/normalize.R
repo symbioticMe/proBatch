@@ -203,7 +203,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' Batch correction method allows correction of continuous sigal drift within batch and 
 #' discrete difference across batches. 
 #'
-#' @name batch_correct
+#' @name correct_batch
 #' @param fitFunct function to use for the fit (currently only `loess_regression` available)
 #' @param discreteFunc function to use fo discrete batch correction (`MedianCentering` or `ComBat`)
 #' @param ... other parameters, usually of `normalize_custom_fit`, and `fit_func`
@@ -212,7 +212,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' @export
 #'
 #' @examples
-batch_correct <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
+correct_batch <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
                           discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
                           feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
                           measure_col = 'Intensity',  sample_order_col = 'order',...){
