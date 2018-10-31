@@ -1,5 +1,8 @@
 # Set library directory  
 .libPaths("S:/proBatch/%HOMESHARE%/R3UserLibs")
+.libPaths("C:/Users/leech/Documents/proBatch/%HOMESHARE%/R3UserLibs")
+.libPaths("\\\\pasteur/sysBC-Home/leech/Documents/proBatch/%HOMESHARE%/R3UserLibs")
+setwd("\\\\pasteur/sysBC-Home/leech/Documents/proBatch")
 
 # Install dependencies 
 bioc_deps <- c("GO.db", "preprocessCore", "impute", "sva", "pvca")
