@@ -56,6 +56,7 @@ SWATH_matrix_log2 = log2(SWATH_matrix + 1)
 # quantile normalization of the log2 transformed data 
 SWATH_matrix_qnorm = quantile_normalize(SWATH_matrix_log2)
 
+############################ workflow with LOESS + Median/ComBat separated ######################################
 # LOESS fitting 
 SWATH_list_fit = normalize_custom_fit(SWATH_matrix_qnorm, sample_annotation,
                                       batch_col = 'MS_batch.final',
@@ -94,6 +95,13 @@ noramlized_openSWATH = merge(normalized_long, Allruns_requant)
 write.csv(noramlized_openSWATH, "~/R/AllRuns; qnorm_loess_medianCenter.csv", row.names=T)
 write.csv(peptide_annotation, "~/R/peptide_annotation_6600.csv", row.names=T)
 write.csv(sample_annotation, "~/R/sample_annotation_6600.csv", row.names=T)
+########################################################################################################################
+
+batch_corrected = correct_batch(data_matrix = SWATH_matrix_qnorm, sample_annotation, fitFunc = 'loess_regression', 
+                                discreteFunc = 'ComBat', batch_col = 'MS_batch.final',  
+                                feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
+                                measure_col = 'Intensity',  sample_order_col = 'order', 
+                                loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.30)
 
 
 ################### convert to data_long for plotting #########################
