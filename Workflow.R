@@ -32,7 +32,8 @@ proteome_dataset = example_proteome
 # generate peptide annotation file from the proteome data 
 peptide_annotation = create_peptide_annotation(proteome_dataset, 
                                                peptide_col = "peptide_group_label", 
-                                               protein_col = c("Uniprot_ID", "Gene")) 
+                                               protein_col = c("RT","Intensity" , "ProteinName", "assay_rt" ,    
+                                                                "m_score","FullRunName" )) 
 
 # remove peptides with missing batch - works 
 proteome_dataset = remove_peptides_with_missing_batch(proteome_dataset, sample_annotation)
