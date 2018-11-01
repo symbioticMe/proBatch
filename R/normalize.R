@@ -239,7 +239,7 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                                           batch_col = batch_col,
                                           feature_id_col = feature_id_col,
                                           measure_col = measure_col)
-    normalized_matrix = matrix_to_long(median_long, feature_id_col = feature_id_col,
+    normalized_matrix = long_to_matrix(median_long, feature_id_col = feature_id_col,
                                           measure_col = measure_col, sample_id_col = sample_id_col)
   }
   
