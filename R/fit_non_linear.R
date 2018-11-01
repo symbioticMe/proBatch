@@ -24,7 +24,7 @@
 # TODO: Document dataDF and with_df
 fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x',
                           noFitRequants = F, fitFunc = 'loess_regression',
-                          with_df = F, loess.span = 0.75, abs.threshold = 10, pct.threshold = 0.30, ...){
+                          with_df = F, loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.30, ...){
   
   dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
   x_to_fit = dataDF[[expl.var]]
@@ -46,6 +46,8 @@ fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x'
         fit_res = switch(fitFunc,
                          loess_regression = loess_regression_opt(x_all, y, x_to_fit, df, span = loess.span,...))
       }
+    }else{
+      fit_res = rep(NA, length(x_to_fit))
     }
   }else{
     x_all = x_to_fit
