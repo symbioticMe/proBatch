@@ -7,7 +7,8 @@
 plot_sample_corr_distribution(data_matrix, sample_annotation,
   repeated_samples = NULL, sample_id_col = "sample_id",
   batch_col = "batch", biospecimen_id_col = "EarTag",
-  plot_title = "Correlation distribution", plot_param = "batch_replicate")
+  plot_title = "Correlation distribution",
+  plot_param = "batch_replicate")
 }
 \arguments{
 \item{repeated_samples}{if `NULL`, only repeated sample correlation is plotted}
