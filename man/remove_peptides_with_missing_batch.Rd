@@ -4,14 +4,18 @@
 \alias{remove_peptides_with_missing_batch}
 \title{Remove features missing in at least one batch}
 \usage{
-remove_peptides_with_missing_batch(df_long, batch_col = "MS_batch.final",
-  feature_id_col = "peptide_group_label")
+remove_peptides_with_missing_batch(df_long, sample_annotation,
+  batch_col = "MS_batch.final", feature_id_col = "peptide_group_label")
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
+
+\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
@@ -35,3 +39,4 @@ useful for some downstream functions as ComBat normalization, that
 Other dataset cleaning functions: \code{\link{clean_requants}},
   \code{\link{summarize_peptides}}
 }
+\concept{dataset cleaning functions}

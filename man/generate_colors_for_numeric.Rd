@@ -29,3 +29,4 @@ list, containing the following items:
 Generates a list of colors for a vector of numeric, POSIXct (i.e. the
 (signed) number of seconds since the beginning of 1970 , or factors
 }
+\keyword{internal}
