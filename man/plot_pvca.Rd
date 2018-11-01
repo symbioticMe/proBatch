@@ -7,9 +7,9 @@
 plot_pvca(data_matrix, sample_annotation, sample_id_col = "FullRunName",
   feature_id_col = "peptide_group_label",
   technical_covariates = c("MS_batch", "instrument"),
-  biological_covariates = c("cell_line", "drug_dose"), fill_the_missing = 0,
-  threshold_pca = 0.6, threshold_var = 0.01, colors_for_bars = NULL,
-  theme = "classic", plot_title = NULL)
+  biological_covariates = c("cell_line", "drug_dose"),
+  fill_the_missing = 0, threshold_pca = 0.6, threshold_var = 0.01,
+  colors_for_bars = NULL, theme = "classic", plot_title = NULL)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

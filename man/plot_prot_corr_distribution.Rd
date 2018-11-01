@@ -6,7 +6,8 @@
 \usage{
 plot_prot_corr_distribution(data_matrix, peptide_annotation,
   protein_col = "ProteinName", feature_id_col = "peptide_group_label",
-  plot_title = "Distribution of peptide correlation", theme = "classic")
+  plot_title = "Distribution of peptide correlation",
+  theme = "classic")
 }
 \arguments{
 \item{theme}{}

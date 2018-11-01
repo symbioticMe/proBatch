@@ -6,7 +6,7 @@
 \usage{
 define_batches_by_MS_pauses(sample_annotation, threshold,
   runtime_col = "RunDateTime", minimal_batch_size = 5,
-  instrument_col = "instr", batch_name = "MS_batch")
+  instrument_col = "instr", batch_col = "MS_batch.final")
 }
 \arguments{
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
@@ -24,8 +24,8 @@ MS profile acquisition timepoint}
 (to account for the presence of multiple instruments in
 \code{sample_annotation})}
 
-\item{batch_name}{string with a self-explanatory name for the batch (e.g.
-`MS_batch` for MS-proteomics) to which batch number will be added}
+\item{batch_col}{column in \code{sample_annotation} that should be used for
+batch comparison}
 }
 \value{
 \code{sample_annotation} data matrix with an additional
