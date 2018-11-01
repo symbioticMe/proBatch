@@ -4,9 +4,10 @@
 \alias{sample_annotation_to_colors}
 \title{Generate colors for sample annotation}
 \usage{
-sample_annotation_to_colors(sample_annotation, columns_for_plotting = NULL,
-  sample_id_col = "FullRunName", factor_columns = c("subtype",
-  "caseControl"), not_factor_columns = c("RunDate", "ProteinPrepDate"),
+sample_annotation_to_colors(sample_annotation,
+  columns_for_plotting = NULL, sample_id_col = "FullRunName",
+  factor_columns = c("subtype", "caseControl"),
+  not_factor_columns = c("RunDate", "ProteinPrepDate"),
   rare_categories_to_other = T, numerics_to_log = F,
   numeric_palette_type = "brewer", granularity = 10)
 }

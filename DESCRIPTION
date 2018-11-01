@@ -2,7 +2,7 @@ Package: proBatch
 Type: Package
 Title: Tools for Batch Effects Diagnostics and Correction
 Version: 1.1.0
-Author: Jelena Čuklina <chuklina.jelena@gmail.com>
+Author: Jelena Cuklina <chuklina.jelena@gmail.com>
 Maintainer: The package maintainer <chuklina.jelena@gmail.com>
 Description: The proBatch package contains functions for diagnosing and removing
     batch effects and other unwanted variation in high-thoughput experiment, primarily
@@ -15,7 +15,7 @@ Description: The proBatch package contains functions for diagnosing and removing
     However, proteomics data may require more complicated technical artifact 
     correction approaches like non-linear fitting, which is also found in "normalization"
     section of this package. 
-    The approaches are described in (Čuklina et al. 2019, MCP)
+    The approaches are described in (Cuklina et al. 2019, MCP)
 License: What license is it under?
 URL: https://github.com/jelenachuklina/proBatch
 BugReports: https://github.com/jelenachuklina/proBatch/issues
@@ -50,4 +50,4 @@ Suggests: knitr,
     rmarkdown,
     SWATH2stats
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
