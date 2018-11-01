@@ -6,8 +6,8 @@
 \usage{
 plot_samples_corrplot(data_matrix, samples_to_plot = NULL,
   flavor = "corrplot", filename = NULL, width = NA, height = NA,
-  unit = c("cm", "in", "mm"), plot_title = "Correlation matrix of samples",
-  ...)
+  unit = c("cm", "in", "mm"),
+  plot_title = "Correlation matrix of samples", ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

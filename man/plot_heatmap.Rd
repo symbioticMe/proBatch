@@ -4,10 +4,11 @@
 \alias{plot_heatmap}
 \title{Plot the heatmap of samples}
 \usage{
-plot_heatmap(data_matrix, sample_annotation = NULL, fill_the_missing = T,
-  cluster_rows = T, cluster_cols = F, annotation_color_list = NA,
-  heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name =
-  "RdYlBu")))(100), color_for_missing = "black", filename = NA,
+plot_heatmap(data_matrix, sample_annotation = NULL,
+  fill_the_missing = T, cluster_rows = T, cluster_cols = F,
+  annotation_color_list = NA,
+  heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7,
+  name = "RdYlBu")))(100), color_for_missing = "black", filename = NA,
   plot_title = NA, ...)
 }
 \arguments{
