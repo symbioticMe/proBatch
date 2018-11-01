@@ -5,10 +5,10 @@
 \title{Peptide correlation matrix (heatmap)}
 \usage{
 plot_protein_corrplot(data_matrix, protein_name, peptide_annotation,
-  protein_col = "ProteinName", peptide_col_name = "peptide_group_label",
-  flavor = "corrplot", filename = NULL, width = NA, height = NA,
-  unit = c("cm", "in", "mm"), plot_title = "peptide correlation matrix",
-  ...)
+  protein_col = "ProteinName",
+  peptide_col_name = "peptide_group_label", flavor = "corrplot",
+  filename = NULL, width = NA, height = NA, unit = c("cm", "in",
+  "mm"), plot_title = "peptide correlation matrix", ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

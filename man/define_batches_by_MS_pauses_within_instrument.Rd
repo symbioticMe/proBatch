@@ -5,7 +5,7 @@
 \title{Batch by date/time}
 \usage{
 define_batches_by_MS_pauses_within_instrument(date_vector, threshold,
-  minimal_batch_size = 5, batch_name = "MS_batch")
+  minimal_batch_size = 5, batch_col = "MS_batch.final")
 }
 \arguments{
 \item{date_vector}{POSIX or numeric-like vector corresponding to the sample
@@ -15,8 +15,8 @@ MS profile acquisition timepoint}
 
 \item{minimal_batch_size}{minimal number of samples in a batch}
 
-\item{batch_name}{string with a self-explanatory name for the batch (e.g.
-`MS_batch` for MS-proteomics) to which batch number will be added}
+\item{batch_col}{string with a self-explanatory name for the batch (e.g.
+`MS_batch.final` for MS-proteomics) to which batch number will be added}
 }
 \value{
 vector of batches for each sample
@@ -26,3 +26,4 @@ Identify long stretches of time between samples and split them into batches.
 Most users are going to want to call define_batches_by_MS_pauses, rather then
 this function
 }
+\keyword{internal}
