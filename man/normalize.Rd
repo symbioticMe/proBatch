@@ -2,30 +2,27 @@
 % Please edit documentation in R/normalize.R
 \name{normalize}
 \alias{normalize}
-\alias{normalize}
 \alias{normalize_medians_batch}
-\alias{normalize}
 \alias{normalize_medians_global}
-\alias{normalize}
 \alias{normalize_custom_fit}
-\alias{normalize}
 \alias{correct_with_ComBat}
 \title{Data normalization and batch adjustment methods}
 \usage{
-normalize_medians_batch(data_long, sample_annotation = NULL,
+normalize_medians_batch(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch.final",
   feature_id_col = "peptide_group_label", measure_col = "Intensity")
 
-normalize_medians_global(data_long, sample_id_col = "FullRunName",
+normalize_medians_global(df_long, sample_id_col = "FullRunName",
   measure_col = "Intensity")
 
 normalize_custom_fit(data_matrix, sample_annotation,
-  batch_col = "MS_batch.final", feature_id_col = "peptide_group_label",
+  batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
   sample_order_col = "order", fit_func = fit_nonlinear, ...)
 
 correct_with_ComBat(data_matrix, sample_annotation,
-  batch_col = "MS_batch.final", par.prior = TRUE)
+  sample_id_col = "FullRunName", batch_col = "MS_batch.final",
+  par.prior = TRUE)
 }
 \arguments{
 \item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be

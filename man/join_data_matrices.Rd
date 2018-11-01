@@ -4,9 +4,9 @@
 \alias{join_data_matrices}
 \title{Join data matrices}
 \usage{
-join_data_matrices(matrices_list, step = NULL, sample_annotation = NULL,
-  feature_id_col = "peptide_group_label", measure_col = "Intensity",
-  sample_id_col = "FullRunName")
+join_data_matrices(matrices_list, step = NULL,
+  sample_annotation = NULL, feature_id_col = "peptide_group_label",
+  measure_col = "Intensity", sample_id_col = "FullRunName")
 }
 \arguments{
 \item{matrices_list}{list of matrices in \code{data_matrix} (\link{proBatch}) format to be joined}
@@ -45,6 +45,7 @@ filenames (colnames of the data matrix are found)}
 Joins 2 or more data matrices
 }
 \seealso{
-Other matrix manipulation functions: \code{\link{convert_to_matrix}},
+Other matrix manipulation functions: \code{\link{long_to_matrix}},
   \code{\link{matrix_to_long}}
 }
+\concept{matrix manipulation functions}

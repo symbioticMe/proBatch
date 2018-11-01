@@ -41,6 +41,7 @@ naming with numbers, e.g. `1_raw`, `2_quantile`}
 Convert from wide matrix to a long data frame representation
 }
 \seealso{
-Other matrix manipulation functions: \code{\link{convert_to_matrix}},
-  \code{\link{join_data_matrices}}
+Other matrix manipulation functions: \code{\link{join_data_matrices}},
+  \code{\link{long_to_matrix}}
 }
+\concept{matrix manipulation functions}
