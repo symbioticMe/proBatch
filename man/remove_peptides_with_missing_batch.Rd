@@ -5,7 +5,8 @@
 \title{Remove features missing in at least one batch}
 \usage{
 remove_peptides_with_missing_batch(df_long, sample_annotation,
-  batch_col = "MS_batch.final", feature_id_col = "peptide_group_label")
+  batch_col = "MS_batch.final", feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName")
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -24,6 +25,9 @@ batch comparison}
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
+
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 }
 \value{
 \code{df_long} (\link{proBatch}) like data frame freed of features that were not detected in each batch
