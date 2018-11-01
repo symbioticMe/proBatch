@@ -206,7 +206,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #'
 #' @name correct_batch_trend
 #' @param fitFunct function to use for the fit (currently only `loess_regression` available)
-#' @param discreteFunc function to use fo discrete batch correction (`MedianCentering` or `ComBat`)
+#' @param discreteFunc function to use for discrete batch correction (`MedianCentering` or `ComBat`)
 #' @param ... other parameters, usually of `normalize_custom_fit`, and `fit_func`
 #'
 #' @return `data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
@@ -261,3 +261,40 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
   return(normalized_matrix)
 }
 
+
+#' Batch correction method allows correction of continuous sigal drift within batch and 
+#' discrete difference across batches. 
+#'
+#' @name normalize_global
+#' @param data_matrix raw data matrix (features in rows and samples
+#'   in columns)
+#' @param normalizeFunc global batch normalization method (`quantile` or `MedianCentering`)
+#' @param log whether to log transform data matrix before normalization (`NULL`, `2` or `10`)
+#'
+#' @return `data_matrix`-size matrix, with columns normalized 
+#' @export
+#'
+#' @examples
+normalize_global <- function(data_matrix, normalizeFunc = "quantile", log = NULL){
+  if(!is.null(log)){
+    if(log == 2){
+      data_matrix = log_transform(data_matrix)
+    } else if(log == 10){
+      data_matrix = log10(data_matrix + 1) 
+    } else {
+      stop("Only base 2 and base 10 logarithms are available.")
+    }
+  }
+  
+  if(normalizeFunc == "quantile"){
+    normalized_matrix = quantile_normalize(data_matrix)
+  } else if(normalizeFunc == "medianCentering"){
+    df_long = matrix_to_long(matrix, feature_id_col = 'peptide_group_label',
+                             measure_col = 'Intensity', sample_id_col = 'FullRunName')
+    normalized_matrix = normalize_medians_global(df_long, sample_id_col = 'FullRunName',  measure_col = 'Intensity')
+  } else {
+    stop("Only quantile and median centering normalization methods are available")
+  }
+  
+  return(normalized_matrix)
+}
