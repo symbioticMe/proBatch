@@ -9,3 +9,4 @@ merge_rare_levels(column)
 \description{
 Replaces levels with a maximal occurence of 1 with other
 }
+\keyword{internal}

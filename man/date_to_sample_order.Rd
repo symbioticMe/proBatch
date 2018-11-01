@@ -4,9 +4,10 @@
 \alias{date_to_sample_order}
 \title{Convert date/time to POSIXct and rank samples by it}
 \usage{
-date_to_sample_order(sample_annotation, time_column = c("RunDate", "RunTime"),
-  new_time_column = "DateTime", dateTimeFormat = c("\%b_\%d",
-  "\%H:\%M:\%S"), order_col = "order", instrument_col = "instrument")
+date_to_sample_order(sample_annotation, time_column = c("RunDate",
+  "RunTime"), new_time_column = "DateTime",
+  dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"), order_col = "order",
+  instrument_col = "instrument")
 }
 \arguments{
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
