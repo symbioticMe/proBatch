@@ -4,10 +4,13 @@
 \alias{fit_nonlinear}
 \title{Fit a non-linear trend}
 \usage{
-fit_nonlinear(dataDF, response.var = "y", expl.var = "x",
-  noFitRequants = F, fitFunc = "kernel_smooth", with_df = F, ...)
+fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
+  noFitRequants = F, fitFunc = "loess_regression", with_df = F,
+  loess.span = 0.75, abs.threshold = 10, pct.threshold = 0.3, ...)
 }
 \arguments{
+\item{batch.size}{the total number of samples in the batch to compute for percentage threshold}
+
 \item{response.var}{the name of the column in dataDF with the response variable}
 
 \item{expl.var}{the name of the column in dataDF with the explanatory variable}
@@ -15,6 +18,12 @@ fit_nonlinear(dataDF, response.var = "y", expl.var = "x",
 \item{noFitRequants}{(logical) whether to fit requanted values}
 
 \item{fitFunc}{function to use for the fit (`kernel_smooth`, `smooth_spline`, or `loess_regression`)}
+
+\item{loess.span}{the parameter α which controls the degree of smoothing for loess}
+
+\item{abs.threshold}{the absolute threshold to filter data for curve fitting}
+
+\item{pct.threshold}{the percentage threshold to filter data for curve fitting}
 
 \item{...}{additional paramters to be passed to the fitting function}
 }
