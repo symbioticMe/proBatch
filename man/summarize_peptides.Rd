@@ -5,7 +5,7 @@
 \title{Summarize run features}
 \usage{
 summarize_peptides(df_long, sample_id_col = "FullRunName",
-  feature_id_col = "peptide_group_label", RT = "RT",
+  feature_id_col = "peptide_group_label", RT_col = "RT",
   measure_col = "Intensity", m_score = "m_score")
 }
 \value{
@@ -27,3 +27,5 @@ summarize peptides by sample (ranking) and on the contrary, across
 Other dataset cleaning functions: \code{\link{clean_requants}},
   \code{\link{remove_peptides_with_missing_batch}}
 }
+\concept{dataset cleaning functions}
+\keyword{internal}
