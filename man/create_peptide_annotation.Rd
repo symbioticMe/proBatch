@@ -5,7 +5,7 @@
 \title{Create light-weight peptide annotation data frame for selection of illustrative proteins}
 \usage{
 create_peptide_annotation(df_long, peptide_col = "peptide_group_label",
-  protein_col = c("Uniprot_ID", "Gene"))
+  annotation_col = c("RT", "Intensity", "ProteinName"))
 }
 \arguments{
 \item{peptide_col}{column containing peptide ID}
