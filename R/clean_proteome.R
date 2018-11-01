@@ -58,11 +58,13 @@ clean_requants <- function(df_long, sample_annotation,
 #' @family dataset cleaning functions
 remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
                                                batch_col = 'MS_batch.final',
-                                               feature_id_col = 'peptide_group_label'){
+                                               feature_id_col = 'peptide_group_label',
+                                               sample_id_col = 'FullRunName'){
   
   n_samples = nrow(sample_annotation)
   features_consistent = df_long %>%
-    merge(sample_annotation) %>%
+    merge(sample_annotation, by = sample_id_col) %>%
+    droplevels() %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     summarize(n = n()) %>%
     ungroup () %>%
@@ -71,12 +73,11 @@ remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
     summarize(full_batches = all(!is.na(n))) %>%
     filter(full_batches) %>%
     pull(feature_id_col)
-
+  
   proteome_clean = df_long %>%
     filter(UQ(sym(feature_id_col)) %in% features_consistent)
   return(proteome_clean)
 }
-
 
 #' Summarize run features
 #'
