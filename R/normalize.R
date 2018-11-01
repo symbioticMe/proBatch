@@ -123,6 +123,8 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
                                  sample_order_col = 'order',
                                  fit_func = fit_nonlinear, ...){
   
+  sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+  
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
   #TODO: change to matrix_to_long
@@ -135,12 +137,12 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
   
   df_normalized = df_long %>%
     filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
-    merge(sample_annotation) %>%
+    merge(sample_annotation, by = sample_id_col) %>%
     arrange_(feature_id_col, sample_order_col) %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total.y")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
+    group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
     #filter(n() >3)%>%
     nest() %>%
-    mutate(fit = map2(data, batch_total.y, fit_func, response.var = measure_col, 
+    mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
                       expl.var = sample_order_col, ...)) %>%
     unnest() %>%
     #change the fit to the corrected data
@@ -219,7 +221,6 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                           measure_col = 'Intensity',  sample_order_col = 'order',...){
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-  
   fit_list = normalize_custom_fit(data_matrix, sample_annotation = sample_annotation,
                                   batch_col = batch_col,
                                   feature_id_col = feature_id_col,
@@ -275,7 +276,7 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
 #' @export
 #'
 #' @examples
-normalize_global <- function(data_matrix, normalizeFunc = "quantile", log = NULL){
+normalize <- function(data_matrix, normalizeFunc = "quantile", log = NULL){
   if(!is.null(log)){
     if(log == 2){
       data_matrix = log_transform(data_matrix)
