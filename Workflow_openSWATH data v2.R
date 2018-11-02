@@ -49,7 +49,7 @@ openSWATH_data = remove_peptides_with_missing_batch(openSWATH_data, sample_annot
 
 ############## normalization ###############################
 # Generate data_matrix from SWATH_long
-SWATH_matrix = convert_to_matrix(Allruns_requant, feature_id_col = 'peptide_group_label',
+SWATH_matrix = long_to_matrix(Allruns_requant, feature_id_col = 'peptide_group_label',
                                  measure_col = 'Intensity',
                                  sample_id_col = 'FullRunName')
 
@@ -132,6 +132,9 @@ df_long_3 = matrix_to_long(data_3, feature_id_col = 'peptide_group_label',
 df_long_4 = matrix_to_long(data_4, feature_id_col = 'peptide_group_label',
                            measure_col = 'Intensity', sample_id_col = 'FullRunName')
 
+SWATH_matrix_log2 = batch_corrected
+SWATH_long_log2 = matrix_to_long(batch_corrected, feature_id_col = 'peptide_group_label',
+                           measure_col = 'Intensity', sample_id_col = 'FullRunName' )
 
 ################## plotting diagnostics of normalization ###########################
 
@@ -140,7 +143,7 @@ plot_sample_mean(SWATH_matrix_log2, sample_annotation = sample_annotation, sampl
                  order_col = 'order',batch_col = "MS_batch.final", facet_col = NULL, ylimits = c(15.5, 17.0))
 
 plot_sample_mean(SWATH_matrix_qnorm, sample_annotation = sample_annotation, sample_id_col = 'FullRunName',
-                 order_col = 'order',batch_col = "MS_batch.final", facet_col = NULL)
+                 order_col = 'order',batch_col = "MS_batch.final", facet_col = NULL, ylimits = c(15.5, 17.0))
 
 plot_sample_mean(SWATH_matrix_fit, sample_annotation = sample_annotation, sample_id_col = 'FullRunName',
                  order_col = 'order',batch_col = "MS_batch.final", facet_col = NULL)
@@ -190,7 +193,7 @@ plot_boxplot(data_long_medianCentering,  sample_annotation = sample_annotation,
              plot_title = NULL, order_per_facet = F)
 
 # plot peptides of one protein 
-plot_peptides_of_one_protein (proteinName = "Haao",  protein_col = "Gene", df_long = SWATH_long_qnorm, 
+plot_peptides_of_one_protein (proteinName = "Haao",  protein_col = "Gene", df_long = SWATH_long_log2, 
                               sample_annotation, peptide_annotation,
                               order_col = 'order',
                               sample_id_col = 'FullRunName',
