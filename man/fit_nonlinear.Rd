@@ -6,7 +6,7 @@
 \usage{
 fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
   noFitRequants = F, fitFunc = "loess_regression", with_df = F,
-  loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.3, ...)
+  loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.1, ...)
 }
 \arguments{
 \item{batch.size}{the total number of samples in the batch to compute for percentage threshold}
