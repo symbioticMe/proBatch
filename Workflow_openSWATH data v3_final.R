@@ -1,6 +1,6 @@
 # FullDataSet Finalized normalization workflow for Evan's analysis #
 
-# Install dependencies if necessary 
+##################### Install dependencies if necessary ###########################
 bioc_deps <- c("GO.db", "preprocessCore", "impute", "sva", "pvca")
 cran_deps <- c("roxygen2","lubridate","tidyverse","reshape2","lazyeval","readr","WGCNA", "rlang", 
                "corrplot","ggfortify","pheatmap","dplyr","data.table","wesanderson")
@@ -9,6 +9,12 @@ biocLite(bioc_deps);
 install.packages(cran_deps); 
 lapply(bioc_deps, require, character.only = TRUE)
 lapply(cran_deps, require, character.only = TRUE)
+
+sapply(.libPaths(), function(elt) "AnnotationDbi" %in% dir(elt))
+biocLite("GO.db", INSTALL_opts = "--no-test-load")
+BiocManager::install("GO.db")
+
+###################################################################################
 
 # Loading data
 Fullruns_dataset = as.data.frame(fread(file = 'S:/E1801171630_feature_alignment_requant.tsv', sep = '\t', header = TRUE))
@@ -28,27 +34,43 @@ sample_annotation = date_to_sample_order (sample_annotation,
                                           instrument_col = NULL)
 
 # Generate data_matrix from SWATH_long
-SWATH_matrix = convert_to_matrix(Fullruns_dataset, feature_id_col = 'peptide_group_label',
+SWATH_matrix = long_to_matrix(Fullruns_dataset, feature_id_col = 'peptide_group_label',
                                  measure_col = 'Intensity',
                                  sample_id_col = 'FullRunName')
 
-# For Evan's data, no requant nor peptide filtering are executed. 
-# All normalization and batch correction have their intrinsic filtering system for those peptides 
-# not suitable for fitting/ normalization/ batch correction. Full dataset 
-
 ############################### Normalization & Batch correction ####################################################
-# log2 transformation of data_matrix 
-SWATH_matrix_log2 = log_transform(SWATH_matrix)
-
-# Quantile normalization of the log2 transformed data 
-SWATH_matrix_qnorm = quantile_normalize(SWATH_matrix_log2)
+# Quantile normalize log2 transformed matrix 
+normalized_matrix = proBatch::normalize(SWATH_matrix, normalizeFunc = "quantile", log = 2)
 
 # Batch effect correction 
-batch_corrected = correct_batch(data_matrix = SWATH_matrix_qnorm, sample_annotation, fitFunc = 'loess_regression', 
-                                discreteFunc = 'ComBat', batch_col = 'MS_batch.final',  
+batch_corrected = correct_batch_trend(data_matrix = normalized_matrix, sample_annotation, fitFunc = 'loess_regression', 
+                                discreteFunc = 'MedianCentering', batch_col = 'MS_batch.final',  
                                 feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
                                 measure_col = 'Intensity',  sample_order_col = 'order', 
-                                loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.30)
+                                loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.20)
 
 ############################# Preliminary plots to confirm the workflow #############################################
+SWATH_long = matrix_to_long(SWATH_matrix, feature_id_col = 'peptide_group_label',
+                                      measure_col = 'Intensity', sample_id_col = 'FullRunName' )
+
+batch_corrected_long = matrix_to_long(batch_corrected, feature_id_col = 'peptide_group_label',
+                           measure_col = 'Intensity', sample_id_col = 'FullRunName' )
+
+# diagnostic plots 
+plot_peptides_of_one_protein (proteinName = "Haao",  protein_col = "Gene", df_long = SWATH_long, 
+                              sample_annotation, peptide_annotation,
+                              order_col = 'order',
+                              sample_id_col = 'FullRunName',
+                              batch_col = 'MS_batch.final',
+                              measure_col = 'Intensity',
+                              feature_id_col = 'peptide_group_label')
+
+plot_peptides_of_one_protein (proteinName = "Haao",  protein_col = "Gene", df_long = batch_corrected_long, 
+                              sample_annotation, peptide_annotation,
+                              order_col = 'order',
+                              sample_id_col = 'FullRunName',
+                              batch_col = 'MS_batch.final',
+                              measure_col = 'Intensity',
+                              feature_id_col = 'peptide_group_label')
+
 
