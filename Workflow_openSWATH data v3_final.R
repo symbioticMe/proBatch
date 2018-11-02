@@ -25,7 +25,7 @@ Fullruns_dataset = Fullruns_dataset %>%
 peptide_annotation = read.csv("S:/html/peptide_annotations_6600evosep.csv")
 
 # Sample annotation 
-sample_annotation = read.csv("S:/html/sample_annotation_6600evosep.csv")
+sample_annotation = read.csv("S:/html/sample_annotation_6600eksigent_REORDER.csv")
 sample_annotation = date_to_sample_order (sample_annotation,
                                           time_column = c('RunDate','RunTime'),
                                           new_time_column = 'DateTime',
