@@ -9,7 +9,8 @@ correct_batch_trend(data_matrix, sample_annotation,
   fitFunc = "loess_regression", discreteFunc = "MedianCentering",
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  sample_order_col = "order", ...)
+  sample_order_col = "order", loess.span = 0.75, abs.threshold = 5,
+  pct.threshold = 0.1, ...)
 }
 \arguments{
 \item{discreteFunc}{function to use for discrete batch correction (`MedianCentering` or `ComBat`)}
