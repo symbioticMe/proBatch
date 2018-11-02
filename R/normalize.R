@@ -124,6 +124,11 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
                                  fit_func = fit_nonlinear, ...){
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+  sampleNames = colnames(data_matrix)
+  sample_annotation = sample_annotation %>%
+    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
+    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
+    droplevels()
   
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
