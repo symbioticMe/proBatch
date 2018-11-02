@@ -228,7 +228,7 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                                   measure_col = measure_col,
                                   sample_order_col = sample_order_col,
                                   fit_func = fit_nonlinear,
-                                  fitFunc = fitFunc)
+                                  fitFunc = fitFunc, ...)
   fit_matrix = fit_list$data_matrix
   fit_long = matrix_to_long(fit_matrix, feature_id_col = feature_id_col,
                             measure_col = measure_col, sample_id_col = sample_id_col)
