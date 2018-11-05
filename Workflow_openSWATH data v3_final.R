@@ -86,14 +86,13 @@ plot_peptides_of_one_protein (proteinName = "BOVINE_A1ag",  protein_col = "Gene"
                               measure_col = 'Intensity',
                               feature_id_col = 'peptide_group_label')
 
-plot_peptides_of_one_protein (proteinName = "BOVINE_A1ag",  protein_col = "Gene", df_long = batch_corrected_long, 
+plot_peptides_of_one_protein (proteinName = "BOVINE_A1ag",  protein_col = "Gene", d f_long = batch_corrected_long, 
                               sample_annotation, peptide_annotation,
                               order_col = 'order',
                               sample_id_col = 'FullRunName',
                               batch_col = 'MS_batch.final',
                               measure_col = 'Intensity',
                               feature_id_col = 'peptide_group_label')
-
 
 plot_PCA(SWATH_log2, sample_annotation, 
          feature_id_col = 'peptide_group_label',
