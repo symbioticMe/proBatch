@@ -4,8 +4,9 @@
 \alias{clean_requants}
 \title{Remove requanted and sparse features}
 \usage{
-clean_requants(df_long, sample_annotation, batch_col = "MS_batch.final",
-  feature_id_col = "peptide_group_label", m_score = "m_score",
+clean_requants(df_long, sample_annotation, peptide_annotation,
+  batch_col = "MS_batch.final", feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName", m_score = "m_score",
   missing_frac_batch = 0.3, missing_frac_total = 0.3)
 }
 \arguments{
@@ -25,6 +26,9 @@ batch comparison}
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
+
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
 
 \item{missing_frac_batch}{maximally tolerated fraction of missing values for a
 feature in a batch}
