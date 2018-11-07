@@ -505,7 +505,7 @@ plot_pvca <- function(data_matrix, sample_annotation,
     }
   }
 
-  pvca_res = PVCA(data_matrix, sample_annotation, factors_for_PVCA,
+  pvca_res = calculate_PVCA(data_matrix, sample_annotation, factors_for_PVCA,
                    threshold_pca, threshold_var = threshold_var)
 
   tech_interactions = expand.grid(technical_covariates, technical_covariates) %>%
