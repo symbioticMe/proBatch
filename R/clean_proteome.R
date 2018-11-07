@@ -24,7 +24,7 @@ clean_requants <- function(df_long, sample_annotation,
                            m_score = "m_score",
                            missing_frac_batch = .3, missing_frac_total = .3){
   #for dplyr version 0.7 and higher, this is the way to call the functions
-  requant_clean = df_long %>%
+  df_clean = df_long %>%
     filter(UQ(sym(m_score)) != 2) %>%
     merge(sample_annotation, by = sample_id_col) %>%
     group_by_at(vars(one_of(c(c(feature_id_col, batch_col))))) %>%
@@ -39,11 +39,8 @@ clean_requants <- function(df_long, sample_annotation,
     mutate(requant_fraction = 1 - n_samples_for_peptide/n_samples_in_batch) %>%
     filter(requant_fraction < (1 - missing_frac_total)) %>%
     filter(requant_fraction_batch < (1 - missing_frac_batch)) %>%
-    ungroup() %>%
-    pull(feature_id_col)
+    ungroup()
   
-  df_clean = df_long %>%
-    filter(UQ(sym(feature_id_col)) %in% requant_clean)
   
   return(df_clean)
 }
