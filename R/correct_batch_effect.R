@@ -13,7 +13,7 @@ correct_medians_batch <- function(df_long, sample_annotation = NULL,
                                   measure_col = 'Intensity'){
   if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
       !is.null(sample_annotation)){
-    df_long = df_long %>% merge(sample_annotation)
+    df_long = df_long %>% merge(sample_annotation, by = sample_id_col)
   }
   df_normalized = df_long %>%
     group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
