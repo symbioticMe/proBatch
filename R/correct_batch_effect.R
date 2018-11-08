@@ -8,7 +8,7 @@
 #' @examples
 correct_medians_batch <- function(df_long, sample_annotation = NULL,
                                   sample_id_col = 'FullRunName',
-                                  batch_col = 'MS_batch.final',
+                                  batch_col = 'MS_batch',
                                   feature_id_col = 'peptide_group_label',
                                   measure_col = 'Intensity'){
   if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
@@ -126,7 +126,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
 #' @examples
 correct_with_ComBat <- function(data_matrix, sample_annotation, 
                                 sample_id_col = 'FullRunName',
-                                batch_col = 'MS_batch.final', 
+                                batch_col = 'MS_batch', 
                                 par.prior = TRUE){
   
   sampleNames = colnames(data_matrix)
