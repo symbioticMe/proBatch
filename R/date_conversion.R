@@ -20,7 +20,7 @@
 #'
 dates_to_posix <- function(sample_annotation,
                            time_column = c('RunDate','RunTime'),
-                           new_time_column = NULL,
+                           new_time_column = 'DateTime',
                            dateTimeFormat = c("%b_%d", "%H:%M:%S")){
   if (length(time_column) == 1){
     if(is.null(new_time_column)) new_time_column = time_column
@@ -96,7 +96,7 @@ date_to_sample_order <- function(sample_annotation,
 #'
 define_batches_by_MS_pauses_within_instrument <- function(date_vector, threshold,
                                         minimal_batch_size = 5,
-                                        batch_col = 'MS_batch.final'){
+                                        batch_col = 'MS_batch'){
   diff = diff(date_vector)
   tipping_points = which(diff > threshold)
   batch_size = diff(tipping_points)
@@ -136,8 +136,8 @@ define_batches_by_MS_pauses <- function(sample_annotation,
                                         threshold,
                                         runtime_col = 'RunDateTime',
                                         minimal_batch_size = 5,
-                                        instrument_col = 'instr',
-                                        batch_col = 'MS_batch.final'){
+                                        instrument_col = 'instrument',
+                                        batch_col = 'MS_batch'){
 
   if (!is.null(instrument_col)){
     sample_annotation = sample_annotation %>%
