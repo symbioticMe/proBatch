@@ -185,7 +185,7 @@ plot_samples_corrplot <- function(data_matrix, samples_to_plot = NULL,
 #' @export
 #'
 get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
-                                   sample_id_col = 'sample_id',
+                                   sample_id_col = 'FullRunName',
                                    biospecimen_id_col = 'EarTag',
                                    batch_col = 'batch'){
   #since we only need unique pairs of samples, we create df of combinations to keep
@@ -257,7 +257,7 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' @seealso \code{\link{get_sample_corr_distrib}}, \code{\link[ggplot2]{ggplot}}
 plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                    repeated_samples = NULL,
-                                   sample_id_col = 'sample_id',
+                                   sample_id_col = 'FullRunName',
                                    batch_col = 'batch',
                                    biospecimen_id_col = 'EarTag',
                                    plot_title = 'Correlation distribution',
