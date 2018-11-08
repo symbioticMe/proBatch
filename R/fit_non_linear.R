@@ -1,7 +1,3 @@
-# TODO: Make sure all options work
-
-#' Fit a non-linear trend
-#'
 #' Fit a non-linear trend
 #'
 #' @param dataDF
@@ -9,7 +5,7 @@
 #' @param response.var the name of the column in dataDF with the response variable
 #' @param expl.var the name of the column in dataDF with the explanatory variable
 #' @param noFitRequants (logical) whether to fit requanted values
-#' @param fitFunc function to use for the fit (`kernel_smooth`, `smooth_spline`, or `loess_regression`)
+#' @param fitFunc function to use for the fit (`loess_regression`)
 #' @param with_df
 #' @param loess.span the parameter α which controls the degree of smoothing for loess
 #' @param abs.threshold the absolute threshold to filter data for curve fitting 
