@@ -57,7 +57,7 @@ quantile_normalize <- function(data_matrix){
 #' @export
 #'
 #' @examples
-normalize_medians_batch <- function(df_long, sample_annotation = NULL,
+correct_medians_batch <- function(df_long, sample_annotation = NULL,
                                     sample_id_col = 'FullRunName',
                                     batch_col = 'MS_batch.final',
                                     feature_id_col = 'peptide_group_label',
@@ -122,23 +122,33 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
                                  measure_col = 'Intensity',
                                  sample_order_col = 'order',
                                  fit_func = fit_nonlinear, ...){
-
+  
+  sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+  sampleNames = colnames(data_matrix)
+  sample_annotation = sample_annotation %>%
+    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
+    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
+    droplevels()
+  
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
   #TODO: change to matrix_to_long
   df_long = data_matrix %>%
     melt(id.vars = feature_id_col)
   names(df_long) = c(feature_id_col, sample_id_col, measure_col)
-
+  batch_table <- as.data.frame(table(sample_annotation[[batch_col]], dnn = list(batch_col)), responseName = "batch_total")
+  sample_annotation = sample_annotation %>%
+    full_join(batch_table, by = batch_col)
+  
   df_normalized = df_long %>%
     filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
-    merge(sample_annotation) %>%
+    merge(sample_annotation, by = sample_id_col) %>%
     arrange_(feature_id_col, sample_order_col) %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>% #group_by(peptide_group_label, MS_batch.final) )
-    filter(n() >3)%>%
+    group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
+    #filter(n() >3)%>%
     nest() %>%
-    mutate(fit = map(data, fit_func, response.var = measure_col,
-                     expl.var = sample_order_col, ...)) %>%
+    mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
+                      expl.var = sample_order_col, ...)) %>%
     unnest() %>%
     #change the fit to the corrected data
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
@@ -151,19 +161,18 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     #mutate(Intensity_normalized = diff + UQ(sym(measure_col)))
     #if only the fitted data table is required (not recommended)
     fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
-                                               sample_id_col, batch_col)))
-
+                                                      sample_id_col, batch_col)))
+    
     casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
                                         sep =  " ~ "))
     df_normalized = dcast(df_normalized, formula = casting_formula,
                           value.var = 'Intensity_normalized')
     df_normalized_matrix = as.matrix(df_normalized[,2:ncol(df_normalized)])
     rownames(df_normalized_matrix) = df_normalized[,1]
-
+  
   return(list(data_matrix = df_normalized_matrix,
               fit_df = fit_df))
 }
-
 
 #' Standardized input-output ComBat normalization ComBat allows users to adjust
 #' for batch effects in datasets where the batch covariate is known, using
@@ -185,15 +194,117 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
                                 sample_id_col = 'FullRunName',
                                 batch_col = 'MS_batch.final', 
                                 par.prior = TRUE){
-
+  
   sampleNames = colnames(data_matrix)
   sample_annotation = sample_annotation %>%
     filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
-    arrange(match(UQ(as.name(sample_id_col)), sampleNames))
-  
+    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
+    droplevels()
+
   batches = sample_annotation[[batch_col]]
   modCombat = model.matrix(~1, data = sample_annotation)
   corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
                               mod = modCombat, par.prior = par.prior)
   return(corrected_proteome)
+}
+
+#' Batch correction method allows correction of continuous sigal drift within batch and 
+#' discrete difference across batches. 
+#'
+#' @name correct_batch_trend
+#' @param fitFunct function to use for the fit (currently only `loess_regression` available)
+#' @param discreteFunc function to use for discrete batch correction (`MedianCentering` or `ComBat`)
+#' @param ... other parameters, usually of `normalize_custom_fit`, and `fit_func`
+#'
+#' @return `data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
+#' @export
+#'
+#' @examples
+correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
+                          discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
+                          feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
+                          measure_col = 'Intensity',  sample_order_col = 'order', 
+                          loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.10, ...){
+  
+  sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+  fit_list = normalize_custom_fit(data_matrix, sample_annotation = sample_annotation,
+                                  batch_col = batch_col,
+                                  feature_id_col = feature_id_col,
+                                  sample_id_col = sample_id_col,
+                                  measure_col = measure_col,
+                                  sample_order_col = sample_order_col,
+                                  fit_func = fit_nonlinear,
+                                  fitFunc = fitFunc, 
+                                  loess.span = loess.span, 
+                                  abs.threshold = abs.threshold, 
+                                  pct.threshold = pct.threshold, ...)
+  fit_matrix = fit_list$data_matrix
+  fit_long = matrix_to_long(fit_matrix, feature_id_col = feature_id_col,
+                            measure_col = measure_col, sample_id_col = sample_id_col)
+  
+  if(discreteFunc == 'MedianCentering'){
+    median_long = normalize_medians_batch(df_long = fit_long, sample_annotation = sample_annotation,
+                                          sample_id_col = sample_id_col,
+                                          batch_col = batch_col,
+                                          feature_id_col = feature_id_col,
+                                          measure_col = measure_col)
+    normalized_matrix = long_to_matrix(median_long, feature_id_col = feature_id_col,
+                                          measure_col = measure_col, sample_id_col = sample_id_col)
+  }
+  
+  if(discreteFunc == 'ComBat'){
+    filtered_long = remove_peptides_with_missing_batch(fit_long, sample_annotation,
+                                       batch_col = batch_col,
+                                       feature_id_col = feature_id_col,
+                                       sample_id_col = sample_id_col)
+    filtered_matrix = long_to_matrix(filtered_long, feature_id_col = feature_id_col,
+                   measure_col = measure_col, sample_id_col = sample_id_col)
+    
+    nfiltered = nrow(fit_matrix) - nrow(filtered_matrix)
+    if(nfiltered > 0){
+      warning(sprintf("%i rows have no measurement for one or more batches and are removed for ComBat batch correction", nfiltered))
+    }
+    normalized_matrix = correct_with_ComBat(filtered_matrix, sample_annotation = sample_annotation,
+                                            batch_col = batch_col, par.prior = TRUE)
+  }
+  
+  return(normalized_matrix)
+}
+
+
+#' Batch correction method allows correction of continuous sigal drift within batch and 
+#' discrete difference across batches. 
+#'
+#' @name normalize_global
+#' @param data_matrix raw data matrix (features in rows and samples
+#'   in columns)
+#' @param normalizeFunc global batch normalization method (`quantile` or `MedianCentering`)
+#' @param log whether to log transform data matrix before normalization (`NULL`, `2` or `10`)
+#'
+#' @return `data_matrix`-size matrix, with columns normalized 
+#' @export
+#'
+#' @examples
+normalize <- function(data_matrix, normalizeFunc = "quantile", log = NULL){
+  if(!is.null(log)){
+    if(log == 2){
+      data_matrix = log_transform(data_matrix)
+    } else if(log == 10){
+      data_matrix = log10(data_matrix + 1) 
+    } else {
+      stop("Only base 2 and base 10 logarithms are available.")
+    }
+  }
+  
+  if(normalizeFunc == "quantile"){
+    normalized_matrix = quantile_normalize(data_matrix)
+  } else if(normalizeFunc == "medianCentering"){
+    df_long = matrix_to_long(matrix, feature_id_col = 'peptide_group_label',
+                             measure_col = 'Intensity', sample_id_col = 'FullRunName')
+    normalized_matrix = normalize_medians_global(df_long, sample_id_col = 'FullRunName',  measure_col = 'Intensity')
+  } else {
+    stop("Only quantile and median centering normalization methods are available")
+  }
+  
+  return(normalized_matrix)
 }
