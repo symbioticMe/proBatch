@@ -124,12 +124,17 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
                                  fit_func = fit_nonlinear, ...){
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-  sampleNames = colnames(data_matrix)
+  sampleNames <- colnames(data_matrix)
+  s_a <- sample_annotation[[sample_id_col]]
+  all <- union(sampleNames, s_a)
+  non_matched <- all[!all %in% intersect(sampleNames, s_a)]
+  if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
+
   sample_annotation = sample_annotation %>%
     filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
     arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
     droplevels()
-  
+
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
   #TODO: change to matrix_to_long
@@ -196,6 +201,11 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
                                 par.prior = TRUE){
   
   sampleNames = colnames(data_matrix)
+  s_a <- sample_annotation[[sample_id_col]]
+  all <- union(sampleNames, s_a)
+  non_matched <- all[!all %in% intersect(sampleNames, s_a)]
+  if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
+  
   sample_annotation = sample_annotation %>%
     filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
     arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
