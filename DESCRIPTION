@@ -2,7 +2,7 @@ Package: proBatch
 Type: Package
 Title: Tools for Batch Effects Diagnostics and Correction
 Version: 1.1.1
-Author: Jelena Cuklina <chuklina.jelena@gmail.com>
+Author: Jelena Cuklina <chuklina.jelena@gmail.com>, Chloe H. Lee <chloe.h.lee94@gmail.com>
 Maintainer: The package maintainer <chuklina.jelena@gmail.com>
 Description: The proBatch package contains functions for diagnosing and removing
     batch effects and other unwanted variation in high-thoughput experiment, primarily
