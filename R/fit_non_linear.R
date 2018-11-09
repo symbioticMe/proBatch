@@ -20,9 +20,9 @@
 
 fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x',
                           noFitRequants = F, fitFunc = 'loess_regression',
-                          with_df = F, abs.threshold = 5, 
-                          pct.threshold = 0.2, ...){
-  
+                          with_df = F, loess.span = 0.75, 
+                          abs.threshold = 5, pct.threshold = 0.20, ...){
+
   dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
   x_to_fit = dataDF[[expl.var]]
   y = dataDF[[response.var]]
@@ -47,25 +47,12 @@ fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x'
       fit_res = rep(NA, length(x_to_fit))
     }
   }else{
-    x_all = x_to_fit
-    if(noFitRequants){
-      x_all[dataDF$requant] = NA
-    }
-    if(!with_df){
-      fit_res = switch(fitFunc,
-                       kernel_smooth = kernel_smooth(x_all, y, x_to_fit, ...),
-                       smooth_spline = smooth_spline(x_all, y, x_to_fit, ...))
-    } else {
-      bw = optimise_bw(dataDF, response.var = response.var, expl.var = expl.var)
-      df = optimise_df(dataDF, bw, response.var = response.var, expl.var = expl.var)
-      fit_res = switch(fitFunc,
-                       kernel_smooth = kernel_smooth_opt(x_all, y, x_to_fit, bw, ...),
-                       smooth_spline = smooth_spline_opt(x_all, y, x_to_fit, df, ...))
-    }
+   stop("Only loess regression fitting is available for current version")
   }
   return(fit_res)
 }
 
+<<<<<<< HEAD
 
 
 loocv.nw <- function(reg.data, bw = 1.5, kernel = "normal",
@@ -126,26 +113,12 @@ smooth_spline <- function(x_all, y, x_to_fit, ...){
   return(res)
 }
 
+=======
+>>>>>>> b7001c9... non_linear fitting function with loess_regression only. The copy of script containing kernel and spline regression saved in polybox. The threshold of NA filtering is set at 20%
 loess_regression <- function(x_all, y, x_to_fit, ...){
   fit = loess(y ~ x_to_fit, surface = 'direct', ...)
   pred <- predict(fit, newdata = x_to_fit)
   return(pred)
-}
-
-kernel_smooth_opt <- function(x_all, y, x_to_fit, bw, kernel = "normal", ...){
-  temp_x_all = x_all[!is.na(x_all)]
-  y_for_model = y[!is.na(x_all)]
-  res = ksmooth(temp_x_all, y_for_model, x.points = x_to_fit,
-                kernel = kernel, bandwidth = bw)$y
-  return(res)
-}
-
-smooth_spline_opt <- function(x_all, y, x_to_fit, df,...){
-  temp_x_all = x_all[!is.na(x_all)]
-  y_for_model = y[!is.na(x_all)]
-  fit = smooth.spline(x = temp_x_all, y = y_for_model, df = df)
-  res = predict(fit, x = x_to_fit)$y
-  return(res)
 }
 
 loess_regression_opt <- function(x_all, y, x_to_fit, df, ...){
