@@ -164,7 +164,7 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                                 discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
                                 feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
                                 measure_col = 'Intensity',  sample_order_col = 'order', 
-                                loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.10, ...){
+                                loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.20, ...){
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
   fit_list = normalize_custom_fit(data_matrix, sample_annotation = sample_annotation,
