@@ -11,6 +11,7 @@ correct_medians_batch <- function(df_long, sample_annotation = NULL,
                                   batch_col = 'MS_batch',
                                   feature_id_col = 'peptide_group_label',
                                   measure_col = 'Intensity'){
+  
   if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
       !is.null(sample_annotation)){
     df_long = df_long %>% merge(sample_annotation, by = sample_id_col)
@@ -19,7 +20,9 @@ correct_medians_batch <- function(df_long, sample_annotation = NULL,
     group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
     mutate(median_batch = median(UQ(sym(measure_col)), na.rm = T)) %>%
     ungroup() %>%
+    group_by_at(vars(one_of(feature_id_col))) %>%
     mutate(median_global = median(UQ(sym(measure_col)), na.rm = T)) %>%
+    ungroup() %>%
     mutate(diff = median_global - median_batch) %>%
     mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
   
