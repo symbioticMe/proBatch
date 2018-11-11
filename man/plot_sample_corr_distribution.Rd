@@ -5,7 +5,7 @@
 \title{Create violin plot of correlation distribution}
 \usage{
 plot_sample_corr_distribution(data_matrix, sample_annotation,
-  repeated_samples = NULL, sample_id_col = "sample_id",
+  repeated_samples = NULL, sample_id_col = "FullRunName",
   batch_col = "batch", biospecimen_id_col = "EarTag",
   plot_title = "Correlation distribution",
   plot_param = "batch_replicate")
