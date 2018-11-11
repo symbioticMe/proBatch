@@ -6,7 +6,7 @@
 \usage{
 fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
   noFitRequants = F, fitFunc = "loess_regression", with_df = F,
-  loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.1, ...)
+  loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.2, ...)
 }
 \arguments{
 \item{batch.size}{the total number of samples in the batch to compute for percentage threshold}
@@ -17,7 +17,7 @@ fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
 
 \item{noFitRequants}{(logical) whether to fit requanted values}
 
-\item{fitFunc}{function to use for the fit (`kernel_smooth`, `smooth_spline`, or `loess_regression`)}
+\item{fitFunc}{function to use for the fit (`loess_regression`)}
 
 \item{loess.span}{the parameter α which controls the degree of smoothing for loess}
 
