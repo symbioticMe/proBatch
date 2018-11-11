@@ -24,6 +24,8 @@ clean_requants <- function(df_long, sample_annotation,
                            m_score = "m_score",
                            missing_frac_batch = .3, missing_frac_total = .3){
   #for dplyr version 0.7 and higher, this is the way to call the functions
+  
+  input_colnames <- colnames(df_long)
   df_clean = df_long %>%
     filter(UQ(sym(m_score)) != 2) %>%
     merge(sample_annotation, by = sample_id_col) %>%
@@ -32,19 +34,18 @@ clean_requants <- function(df_long, sample_annotation,
     ungroup() %>%
     group_by_at(vars(one_of(batch_col))) %>%
     mutate(n_batch = max(n_samples_in_batch)) %>%
-    mutate(requant_fraction_batch = 1 - n_samples_in_batch/n_batch) %>%
+    mutate(requant_fraction_batch = 1 - n_samples_in_batch/n_batch) %>% 
     ungroup() %>%
     group_by_at(vars(one_of(c(feature_id_col)))) %>%
-    mutate(n_samples_for_peptide = n()) %>%
+    mutate(n_samples_for_peptide = n()) %>% 
     mutate(requant_fraction = 1 - n_samples_for_peptide/n_samples_in_batch) %>%
     filter(requant_fraction < (1 - missing_frac_total)) %>%
     filter(requant_fraction_batch < (1 - missing_frac_batch)) %>%
-    ungroup()
-  
+    ungroup() %>%
+    select(input_colnames)
   
   return(df_clean)
 }
-
 
 #' Remove features missing in at least one batch
 #'
