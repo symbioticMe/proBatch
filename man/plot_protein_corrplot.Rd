@@ -5,10 +5,10 @@
 \title{Peptide correlation matrix (heatmap)}
 \usage{
 plot_protein_corrplot(data_matrix, protein_name, peptide_annotation,
-  protein_col = "ProteinName",
-  peptide_col_name = "peptide_group_label", flavor = "corrplot",
-  filename = NULL, width = NA, height = NA, unit = c("cm", "in",
-  "mm"), plot_title = "peptide correlation matrix", ...)
+  protein_col = "ProteinName", feature_id_col = "peptide_group_label",
+  flavor = "corrplot", filename = NULL, width = NA, height = NA,
+  unit = c("cm", "in", "mm"),
+  plot_title = "peptide correlation matrix", ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -21,7 +21,10 @@ transformed version of the original data}
 
 \item{protein_col}{the column name in \code{peptide_annotation} with protein names}
 
-\item{peptide_col_name}{the column name in \code{peptide_annotation} with peptide names}
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
 
 \item{flavor}{either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'}
 
@@ -37,6 +40,8 @@ otherwise, the object is save into the file. Currently only pdf and png format i
 \item{plot_title}{The title of the plot}
 
 \item{...}{parameters for the corrplot visualisation}
+
+\item{peptide_col_name}{the column name in \code{peptide_annotation} with peptide names}
 }
 \description{
 Plots correlation plot of peptides from a single protein
