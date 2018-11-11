@@ -6,7 +6,7 @@
 \usage{
 define_batches_by_MS_pauses(sample_annotation, threshold,
   runtime_col = "RunDateTime", minimal_batch_size = 5,
-  instrument_col = "instr", batch_col = "MS_batch.final")
+  instrument_col = "instrument", batch_col = "MS_batch")
 }
 \arguments{
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}

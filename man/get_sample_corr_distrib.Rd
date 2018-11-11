@@ -5,7 +5,7 @@
 \title{Calculates correlation distribution for all pairs of the replicated samples}
 \usage{
 get_sample_corr_distrib(cor_proteome, sample_annotation,
-  sample_id_col = "sample_id", biospecimen_id_col = "EarTag",
+  sample_id_col = "FullRunName", biospecimen_id_col = "EarTag",
   batch_col = "batch")
 }
 \arguments{
