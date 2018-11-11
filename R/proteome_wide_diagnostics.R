@@ -373,7 +373,7 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing
                          annotation_color_list = NA,
                          heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100),
                          color_for_missing = 'black',
-                         filename = NA, plot_title = NA,
+                         filename = NULL, plot_title = NA,
                          ...){
   if(fill_the_missing) {
     data_matrix[is.na(data_matrix)] = 0
