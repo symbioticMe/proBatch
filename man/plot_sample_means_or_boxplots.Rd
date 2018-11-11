@@ -15,7 +15,7 @@ plot_sample_mean(data_matrix, sample_annotation = NULL,
 
 plot_boxplots(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", batch_col = "MS_batch.final",
+  order_col = "order", batch_col = "MS_batch",
   facet_col = "instrument", color_by_batch = T,
   color_scheme = "brewer", theme = "classic", plot_title = NULL,
   order_per_facet = F)
