@@ -5,10 +5,11 @@
 \title{Plot iRT measurements}
 \usage{
 plot_iRT_trend(df_long, sample_annotation, peptide_annotation = NULL,
-  protein_col = "ProteinName", order_col = NULL, irt_pattern = "iRT",
-  sample_id_col = "FullRunName", batch_col = "MS_batch.final",
-  measure_col = "Intensity", feature_id_col = "peptide_group_label",
-  requant = NULL, plot_title = "iRT peptide profile", ...)
+  protein_col = "ProteinName", order_col = "order",
+  irt_pattern = "iRT", sample_id_col = "FullRunName",
+  batch_col = "MS_batch", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", requant = NULL,
+  plot_title = "iRT peptide profile", ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
