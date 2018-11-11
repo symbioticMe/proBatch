@@ -5,8 +5,8 @@
 \title{Plot peptide measurements}
 \usage{
 plot_peptide_trend(pep_name, df_long, sample_annotation,
-  order_col = NULL, sample_id_col = "FullRunName",
-  batch_col = "MS_batch.final", measure_col = "Intensity",
+  order_col = "order", sample_id_col = "FullRunName",
+  batch_col = "MS_batch", measure_col = "Intensity",
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
   color_by_batch = F, facet_by_batch = F, requant = NULL,
   plot_title = NULL, vline_color = "red", theme = "classic")

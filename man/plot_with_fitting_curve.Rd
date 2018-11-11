@@ -6,7 +6,7 @@
 \usage{
 plot_with_fitting_curve(pep_name, data_df_all_steps, sample_annotation,
   fit_df, fit_value_var = "fit", fit_step = "3_loess_fit",
-  order_col = NULL, sample_id_col = "FullRunName",
+  order_col = "order", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
   color_by_batch = F, facet_by_batch = F, plot_title = NULL,
