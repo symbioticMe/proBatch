@@ -5,7 +5,7 @@
 \title{Batch by date/time}
 \usage{
 define_batches_by_MS_pauses_within_instrument(date_vector, threshold,
-  minimal_batch_size = 5, batch_col = "MS_batch.final")
+  minimal_batch_size = 5, batch_col = "MS_batch")
 }
 \arguments{
 \item{date_vector}{POSIX or numeric-like vector corresponding to the sample
