@@ -130,7 +130,7 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
 #' be facetted by batch.
 #'
 #' @inheritParams plot_peptide_trend
-#' @param proteinName name of the protein as defined in \code{ProteinName}
+#' @param protein_name name of the protein as defined in \code{ProteinName}
 #' @param protein_col column where protein names are specified
 #' @param ... additional arguments to \code{\link{plot_peptide_trend }} function
 #'
@@ -141,7 +141,7 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
 #'
 #' @export
 #'
-plot_peptides_of_one_protein <- function(proteinName, protein_col = 'ProteinName',
+plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinName',
                                          df_long, sample_annotation,
                                          peptide_annotation = NULL,
                                          order_col = 'order',
@@ -150,15 +150,15 @@ plot_peptides_of_one_protein <- function(proteinName, protein_col = 'ProteinName
                                          measure_col = 'Intensity',
                                          feature_id_col = 'peptide_group_label',
                                          requant = NULL,
-                                         plot_title = sprintf('Peptides of %s protein', proteinName),...){
+                                         plot_title = sprintf('Peptides of %s protein', protein_name),...){
   if (!is.null(peptide_annotation)){
     peptides = peptide_annotation %>%
-      filter((!!sym(protein_col)) == proteinName) %>%
+      filter((!!sym(protein_col)) == protein_name) %>%
       pull(!!sym(feature_id_col)) %>% unique()
     peptides = peptides[peptides %in% df_long[[feature_id_col]]]
   } else {
     peptides = df_long %>%
-      filter((!!sym(protein_col)) == proteinName) %>%
+      filter((!!sym(protein_col)) == protein_name) %>%
       pull(feature_id_col) %>% unique()
   }
   gg = plot_peptide_trend(peptides, df_long = df_long,
