@@ -163,7 +163,7 @@ plot_boxplots <- function(df_long, sample_annotation = NULL,
       df_long = df_long %>% merge(sample_annotation,
                                             by = sample_id_col)
       if(is.numeric(df_long[[batch_col]])){
-        #df_long[batch_col] <- lapply(df_long[batch_col] , factor)
+        df_long[,batch_col] <- as.factor(df_long[, batch_col])
       }
     } else {
       if (color_by_batch){
