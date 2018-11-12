@@ -22,22 +22,20 @@
 #'
 #' @export
 #'
+
 plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
-                               order_col = 'order',
-                               sample_id_col = 'FullRunName',
-                               batch_col = 'MS_batch',
-                               measure_col = 'Intensity',
-                               feature_id_col = 'peptide_group_label',
-                               geom = c('point', 'line'),
-                               color_by_batch = F, facet_by_batch = F,
-                               requant = NULL,
-                               plot_title = sprintf("Peptide trend of %s peptide", pep_name),
-                               vline_color ='red',
-                               theme = 'classic'){
+                                order_col = 'order',
+                                sample_id_col = 'FullRunName',
+                                batch_col = 'MS_batch',
+                                measure_col = 'Intensity',
+                                feature_id_col = 'peptide_group_label',
+                                geom = c('point', 'line'),
+                                color_by_batch = F, facet_by_batch = F,
+                                color_by_col = "m-score", color_by_value = 2,
+                                plot_title = NULL,
+                                vline_color ='red',
+                                theme = 'classic'){
   #TODO: suggest faceting by instrument
-  
-  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
-    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   
   plot_df = df_long %>%
     filter(UQ(sym(feature_id_col)) %in% pep_name)
@@ -52,7 +50,7 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
     plot_df = plot_df %>%
       merge(sample_annotation, by = sample_id_col)
   }
-
+  
   sample_annotation = sample_annotation %>%
     subset(sample_annotation[[sample_id_col]] %in% plot_df[[sample_id_col]])
   
@@ -63,7 +61,7 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
       mutate(order = row_number())
     order_col = 'order'
   }
-
+  
   gg = ggplot(plot_df,
               aes_string(x = order_col, y = measure_col))
   if (identical(geom, 'line')){
@@ -72,7 +70,7 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
   if (identical(geom, 'point')){
     gg = gg + geom_point()
   }
-
+  
   if (identical(geom, c('point', 'line'))){
     gg = gg + geom_point() +
       geom_line(color = 'black', alpha = .7, linetype = 'dashed')
@@ -97,28 +95,17 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
   if(!is.null(plot_title)){
     gg = gg + ggtitle(plot_title)
   }
-  if (!is.null(requant)){
-    if (is.data.frame(requant)){
-      data_requant = requant
-    } else {
-      data_requant = plot_df
-    }
-    data_requant = data_requant %>%
-      filter(UQ(as.name(feature_id_col)) %in% pep_name)
-    if('requant' %in% names(df_long)){
-      data_requant = plot_df %>% filter(requant)
-    } else {
-      if('m_score' %in% names(df_long)){
-        data_requant = plot_df %>% filter(m_score == 2)
-      } else{
-        stop('requant cannot be plotted without requant table or m_scores!')
-      }
-    }
-
-    gg = gg + geom_point(data = data_requant,
+  
+  if(!is.null(color_by_col)){
+    col_data = plot_df %>%
+      filter(UQ(as.name(feature_id_col)) %in% pep_name) %>%
+      filter(UQ(as.name(color_by_col)) == color_by_value)
+    
+    gg = gg + geom_point(data = col_data,
                          aes_string(x = order_col, y = measure_col),
                          color = 'red', size = .3, shape = 8)
   }
+  
   if (theme == 'classic'){
     gg = gg + theme_classic()
   }
