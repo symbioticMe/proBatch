@@ -35,7 +35,10 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
                                vline_color ='red',
                                theme = 'classic'){
   #TODO: suggest faceting by instrument
-
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   plot_df = df_long %>%
     filter(UQ(sym(feature_id_col)) %in% pep_name)
   if (!all(names(sample_annotation) %in% names(df_long))){
@@ -151,6 +154,10 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
                                          feature_id_col = 'peptide_group_label',
                                          requant = NULL,
                                          plot_title = sprintf('Peptides of %s protein', protein_name),...){
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   if (!is.null(peptide_annotation)){
     peptides = peptide_annotation %>%
       filter((!!sym(protein_col)) == protein_name) %>%
@@ -201,6 +208,10 @@ plot_spike_in_protein <- function(df_long, sample_annotation,
                                  feature_id_col = 'peptide_group_label',
                                  requant = NULL,
                                  plot_title = 'Spike-in BOVINE protein peptides', ...){
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
       merge(peptide_annotation, by = protein_col)
@@ -250,6 +261,10 @@ plot_iRT_trend <- function(df_long, sample_annotation,
                            feature_id_col = 'peptide_group_label',
                            requant = NULL,
                            plot_title = 'iRT peptide profile', ...){
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
       merge(peptide_annotation, by = protein_col)
