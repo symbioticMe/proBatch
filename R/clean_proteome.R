@@ -25,6 +25,9 @@ clean_requants <- function(df_long, sample_annotation,
                            missing_frac_batch = .3, missing_frac_total = .3){
   #for dplyr version 0.7 and higher, this is the way to call the functions
   
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   input_colnames <- colnames(df_long)
   df_clean = df_long %>%
     filter(UQ(sym(m_score)) != 2) %>%
@@ -65,6 +68,9 @@ remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
                                                batch_col = 'MS_batch',
                                                feature_id_col = 'peptide_group_label',
                                                sample_id_col = 'FullRunName'){
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   
   n_samples = nrow(sample_annotation)
   ori_features = unique(df_long[[feature_id_col]])
