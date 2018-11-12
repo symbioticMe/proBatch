@@ -46,6 +46,10 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
                            measure_col = 'Intensity',
                            sample_id_col = 'FullRunName',
                            step = NULL){
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   df_long = data_matrix %>%
     as.data.frame() %>%
     rownames_to_column(var = feature_id_col) %>%
