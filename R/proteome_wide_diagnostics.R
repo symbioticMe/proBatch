@@ -60,6 +60,9 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                       order_temp_col = 1:length(sample_average),
                       sample_id_col = colnames(data_matrix))
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
+
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_ave[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   df_ave = df_ave %>%
     merge(sample_annotation, by = sample_id_col)
   
@@ -157,6 +160,8 @@ plot_boxplots <- function(df_long, sample_annotation = NULL,
                        theme = 'classic',
                        plot_title = NULL, order_per_facet = F){
   
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   
   if (!all(c(batch_col, sample_id_col) %in% names(df_long))){
     if (!is.null(sample_annotation)){
@@ -382,8 +387,12 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing
   }
 
   if (is.null(sample_annotation)){
-    #for consistency: other functions rely on NULL
-    sample_annotation = NA
+    sample_annotation = NULL
+  }
+  
+  if(!is.null(sample_annotation)){
+    if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+      warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   }
   p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
                 color = heatmap_color,
@@ -395,6 +404,9 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing
 calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
                  threshold_pca, threshold_var = Inf) {
 
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
   expr_set = Biobase::ExpressionSet(data_matrix[,rownames(sample_annotation)], covrts.annodf)
   pvcaAssess = pvca::pvcaBatchAssess (expr_set, factors_for_PVCA, threshold = threshold_pca)
@@ -467,6 +479,9 @@ plot_pvca <- function(data_matrix, sample_annotation,
                       theme = 'classic', plot_title = NULL){
   factors_for_PVCA = c(technical_covariates, biological_covariates)
 
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   sample_names = sample_annotation[[sample_id_col]]
   sample_annotation = sample_annotation %>% select(one_of(factors_for_PVCA)) %>%
     mutate_if(lubridate::is.POSIXct, as.numeric)
@@ -606,6 +621,9 @@ plot_PCA <- function(data_matrix, sample_annotation,
                      theme = 'classic',
                      plot_title = NULL){
 
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   if(!is.null(feature_id_col)){
     if(feature_id_col %in% colnames(data_matrix)){
       if(is.data.frame(data_matrix)){
