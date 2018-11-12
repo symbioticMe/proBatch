@@ -21,7 +21,7 @@
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
 plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
                              width = NA, height = NA, unit = c('cm','in','mm'),
-                             plot_title = '', ...) {
+                             plot_title = NULL, ...) {
   if (!(flavor %in% c('pheatmap','corrplot'))){
     stop('only pheatmap or corrplot can be produced to illustrate sample correlation,
            choose one of these two options')
@@ -90,7 +90,7 @@ plot_protein_corrplot <- function(data_matrix,
            flavor = 'corrplot',
            filename = NULL,
            width = NA, height = NA, unit = c('cm','in','mm'),
-           plot_title = 'peptide correlation matrix', ...) {
+           plot_title = sprintf('Peptide correlation matrix of %s protein', protein_name), ...) {
 
     #extract peptides of the protein
     peptides = peptide_annotation %>%
@@ -144,7 +144,7 @@ plot_protein_corrplot <- function(data_matrix,
 plot_samples_corrplot <- function(data_matrix, samples_to_plot = NULL,
                                       flavor = 'corrplot', filename = NULL,
                                       width = NA, height = NA, unit = c('cm','in','mm'),
-                                      plot_title = 'Correlation matrix of samples', ...){
+                                      plot_title = sprintf('Correlation matrix of sample %s', samples_to_plot), ...){
   if(!is.null(samples_to_plot)){
     corr_matrix = cor(data_matrix[,samples_to_plot], use = 'complete.obs')
   } else {
