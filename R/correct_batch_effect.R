@@ -68,7 +68,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
   
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
-  #TODO: change to matrix_to_long
+
   df_long = data_matrix %>%
     melt(id.vars = feature_id_col)
   names(df_long) = c(feature_id_col, sample_id_col, measure_col)
@@ -81,12 +81,10 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     merge(sample_annotation, by = sample_id_col) %>%
     arrange_(feature_id_col, sample_order_col) %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
-    #filter(n() >3)%>%
     nest() %>%
     mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
                       expl.var = sample_order_col, ...)) %>%
     unnest() %>%
-    #change the fit to the corrected data
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     mutate(mean_fit = mean(fit)) %>%
     mutate(diff = mean_fit - fit) %>%
