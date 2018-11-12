@@ -6,7 +6,7 @@
 \usage{
 plot_corr_matrix(corr_matrix, flavor = "corrplot", filename = NULL,
   width = NA, height = NA, unit = c("cm", "in", "mm"),
-  plot_title = "", ...)
+  plot_title = NULL, ...)
 }
 \arguments{
 \item{corr_matrix}{square correlation matrix}
