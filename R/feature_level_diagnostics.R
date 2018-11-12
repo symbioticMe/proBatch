@@ -31,7 +31,7 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
                                geom = c('point', 'line'),
                                color_by_batch = F, facet_by_batch = F,
                                requant = NULL,
-                               plot_title = NULL,
+                               plot_title = sprintf("Peptide trend of %s peptide", pep_name),
                                vline_color ='red',
                                theme = 'classic'){
   #TODO: suggest faceting by instrument
@@ -321,7 +321,8 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                                     feature_id_col = 'peptide_group_label',
                                     geom = c('point', 'line'),
                                     color_by_batch = F, facet_by_batch = F,
-                                    plot_title = NULL, requant = NULL,
+                                    plot_title = sprintf("Fitting curve of %s peptide", pep_name), 
+                                    requant = NULL,
                                     theme = 'classic', vline_color = 'grey', ...){
 
   if(length(pep_name) > 10){
