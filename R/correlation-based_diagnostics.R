@@ -262,6 +262,10 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                    biospecimen_id_col = 'EarTag',
                                    plot_title = 'Correlation distribution',
                                    plot_param = 'batch_replicate'){
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
                                 biospecimen_id_col, sample_id_col, batch_col) {
     if (!is.null(repeated_samples)){

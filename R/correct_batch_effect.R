@@ -12,6 +12,9 @@ correct_medians_batch <- function(df_long, sample_annotation = NULL,
                                   feature_id_col = 'peptide_group_label',
                                   measure_col = 'Intensity'){
   
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
       !is.null(sample_annotation)){
     df_long = df_long %>% merge(sample_annotation, by = sample_id_col)
