@@ -8,7 +8,8 @@ plot_protein_corrplot(data_matrix, protein_name, peptide_annotation,
   protein_col = "ProteinName", feature_id_col = "peptide_group_label",
   flavor = "corrplot", filename = NULL, width = NA, height = NA,
   unit = c("cm", "in", "mm"),
-  plot_title = "peptide correlation matrix", ...)
+  plot_title = sprintf("Peptide correlation matrix of \%s protein",
+  protein_name), ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
