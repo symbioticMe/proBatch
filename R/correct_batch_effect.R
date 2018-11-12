@@ -186,7 +186,7 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                             measure_col = measure_col, sample_id_col = sample_id_col)
   
   if(discreteFunc == 'MedianCentering'){
-    median_long = normalize_medians_batch(df_long = fit_long, sample_annotation = sample_annotation,
+    median_long = correct_medians_batch(df_long = fit_long, sample_annotation = sample_annotation,
                                           sample_id_col = sample_id_col,
                                           batch_col = batch_col,
                                           feature_id_col = feature_id_col,
