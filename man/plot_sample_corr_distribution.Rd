@@ -14,7 +14,7 @@ plot_sample_corr_distribution(data_matrix, sample_annotation,
 \item{repeated_samples}{if `NULL`, only repeated sample correlation is plotted}
 
 \item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+filenames (colnames of the data matrix) are found}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
