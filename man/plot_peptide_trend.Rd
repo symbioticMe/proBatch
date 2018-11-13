@@ -8,9 +8,9 @@ plot_peptide_trend(pep_name, df_long, sample_annotation,
   order_col = "order", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
-  color_by_batch = F, facet_by_batch = F, requant = NULL,
-  plot_title = sprintf("Peptide trend of \%s peptide", pep_name),
-  vline_color = "red", theme = "classic")
+  color_by_batch = F, facet_by_batch = F, color_by_col = "m_score",
+  color_by_value = 2, plot_title = NULL, vline_color = "red",
+  theme = "classic")
 }
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
@@ -48,13 +48,13 @@ names.}
 
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
-\item{requant}{if data frame: requant values; if logical: whether to indicate
-requant values (requires 'requant' or 'm_score' column in \code{df_long})}
-
 \item{plot_title}{the string indicating the source of the peptides}
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
+
+\item{requant}{if data frame: requant values; if logical: whether to indicate
+requant values (requires 'requant' or 'm_score' column in \code{df_long})}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
