@@ -5,11 +5,12 @@
 \title{Plot the heatmap of samples}
 \usage{
 plot_heatmap(data_matrix, sample_annotation = NULL,
-  fill_the_missing = T, cluster_rows = T, cluster_cols = F,
-  annotation_color_list = NA,
+  sample_id_col = "FullRunName", sample_annotation_col = NULL,
+  sample_annotation_row = NULL, fill_the_missing = T,
+  cluster_rows = T, cluster_cols = F, annotation_color_list = NA,
   heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7,
-  name = "RdYlBu")))(100), color_for_missing = "black",
-  filename = NULL, plot_title = NA, ...)
+  name = "RdYlBu")))(100), color_for_missing = "black", filename = NA,
+  plot_title = NA, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -23,6 +24,10 @@ original data}
   \item  technical covariates (batches etc)
 }; each column of sample annotation will get it's own row. If `cluster_cols = T` this will indicate,
 whether sample proximity is driven by one of biolical or technical factors}
+
+\item{sample_annotation_col}{biological or technical factors to be annotated in heatmap columns}
+
+\item{sample_annotation_row}{biological or technical factors to be annotated in heatmap rows}
 
 \item{fill_the_missing}{boolean value determining if missing values should be
 substituted with -1 (and colored with black)}
