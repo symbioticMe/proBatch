@@ -11,7 +11,8 @@ plot_with_fitting_curve(pep_name, data_df_all_steps, sample_annotation,
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
   color_by_batch = F, facet_by_batch = F,
   plot_title = sprintf("Fitting curve of \%s peptide", pep_name),
-  requant = NULL, theme = "classic", vline_color = "grey", ...)
+  color_by_col = NULL, color_by_value = NULL, theme = "classic",
+  vline_color = "grey", ...)
 }
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
@@ -52,9 +53,6 @@ names.}
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
 \item{plot_title}{the string indicating the source of the peptides}
-
-\item{requant}{if data frame: requant values; if logical: whether to indicate
-requant values (requires 'requant' or 'm_score' column in \code{df_long})}
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
