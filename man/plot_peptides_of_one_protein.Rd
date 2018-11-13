@@ -8,7 +8,8 @@ plot_peptides_of_one_protein(protein_name, protein_col = "ProteinName",
   df_long, sample_annotation, peptide_annotation = NULL,
   order_col = "order", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
-  feature_id_col = "peptide_group_label", requant = NULL,
+  feature_id_col = "peptide_group_label", color_by_col = NULL,
+  color_by_value = NULL,
   plot_title = sprintf("Peptides of \%s protein", protein_name), ...)
 }
 \arguments{
@@ -42,9 +43,6 @@ internally for consistency}
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
-
-\item{requant}{if data frame: requant values; if logical: whether to indicate
-requant values (requires 'requant' or 'm_score' column in \code{df_long})}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
