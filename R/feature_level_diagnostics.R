@@ -31,7 +31,7 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
                                 feature_id_col = 'peptide_group_label',
                                 geom = c('point', 'line'),
                                 color_by_batch = F, facet_by_batch = F,
-                                color_by_col = "m-score", color_by_value = 2,
+                                color_by_col = "m_score", color_by_value = 2,
                                 plot_title = NULL,
                                 vline_color ='red',
                                 theme = 'classic'){
@@ -139,7 +139,7 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
                                          batch_col = 'MS_batch',
                                          measure_col = 'Intensity',
                                          feature_id_col = 'peptide_group_label',
-                                         requant = NULL,
+                                         color_by_col = NULL, color_by_value = NULL,
                                          plot_title = sprintf('Peptides of %s protein', protein_name),...){
   
   if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
@@ -161,6 +161,8 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
                           sample_id_col = sample_id_col,
                           batch_col = batch_col, measure_col = measure_col,
                           feature_id_col = feature_id_col,
+                          color_by_col = color_by_col, 
+                          color_by_value = color_by_value,
                           plot_title = plot_title, ...)
   return(gg)
 }
@@ -193,7 +195,7 @@ plot_spike_in_protein <- function(df_long, sample_annotation,
                                  batch_col = 'MS_batch',
                                  measure_col = 'Intensity',
                                  feature_id_col = 'peptide_group_label',
-                                 requant = NULL,
+                                 color_by_col = NULL, color_by_value = NULL,
                                  plot_title = 'Spike-in BOVINE protein peptides', ...){
   
   if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
@@ -212,6 +214,8 @@ plot_spike_in_protein <- function(df_long, sample_annotation,
                           sample_id_col = sample_id_col,
                           batch_col = batch_col, measure_col = measure_col,
                           feature_id_col = feature_id_col,
+                          color_by_col = color_by_col, 
+                          color_by_value = color_by_value,
                           plot_title = plot_title, ...)
   return(gg)
 }
@@ -246,7 +250,7 @@ plot_iRT_trend <- function(df_long, sample_annotation,
                            batch_col = 'MS_batch',
                            measure_col = 'Intensity',
                            feature_id_col = 'peptide_group_label',
-                           requant = NULL,
+                           color_by_col = NULL, color_by_value = NULL,
                            plot_title = 'iRT peptide profile', ...){
   
   if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
@@ -265,6 +269,8 @@ plot_iRT_trend <- function(df_long, sample_annotation,
                           batch_col = batch_col,
                           feature_id_col = feature_id_col,
                           measure_col = measure_col,
+                          color_by_col = color_by_col, 
+                          color_by_value = color_by_value,
                           plot_title = plot_title, ...)
   return(gg)
 }
@@ -309,7 +315,7 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                                     geom = c('point', 'line'),
                                     color_by_batch = F, facet_by_batch = F,
                                     plot_title = sprintf("Fitting curve of %s peptide", pep_name), 
-                                    requant = NULL,
+                                    color_by_col = NULL, color_by_value = NULL,
                                     theme = 'classic', vline_color = 'grey', ...){
 
   if(length(pep_name) > 10){
@@ -325,6 +331,8 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                           feature_id_col = feature_id_col,
                           plot_title = plot_title,
                           facet_by_batch = facet_by_batch,
+                          color_by_col = color_by_col, 
+                          color_by_value = color_by_value,
                           vline_color = vline_color, ...)
   if(!("Step" %in% names(fit_df))){
     fit_df$Step = fit_step
