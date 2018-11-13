@@ -238,7 +238,7 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
+#'   filenames (colnames of the data matrix) are found
 #' @param batch_col column in \code{sample_annotation} that should be used for
 #'   batch comparison
 #' @param plot_param columns, defined in correlation_df, which is output of
@@ -315,12 +315,14 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 }
 
 
+
+
 #' Transform square correlation matrix into long data frame of correlations
 #'
-#' @param cor_proteome
-#' @param peptide_annotation
-#' @param protein_col
-#' @param feature_id_col
+#' @param peptide_cor peptide correlation matrix (square)
+#' @param peptide_annotation df with petpides and their corresponding proteins
+#' @param protein_col the column name in \code{peptide_annotation} with protein names
+#' @param feature_id_col column in \code{peptide_annotation} that captures peptide names are found 
 #'
 #' @return
 #' @export
