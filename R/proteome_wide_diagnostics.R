@@ -359,6 +359,8 @@ plot_sample_clustering <- function(data_matrix, color_df,
 #'   substituted with -1 (and colored with black)
 #' @param cluster_rows boolean value determining if rows should be clustered
 #' @param cluster_cols boolean value determining if columns should be clustered
+#' @param sample_annotation_col biological or technical factors to be annotated in heatmap columns
+#' @param sample_annotation_row biological or technical factors to be annotated in heatmap rows 
 #' @param annotation_color_list list specifying colors for columns (samples).
 #'   Best created by `sample_annotation_to_colors`
 #' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
@@ -373,33 +375,58 @@ plot_sample_clustering <- function(data_matrix, color_df,
 #'
 #' @examples
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
-plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing = T,
-                         cluster_rows = T, cluster_cols = F,
+plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 'FullRunName',
+                         sample_annotation_col = NULL, 
+                         sample_annotation_row = NULL, 
+                         fill_the_missing = T, cluster_rows = T, cluster_cols = F,
                          annotation_color_list = NA,
                          heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100),
                          color_for_missing = 'black',
-                         filename = NULL, plot_title = NA,
+                         filename = NA, plot_title = NA,
                          ...){
   if(fill_the_missing) {
     data_matrix[is.na(data_matrix)] = 0
     warning('substituting missing values with 0, this might affect the clustering!')
     heatmap_color = c(color_for_missing, heatmap_color)
   }
-
+  
   if (is.null(sample_annotation)){
-    sample_annotation = NULL
+    annotation_col = NA
+    annotation_row = NA
   }
   
   if(!is.null(sample_annotation)){
-    if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
-      warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+    if(!is.null(sample_annotation_col) && is.null(sample_annotation_row)){
+      annotation_row = NA
+      annotation_col = sample_annotation %>% 
+        select(one_of(sample_id_col, sample_annotation_col)) %>%
+        remove_rownames %>% 
+        column_to_rownames(var=sample_id_col)  
+      
+    }
+    if(!is.null(sample_annotation_row) && is.null(sample_annotatation_col)){
+      annotation_col = NA
+      annotation_row = sample_annotation %>% 
+        select(one_of(sample_id_col, sample_annotation_row)) %>%
+        remove_rownames %>% 
+        column_to_rownames(var=sample_id_col)
+    }
+    if(is.null(sample_annotation_col) && is.null(sample_annotation_row)){
+      warning("Sample annotation columns and rows are not specified for heatmap.")
+      annotation_col = sample_annotation %>% 
+        remove_rownames %>% 
+        column_to_rownames(var=sample_id_col)
+    }
   }
+  
   p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
                 color = heatmap_color,
-                annotation_col = sample_annotation, annotation_colors = annotation_color_list,
+                annotation_col = annotation_col, annotation_row = annotation_row, 
+                annotation_colors = annotation_color_list,
                 filename = filename, main = plot_title, ...)
   return(p)
 }
+
 
 calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
                  threshold_pca, threshold_var = Inf) {
