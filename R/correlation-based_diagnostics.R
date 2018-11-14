@@ -141,7 +141,7 @@ plot_protein_corrplot <- function(data_matrix,
 #'
 #' }
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
-plot_samples_corrplot <- function(data_matrix, samples_to_plot = NULL,
+plot_sample_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                       flavor = 'corrplot', filename = NULL,
                                       width = NA, height = NA, unit = c('cm','in','mm'),
                                       plot_title = sprintf('Correlation matrix of sample %s', samples_to_plot), ...){
@@ -368,7 +368,7 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' @export
 #'
 #' @examples
-plot_prot_corr_distribution <- function(data_matrix, peptide_annotation,
+plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
                                         protein_col = 'ProteinName',
                                         feature_id_col = 'peptide_group_label',
                                         plot_title = 'Distribution of peptide correlation',
