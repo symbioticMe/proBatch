@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @examples
-correct_medians_batch <- function(df_long, sample_annotation = NULL,
+equalize_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
                                   sample_id_col = 'FullRunName',
                                   batch_col = 'MS_batch',
                                   feature_id_col = 'peptide_group_label',
