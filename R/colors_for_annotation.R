@@ -127,12 +127,6 @@ generate_colors_for_numeric <-
       factor_colors = scales::brewer_pal(palette = 'Set1')(n_non_numeric)
       names(factor_colors) = non_numeric_values
     }
-    # TODO: consider if something like this:
-    # if (is.factor(num_col)){
-    #   color_to_plot = colorRampPalette(color_for_column)(nlevels(num_col))[1:nlevels(num_col)]
-    #   names(color_to_plot) = levels(num_col)
-    # }
-    # wouldn't be sufficient for factors
 
     if (is.numeric(num_col)) {
       # num_col is a numeric vector
@@ -197,7 +191,6 @@ merge_rare_levels <- function(column) {
 #' @param factor_columns columns of sample_annotation to be treated as factors. Note that factor and character columns are treated as factors by default.
 #' @param not_factor_columns don't treat these columns as factors. This can be used to override the default behaviour of considering factors and character columns as factors.
 #' @param rare_categories_to_other if True rare categories will be merged as 'other'
-#' @param numerics_to_log NOT IMPLEMENTED!
 #' @param granularity number of colors to map to the number vector (equally spaced between minimum and maximum)
 #' @param numeric_palette_type palette to be used for numeric values coloring
 #'
@@ -211,7 +204,6 @@ sample_annotation_to_colors <- function(sample_annotation,
                                         factor_columns = c('subtype','caseControl'),
                                         not_factor_columns = c('RunDate','ProteinPrepDate'),
                                         rare_categories_to_other = T,
-                                        numerics_to_log = F,
                                         numeric_palette_type = 'brewer',
                                         granularity = 10) {
   rownames_ann = as.character(sample_annotation[[sample_id_col]])
@@ -243,8 +235,6 @@ sample_annotation_to_colors <- function(sample_annotation,
     factor_columns = setdiff(factor_columns, not_factor_columns)
   }
 
-  #TODO: check if this is absolutely required (convertion to factors)
-
   # Generate color mappings of factor variables
   list_of_col_for_factors = list()
   if (!is.null(factor_columns)) {
@@ -263,9 +253,8 @@ sample_annotation_to_colors <- function(sample_annotation,
 
   #generate color mappings of numeric variables
 
-  # NOTE: this could be bit confusing: redefinition of a user parameter.
   non_factor_cols = setdiff(names(sample_annotation), factor_columns)
-  #TODO: if numerics_to_log is a character vector of column names, convert corresponding annotation colors to log scale
+
   list_of_col_for_numeric = list()
   if (!is.null(non_factor_cols) &
       !identical(non_factor_cols, character(0))) {
