@@ -28,6 +28,11 @@ normalization) thus it has minimally the following columns:
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
+\item{fit_df}{data frame typically output generated from nonlinear curve 
+fitting by \code{normalize_custom_fit}}
+
+\item{fit_value_var}{column denoting intensity values, typically fitted to curve}
+
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for certain diagnostics and normalisations.}
 
@@ -67,9 +72,9 @@ Plot Intensity of a few representative peptides for each step of the analysis
 including the fitting curve
 }
 \seealso{
-Other feature-level diagnostic functions: \code{\link{plot_iRT_trend}},
-  \code{\link{plot_peptide_trend}},
+Other feature-level diagnostic functions: \code{\link{plot_iRT}},
   \code{\link{plot_peptides_of_one_protein}},
-  \code{\link{plot_spike_in_protein}}
+  \code{\link{plot_single_feature}},
+  \code{\link{plot_spike_in}}
 }
 \concept{feature-level diagnostic functions}
