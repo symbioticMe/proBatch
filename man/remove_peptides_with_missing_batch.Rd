@@ -5,7 +5,7 @@
 \title{Remove features missing in at least one batch}
 \usage{
 remove_peptides_with_missing_batch(df_long, sample_annotation,
-  batch_col = "MS_batch.final", feature_id_col = "peptide_group_label",
+  batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName")
 }
 \arguments{
@@ -44,3 +44,4 @@ Other dataset cleaning functions: \code{\link{clean_requants}},
   \code{\link{summarize_peptides}}
 }
 \concept{dataset cleaning functions}
+\keyword{internal}
