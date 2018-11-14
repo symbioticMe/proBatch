@@ -2,14 +2,14 @@
 
 ## General Overview
 
-The proBatch package contains functions for diagnosing and removing batch effects and other unwanted sources of variation from high-thoughput experiments. Altough the package hass primarily been developed with DIA proteomics data in mind, it should also be applicable to, similar, type of data.
+The proBatch package contains functions for diagnosing and removing batch effects and other  sources of technical variation from high-thoughput experiments. Altough the package hass primarily been developed with DIA (SWATH) proteomics data in mind, it should also be applicable to most of omic data with minor adaptations.
     
 As discussed in the corresponding vignettes, the diagnostic part of the package can be broadly divided in:
 
 1. Proteome-wide and 
 2. Protein-specific functions
 
-In addition to the diagnostic functions we provide a few convenience wrappers for common batch-effect removal approaches like ComBat [^1] and mean/median centering. Furthermore, the package includes non-linear fitting based approaches to deal with complex, proteomics-specific technical artifacts.
+In addition to the diagnostic functions we provide a few convenience wrappers for common batch-effect removal approaches like ComBat and mean/median centering. Furthermore, the package includes non-linear fitting based approaches to deal with complex, MS-specific signal drifts.
 
 ## Installing
 
@@ -42,17 +42,3 @@ Install proBatch from github:
 library(devtools)
 install_github("symbioticMe/proBatch.git"")
 ```
-
-
-## Getting started
-
-POINT TO THE VIGNETTE
-ADD A FEW EXAMPLES
-
-## Citing
-
-To reference the pipeline please cite [^1].
-If you use tools of this package in your analysis please reference [^2]. 
-    
-[^1]: Čuklina et al. 2019, MSB
-[^2]: Čuklina et al., 2019, Bioinformatics
