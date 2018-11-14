@@ -9,6 +9,9 @@ fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
   loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.2, ...)
 }
 \arguments{
+\item{dataDF}{data frame containing response variable e.g. samples in order and explanatory 
+variable e.g. measurment}
+
 \item{batch.size}{the total number of samples in the batch to compute for percentage threshold}
 
 \item{response.var}{the name of the column in dataDF with the response variable}
@@ -18,6 +21,9 @@ fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
 \item{noFitRequants}{(logical) whether to fit requanted values}
 
 \item{fitFunc}{function to use for the fit (`loess_regression`)}
+
+\item{with_df}{logical, whether to specify span by enp.target using approximately equivalent 
+number of parameters}
 
 \item{loess.span}{the parameter α which controls the degree of smoothing for loess}
 

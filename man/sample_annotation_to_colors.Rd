@@ -8,8 +8,8 @@ sample_annotation_to_colors(sample_annotation,
   columns_for_plotting = NULL, sample_id_col = "FullRunName",
   factor_columns = c("subtype", "caseControl"),
   not_factor_columns = c("RunDate", "ProteinPrepDate"),
-  rare_categories_to_other = T, numerics_to_log = F,
-  numeric_palette_type = "brewer", granularity = 10)
+  rare_categories_to_other = T, numeric_palette_type = "brewer",
+  granularity = 10)
 }
 \arguments{
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
@@ -26,8 +26,6 @@ filenames (colnames of the data matrix are found)}
 \item{not_factor_columns}{don't treat these columns as factors. This can be used to override the default behaviour of considering factors and character columns as factors.}
 
 \item{rare_categories_to_other}{if True rare categories will be merged as 'other'}
-
-\item{numerics_to_log}{NOT IMPLEMENTED!}
 
 \item{numeric_palette_type}{palette to be used for numeric values coloring}
 
