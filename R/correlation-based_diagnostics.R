@@ -21,7 +21,7 @@
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
 plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
                              width = NA, height = NA, unit = c('cm','in','mm'),
-                             plot_title = '', ...) {
+                             plot_title = NULL, ...) {
   if (!(flavor %in% c('pheatmap','corrplot'))){
     stop('only pheatmap or corrplot can be produced to illustrate sample correlation,
            choose one of these two options')
@@ -90,14 +90,13 @@ plot_protein_corrplot <- function(data_matrix,
            flavor = 'corrplot',
            filename = NULL,
            width = NA, height = NA, unit = c('cm','in','mm'),
-           plot_title = 'peptide correlation matrix', ...) {
+           plot_title = sprintf('Peptide correlation matrix of %s protein', protein_name), ...) {
 
     #extract peptides of the protein
     peptides = peptide_annotation %>%
       filter(UQ(sym(peptide_col_name)) %in% rownames(data_matrix)) %>%
       filter(UQ(sym(protein_col)) == protein_name) %>%
       pull(peptide_col_name) %>% as.character()
-    #peptide_annotation[[peptide_col_name]][peptide_annotation[[prot.column]] == protein_name]
     data_matrix_sub = data_matrix[peptides,]
     corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
     plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = flavor,
@@ -141,10 +140,10 @@ plot_protein_corrplot <- function(data_matrix,
 #'
 #' }
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
-plot_samples_corrplot <- function(data_matrix, samples_to_plot = NULL,
+plot_sample_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                       flavor = 'corrplot', filename = NULL,
                                       width = NA, height = NA, unit = c('cm','in','mm'),
-                                      plot_title = 'Correlation matrix of samples', ...){
+                                      plot_title = sprintf('Correlation matrix of sample %s', samples_to_plot), ...){
   if(!is.null(samples_to_plot)){
     corr_matrix = cor(data_matrix[,samples_to_plot], use = 'complete.obs')
   } else {
@@ -238,7 +237,7 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
+#'   filenames (colnames of the data matrix) are found
 #' @param batch_col column in \code{sample_annotation} that should be used for
 #'   batch comparison
 #' @param plot_param columns, defined in correlation_df, which is output of
@@ -262,6 +261,10 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                    biospecimen_id_col = 'EarTag',
                                    plot_title = 'Correlation distribution',
                                    plot_param = 'batch_replicate'){
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
                                 biospecimen_id_col, sample_id_col, batch_col) {
     if (!is.null(repeated_samples)){
@@ -311,12 +314,14 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 }
 
 
+
+
 #' Transform square correlation matrix into long data frame of correlations
 #'
-#' @param cor_proteome
-#' @param peptide_annotation
-#' @param protein_col
-#' @param feature_id_col
+#' @param peptide_cor peptide correlation matrix (square)
+#' @param peptide_annotation df with petpides and their corresponding proteins
+#' @param protein_col the column name in \code{peptide_annotation} with protein names
+#' @param feature_id_col column in \code{peptide_annotation} that captures peptide names are found 
 #'
 #' @return
 #' @export
@@ -362,7 +367,7 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' @export
 #'
 #' @examples
-plot_prot_corr_distribution <- function(data_matrix, peptide_annotation,
+plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
                                         protein_col = 'ProteinName',
                                         feature_id_col = 'peptide_group_label',
                                         plot_title = 'Distribution of peptide correlation',
