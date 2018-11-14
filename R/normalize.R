@@ -58,7 +58,7 @@ quantile_normalize <- function(data_matrix){
 #' @export
 #'
 #' @examples
-normalize_medians_global <- function(df_long,
+normalize_sample_medians <- function(df_long,
                                      sample_id_col = 'FullRunName',
                                     measure_col = 'Intensity'){
   df_normalized = df_long  %>%

@@ -4,7 +4,7 @@
 \alias{clean_requants}
 \title{Remove requanted and sparse features}
 \usage{
-clean_requants(df_long, sample_annotation, batch_col = "MS_batch.final",
+clean_requants(df_long, sample_annotation, batch_col = "MS_batch",
   feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", m_score = "m_score",
   missing_frac_batch = 0.3, missing_frac_total = 0.3)
