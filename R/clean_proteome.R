@@ -25,6 +25,9 @@ clean_requants <- function(df_long, sample_annotation,
                            missing_frac_batch = .3, missing_frac_total = .3){
   #for dplyr version 0.7 and higher, this is the way to call the functions
   
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   input_colnames <- colnames(df_long)
   df_clean = df_long %>%
     filter(UQ(sym(m_score)) != 2) %>%
@@ -58,6 +61,7 @@ clean_requants <- function(df_long, sample_annotation,
 #' @return \code{df_long} (\link{proBatch}) like data frame freed of features that were not detected in each batch
 #'
 #' @export
+#' @keywords internal
 #'
 #' @family dataset cleaning functions
 remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
@@ -65,7 +69,11 @@ remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
                                                feature_id_col = 'peptide_group_label',
                                                sample_id_col = 'FullRunName'){
   
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   n_samples = nrow(sample_annotation)
+  ori_features = unique(df_long[[feature_id_col]])
   features_consistent = df_long %>%
     merge(sample_annotation, by = sample_id_col) %>%
     droplevels() %>%
@@ -80,6 +88,12 @@ remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
   
   proteome_clean = df_long %>%
     filter(UQ(sym(feature_id_col)) %in% features_consistent)
+  
+  exclude_pep = length(setdiff(ori_features, features_consistent))
+  if(exclude_pep >0){
+    warning(sprintf("%s peptides are missing from some batches, removing for ComBat to complete", exclude_pep))
+  }
+  
   return(proteome_clean)
 }
 

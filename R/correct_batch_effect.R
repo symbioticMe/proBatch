@@ -6,11 +6,14 @@
 #' @export
 #'
 #' @examples
-correct_medians_batch <- function(df_long, sample_annotation = NULL,
+equalize_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
                                   sample_id_col = 'FullRunName',
                                   batch_col = 'MS_batch',
                                   feature_id_col = 'peptide_group_label',
                                   measure_col = 'Intensity'){
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   
   if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
       !is.null(sample_annotation)){
@@ -68,7 +71,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
   
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
-  #TODO: change to matrix_to_long
+
   df_long = data_matrix %>%
     melt(id.vars = feature_id_col)
   names(df_long) = c(feature_id_col, sample_id_col, measure_col)
@@ -81,21 +84,17 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     merge(sample_annotation, by = sample_id_col) %>%
     arrange_(feature_id_col, sample_order_col) %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
-    #filter(n() >3)%>%
     nest() %>%
     mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
                       expl.var = sample_order_col, ...)) %>%
     unnest() %>%
-    #change the fit to the corrected data
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     mutate(mean_fit = mean(fit)) %>%
     mutate(diff = mean_fit - fit) %>%
     mutate_(Intensity_normalized = interp(~`+`(x, y),
                                           x = as.name('diff'),
                                           y = as.name(measure_col)))
-  #TODO: try to get rid of rlang by the following expression:
-  #mutate(Intensity_normalized = diff + UQ(sym(measure_col)))
-  #if only the fitted data table is required (not recommended)
+
   fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
                                                     sample_id_col, batch_col)))
   
@@ -186,7 +185,7 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                             measure_col = measure_col, sample_id_col = sample_id_col)
   
   if(discreteFunc == 'MedianCentering'){
-    median_long = normalize_medians_batch(df_long = fit_long, sample_annotation = sample_annotation,
+    median_long = correct_medians_batch(df_long = fit_long, sample_annotation = sample_annotation,
                                           sample_id_col = sample_id_col,
                                           batch_col = batch_col,
                                           feature_id_col = feature_id_col,
