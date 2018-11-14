@@ -3,7 +3,6 @@
 \name{plot_sample_means_or_boxplots}
 \alias{plot_sample_means_or_boxplots}
 \alias{plot_sample_mean}
-\alias{plot_boxplots}
 \title{Plot per-sample mean or boxplot (showing median and quantiles) vs order (if the real
 running order available)}
 \usage{
@@ -12,13 +11,6 @@ plot_sample_mean(data_matrix, sample_annotation = NULL,
   batch_col = NULL, facet_col = "instrument", color_by_batch = F,
   color_scheme = "brewer", theme = "classic", plot_title = NULL,
   order_per_facet = F, vline_color = "grey", ylimits = NULL)
-
-plot_boxplots(df_long, sample_annotation = NULL,
-  sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", batch_col = "MS_batch",
-  facet_col = "instrument", color_by_batch = T,
-  color_scheme = "brewer", theme = "classic", plot_title = NULL,
-  order_per_facet = F)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
