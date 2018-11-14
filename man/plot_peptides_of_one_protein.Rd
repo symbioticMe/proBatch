@@ -46,7 +46,7 @@ names.}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
-\item{...}{additional arguments to \code{\link{plot_single_feature }} function}
+\item{...}{additional arguments to \code{\link{plot_single_feature}} function}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
@@ -55,7 +55,7 @@ ggplot2 type plot of \code{measure_col} vs \code{order_col},
 \description{
 Creates a spike-in facetted ggplot2 plot of the value in
 \code{measure_col} vs \code{order_col} using
-\code{\link{plot_single_feature }}. Additionally, the resulting plot can also
+\code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 be facetted by batch.
 }
 \seealso{
