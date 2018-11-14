@@ -115,13 +115,13 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
 #'
 #' Creates a spike-in facetted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_single_feature }}. Additionally, the resulting plot can also
+#' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
 #' @inheritParams plot_single_feature
 #' @param protein_name name of the protein as defined in \code{ProteinName}
 #' @param protein_col column where protein names are specified
-#' @param ... additional arguments to \code{\link{plot_single_feature }} function
+#' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
