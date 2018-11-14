@@ -1,11 +1,15 @@
 #' proBatch: A package for diagnostics and correction of batch effects,
 #' primarily in proteomics
 #'
-#' It adresses the following needs: \itemize{ \item prepare the original data
+#' The proBatch package contains functions for diagnosing and removing batch effects 
+#' and other unwanted technical variation from high-thoughput experiments. Although 
+#' the package has primarily been developed for DIA (SWATH) proteomics data, it 
+#' should also be applicable to most omic data with minor adaptations.
+#' It addresses the following needs: \itemize{ \item prepare proteome data
 #' (e.g. OpenSWATH output matrix and sample annotation file) for analysis.
-#' However, you might need to use `SWATH2stats` additionally \item Diagnose
-#' batch effects, sample-wide and feature-level \item Correct for batch effects
-#' (normalize the data). Other useful package for this purpose is `Normalyzer`.
+#' Note that output may need additional `SWATH2stats` step.  \item Diagnose
+#' batch effects in sample-wide and feature-level \item Normalize and Correct for 
+#' batch effects. Other useful package for this purpose is `Normalyzer`.
 #' }
 #'
 #' To learn more about proBatch, start with the vignettes:
