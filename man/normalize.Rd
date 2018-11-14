@@ -2,13 +2,13 @@
 % Please edit documentation in R/correct_batch_effect.R, R/normalize.R
 \name{normalize}
 \alias{normalize}
-\alias{correct_medians_batch}
+\alias{equalize_peptide_batch_medians}
 \alias{normalize_custom_fit}
 \alias{correct_with_ComBat}
-\alias{normalize_medians_global}
+\alias{normalize_sample_medians}
 \title{Median normalization of the data (per batch median)}
 \usage{
-correct_medians_batch(df_long, sample_annotation = NULL,
+equalize_peptide_batch_medians(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   feature_id_col = "peptide_group_label", measure_col = "Intensity")
 
@@ -21,7 +21,7 @@ correct_with_ComBat(data_matrix, sample_annotation,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   par.prior = TRUE)
 
-normalize_medians_global(df_long, sample_id_col = "FullRunName",
+normalize_sample_medians(df_long, sample_id_col = "FullRunName",
   measure_col = "Intensity")
 
 normalize(data_matrix, normalizeFunc = "quantile", log = NULL)
