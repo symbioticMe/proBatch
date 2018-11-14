@@ -23,7 +23,7 @@
 #' @export
 #'
 
-plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
+plot_single_feature  <- function(pep_name, df_long, sample_annotation,
                                 order_col = 'order',
                                 sample_id_col = 'FullRunName',
                                 batch_col = 'MS_batch',
@@ -116,13 +116,13 @@ plot_peptide_trend  <- function(pep_name, df_long, sample_annotation,
 #'
 #' Creates a spike-in facetted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_peptide_trend }}. Additionally, the resulting plot can also
+#' \code{\link{plot_single_feature }}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
-#' @inheritParams plot_peptide_trend
+#' @inheritParams plot_single_feature
 #' @param protein_name name of the protein as defined in \code{ProteinName}
 #' @param protein_col column where protein names are specified
-#' @param ... additional arguments to \code{\link{plot_peptide_trend }} function
+#' @param ... additional arguments to \code{\link{plot_single_feature }} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
@@ -155,7 +155,7 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
       filter((!!sym(protein_col)) == protein_name) %>%
       pull(feature_id_col) %>% unique()
   }
-  gg = plot_peptide_trend(peptides, df_long = df_long,
+  gg = plot_single_feature(peptides, df_long = df_long,
                           sample_annotation = sample_annotation,
                           order_col = order_col,
                           sample_id_col = sample_id_col,
@@ -171,13 +171,13 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
 #'
 #' Creates a spike-in facetted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_peptide_trend}}. Additionally, the resulting plot can also
+#' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
-#' @inheritParams plot_peptide_trend
+#' @inheritParams plot_single_feature
 #' @param spike_ins substring used to identify spike-in proteins in the column
 #'   'ProteinName'
-#' @param ... additional arguments to \code{\link{plot_peptide_trend}} function
+#' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
@@ -186,7 +186,7 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
 #'
 #' @export
 #'
-plot_spike_in_protein <- function(df_long, sample_annotation,
+plot_spike_in <- function(df_long, sample_annotation,
                                  peptide_annotation = NULL,
                                  protein_col = 'ProteinName',
                                  order_col = 'order',
@@ -208,7 +208,7 @@ plot_spike_in_protein <- function(df_long, sample_annotation,
   spike_in_peptides = df_long %>%
     filter(grepl(spike_ins, !!sym(protein_col))) %>%
     pull(feature_id_col) %>% as.character() %>% unique()
-  gg = plot_peptide_trend(spike_in_peptides, df_long = df_long,
+  gg = plot_single_feature(spike_in_peptides, df_long = df_long,
                           sample_annotation = sample_annotation,
                           order_col = order_col,
                           sample_id_col = sample_id_col,
@@ -225,13 +225,13 @@ plot_spike_in_protein <- function(df_long, sample_annotation,
 #'
 #' Creates a iRT facetted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_peptide_trend}}. Additionally, the resulting plot can also
+#' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
-#' @inheritParams plot_peptide_trend
+#' @inheritParams plot_single_feature
 #' @param irt_pattern substring used to identify irts proteins in the column
 #'   'ProteinName'
-#' @param ... additional arguments to \code{\link{plot_peptide_trend}} function
+#' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{irt_pattern} containing proteins and (optionally) by \code{batch_col}
@@ -241,7 +241,7 @@ plot_spike_in_protein <- function(df_long, sample_annotation,
 #' @export
 #'
 #' @examples
-plot_iRT_trend <- function(df_long, sample_annotation,
+plot_iRT <- function(df_long, sample_annotation,
                            peptide_annotation = NULL,
                            protein_col = 'ProteinName',
                            order_col = 'order',
@@ -263,7 +263,7 @@ plot_iRT_trend <- function(df_long, sample_annotation,
   iRT_peptides = df_long %>%
     filter(grepl(irt_pattern, !!sym(protein_col))) %>%
     pull(feature_id_col)  %>% unique()
-  gg = plot_peptide_trend(iRT_peptides, df_long, sample_annotation,
+  gg = plot_single_feature(iRT_peptides, df_long, sample_annotation,
                           order_col = order_col,
                           sample_id_col = sample_id_col,
                           batch_col = batch_col,
@@ -281,7 +281,7 @@ plot_iRT_trend <- function(df_long, sample_annotation,
 #' Plot Intensity of a few representative peptides for each step of the analysis
 #' including the fitting curve
 #'
-#' @inheritParams plot_peptide_trend
+#' @inheritParams plot_single_feature
 #' @param pep_name name of the peptide for diagnostic profiling
 #' @param data_df_all_steps data frame, similar to \code{df_long}
 #'   \link{proBatch},  where each row is a single feature in a single sample, at
@@ -322,7 +322,7 @@ plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
     warning("Visualisation of individual features can be suboptimal,
             consider exploring no more than 5 features at a time")
   }
-  gg = plot_peptide_trend(pep_name, df_long = data_df_all_steps,
+  gg = plot_single_feature(pep_name, df_long = data_df_all_steps,
                           sample_annotation = sample_annotation,
                           order_col = order_col,
                           sample_id_col = sample_id_col,

@@ -26,7 +26,7 @@ cut_into_groups <- function(vect, groups, quantile = T){
 #' @export
 #'
 #' @examples
-sample_random_peptides <- function(proteome, seed = 1, pep_per_group = 3,
+pick_random_peptides <- function(proteome, seed = 1, pep_per_group = 3,
                                    groups_RT = 10, groups_intensity = 5){
   summarized_proteome = proteome %>%
     filter(m_score < 1) %>%
