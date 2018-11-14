@@ -26,7 +26,7 @@ from base R for details}
 \value{
 sample annotation file with column names as 'new_time_column' with
   POSIX-formatted date & \code{order_col} used in some diagnostic plots (e.g.
-  \code{\link{plot_iRTs}}, \code{\link{plot_sample_mean}})
+  \code{\link{plot_iRT}}, \code{\link{plot_sample_mean}})
 }
 \description{
 Converts date/time columns fo sample_annotation to POSIXct format and
