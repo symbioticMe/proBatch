@@ -24,6 +24,6 @@ peptide_summary =
 
 }
 \seealso{
-\code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_corrplot_protein}},
-\code{\link{plot_within_prot_distribution}}
+\code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}},
+\code{\link{plot_within_prot_corr_distribution}}
 }
