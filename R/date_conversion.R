@@ -50,7 +50,7 @@ dates_to_posix <- function(sample_annotation,
 #'
 #' @return sample annotation file with column names as 'new_time_column' with
 #'   POSIX-formatted date & \code{order_col} used in some diagnostic plots (e.g.
-#'   \code{\link{plot_iRTs}}, \code{\link{plot_sample_mean}})
+#'   \code{\link{plot_iRT}}, \code{\link{plot_sample_mean}})
 #'
 #' @export
 #'
