@@ -2,14 +2,14 @@
 
 ## General Overview
 
-The proBatch package contains functions for diagnosing and removing batch effects and other  sources of technical variation from high-thoughput experiments. Altough the package hass primarily been developed with DIA (SWATH) proteomics data in mind, it should also be applicable to most of omic data with minor adaptations.
+The proBatch package contains functions for diagnosing and removing batch effects and other unwanted technical variation from high-thoughput experiments. Although the package has primarily been developed for DIA (SWATH) proteomics data, it should also be applicable to most omic data with minor adaptations.
     
 As discussed in the corresponding vignettes, the diagnostic part of the package can be broadly divided in:
 
 1. Proteome-wide and 
-2. Protein-specific functions
+2. Feature-level functions
 
-In addition to the diagnostic functions we provide a few convenience wrappers for common batch-effect removal approaches like ComBat and mean/median centering. Furthermore, the package includes non-linear fitting based approaches to deal with complex, MS-specific signal drifts.
+In addition to the diagnostic functions we provide a few convenient wrappers for common batch-effect removal approaches such as ComBat and median centering. Furthermore, the package includes non-linear fitting based approaches to deal with complex, mass spectrometry-specific signal drifts.
 
 ## Installing
 
