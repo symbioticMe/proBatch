@@ -5,7 +5,8 @@
 \title{Convert data/time to POSIXct}
 \usage{
 dates_to_posix(sample_annotation, time_column = c("RunDate", "RunTime"),
-  new_time_column = NULL, dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"))
+  new_time_column = "DateTime", dateTimeFormat = c("\%b_\%d",
+  "\%H:\%M:\%S"))
 }
 \arguments{
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}

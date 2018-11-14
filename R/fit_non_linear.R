@@ -1,12 +1,14 @@
 #' Fit a non-linear trend
 #'
-#' @param dataDF
+#' @param dataDF data frame containing response variable e.g. samples in order and explanatory 
+#'   variable e.g. measurment
 #' @param batch.size the total number of samples in the batch to compute for percentage threshold 
 #' @param response.var the name of the column in dataDF with the response variable
 #' @param expl.var the name of the column in dataDF with the explanatory variable
 #' @param noFitRequants (logical) whether to fit requanted values
 #' @param fitFunc function to use for the fit (`loess_regression`)
-#' @param with_df
+#' @param with_df logical, whether to specify span by enp.target using approximately equivalent 
+#'   number of parameters
 #' @param loess.span the parameter α which controls the degree of smoothing for loess
 #' @param abs.threshold the absolute threshold to filter data for curve fitting 
 #' @param pct.threshold the percentage threshold to filter data for curve fitting 
@@ -17,7 +19,6 @@
 #' @export
 #' @keywords internal
 
-# TODO: Document dataDF and with_df
 fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x',
                           noFitRequants = F, fitFunc = 'loess_regression',
                           with_df = F, loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.20, ...){

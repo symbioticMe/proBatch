@@ -9,7 +9,7 @@
 \title{Median normalization of the data (per batch median)}
 \usage{
 correct_medians_batch(df_long, sample_annotation = NULL,
-  sample_id_col = "FullRunName", batch_col = "MS_batch.final",
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
   feature_id_col = "peptide_group_label", measure_col = "Intensity")
 
 normalize_custom_fit(data_matrix, sample_annotation,
@@ -18,7 +18,7 @@ normalize_custom_fit(data_matrix, sample_annotation,
   sample_order_col = "order", fit_func = fit_nonlinear, ...)
 
 correct_with_ComBat(data_matrix, sample_annotation,
-  sample_id_col = "FullRunName", batch_col = "MS_batch.final",
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
   par.prior = TRUE)
 
 normalize_medians_global(df_long, sample_id_col = "FullRunName",
