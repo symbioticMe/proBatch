@@ -9,7 +9,13 @@
   \item{Peptide}{peptide group label ID, identical to `peptide_group_label` in `example_proteome`}
   \item{Gene}{HUGO gene ID}
   \item{ProteinName}{protein group name as specified in `example_proteome`}
-  ... other parameters determined by 'summarize_peptides' function
+  \item{RT_mean}{average retention time of the peptide}
+  \item{Int_mean}{average intensity of the peptide}
+  \item{rank_mean}{average rank of the peptide}
+  \item{numb_requants}{number of requants i.e. m-score = 2}
+  \item{mean_m_score}{average m-score of the peptide}
+  \item{median_m_score}{median m-score}
+  \item{median_good_m_score}{median of m-scores less than 1}
   }}
 \usage{
 example_peptide_annotation
