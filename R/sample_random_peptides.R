@@ -41,7 +41,6 @@ pick_random_peptides <- function(proteome, seed = 1, pep_per_group = 3,
 
   set.seed(seed)
   sampled_peptide_df = summarized_proteome %>%
-    #sample 3 peptides per each group
     sample_n(pep_per_group) %>%
     arrange(RT_average)
   sampled_peptide_df1 = sampled_peptide_df %>%

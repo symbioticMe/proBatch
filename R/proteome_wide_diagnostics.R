@@ -528,7 +528,6 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                                                    ifelse(label %in% biological_covariates, 'biological',
                                                           ifelse(label %in% c(label_of_small, 'resid'), 'residual', 'biol:techn'))))
 
-  #ToDo: create a ranking function for PVCA items, so that these are plotted by the following logic and not by alphabetical order
   pvca_res = pvca_res %>%
     arrange(desc(weights)) %>%
     arrange(label == label_of_small) %>%
