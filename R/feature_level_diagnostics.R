@@ -42,7 +42,6 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
   if (!all(names(sample_annotation) %in% names(df_long))){
     sample_annotation = sample_annotation %>%
       arrange(!!sym(order_col))
-    #remove annotation columns, except the sample_id_col
     common_cols = intersect(names(sample_annotation), names(plot_df))
     cols_to_remove = setdiff(common_cols, sample_id_col)
     plot_df = plot_df %>%
@@ -289,8 +288,9 @@ plot_iRT <- function(df_long, sample_annotation,
 #'   normalization) thus it has minimally the following columns:
 #'   \code{sample_id_col}, \code{feature_id_col}, \code{measure_col}, and
 #'   \code{fit_step}, but usually also \code{m_score}
-#' @param fit_df
-#' @param fit_value_var
+#' @param fit_df data frame typically output generated from nonlinear curve 
+#'   fitting by \code{normalize_custom_fit}
+#' @param fit_value_var column denoting intensity values, typically fitted to curve
 #' @param geom for the intensity \code{measure_col} profile:
 #'
 #' @return \code{ggplot}-class plot with minimally two facets (before and after
@@ -302,7 +302,6 @@ plot_iRT <- function(df_long, sample_annotation,
 #' @export
 #'
 
-# TODO: Add descriptions of fit_df and fit_value_var
 plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
                                     sample_annotation,
                                     fit_df,
