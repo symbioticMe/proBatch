@@ -19,7 +19,7 @@
 #'   \item{ProteinPrepDate}{date of protein preparation - technical covariate}
 #'   ...
 #' }
-"example_sample_annotation1"
+"example_sample_annotation"
 
 #' Example protein data
 #'
