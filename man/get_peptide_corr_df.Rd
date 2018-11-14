@@ -8,7 +8,13 @@ get_peptide_corr_df(peptide_cor, peptide_annotation,
   protein_col = "ProteinName", feature_id_col = "peptide_group_label")
 }
 \arguments{
-\item{feature_id_col}{}
+\item{peptide_cor}{peptide correlation matrix (square)}
+
+\item{peptide_annotation}{df with petpides and their corresponding proteins}
+
+\item{protein_col}{the column name in \code{peptide_annotation} with protein names}
+
+\item{feature_id_col}{column in \code{peptide_annotation} that captures peptide names are found}
 }
 \description{
 Transform square correlation matrix into long data frame of correlations

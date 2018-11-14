@@ -38,7 +38,7 @@
 #' @seealso \code{\link[ggplot2]{ggplot}}
 #' @name plot_sample_means_or_boxplots
 
-#' @name plot_sample_means_or_boxplots
+#' @name plot_sample_mean_or_boxplot
 #'
 #' @export
 #'
@@ -60,6 +60,9 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                       order_temp_col = 1:length(sample_average),
                       sample_id_col = colnames(data_matrix))
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
+
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_ave[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   df_ave = df_ave %>%
     merge(sample_annotation, by = sample_id_col)
   
@@ -142,12 +145,12 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 }
 
 
-#' @name plot_sample_means_or_boxplots
+#' @name plot_sample_mean_or_boxplot
 #'
 #' @export
 #'
 #' @examples
-plot_boxplots <- function(df_long, sample_annotation = NULL,
+plot_boxplot <- function(df_long, sample_annotation = NULL,
                        sample_id_col = 'FullRunName',
                        measure_col = 'Intensity',
                        order_col = 'order',
@@ -157,13 +160,15 @@ plot_boxplots <- function(df_long, sample_annotation = NULL,
                        theme = 'classic',
                        plot_title = NULL, order_per_facet = F){
   
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   
   if (!all(c(batch_col, sample_id_col) %in% names(df_long))){
     if (!is.null(sample_annotation)){
       df_long = df_long %>% merge(sample_annotation,
                                             by = sample_id_col)
       if(is.numeric(df_long[[batch_col]])){
-        #df_long[batch_col] <- lapply(df_long[batch_col] , factor)
+        df_long[,batch_col] <- as.factor(df_long[, batch_col])
       }
     } else {
       if (color_by_batch){
@@ -250,46 +255,6 @@ plot_boxplots <- function(df_long, sample_annotation = NULL,
   return(gg)
 }
 
-#' Plot boxplots to compare various data normalization steps/approaches WARNING:
-#' extremely slow for big dataframes
-#'
-#' @param list_of_dfs list of data frames of format, specified in `plot_boxplot`
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
-#' @param batch_col column in `sample_annotation` that should be used for
-#'   batch comparison
-#' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or
-#'   `qNorm_ComBat`). Useful if consecutive steps are compared in plots. Note
-#'   that in plots these are usually ordered alphabetically, so it's worth
-#'   naming with numbers, e.g. `1_raw`, `2_quantile`
-
-#'
-#' @return ggplot object
-#' @export
-#'
-#' @examples
-#' @seealso \code{\link{plot_boxplot}}
-boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_col,
-                              step = NULL){
-  if(`*`(dim(list_of_dfs[[1]])[1], dim(list_of_dfs[[1]])[2]) * length(list_of_dfs) > 5*10^5){
-    warning('Data matrices are huge, be patient, this might take a while (or crash)')
-  }
-  add_processing_step <- function(i, list_of_dfs, steps) {
-    df = list_of_dfs[[i]]
-    df$step = steps[i]
-    list_of_dfs[[i]] = df
-  }
-  if (!is.null(step) |
-      (any(sapply(list_of_dfs, function(df) (!'step' %in% names(df)))))){
-    list_of_dfs = lapply(1:length(list_of_dfs), add_processing_step, list_of_dfs, step)
-  }
-
-  joined_proteome = do.call(rbind, list_of_dfs)
-  gg = gg_boxplot(joined_proteome, sample_annotation, batch_col) +
-    facet_grid(.~step)
-  return(gg)
-}
 
 #' cluster the data matrix to visually inspect which confounder dominates
 #'
@@ -312,7 +277,7 @@ boxplot_all_steps <- function(list_of_dfs, sample_annotation, batch_col,
 #' @examples
 #' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
 #'   \code{\link[WGCNA]{plotDendroAndColors}}
-plot_sample_clustering <- function(data_matrix, color_df,
+plot_hierarchical_clustering  <- function(data_matrix, color_df,
                             distance = "euclidean",
                             agglomeration = 'complete',
                             label_samples = T, label_font = .2,
@@ -354,6 +319,8 @@ plot_sample_clustering <- function(data_matrix, color_df,
 #'   substituted with -1 (and colored with black)
 #' @param cluster_rows boolean value determining if rows should be clustered
 #' @param cluster_cols boolean value determining if columns should be clustered
+#' @param sample_annotation_col biological or technical factors to be annotated in heatmap columns
+#' @param sample_annotation_row biological or technical factors to be annotated in heatmap rows 
 #' @param annotation_color_list list specifying colors for columns (samples).
 #'   Best created by `sample_annotation_to_colors`
 #' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
@@ -362,39 +329,71 @@ plot_sample_clustering <- function(data_matrix, color_df,
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
-
+#' 
 #' @return object returned by \code{link[pheatmap]{pheatmap}}
 #' @export
 #'
 #' @examples
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
-plot_heatmap <- function(data_matrix, sample_annotation = NULL, fill_the_missing = T,
-                         cluster_rows = T, cluster_cols = F,
+plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 'FullRunName',
+                         sample_annotation_col = NULL, 
+                         sample_annotation_row = NULL, 
+                         fill_the_missing = T, cluster_rows = T, cluster_cols = F,
                          annotation_color_list = NA,
                          heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100),
                          color_for_missing = 'black',
-                         filename = NULL, plot_title = NA,
+                         filename = NA, plot_title = NA,
                          ...){
   if(fill_the_missing) {
     data_matrix[is.na(data_matrix)] = 0
     warning('substituting missing values with 0, this might affect the clustering!')
     heatmap_color = c(color_for_missing, heatmap_color)
   }
-
+  
   if (is.null(sample_annotation)){
-    #for consistency: other functions rely on NULL
-    sample_annotation = NA
+    annotation_col = NA
+    annotation_row = NA
   }
+  
+  if(!is.null(sample_annotation)){
+    if(!is.null(sample_annotation_col) && is.null(sample_annotation_row)){
+      annotation_row = NA
+      annotation_col = sample_annotation %>% 
+        select(one_of(sample_id_col, sample_annotation_col)) %>%
+        remove_rownames %>% 
+        column_to_rownames(var=sample_id_col)  
+      
+    }
+    if(!is.null(sample_annotation_row) && is.null(sample_annotatation_col)){
+      annotation_col = NA
+      annotation_row = sample_annotation %>% 
+        select(one_of(sample_id_col, sample_annotation_row)) %>%
+        remove_rownames %>% 
+        column_to_rownames(var=sample_id_col)
+    }
+    if(is.null(sample_annotation_col) && is.null(sample_annotation_row)){
+      warning("Sample annotation columns and rows are not specified for heatmap.")
+      annotation_col = sample_annotation %>% 
+        remove_rownames %>% 
+        column_to_rownames(var=sample_id_col)
+    }
+  }
+  
   p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
                 color = heatmap_color,
-                annotation_col = sample_annotation, annotation_colors = annotation_color_list,
+                annotation_col = annotation_col, annotation_row = annotation_row, 
+                annotation_colors = annotation_color_list,
                 filename = filename, main = plot_title, ...)
   return(p)
 }
 
+
 calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
                  threshold_pca, threshold_var = Inf) {
 
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
   expr_set = Biobase::ExpressionSet(data_matrix[,rownames(sample_annotation)], covrts.annodf)
   pvcaAssess = pvca::pvcaBatchAssess (expr_set, factors_for_PVCA, threshold = threshold_pca)
@@ -456,7 +455,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #'
 #' @examples
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
-plot_pvca <- function(data_matrix, sample_annotation,
+plot_PVCA <- function(data_matrix, sample_annotation,
                       sample_id_col = 'FullRunName',
                       feature_id_col = 'peptide_group_label',
                       technical_covariates = c('MS_batch', 'instrument'),
@@ -467,6 +466,9 @@ plot_pvca <- function(data_matrix, sample_annotation,
                       theme = 'classic', plot_title = NULL){
   factors_for_PVCA = c(technical_covariates, biological_covariates)
 
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   sample_names = sample_annotation[[sample_id_col]]
   sample_annotation = sample_annotation %>% select(one_of(factors_for_PVCA)) %>%
     mutate_if(lubridate::is.POSIXct, as.numeric)
@@ -526,7 +528,6 @@ plot_pvca <- function(data_matrix, sample_annotation,
                                                    ifelse(label %in% biological_covariates, 'biological',
                                                           ifelse(label %in% c(label_of_small, 'resid'), 'residual', 'biol:techn'))))
 
-  #ToDo: create a ranking function for PVCA items, so that these are plotted by the following logic and not by alphabetical order
   pvca_res = pvca_res %>%
     arrange(desc(weights)) %>%
     arrange(label == label_of_small) %>%
@@ -606,6 +607,9 @@ plot_PCA <- function(data_matrix, sample_annotation,
                      theme = 'classic',
                      plot_title = NULL){
 
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   if(!is.null(feature_id_col)){
     if(feature_id_col %in% colnames(data_matrix)){
       if(is.data.frame(data_matrix)){
