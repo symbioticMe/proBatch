@@ -36,8 +36,6 @@
 #' @return ggplot2 class object. Thus, all aesthetics can be overriden
 #'
 #' @seealso \code{\link[ggplot2]{ggplot}}
-#' @name plot_sample_means_or_boxplots
-
 #' @name plot_sample_mean_or_boxplot
 #'
 #' @export
