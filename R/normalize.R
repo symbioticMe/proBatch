@@ -99,9 +99,10 @@ normalize <- function(data_matrix, normalizeFunc = "quantile", log = NULL){
   if(normalizeFunc == "quantile"){
     normalized_matrix = quantile_normalize(data_matrix)
   } else if(normalizeFunc == "medianCentering"){
-    df_long = matrix_to_long(matrix, feature_id_col = 'peptide_group_label',
+    df_long = matrix_to_long(data_matrix, feature_id_col = 'peptide_group_label',
                              measure_col = 'Intensity', sample_id_col = 'FullRunName')
-    normalized_matrix = normalize_medians_global(df_long, sample_id_col = 'FullRunName',  measure_col = 'Intensity')
+    normalized_df = normalize_sample_medians(df_long, sample_id_col = 'FullRunName',  measure_col = 'Intensity')
+    normalized_matrix = long_to_matrix(normalized_df)
   } else {
     stop("Only quantile and median centering normalization methods are available")
   }
