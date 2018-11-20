@@ -55,7 +55,8 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
                                  sample_id_col = 'FullRunName',
                                  measure_col = 'Intensity',
                                  sample_order_col = 'order',
-                                 fit_func = fit_nonlinear, ...){
+                                 fit_func = fit_nonlinear, 
+                                 loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.20, ...){
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
   sampleNames <- colnames(data_matrix)
