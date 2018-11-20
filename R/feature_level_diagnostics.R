@@ -282,12 +282,6 @@ plot_iRT <- function(df_long, sample_annotation,
 #'
 #' @inheritParams plot_single_feature
 #' @param pep_name name of the peptide for diagnostic profiling
-#' @param data_df_all_steps data frame, similar to \code{df_long}
-#'   \link{proBatch},  where each row is a single feature in a single sample, at
-#'   a certain step of the analysis (minimally raw and after linear
-#'   normalization) thus it has minimally the following columns:
-#'   \code{sample_id_col}, \code{feature_id_col}, \code{measure_col}, and
-#'   \code{fit_step}, but usually also \code{m_score}
 #' @param fit_df data frame typically output generated from nonlinear curve 
 #'   fitting by \code{normalize_custom_fit}
 #' @param fit_value_var column denoting intensity values, typically fitted to curve
@@ -302,62 +296,53 @@ plot_iRT <- function(df_long, sample_annotation,
 #' @export
 #'
 
-plot_with_fitting_curve <- function(pep_name, data_df_all_steps,
-                                    sample_annotation,
-                                    fit_df,
-                                    fit_value_var = 'fit', fit_step = '3_loess_fit',
-                                    order_col = 'order',
-                                    sample_id_col = 'FullRunName',
-                                    batch_col = 'MS_batch',
-                                    measure_col = 'Intensity',
-                                    feature_id_col = 'peptide_group_label',
-                                    geom = c('point', 'line'),
-                                    color_by_batch = F, facet_by_batch = F,
-                                    plot_title = sprintf("Fitting curve of %s peptide", pep_name), 
-                                    color_by_col = NULL, color_by_value = NULL,
-                                    theme = 'classic', vline_color = 'grey', ...){
-
+plot_with_fitting_curve <- function(pep_name, df_long,
+                        sample_annotation,
+                        fit_df,
+                        fit_value_var = 'fit', 
+                        order_col = 'order',
+                        sample_id_col = 'FullRunName',
+                        batch_col = 'MS_batch',
+                        measure_col = 'Intensity',
+                        feature_id_col = 'peptide_group_label',
+                        geom = c('point', 'line'),
+                        color_by_batch = F, facet_by_batch = F,
+                        plot_title = sprintf("Fitting curve of %s peptide", pep_name), 
+                        color_by_col = NULL, color_by_value = NULL,
+                        theme = 'classic', vline_color = 'grey', ...){
+  
   if(length(pep_name) > 10){
     warning("Visualisation of individual features can be suboptimal,
             consider exploring no more than 5 features at a time")
   }
   gg = plot_single_feature(pep_name, df_long = data_df_all_steps,
-                          sample_annotation = sample_annotation,
-                          order_col = order_col,
-                          sample_id_col = sample_id_col,
-                          batch_col = batch_col,
-                          measure_col = measure_col,
-                          feature_id_col = feature_id_col,
-                          plot_title = plot_title,
-                          facet_by_batch = facet_by_batch,
-                          color_by_col = color_by_col, 
-                          color_by_value = color_by_value,
-                          vline_color = vline_color, ...)
-  if(!("Step" %in% names(fit_df))){
-    fit_df$Step = fit_step
-    if (!(fit_step %in% data_df_all_steps$Step)){
-      stop('specify step for which the curve fit should be shown')
-    }
-  }
+                           sample_annotation = sample_annotation,
+                           order_col = order_col,
+                           sample_id_col = sample_id_col,
+                           batch_col = batch_col,
+                           measure_col = measure_col,
+                           feature_id_col = feature_id_col,
+                           plot_title = plot_title,
+                           facet_by_batch = facet_by_batch,
+                           color_by_col = color_by_col, 
+                           color_by_value = color_by_value,
+                           vline_color = vline_color, ...)
+  
   fit_df = fit_df %>%
     filter(UQ(sym(feature_id_col)) %in% pep_name) %>%
     merge(sample_annotation, by = c(sample_id_col, batch_col))
   if(identical(color_by_batch, FALSE)){
     gg = gg + geom_line(data = fit_df,
                         aes_string(y = fit_value_var, x = order_col, group = batch_col),
-                        color = 'red')+
-      facet_grid(as.formula(paste(c(feature_id_col, "~", 'Step'), collapse = ' ')),
-                 scales = 'free_y')
+                        color = 'red')
   } else {
     gg = gg + geom_line(data = fit_df,
                         aes_string(y = fit_value_var, x = order_col,
-                                   group = batch_col, color = batch_col), size = 1.25)+
-      facet_grid(as.formula(paste(c(feature_id_col, "~", 'Step'), collapse = ' ')),
-                 scales = 'free_y')
+                                   group = batch_col, color = batch_col), size = 1.25)
     if(length(color_by_batch) == length(unique(fit_df[[batch_col]]))){
       gg = gg + scale_color_manual(values = color_by_batch)
     }
   }
-
+  
   return(gg)
-}
+  }
