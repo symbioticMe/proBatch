@@ -6,8 +6,8 @@
 \usage{
 date_to_sample_order(sample_annotation, time_column = c("RunDate",
   "RunTime"), new_time_column = "DateTime",
-  dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"), order_col = "order",
-  instrument_col = "instrument")
+  dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"),
+  new_order_col = "order", instrument_col = "instrument")
 }
 \arguments{
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
@@ -25,7 +25,7 @@ from base R for details}
 }
 \value{
 sample annotation file with column names as 'new_time_column' with
-  POSIX-formatted date & \code{order_col} used in some diagnostic plots (e.g.
+  POSIX-formatted date & \code{new_order_col} used in some diagnostic plots (e.g.
   \code{\link{plot_iRT}}, \code{\link{plot_sample_mean}})
 }
 \description{
