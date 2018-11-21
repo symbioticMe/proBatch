@@ -4,12 +4,11 @@
 \alias{plot_with_fitting_curve}
 \title{Plot peptide measurements across multi-step analysis}
 \usage{
-plot_with_fitting_curve(pep_name, data_df_all_steps, sample_annotation,
-  fit_df, fit_value_var = "fit", fit_step = "3_loess_fit",
-  order_col = "order", sample_id_col = "FullRunName",
-  batch_col = "MS_batch", measure_col = "Intensity",
-  feature_id_col = "peptide_group_label", geom = c("point", "line"),
-  color_by_batch = F, facet_by_batch = F,
+plot_with_fitting_curve(pep_name, df_long, sample_annotation, fit_df,
+  fit_value_var = "fit", order_col = "order",
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
+  measure_col = "Intensity", feature_id_col = "peptide_group_label",
+  geom = c("point", "line"), color_by_batch = F, facet_by_batch = F,
   plot_title = sprintf("Fitting curve of \%s peptide", pep_name),
   color_by_col = NULL, color_by_value = NULL, theme = "classic",
   vline_color = "grey", ...)
@@ -17,12 +16,10 @@ plot_with_fitting_curve(pep_name, data_df_all_steps, sample_annotation,
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
 
-\item{data_df_all_steps}{data frame, similar to \code{df_long}
-\link{proBatch},  where each row is a single feature in a single sample, at
-a certain step of the analysis (minimally raw and after linear
-normalization) thus it has minimally the following columns:
-\code{sample_id_col}, \code{feature_id_col}, \code{measure_col}, and
-\code{fit_step}, but usually also \code{m_score}}
+\item{df_long}{data frame where each row is a single feature in a single
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+file)}
 
 \item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
