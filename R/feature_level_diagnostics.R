@@ -202,7 +202,7 @@ plot_spike_in <- function(df_long, sample_annotation,
   
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
-      merge(peptide_annotation, by = protein_col)
+      merge(peptide_annotation, by = feature_id_col)
   }
   spike_in_peptides = df_long %>%
     filter(grepl(spike_ins, !!sym(protein_col))) %>%
