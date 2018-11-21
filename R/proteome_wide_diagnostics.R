@@ -605,9 +605,6 @@ plot_PCA <- function(data_matrix, sample_annotation,
                      theme = 'classic',
                      plot_title = NULL){
 
-  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
-    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
-  
   if(!is.null(feature_id_col)){
     if(feature_id_col %in% colnames(data_matrix)){
       if(is.data.frame(data_matrix)){
