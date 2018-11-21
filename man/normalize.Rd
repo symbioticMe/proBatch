@@ -15,7 +15,8 @@ equalize_peptide_batch_medians(df_long, sample_annotation = NULL,
 normalize_custom_fit(data_matrix, sample_annotation,
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  sample_order_col = "order", fit_func = fit_nonlinear, ...)
+  sample_order_col = "order", fit_func = fit_nonlinear,
+  loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.2, ...)
 
 correct_with_ComBat(data_matrix, sample_annotation,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
