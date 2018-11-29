@@ -56,7 +56,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
                                  measure_col = 'Intensity',
                                  sample_order_col = 'order',
                                  fit_func = fit_nonlinear, 
-                                 loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.20, ...){
+                                 abs.threshold = 5, pct.threshold = 0.20, ...){
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
   sampleNames <- colnames(data_matrix)
@@ -72,7 +72,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
   
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
-
+  
   df_long = data_matrix %>%
     melt(id.vars = feature_id_col)
   names(df_long) = c(feature_id_col, sample_id_col, measure_col)
@@ -87,7 +87,8 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
     nest() %>%
     mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
-                      expl.var = sample_order_col, ...)) %>%
+                      expl.var = sample_order_col, 
+                      abs.threshold = abs.threshold, pct.threshold = pct.threshold, ...)) %>%
     unnest() %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     mutate(mean_fit = mean(fit)) %>%
@@ -95,7 +96,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     mutate_(Intensity_normalized = interp(~`+`(x, y),
                                           x = as.name('diff'),
                                           y = as.name(measure_col)))
-
+  
   fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
                                                     sample_id_col, batch_col)))
   
@@ -109,7 +110,6 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
   return(list(data_matrix = df_normalized_matrix,
               fit_df = fit_df))
 }
-
 
 #' Standardized input-output ComBat normalization ComBat allows users to adjust
 #' for batch effects in datasets where the batch covariate is known, using
@@ -167,7 +167,7 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                                 discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
                                 feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
                                 measure_col = 'Intensity',  sample_order_col = 'order', 
-                                loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.20, ...){
+                                abs.threshold = 5, pct.threshold = 0.20, ...){
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
   fit_list = normalize_custom_fit(data_matrix, sample_annotation = sample_annotation,
@@ -178,7 +178,6 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                                   sample_order_col = sample_order_col,
                                   fit_func = fit_nonlinear,
                                   fitFunc = fitFunc, 
-                                  loess.span = loess.span, 
                                   abs.threshold = abs.threshold, 
                                   pct.threshold = pct.threshold, ...)
   fit_matrix = fit_list$data_matrix
