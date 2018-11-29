@@ -44,7 +44,7 @@
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              sample_id_col = 'FullRunName',
                              order_col = 'order',
-                             batch_col = NULL,
+                             batch_col = "MS_batch",
                              facet_col = 'instrument',
                              color_by_batch = F, color_scheme = 'brewer',
                              theme = 'classic',
