@@ -315,7 +315,7 @@ plot_with_fitting_curve <- function(pep_name, df_long,
     warning("Visualisation of individual features can be suboptimal,
             consider exploring no more than 5 features at a time")
   }
-  gg = plot_single_feature(pep_name, df_long = data_df_all_steps,
+  gg = plot_single_feature(pep_name, df_long = df_long,
                            sample_annotation = sample_annotation,
                            order_col = order_col,
                            sample_id_col = sample_id_col,
