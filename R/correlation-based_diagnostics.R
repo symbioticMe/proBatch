@@ -257,7 +257,7 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                    repeated_samples = NULL,
                                    sample_id_col = 'FullRunName',
-                                   batch_col = 'batch',
+                                   batch_col = 'MS_batch',
                                    biospecimen_id_col = 'EarTag',
                                    plot_title = 'Correlation distribution',
                                    plot_param = 'batch_replicate'){
