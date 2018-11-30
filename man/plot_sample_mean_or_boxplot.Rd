@@ -9,17 +9,15 @@ running order available)}
 \usage{
 plot_sample_mean(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", order_col = "order",
-  batch_col = "MS_batch", facet_col = "instrument",
-  color_by_batch = F, color_scheme = "brewer", theme = "classic",
-  plot_title = NULL, order_per_facet = F, vline_color = "grey",
-  ylimits = NULL)
+  batch_col = "MS_batch", facet_col = NULL, color_by_batch = F,
+  color_scheme = "brewer", theme = "classic", plot_title = NULL,
+  order_per_facet = F, vline_color = "grey", ylimits = NULL)
 
 plot_boxplot(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", batch_col = "MS_batch",
-  facet_col = "instrument", color_by_batch = T,
-  color_scheme = "brewer", theme = "classic", plot_title = NULL,
-  order_per_facet = F)
+  order_col = "order", batch_col = "MS_batch", facet_col = NULL,
+  color_by_batch = T, color_scheme = "brewer", theme = "classic",
+  plot_title = NULL, order_per_facet = F)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
