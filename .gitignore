@@ -6,6 +6,6 @@
 .Ruserdata
 *.Rapp.history
 inst/doc
-vignettes/
+#vignettes/
 proBatch_marked_copy.pdf
 
