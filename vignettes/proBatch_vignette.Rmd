@@ -69,7 +69,7 @@ The pipeline, summarizing this workflow, is shown in Fig.1.
 knitr::include_graphics("Batch_effects_workflow_staircase.png")
 ```
 
-##Batch effects correction in the context of other steps of data analysis
+##Analysis of large-scale data: steps before and after batch correction
 
 We recommend users to follow this batch correction workflow to ensure all 
 measurements are comparable for downstream analysis. We provide step-by-step 
@@ -104,7 +104,9 @@ peptide transitions, and these abundances are critical for protein quantity infe
 However, we do recommend to correct the technical noise at the level, which is used
 to inter the proteins (thus, fragment-level for inference tools such as aLFQ or MSstats).
 
-# Loading data and preparing annotations
+# Preparation for the analysis
+## Loading/installing the dependencies
+
 ```{r,echo=T, results="hide"}
 # Dependencies required for installing proBatch package
 bioc_deps <- c("GO.db", "impute", "preprocessCore", "pvca","sva" )
@@ -113,6 +115,14 @@ cran_deps <- c("corrplot", "data.table", "ggfortify","lazyeval", "pheatmap", "re
 lapply(bioc_deps, require, character.only = TRUE)
 lapply(cran_deps, require, character.only = TRUE)
 ```
+
+If some of these dependencies are not installed, you will need to do that before running `proBatch`.
+```{r}
+source("https://bioconductor.org/biocLite.R")
+biocLite(bioc_deps) 
+install.packages(cran_deps)
+```
+
 
 ## Installing proBatch
 To install the proBatch package, the following commands can be executed in R:
@@ -125,40 +135,115 @@ install.packages("devtools")
 devtools::install_github("symbioticMe/proBatch")
 ```
 
-## Loading the data 
-The package typically requires three datasets: data matrix (protein/gene expression measurement), sample annotation.
+## Preparing the data for analysis
+###Format of the data
+To analyze an experiment for batch effects, three tables need to be loaded into environment:
 
-- **Measurement data**, either wide or long format: The minimal information to be included is peptide IDs (annotated `peptide_group_label` in `example_proteome` data), sample IDs (`FullRunName`) and measurements (`Intensity`). Please note that the peptide and sample IDs in the dataset should match with those in the peptide and sample annotation files respectively. 
-- **Peptide annotation**: Although required annotations vary from function to function, the typical minimum is peptide ID (`peptide_group_id`) and name of corresponding protein (`Gene`)
-- **Sample annotation**: sample ID (`FullRunName`), batch (`MS_batch`), chronological order of measurements (`order`) at minimum and relevant technical / biological covariates (e.g. `RunDate`, `RunTime`, `EarTag`, `Strain`, `Diet`,     `Sex`). 
+The package typically requires three datasets: 1) measurement table (data matrix), 
+2) sample annotation and 3) feature annotation table (optional). If you are familiar 
+with `Biobase` package, these correspond to 1) `assayData`, 2) joined `phenoData` and 
+`protocolData`, 3)`featureData`.
 
-Of note, our package contains function to denote order from RunDate and RunTime and generate peptide annotation file from OpenSWATH output (demonstrated in 2.3). 
+- **Measurement table (data matrix)**, either wide or long format data frame. In the 
+wide (matrix) format, referred in this vignette as `data_matrix`, rows represent 
+features (for proteomics, peptides/fragments) and columns represent samples. 
+In the long format, referred in this vignette as `df_long`, each row is a measurement 
+of a specific feature (peptide, fragment) in the specific sample, requires at least
+three columns: feature ID column, measurement (intensity) column and sample ID column.
 
-The example data included in the package is a reduced OpenSWATH output file generated from BXD mouse aging study. We selected this dataset for illustration, as the most complicated scenario for batch correction with both discrete and continuous drifts. In this study, liver proteome of mouse from BXD reference population have been profiled to identify proteome changes associated with age. The animals of each strain were subjected to Chow and High-Fat Diet and sacrificed at different time points. Samples were randomized with respect to biological covariates (age, diet, sex) and two samples were injected every 10-15 samples to control for signal consistency. Samples were digested in four batches. Due to deteriorating mass-spectra acquisition, data acquisition was interrupted for machine cleaning and tuning six times, resulting in 7 mass spectrometry batches. To allow evaluation of mass spectrometry batch effect, 10 samples profiled at the end of batch 3 were profiled again after machine tuning. In total, 371 samples were used for the analysis. 
+
+In this vignette, the essential columns have the following names:
+```{r}
+feature_id_col = 'peptide_group_label'
+measure_col = 'Intensity'
+sample_id_col = 'FullRunName'
+essential_columns = c(feature_id_col, measure_col, sample_id_col)
+```
+
+
+The names of the columns can be technology-specific. These column names are
+OpenSWATH tsv output format.
+
+In the package, we provide the function to convert from long to matrix format 
+(see section XXX "Utility functions").
+
+Note that sample IDs (column names in `data_matrix`) should match the values in 
+sample ID column in `sample_annotation` and feature ID column values should match 
+feature annotation table (here - `peptide_annotation`). 
+For OpenSWATH tsv file, which is a long format data frame, `peptide_annotation` 
+can be generated in the beginning of the analysis.
+
+- **Sample annotation** is a data frame, where one row corresponds to one sample (run/file), 
+and the columns contain information on biological and technical factors. Minimally,
+sample annotation has to contain sample ID column, at least one technical and 
+one biological factor column, and biological ID column (unique ID for the biological replicate, which is repeated for each technical replicate).
+In our example data, these columns are:
+1. `sample_id_col = 'FullRunName'`
+2. technical covariates:
+  a. `SacrificeDate` - date when tissues were extracted
+  b. `ProteinPrepDate` - date when samples were prepared
+  c. `RunDate` (and `RunTime`, if available) - will be used to determine run order
+  d. `MS_batch` - number of MS batches (in this case, sets of runs between machine cleaning)
+3. biological covatiates:
+  a. `Strain`
+  b. `Diet`
+  c. `Sex`
+4. `biospecimen_id_col = "EarTag"`
+'
+Thus, technical and biological factors are:
+```{r}
+technical_covariates = c('MS_batch', 'digestion_batch', 'RunDate', 'RunTime')
+biological_covariates = c('Strain', 'Diet', 'Sex', 'Age_Days')
+biospecimen_id_col = "EarTag"
+```
+
+
+In the example dataset, you will also find `order` column, which is, however, best
+inferred from the run date/time with the corresponding function (see Utility functions below).
+
+- **Feature (peptide) annotation**: is a dataframe, where one row corresponds to 
+one feature (in MS proteomics - peptide or fragment), and the columns are names of
+proteins and corresponding genes. Thus, the minimum is feature ID (`peptide_group_id`) 
+and name of corresponding protein (in this vignette, we use `Gene` name).
+
+### Load example data
+
+The `proBatch` package can be applied to any dataset, for which intensity matrix and 
+sample annotation, althogh the package was primarily designed with proteomic data in mind,
+and thoroughly tested on SWATH data. Thus, as and example data we include a reduced
+SWATH-MS measurement file, generated from BXD mouse aging study. In this study, liver proteome of mouse from BXD reference population have been profiled to identify proteome changes associated with age. The animals of each strain were subjected to Chow and High-Fat Diet and sacrificed at different age (age factor is excluded from the example data as 
+age-related differences are in the focus of unpublished manuscript). 
+
+This dataset has a few features, that make it a good illustrative example:
+1. This is a large dataset of 371 samples, that was affected by multiple technical factors, described above in `sample_annotation` subsection. Specifically, 7 MS batches drive the similarity of the samples.
+2. The technical factors bias the data in at least two ways: discrete shifts affect 
+different peptides in a batch-specific way, and MS drift, that introduces continous bias
+associated with sample running order. We will illustrate, how such biases can be corrected.
+3. Replicate structure: two animals were injected every 10-15 samples. Additionally,
+several samples were repeated back-to-back in the end and in the beginning of two consecutive batches. This replication scheme allows to evaluate coefficient of variation and is highly beneficial for assessment of sample correlation.
+
 
 The example SWATH data and annotation files can be loaded from the package with the function `data()`. 	
 ```{r, fig.show='hold'}
 library(proBatch)
 data("example_proteome", "example_sample_annotation", "example_peptide_annotation", 
      package = "proBatch")
-
-sample_annotation <- example_sample_annotation
-peptide_annotation <- example_peptide_annotation
 ```
 
-## Prepare peptide and sample annotations 
-If you have peptide and sample annotations ready, you can skip this section. 
+### Prepare sample and peptide annotations 
+Before you skip this section, read whether you need the enhanced functionality that
+`proBatch` provides for preparing the annotation of samples and peptides.
 
-To facilitate the preparation of peptide/ sample annotation, we provide a few utility functions. From OpenSWATH ouput, you can generate peptide annotation using `create_peptide_annotation()` by denoting peptide ID in `feature_id_col` and annotation columns in `annotation_col`. 
-```{r, fig.show='hold'}
-generated_peptide_annotation <- create_peptide_annotation(example_proteome, 
-                                        feature_id_col = 'peptide_group_label',
-                                        annotation_col = c('RT', 'Intensity', "ProteinName"))
-```
+We provide a few utility functions to facilitate the preparation of sample and peptide annotation. 
 
-To facilitate specifying the order of samples by MS runs, we provide function to infer sample order by comparing date and time that the measurements were made. You can specify the columns illustrating date and time in `time_column` and their formats in `dateTimeFormat`.  
+#### Define the order of samples from running date and time
+In proteomics, measurement of samples on after another might introduce order-related effects.
+To facilitate the examination of such effect, it is necessary to define an order 
+column in sample annotation. Using `date_to_sample_order` function one can infer sample order by from date and time of the measurements. 
+
+You can specify the columns illustrating date and time in `time_column` and their formats in `dateTimeFormat` (see `POSIX` date format for reference).  
 ```{r, fig.show='hold'}
-generated_sample_annotation <- date_to_sample_order (sample_annotation,
+generated_sample_annotation <- date_to_sample_order(example_sample_annotation,
                                           time_column = c('RunDate','RunTime'),
                                           new_time_column = 'generated_DateTime',
                                           dateTimeFormat = c("%b_%d", "%H:%M:%S"),
