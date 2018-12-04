@@ -1,0 +1,433 @@
+---
+title: "Data normalisation and batch correction"
+author: "Jelena Čuklina"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    fig_width: 8
+    fig_height: 6
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette summarises the key steps for data batch effect diagnostics and correction using `{proBatch}` package.
+
+Since in most cases both data table and sample annotation file require some tuning, 
+we advise to go through 'sample_annotation_preparation' and 'proteome_cleaning' vignettes first.
+
+Here we will complete the following:
+1. Run diagnostics before that helps to understand if there are batch effect and 
+what type of batch effects it is;
+2. Normalize the data (correct for the batch effects).
+3. Run the diagnostics again to see how the data changed.
+
+```{r}
+library(proBatch)
+```
+the vignette heavily uses `tidyverse` (also the package), so we load it also
+```{r}
+library(tidyverse)
+```
+
+## Configure the run: specify the columns as they are named (or need to be named) in your dataframes
+```{r define the configurations}
+feature_id_column = 'peptide_group_label'
+measure_column = 'Intensity'
+sample_id_column = 'FullRunName'
+```
+
+Load the sample annotation. Minimally, this is expected to contain:
+
+1. `sample_id_column` - absolutely unique identifier of experimental file
+
+2. biological identifier (can be repeated if biological replicates are available)
+
+3. biological covatiates, in our case these will be:
+
+  a. `Strain`
+
+  b. `Diet`
+
+  c. `Sex`
+
+  d. `Age_Days`
+
+4. Technical covariates, in this set common for MS run
+
+  a. `SacrificeDate` - date when tissues were extracted
+
+  b. `ProteinPrepDate` - date when samples were prepared
+
+  c. `digestion_batch` - in this case, derived from the previous one, but could be a person who prepared the sample (also multiple variables describing changes in the sample preparation reagents, etc can be reflected)
+
+  d. `RunDate` (and `RunTime`, if available) - will be used to determine run order
+
+  e. `MS_batch` - number of MS batches, sometimes can be inferred from `RunDateTime`, as shown below
+
+  f. in future, this package will also factor in the instrument. In this case, all samples were run on the same instrument
+```{r sample_annotation}
+data("example_sample_annotation")
+biological_covariates = c('Strain', 'Diet', 'Sex', 'Age_Days')
+technical_covariates = c('RunDate', 'RunTime', 'SacrificeDate','ProteinPrepDate')
+biospecimen_id_col = 'EarTag'
+sample_id_column = 'FullRunName'
+```
+Check the color scheme:
+```{r check_color_scheme}
+  nrow_prev = floor(sqrt(length(color_list)))
+par(mfrow = c(nrow_prev, ceiling(length(color_list)/nrow_prev)),
+     oma = c(5,4,1,1) + 0.1,
+     mar = c(.51,.51,.51,.51) + 0.1)
+for(i in 1:length(color_list)) {scales::show_col(color_list[[i]]); title(main = names(color_list[i]))}
+```
+
+Adjust, if necessary:
+```{r adjust_colors}
+names_sex = names(color_list$Sex)
+color_list$Sex = c('pink', 'darkblue')
+names(color_list$Sex) = names_sex
+names_MS_batch = names(color_list$MS_batch)
+color_list$MS_batch = scales::brewer_pal(type = 'qual', palette = 'Dark2')(length(color_list$MS_batch))
+#Don't forget to rename (otherwise pheatmap won't work!)
+names(color_list$MS_batch) <- names_MS_batch
+```
+
+```{r check_colors_again}
+  nrow_prev = floor(sqrt(length(color_list)))
+par(mfrow = c(nrow_prev, ceiling(length(color_list)/nrow_prev)),
+     oma = c(1,1,.51,1) + 0.1,
+     mar = c(.51,.51,.51,.51) + 0.1)
+for(i in 1:length(color_list)) {scales::show_col(color_list[[i]]); title(main = names(color_list[i]))}
+```
+
+1. First, we need to prepare colors, so that they are the same across the plots:
+```{r create_colors}
+columns_for_plotting = c("Strain", "Diet","Sex","Age_Days",
+                         "MS_batch_relaxed", "MS_batch", 
+                         "RunDateTime", "ProteinPrepDate", "SacrificeDate")
+annotation_for_plotting = sample_annotation_to_colors(sample_annotation, 
+                                         columns_for_plotting = columns_for_plotting,
+                                        sample_id_column = 'FullRunName',
+                                        #if a certain "numeric" column like prep date is actually a factor, specify it here
+                                        factor_columns = "ProteinPrepDate", 
+                                        #and the other way around, this is still in development
+                                        not_factor_columns = "Age_Days", 
+                                        #if you have >100 samples, you might want to merge 'singletons' to see the repeated ones
+                                        rare_categories_to_other = T, 
+                                        numerics_to_log = F)
+color_list = annotation_for_plotting$list_of_colors
+df_for_annotation = annotation_for_plotting$sample_annotation
+```
+
+
+To see why it matters, let's load the proteome (cleaned as described in {proteome_cleaning} vignette)
+Load the protome
+```{r load_proteome}
+data("example_proteome")
+#TODO:
+#data('clean_proteome')
+```
+
+Few things should be checked first:
+1. Average signal intensity vs sample injection order, individually for each instrument
+2. Boxplots to examine the differences in the distribution 
+3. Sample heatmap (with or without clustering, in the latter case, with different order)
+4. iRT peptide and/or spike-in patterns
+
+#1. Plot average signal intensity
+```{r plot_mean}
+plot_sample_mean(log_transformed_proteome, sample_annotation,
+                             sample_id_col = 'FullRunName',
+                             order_column = 'RunDateTime',
+                             batch_column = NULL,
+                             color_by_batch = F, theme = 'classic',
+                             title = NULL, color_scheme = 'brewer')
+```
+
+As the previous graph suggests, there are batch effects between the machine cleaning.
+Even if you don't have access to the machine cleaning procedures, but only the timestamps of the files, these can still be inferred (see the {sample_annotatation_preparation} vignette)
+
+
+
+
+
+
+
+```{r plot_heatmap, fig.width=15, fig.height=20}
+library(pheatmap)
+test = log_transformed_proteome
+test[is.na(test)] = 0
+pheatmap(test, cluster_rows = F, cluster_cols = F, 
+         color = c('black', colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100)), 
+         annotation_col = df_for_annotation, annotation_colors = color_list, 
+         show_rownames = F, show_colnames = F)
+
+```
+Repeat heatmap with requants removed:
+Remove the requant values (values with m_score of 2)
+```{r}
+example_prot_no_requants = example_proteome %>% filter(m_score <= 1)
+```
+
+```{r}
+proteome_matrix_no_requants = convert_to_matrix(example_prot_no_requants,
+                                    feature_id_column = 'peptide_group_label',
+                                    measure_column = 'Intensity',
+                                    sample_id_column = 'FullRunName')
+
+log_transformed_proteome_n_rqnts = log2(proteome_matrix_no_requants +1)
+```
+
+```{r plot_heatmap_2, fig.width=15, fig.height=20}
+test_nrqnt = log_transformed_proteome_n_rqnts
+test_nrqnt[is.na(test_nrqnt)] = 0
+pheatmap(test_nrqnt, cluster_cols = F, 
+         color = c('black', colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100)), 
+         annotation_col = df_for_annotation, annotation_colors = color_list, 
+         show_rownames = F, show_colnames = F, main = 'no requants')
+```
+
+Repeat the signal intensity colored by batch:
+```{r}
+plot_sample_mean(log_transformed_proteome, sample_annotation,
+                             sample_id_col = 'FullRunName',
+                             order_column = 'RunDateTime',
+                             batch_column = 'MS_batch_relaxed',
+                             color_by_batch = T, theme = 'classic',
+                             title = NULL, color_scheme = color_list[['MS_batch_relaxed']])
+```
+
+```{r}
+plot_sample_mean(log_transformed_proteome, sample_annotation,
+                             sample_id_col = 'FullRunName',
+                             order_column = 'RunDateTime',
+                             batch_column = batch_column,
+                             color_by_batch = T, theme = 'classic',
+                             title = NULL, color_scheme = color_list[['MS_batch']])
+```
+Now let's clean the data: 
+we allow not more than 30% missing values per batch (`threshold_batch`) and not more than
+50% of missing values total (`threshold_global`). 
+More filters of this kind see in a package `SWATH2stats`
+```{r}
+print('number of peptides before cleaning')
+print(nrow(example_proteome))
+proteome_clean = clean_requants(example_proteome, sample_annotation,
+                                batch_column = 'MS_batch',
+                                feature_id_column = 'peptide_group_label',
+                                threshold_batch = .3, threshold_global = .5)
+print('number of peptides after cleaning')
+print(nrow(proteome_clean))
+```
+
+#as ComBat will choke if there are peptides missing in the whole batch, we remove them now
+```{r}
+proteome_final = remove_peptides_with_missing_batch(proteome_clean,
+                                               batch_column = 'MS_batch',
+                                               feature_id_column = 'peptide_group_label')
+print('number of peptides after missing batch removed peptides')
+print(nrow(proteome_final))
+```
+
+Now let's convert the matrix for final use:
+```{r}
+proteome_matrix = convert_to_matrix(proteome_clean,
+                                    feature_id_column = 'peptide_group_label',
+                                    measure_column = 'Intensity',
+                                    sample_id_column = 'FullRunName')
+```
+
+### Normalization:
+1. Log-transform the data:
+```{r}
+log_transformed_proteome = log2(proteome_matrix +1)
+```
+
+```{r plot_heatmap_3, fig.width=15, fig.height=20}
+test_cleaned = log_transformed_proteome
+test_cleaned[is.na(test_cleaned)] = 0
+pheatmap(test_cleaned, cluster_rows = F, cluster_cols = F, 
+         color = c('black', colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100)), 
+         annotation_col = df_for_annotation, annotation_colors = color_list, 
+         show_rownames = F, show_colnames = F, main = 'no requants, cleaned in each batch')
+```
+
+#as ComBat will choke if there are peptides missing in the whole batch, we remove them now
+```{r}
+proteome_final = remove_peptides_with_missing_batch(proteome_clean,
+                                               batch_column = 'MS_batch',
+                                               feature_id_column = 'peptide_group_label')
+print('number of peptides after missing batch removed peptides')
+print(nrow(proteome_final))
+```
+
+Now let's convert the matrix for final use:
+```{r}
+proteome_matrix = convert_to_matrix(proteome_final,
+                                    feature_id_column = 'peptide_group_label',
+                                    measure_column = 'Intensity',
+                                    sample_id_column = 'FullRunName')
+log_transformed_proteome = log2(proteome_matrix +1)
+```
+
+```{r plot_heatmap_4, fig.width=15, fig.height=20}
+test_final = log_transformed_proteome
+test_final[is.na(test_final)] = 0
+pheatmap(test_final, cluster_cols = F, 
+         color = c('black', colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100)), 
+         annotation_col = df_for_annotation, annotation_colors = color_list, 
+         show_rownames = F, show_colnames = F, main = 'no requants, cleaned across batches')
+```
+
+```{r boxplot, fig.width=15, fig.height=20}
+gg_boxplot(proteome_final %>% mutate(logInt = log2(Intensity +1)), df_for_annotation, batch_column = 'MS_batch', measure_col = 'logInt', order_column = 'RunDateTime', fill_batch = T)
+```
+
+
+### Normalization:
+1. Log-transform the data:
+```{r}
+log_transformed_proteome = log2(proteome_matrix +1)
+```
+
+```{r}
+q_norm_proteome = quantile_normalize(log_transformed_proteome)
+```
+
+We can check the boxplot after the quantile, quite obvious it looks well
+```{r}
+q_norm_long = matrix_to_long(q_norm_proteome, sample_annotation, measure_col = 'logInt', step = 'quantile normalized')
+gg_boxplot(q_norm_long, df_for_annotation, batch_column = 'MS_batch', measure_col = 'logInt', order_column = 'RunDateTime', fill_batch = T)
+```
+
+Also, the heatmap
+```{r}
+test_q_norm = q_norm_proteome
+test_q_norm[is.na(test_q_norm)] = 0
+pheatmap(test_q_norm, cluster_cols = F, 
+         color = c('black', colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100)), 
+         annotation_col = df_for_annotation, annotation_colors = color_list, 
+         show_rownames = F, show_colnames = F, main = 'heatmap after quantile normalization')
+```
+
+Let's check iRT peptides:
+```{r}
+data("example_peptide_annotation")
+plot_iRTs(q_norm_long %>% merge(example_peptide_annotation, by.x = feature_id_column, by.y = 'Peptide'), sample_annotation, batch_column = batch_column, measurement.col = 'logInt', order_column = 'order')
+```
+
+*Caution*: for non-linear fit, using order rather than physical run time is recommended
+```{r warnings = FALSE}
+		loess_norm_proteome =  normalize_custom_fit(q_norm_proteome, sample_annotation,
+		                                           batch_col = 'MS_batch',
+		                                           feature_id_col = 'peptide_group_label',
+		                                           sample_id_col = 'FullRunName',
+		                                           measure_col = 'Intensity',
+		                                           sample_order_col = 'order',
+		                                           fit_func = fit_nonlinear,
+		                                           return_long = T,
+		                                           fitFunc = 'loess_regression', with_df = F)
+		loess_norm_proteome_matrix = convert_to_matrix(loess_norm_proteome,
+		                                    feature_id_column = 'peptide_group_label',
+		                                    measure_column = 'Intensity_normalized',
+		                                    sample_id_column = 'FullRunName')
+```
+
+Demonstrate how it worked on the example of the peptides of one protein:
+```{r}
+test_protein = "1/sp|Q78JT3"
+test_peptides = unique(proteome_final$peptide_group_label[proteome_final$ProteinName == test_protein])[1:6]
+```
+
+Before the correction
+```{r plot_Haao_peptides}
+gg = plot_peptide_level(pep_name = test_peptides, data_df_long = loess_norm_proteome, 
+                   sample_annotation = sample_annotation, sample_id_column = sample_id_column,
+                   batch_column = 'MS_batch', feature_id_column = feature_id_column, 
+                   measurement.col = 'Intensity', order_column = 'order', 
+                   title = 'Peptides of Haao protein before the LOESS fit', facet_by_batch = F)
+gg
+```
+
+
+```{r plot_Haao_after_loess}
+gg = plot_peptide_level(pep_name = test_peptides, data_df_long = loess_norm_proteome, 
+                   sample_annotation = sample_annotation, sample_id_column = sample_id_column,
+                   batch_column = 'MS_batch', feature_id_column = feature_id_column, 
+                   measurement.col = 'Intensity_normalized', order_column = 'order', 
+                   title = 'Peptides of Haao protein after the LOESS fit', facet_by_batch = F)
+gg
+
+```
+
+To compare before and after the fit, we need to join the data matrices first
+```{r plot_Haao_with_the_fit}
+joined_df = join_data_matrices(matrix_list = list(log_transformed_proteome,
+                                           q_norm_proteome, 
+                                           loess_norm_proteome_matrix),
+                               sample_annotation = sample_annotation,
+                               Step = c('1_raw_logTransformed',
+                                        '2_quantile_normalized',
+                                        '3_loess_normalized'))
+fit_df = loess_norm_proteome %>% select(peptide_group_label, FullRunName, fit, MS_batch)
+gg = plot_with_fitting_curve(pep_name = test_peptides, fit_df = fit_df, 
+                             sample_annotation = sample_annotation, 
+                             data_df_all_steps = joined_df, batch_column = 'MS_batch', 
+                             order_column = 'order', measurement.col = measure_column,
+                             fit_value_var = 'fit', fit_step = '2_quantile_normalized',
+                             color_by_batch = color_list$MS_batch, title = 'test')
+gg
+```
+
+
+4. Finally, ComBat to equalize the means of each peptide:
+Before, we need to filter for peptides that are detected in every batch
+
+```{r ComBat}
+		comBat_norm_proteome = correct_with_ComBat(loess_norm_proteome_matrix,
+		                                           sample_annotation = sample_annotation,
+		                                           batch_column = 'MS_batch',
+		                                           par.prior = F)
+
+```
+
+### Diagnostics
+
+```{r color_list_to_df}
+color_df = color_list_to_df(color_list, df_for_annotation)
+cluster_samples(log_transformed_proteome, color_df, plot_title = '1_raw_log_transformed')
+
+```
+
+Examine the replicates:
+```{r replicates}
+earTags = c("ET1420", "ET1322", "ET2154", "ET1518", "ET1515", "ET1906", "ET1506",
+            "ET2078", "ET1566", "ET1354", "ET1585", "ET1681", "ET1524")
+samples_to_examine = sample_annotation %>%
+  filter(EarTag %in% earTags) %>% pull(FullRunName)
+data_matrix = log_transformed_proteome[,samples_to_examine]
+p = plot_sample_corr_distribution(data_matrix = log_transformed_proteome, sample_annotation, repeated_samples = samples_to_examine, sample_id_col = 'FullRunName', batch_col = 'MS_batch', plot_param = 'batch_replicate')
+p
+```
+
+Visualise principal components 1 and 3:
+```{r}
+plot_pca(log_transformed_proteome, df_for_annotation, factor_to_color = 'MS_batch', 
+         colors_for_factor = color_list$MS_batch, PC_to_plot = c(1, 3))
+```
+
+Quantify your batch effects with PVCA (will take a while if you have a large data matrix)
+```{r}
+
+```
+
+
