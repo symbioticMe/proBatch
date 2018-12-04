@@ -31,19 +31,74 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-## Batch effects in large-scale high throughput data 
-Recent advances in mass-spectrometry enabled fast and near-exhaustive identification and quantification of proteins in complex biological samples [1]. Quantitative robustness and sample throughput of techniques such as DIA/SWATH-MS allow to profile large sample cohorts with high quantitative accuracy [2 -5]. However, consistent and accurate profiling for large-scale studies still remains challenging. Obtaining sufficiently large dataset is associated with considerable logistics efforts of multiple biomaterial handlers on sample preparation and data acquisition steps e.g. protein extraction, peptide digestion, instrument cleaning. This introduces systematic technical variation known as the batch effect.
+## Batch effects in large-scale data.
+Recent advances in mass-spectrometry enabled fast and near-exhaustive 
+identification and quantification of proteins in complex biological samples [1],
+which allows to profile large-scale datasets. 
+Obtaining sufficiently large dataset is, however, associated with considerable 
+logistics efforts of multiple biomaterial handlers on sample preparation and 
+data acquisition steps e.g. protein extraction, peptide digestion, instrument cleaning. 
+This introduces systematic technical variation known as the batch effects.
 
-Batch effects can alter or obscure the biological signal in the data [6, 7]. It is widely acknowledged that experimental design needs to take known sources of technical variation into consideration [8], as otherwise, the data can be biased beyond repair [9, 10]. Batch effects are pervasive to all high-throughput technologies, including next generation sequencing technologies and microarrays [11, 12]. A number of approaches for batch effect correction have been proposed [13 - 16] and their performance thoroughly evaluated [12, 17].
+Batch effects can alter or obscure the biological signal in the data [2, 3]. 
+Thus, the data should be analyzed for presence and severity of batch effects, and,
+if necessary, corrected for.
 
-The fundamental objective of the batch effect adjustment procedure is to make all measurements of samples comparable for a meaningful biological analysis. Also, normalization aims to remove variance of non-biological origin [18]. Normalization adjusts only global properties of the measurements [6], while batch effects might affect specific groups of genes in different ways and persist even after normalization requiring additional correction procedures. Thus, normalization is only the first step in a technical biases correction workflow.
+##Batch effects analysis workflow.
 
-## The usage of proBatch in batch effect correction workflow
+The fundamental objective of the batch effect adjustment procedure is to make all 
+measurements of samples comparable for a meaningful biological analysis. Normalization
+brings the measurements into the same scale. Bias in the data, however, can persist 
+even after normalization, as batch effects might affect specific features (peptides, genes) 
+thus requiring additional batch correction procedures. This means, that the correction 
+of technical bias has often two steps: normalization and batch effects correction.
+
+The improvement of the data is best assessed visually at each step of correction. 
+Initial assessment sets the baseline before any correction is executed. After 
+normalization, batch effects diagnostics allow to determine the severity of the 
+remaining bias. Finally, the quality control step allows to determine 
+whether the correction improved the quality of the data.
+
+The pipeline, summarizing this workflow, is shown in Fig.1.
+
 ```{r, include = TRUE, fig.align = "center", echo=FALSE, fig.cap="proBatch in batch correction workflow", out.width = '50%'}
 knitr::include_graphics("Batch_effects_workflow_staircase.png")
 ```
 
-We recommend users to follow this batch correction workflow to ensure all measurements are comparable for downstream analysis. This workflow focuses on batch effect diagnostic and correction. Thus, it is assumed that the initial steps of pre-processing, such as peptide-spectrum matching, quantification, and FDR control are completed. We strongly suggest to perform the protein quantification after the batch effect correction, as this procedure alters the abundances of transitions and peptides, and these abundances are critical for protein quantity inference. We provide step-by-step illustrations to implement this workflow in the next sections of this vignette.  
+##Batch effects correction in the context of other steps of data analysis
+
+We recommend users to follow this batch correction workflow to ensure all 
+measurements are comparable for downstream analysis. We provide step-by-step 
+illustrations to implement this workflow in the next sections of this vignette.  
+
+Before starting the description, we give a few hints about the steps preceding and 
+following batch effects analysis and correction.
+
+It is assumed thatthe initial data processing is completed. In mass spectrometry-
+based proteomics, this involves primarily peptide-spectrum matching [OpenSWATH, TPP] 
+and FDR control [Isa&George papter]. 
+
+Data filtering is commonly the next step of data processing. In context of 
+batch correction, both peptide and sample filtering need to be approached with caution. 
+First of all, decoy measurements should be filtered out to ensure correct sample intensity 
+distribution alignment. However, non-proteotypic peptides should be retained. 
+Filtering out low-quality samples,also substantially alters normalization 
+and batch effects correction. The "bad" samples, usually identified by the 
+total intensity of identified peptides or correlation of samples, can be removed 
+either before or after the correction for technical bias. Which option is best for
+a given dataset, should be decided in each case individually.
+
+We strongly advocate not to impute missing valuea before correction (also to exclude
+"requant" values, inferred from SWATH data). Imputed values either add the 
+"average" measurements, or add random noise-level measurements. Both strategies
+bias the mean/median estimate of the peptide and are detrimental to  both 
+normalization and batch effects correction.
+
+We suggest to perform the protein quantification after the batch effect 
+correction, as the correction procedure alters the abundances of peptides and 
+peptide transitions, and these abundances are critical for protein quantity inference. 
+However, we do recommend to correct the technical noise at the level, which is used
+to inter the proteins (thus, fragment-level for inference tools such as aLFQ or MSstats).
 
 # Loading data and preparing annotations
 ```{r,echo=T, results="hide"}
@@ -67,7 +122,7 @@ devtools::install_github("symbioticMe/proBatch")
 ```
 
 ## Loading the data 
-The package typically requires three datasets: measurement data, peptide annotation and sample annotation.
+The package typically requires three datasets: data matrix (protein/gene expression measurement), sample annotation.
 
 - **Measurement data**, either wide or long format: The minimal information to be included is peptide IDs (annotated `peptide_group_label` in `example_proteome` data), sample IDs (`FullRunName`) and measurements (`Intensity`). Please note that the peptide and sample IDs in the dataset should match with those in the peptide and sample annotation files respectively. 
 - **Peptide annotation**: Although required annotations vary from function to function, the typical minimum is peptide ID (`peptide_group_id`) and name of corresponding protein (`Gene`)
