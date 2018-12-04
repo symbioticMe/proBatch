@@ -8,7 +8,8 @@ plot_iRT(df_long, sample_annotation, peptide_annotation = NULL,
   protein_col = "ProteinName", order_col = "order",
   irt_pattern = "iRT", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
-  feature_id_col = "peptide_group_label", color_by_col = NULL,
+  feature_id_col = "peptide_group_label", color_by_batch = F,
+  color_scheme = "brewer", facet_by_batch = F, color_by_col = NULL,
   color_by_value = NULL, plot_title = "iRT peptide profile", ...)
 }
 \arguments{
@@ -41,6 +42,10 @@ internally for consistency}
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
+
+\item{color_by_batch}{(logical) whether to color points by batch}
+
+\item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
