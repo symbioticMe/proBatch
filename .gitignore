@@ -6,5 +6,9 @@
 .Ruserdata
 *.Rapp.history
 inst/doc
+<<<<<<< .merge_file_a17624
+=======
+#vignettes/
+>>>>>>> .merge_file_a17096
 proBatch_marked_copy.pdf
 
