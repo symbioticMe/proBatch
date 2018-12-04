@@ -1,4 +1,4 @@
-#' Data normalization and batch adjustment methods
+#' Data normalization methods
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
