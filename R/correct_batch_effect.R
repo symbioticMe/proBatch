@@ -1,12 +1,30 @@
-#' Median normalization of the data (per batch median)
+#' Correction of batch effects in the data
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. Usually the log
+#'   transformed version of the original data
+#' @param df_long data frame where each row is a single feature in a single
+#'   sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+#'   \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+#'   file)
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param measure_col if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
+#' @name correct_batch
+NULL
+#> NULL
+
+#' Median centering of the peptides (per batch median)
 #'
-#' @name normalize
+#' @name correct_batch
 #'
-#' @return
+#' @return `data_matrix`-size data matrix with batch-effect corrected with
+#'   per-feature batch median centering
 #' @export
 #'
 #' @examples
-equalize_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
+center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
                                   sample_id_col = 'FullRunName',
                                   batch_col = 'MS_batch',
                                   feature_id_col = 'peptide_group_label',
@@ -33,9 +51,9 @@ equalize_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 }
 
 
-#' normalize with the custom (continuous) fit
+#' adjust batch signal trend with the custom (continuous) fit
 #'
-#' @name normalize
+#' @name correct_batch
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
 #' @param fit_func function to fit the (non)-linear trend
@@ -43,13 +61,14 @@ equalize_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #'   `df_long`) or "wide" (as `data_matrix`)
 #' @param ... other parameters, usually those of the `fit_func`
 #'
-#' @return
+#' @return list of two items: 1) `data_matrix`, adjusted with continious fit; 
+#' 2) fit_df, used to examine the fitting curves
 #' @export
 #'
 #' @examples
 #'
 #' @seealso \code{\link{fit_nonlinear}}
-normalize_custom_fit <- function(data_matrix, sample_annotation,
+adjust_batch_trend <- function(data_matrix, sample_annotation,
                                  batch_col = 'MS_batch',
                                  feature_id_col = 'peptide_group_label',
                                  sample_id_col = 'FullRunName',
@@ -119,8 +138,8 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
 #' batch effects. The input data are assumed to be cleaned and normalized before
 #' batch effect removal.
 #'
-#' @name normalize
-#' @param par.prior
+#' @name correct_batch
+#' @param par.prior whether parametrical or non-parametrical prior should be used
 #'
 #' @return `data_matrix`-size data matrix with batch-effect corrected by
 #'   `ComBat`
