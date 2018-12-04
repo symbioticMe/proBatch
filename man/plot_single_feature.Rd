@@ -8,9 +8,9 @@ plot_single_feature(pep_name, df_long, sample_annotation,
   order_col = "order", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
-  color_by_batch = F, facet_by_batch = F, color_by_col = "m_score",
-  color_by_value = 2, plot_title = NULL, vline_color = "red",
-  theme = "classic")
+  color_by_batch = F, color_scheme = "brewer", facet_by_batch = F,
+  color_by_col = "m_score", color_by_value = 2, plot_title = NULL,
+  vline_color = "red", theme = "classic")
 }
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
