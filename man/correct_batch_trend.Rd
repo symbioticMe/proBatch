@@ -2,10 +2,11 @@
 % Please edit documentation in R/correct_batch_effect.R
 \name{correct_batch_trend}
 \alias{correct_batch_trend}
+\alias{correct_batch_effects}
 \title{Batch correction method allows correction of continuous sigal drift within batch and 
 discrete difference across batches.}
 \usage{
-correct_batch_trend(data_matrix, sample_annotation,
+correct_batch_effects(data_matrix, sample_annotation,
   fitFunc = "loess_regression", discreteFunc = "MedianCentering",
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
