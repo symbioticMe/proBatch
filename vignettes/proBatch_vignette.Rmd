@@ -26,6 +26,7 @@ knitr::opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE, fig.pos = 'h')
 ```
 
 ```{r setup, include = FALSE}
+chooseCRANmirror(graphics=FALSE, ind=1)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
