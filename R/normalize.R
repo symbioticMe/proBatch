@@ -46,7 +46,7 @@ quantile_normalize <- function(data_matrix){
 }
 
 
-#' Median normalization of the data (global)
+#' Normalization by centering sample medians to global median of the data
 #'
 #' @param data_matrix log transformed long format data matrix (see `df_long`)
 #'
@@ -80,7 +80,7 @@ normalize_sample_medians <- function(df_long,
 #' @export
 #'
 #' @examples
-normalize <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
+normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
   if(!is.null(log)){
       data_matrix = log_transform(data_matrix, log_base = log_base)
   }
