@@ -24,7 +24,7 @@ NULL
 #'
 #' @examples
 log_transform <- function(data_matrix, log_base = 2){
-  data_matrix_log = log(data_matrix + 1, log_base) 
+  data_matrix_log = log(data_matrix + 1, base = log_base) 
   return(data_matrix_log)
 }
 
@@ -81,7 +81,7 @@ normalize_sample_medians <- function(df_long,
 #'
 #' @examples
 normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
-  if(!is.null(log)){
+  if(!is.null(log_base)){
       data_matrix = log_transform(data_matrix, log_base = log_base)
   }
   
