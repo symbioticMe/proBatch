@@ -8,9 +8,12 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 abstract: |
-  This vignette describes how to apply different functions from the proBatch package to diagnose and correct for batch effects. The functions are primarily intended for proteomic SWATH data that has been generated from OpenSWATH but can also be applied to other omics dataset. 
+  This vignette describes how to apply different functions from the `proBatch` package to diagnose and correct for batch effects. Most of the functions are applicable any "omic" data, however, the package has a number of functions, designed specifically for mass spectrometry-based proteomics, and has been tested on SWATH data.
   
-  The proBatch package provides a complete set of functions for batch correction workflow: filter peptides by requants or missing values, normalize global intensity, diagnose for proteome-wide or feature-level batch effects, correct for continuous drift or discrete batch effects and evaluate by correlation based quality control metrics. In particular for proteomics, we strongly recommend to normalize and batch-correct on peptide-level data generated from OpenSWATH, then proceed with protein quantity inference. 
+  The `proBatch` package provides a complete functionality for batch correction workflow: to prepare the data for analysis, diagnose and correct batch effects and finally, to evaluate the correction with quality control metrics. 
+  
+  The `proBatch` package was programmed and intended for use by researchers without
+  extensive programming skills, but with basic R knowledge. 
 
 toc: yes
 toc_depth: 2
