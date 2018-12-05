@@ -13,15 +13,14 @@ In addition to the diagnostic functions we provide a few convenient wrappers for
 
 ## Installing
 
-Install dependencies:
+Install the dependencies:
 
 ```
-source("http://bioconductor.org/biocLite.R")
-
 bioc_deps <- c("GO.db", "impute", "preprocessCore", "pvca","sva" )
 cran_deps <- c("corrplot", "data.table", "ggfortify","lazyeval", "pheatmap", "reshape2", "rlang", 
                 "tidyverse","wesanderson","WGCNA") 
 
+source("https://bioconductor.org/biocLite.R")
 biocLite(bioc_deps) 
 install.packages(cran_deps)
 ```
