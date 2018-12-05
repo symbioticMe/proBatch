@@ -1,14 +1,9 @@
-#' Data normalization and batch adjustment methods
+#' Data normalization methods
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param batch_col column in `sample_annotation` that should be used for
-#'   batch comparison
 #' @param measure_col if `df_long` is among the parameters, it is the column
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
@@ -22,14 +17,15 @@ NULL
 #'
 #' @param data_matrix raw data matrix (features in rows and samples
 #'   in columns)
+#' @param base base of the logarithm for transformation
 #'
 #' @return `data_matrix`-size matrix, with columns log2 transformed
 #' @export
 #'
 #' @examples
-log_transform <- function(data_matrix){
-  data_matrix_log2 = log2(data_matrix + 1) 
-  return(data_matrix_log2)
+log_transform <- function(data_matrix, log_base = 2){
+  data_matrix_log = log(data_matrix + 1, base = log_base) 
+  return(data_matrix_log)
 }
 
 #' Quantile normalization of the data, ensuring that the row and column names
@@ -50,17 +46,17 @@ quantile_normalize <- function(data_matrix){
 }
 
 
-#' Median normalization of the data (global)
+#' Normalization by centering sample medians to global median of the data
 #'
-#' @name normalize
+#' @param data_matrix log transformed long format data matrix (see `df_long`)
 #'
-#' @return
+#' @return `df_long`-size matrix, with intensity scaled to global median
 #' @export
 #'
 #' @examples
 normalize_sample_medians <- function(df_long,
                                      sample_id_col = 'FullRunName',
-                                    measure_col = 'Intensity'){
+                                     measure_col = 'Intensity'){
   df_normalized = df_long  %>%
     group_by_at(vars(one_of(sample_id_col))) %>%
     mutate(median_run = median(UQ(sym(measure_col)), na.rm = T)) %>%
@@ -72,8 +68,7 @@ normalize_sample_medians <- function(df_long,
   return(df_normalized)
 }
 
-#' Batch correction method allows correction of continuous sigal drift within batch and 
-#' discrete difference across batches. 
+#' Normalization brings the samples to the same scale
 #'
 #' @name normalize
 #' @param data_matrix raw data matrix (features in rows and samples
@@ -85,15 +80,9 @@ normalize_sample_medians <- function(df_long,
 #' @export
 #'
 #' @examples
-normalize <- function(data_matrix, normalizeFunc = "quantile", log = NULL){
-  if(!is.null(log)){
-    if(log == 2){
-      data_matrix = log_transform(data_matrix)
-    } else if(log == 10){
-      data_matrix = log10(data_matrix + 1) 
-    } else {
-      stop("Only base 2 and base 10 logarithms are available.")
-    }
+normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
+  if(!is.null(log_base)){
+      data_matrix = log_transform(data_matrix, log_base = log_base)
   }
   
   if(normalizeFunc == "quantile"){
