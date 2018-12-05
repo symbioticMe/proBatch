@@ -335,7 +335,7 @@ In many cases, global quantitative properties such as sample medians or standard
 
 \pagebreak
 
-## Normalization: sample median centering and quantile normalization
+## Normalization
 
 In large-scale experiments, total intensity of the samples is likely to be different 
 due to a number of reasons, such as different amount of sample loaded or fluctuations in 
@@ -382,9 +382,17 @@ plot_sample_mean(quantile_normalized_matrix, example_sample_annotation,
                  color_scheme = color_list[[batch_col]])
 ```
 
+```{r, fig.show='hold'}
+batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalized_matrix, 
+                                  example_sample_annotation, discreteFunc = 'ComBat',
+                                  abs.threshold = 5, pct.threshold = 0.20)
+```
+
+
+
 \pagebreak
 
-## Diagnostic of batch effects on normalized data matrix 
+## Diagnostics of batch effects in normalized data 
 Now is the time to diagnose for batch effects and evaluate to what extent technical variance still exists in the  normalized data matrix. The positive effect of normalization is sometimes not sufficient to control for peptide and protein-specific biases associated with a certain batch source. These biases can be identified via diagnostic plots. Here we describe our essential toolbox of batch effect diagnostic approaches. Note that sample annotation and/or peptide annotation are necessary for the implementation of these plots. 
 
 ### Hierarchical clustering
@@ -577,12 +585,64 @@ batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalize
 ## Quality control on batch-corrected data matrix 
 In most cases, the batch effect correction method is evaluated by its ability to remove technical confounding, visible on hierarchical clustering or PCA. However, it is rarely shown whether the biological signal is not destroyed, or, better even, improved. Often, increased number of differentially expressed genes is presented as an improvement. However, every reasonably designed experiment has replicates that can serve as an excellent control. In addition, peptides within a given protein should behave similarly and correlation of these peptides should improve after batch correction. 
 
+###	Heatmap of selected replicate samples
+In this study, 10 samples were run in the same order before and after the tuning of the mass-spectrometer, which marks the boundary between batches 2 and 3. The correlation between these replicates can be illustrated by corrplot (`flavor = 'corrplot'`) or by 
+"pretty heatmap", of "pheatmap"" (`flavor = 'pheatmap'`)
+
+First, we specify, which samples we want to correlate
+```{r, fig.show='hold', fig.height=5, fig.width=8}
+earTags <- c("ET1524", "ET2078", "ET1322", "ET1566", "ET1354", "ET1420", "ET2154",
+             "ET1515", "ET1506", "ET2577", "ET1681", "ET1585", "ET1518", "ET1906")
+
+# Prepare color annotation 
+factors_to_show = c("MS_batch", "EarTag")
+replicate_annotation <- example_sample_annotation %>%
+  filter(MS_batch == 'Batch_2' | MS_batch == "Batch_3") %>%
+  filter(EarTag %in% earTags) %>%
+  remove_rownames %>% 
+  column_to_rownames(var="FullRunName") %>%
+  select(factors_to_show) # Annotate MS_batch and EarTag on pheatmap 
+
+# sample ID of biological replicates 
+replicate_filenames = replicate_annotation %>%
+  rownames()
+
+breaksList <- seq(0.7, 1, by = 0.01) # color scale of pheatmap 
+heatmap_colors = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList))
+```
+
+```{r, fig.show='hold', fig.height=5, fig.width=8}
+# Plot the heatmap 
+plot_sample_corr_heatmap(quantile_normalized_matrix, samples_to_plot = replicate_filenames, 
+                         flavor = 'pheatmap', plot_title = 'Quantile Normalized', 
+                         annotation_colors = color_list[factors_to_show], 
+                         annotation_col = replicate_annotation,
+                         color = heatmap_colors, breaks = breaksList, 
+                         cluster_rows=F, cluster_cols=F,
+                         annotation_names_col = TRUE, annotation_legend = FALSE, 
+                         show_colnames = F)
+```
+
+\pagebreak
+
+```{r, fig.show='hold', fig.height=5, fig.width=8}
+plot_sample_corr_heatmap(batch_corrected_matrix, samples_to_plot = replicate_filenames, 
+                         flavor = 'pheatmap', plot_title = 'Batch Corrected',
+                         annotation_colors = color_list[factors_to_show], 
+                         annotation_col = replicate_annotation,
+                         color = heatmap_colors, breaks = breaksList, 
+                         cluster_rows=F, cluster_cols=F,
+                         annotation_names_col = TRUE, annotation_legend = FALSE, 
+                         show_colnames = F)
+```
+Before the correction, samples from one batch correlate higher and often higher than the replicates. However, after the correction, the correlation between replicates becomes higher than the correlation between non-related samples regardless of the batch. 
+
 ### Correlation distribution of samples
-For example, in the mice aging experiment, biological replicates, ET1506 and ET1524, were injected every 30-40 MS runs. The correlation between these biological replicates should improve after normalization and batch correction. 
+For example, in the mice aging experiment, biological replicates, `ET1506` and `ET1524`, were injected every 30-40 MS runs. The correlation between these biological replicates should improve after normalization and batch correction. 
 
 The `plot_sample_corr_distribution()` plots correlation distribution between biological replicates and non-replicates in the same or differnet batches by `plot_param = 'batch_replicate'`. Alternatively, you can compute the correlation between different batches by `plot_param = 'batches'`. 
 
-It should be noted, however, that the comparison of sample correlation should be approached with the comparison of distributions, rather than by evaluating the individual examples of within-replicate vs within-batch corrections. The sample correlation is often used to prove the quality of the measurement, as it is typically very high (examples of the replicate correlation above .95 are common for mass spectrometry). However, unless these examples are shown in the context of the whole distribution structure, they can lead to erroneous conclusion. 
+It should be noted, however, that the comparison of sample correlation should not be approached by evaluating the individual examples of within-replicate vs within-batch corrections, but rather in by comparing the distribution. Unless these examples are shown in the context of the whole distribution structure, they can lead to erroneous conclusion. The sample correlation is often used to prove the quality of the measurement, as it is typically very high (examples of the replicate correlation above .95 are common for mass spectrometry). 
 ```{r, fig.show='hold', fig.width=3.2, fig.height=3.5}
 sample_cor_norm <- plot_sample_corr_distribution(quantile_normalized_matrix,
                                                  example_sample_annotation, 
@@ -601,7 +661,8 @@ sample_cor_batchCor + theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
 ```
 
 ### Correlation distribution of peptides within and between proteins 
-Especially for proteins of biological significance, peptides of the same protein should behave similarly in expression level. Therefore, we can compare peptide correlation before and after batch correction if the correlation between the same proteins increases while that of different proteins stays the same. 
+Peptides of the same protein are likely to correlate. Therefore, we can compare 
+within- vs between-protein peptide correlation before and after batch correction if the correlation between the same proteins increases while that of different proteins stays the same. 
 ```{r, fig.show='hold',fig.width=3, fig.height=2.5}
 peptide_cor_norm <- plot_peptide_corr_distribution(quantile_normalized_matrix, 
           generated_peptide_annotation, protein_col = 'Gene', plot_title = 'Quantile normalized')
@@ -612,47 +673,7 @@ peptide_cor_batchCor <- plot_peptide_corr_distribution(batch_corrected_matrix,
 peptide_cor_batchCor + geom_hline(yintercept=0, linetype="dashed", color = "grey")
 ```
 
-###	Heatmap of selected replicate samples
-In this study, 10 samples were run in the same order before and after the tuning of the mass-spectrometer, which marks the boundary between batches 2 and 3. The correlation between these replicates can be illustrated by corrplot (`flavor = 'corrplot'`) or by pheatmap (`flavor = 'pheatmap'`)
 
-```{r, fig.show='hold', fig.height=7, fig.width=8}
-library(RColorBrewer)
-earTags <- c("ET1524", "ET2078", "ET1322", "ET1566", "ET1354", "ET1420", "ET2154",
-             "ET1515", "ET1506", "ET2577", "ET1681", "ET1585", "ET1518", "ET1906")
-
-# sample ID of biological replicates 
-bioreplicates <- example_sample_annotation %>%
-  filter(MS_batch == 'Batch_2' | MS_batch == "Batch_3") %>%
-  filter(EarTag %in% earTags) %>%
-  pull(FullRunName)
-
-# Prepare color annotation 
-color_covariates <- example_sample_annotation %>%
-  filter(MS_batch == 'Batch_2' | MS_batch == "Batch_3") %>%
-  filter(FullRunName %in% bioreplicates) %>%
-  remove_rownames %>% 
-  column_to_rownames(var="FullRunName") %>%
-  select("MS_batch", "EarTag") # Annotate MS_batch and EarTag on pheatmap 
-
-# Plot pheatmap 
-breaksList <- seq(0.7, 1, by = 0.01) # color scale of pheatmap 
-plot_sample_heatmap(quantile_normalized_matrix, annotation_col = color_covariates, 
-    samples_to_plot = bioreplicates, flavor = 'pheatmap', 
-    color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)),
-    breaks = breaksList, plot_title = 'Quantile Normalized', cluster_rows=F, cluster_cols=F,
-    annotation_names_col = TRUE, annotation_legend = TRUE, show_colnames = F)
-```
-
-\pagebreak
-
-```{r, fig.show='hold', fig.height=7, fig.width=8}
-plot_sample_heatmap(batch_corrected_matrix, annotation_col = color_covariates,
-    samples_to_plot = bioreplicates, flavor = 'pheatmap', 
-    color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)),
-    breaks = breaksList, plot_title = 'Batch Corrected', cluster_rows=F, cluster_cols=F,
-    annotation_names_col = TRUE, annotation_legend = TRUE, show_colnames = F)
-```
-It is clear that before the correction, samples from one batch cluster better than between the replicates. However, after the correction, the correlation between replicates becomes higher than the correlation between non-related samples regardless of the batch. 
 
 # References
 [1] O. T. Schubert, H. L. Röst, B. C. Collins, G.Rosenberger, and R. Aebersold. «Quantitative proteomics: challenges and opportunities in basic and applied research». Nature Protocols 12:7 (2017), pp. 1289–1294.
