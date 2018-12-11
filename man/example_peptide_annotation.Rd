@@ -4,7 +4,7 @@
 \name{example_peptide_annotation}
 \alias{example_peptide_annotation}
 \title{Peptide annotation data}
-\format{A data frame with 200625 rows and 8 variables:
+\format{A data frame with 535 rows and 10 variables:
 \describe{
   \item{Peptide}{peptide group label ID, identical to `peptide_group_label` in `example_proteome`}
   \item{Gene}{HUGO gene ID}
