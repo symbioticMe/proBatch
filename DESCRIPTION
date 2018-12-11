@@ -2,7 +2,7 @@ Package: proBatch
 Type: Package
 Title: Tools for Batch Effects Diagnostics and Correction
 Version: 1.0
-Author: Jelena Cuklina <chuklina.jelena@gmail.com>, Chloe H. Lee <chloe.h.lee94@gmail.com>, Patrick Pedrioli <pedrioli@gmail.com>
+Author: Jelena Čuklina <chuklina.jelena@gmail.com>, Chloe H. Lee <chloe.h.lee94@gmail.com>, Patrick Pedrioli <pedrioli@gmail.com>
 Maintainer: The package maintainer Jelena Cuklina <chuklina.jelena@gmail.com>
 Description: The proBatch package facilitates batch effects analysis and correction
     in high-thoughput experiments. Although the package has primarily been developed 
@@ -50,3 +50,4 @@ Suggests: knitr,
     SWATH2stats
 VignetteBuilder: knitr
 RoxygenNote: 6.1.0
+Encoding: UTF-8
