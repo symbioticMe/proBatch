@@ -2,26 +2,31 @@
 
 ## General Overview
 
-The proBatch package contains functions for diagnosing and removing batch effects and other unwanted technical variation from high-thoughput experiments. Although the package has primarily been developed for DIA (SWATH) proteomics data, it should also be applicable to most omic data with minor adaptations.
+The proBatch package facilitates batch effects analysis and correction high-thoughput experiments. Although the package has primarily been developed for DIA (SWATH) proteomics data, it should also be applicable to most omic data with minor adaptations.
     
-As discussed in the corresponding vignettes, the diagnostic part of the package can be broadly divided in:
+The package contains functions for diagnostics (proteome/genome-wide and feature-level), correction (normalization and batch effects correction) and quality control.
 
-1. Proteome-wide and 
-2. Feature-level functions
+Diagnostics part of the package features unified color scheme for plotting, 
+    that allows to produce publication-quality graphs.
 
-In addition to the diagnostic functions we provide a few convenient wrappers for common batch-effect removal approaches such as ComBat and median centering. Furthermore, the package includes non-linear fitting based approaches to deal with complex, mass spectrometry-specific signal drifts.
+Correction functions are convenient wrappers for common normalization and batch effects removal approaches such as quantile normalizetion and median centering. Furthermore, the package includes non-linear fitting based approaches to deal with complex, mass spectrometry-specific signal drifts.
+
+Quality control step, mostly based on correlation analysis, allows to assess whether 
+the correction improved the quality of the data.
+
+All steps of batch effects analysis and correction are illustrated in the vignette,
+    using the subset of real-world large-scale dataset.
 
 ## Installing
 
-Install dependencies:
+Install the dependencies:
 
 ```
-source("http://bioconductor.org/biocLite.R")
-
 bioc_deps <- c("GO.db", "impute", "preprocessCore", "pvca","sva" )
 cran_deps <- c("corrplot", "data.table", "ggfortify","lazyeval", "pheatmap", "reshape2", "rlang", 
                 "tidyverse","wesanderson","WGCNA") 
 
+source("https://bioconductor.org/biocLite.R")
 biocLite(bioc_deps) 
 install.packages(cran_deps)
 ```
