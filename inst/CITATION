@@ -1,21 +1,18 @@
 citHeader("To cite proBatch in publications use:")
 
-citEntry(entry = "Article",
-  title        = "Tools for batch effects diagnostics and correction",
-  author       = personList(as.person("Jelena Čuklina"),
-                   as.person("Chloe H. Lee"),
-                   as.person("Patrick Pedrioli"),
-                   as.person("Ruedi Aebersold")),
-  journal      = "Bioinformatics",
-  year         = "2019",
-  volume       = "###",
-  number       = "##",
-  pages        = "##--##",
-  url          = "https://academic.oup.com/bioinformatics/article/XX/XX/XXXX/XXXXXXX",
-
-  textVersion  =
-  paste("Jelena Čuklina, Chloe H. Lee,  Patrick Pedrioli, Ruedi Aebersold (2019).",
-        "Tools for batch effects diagnostics and correction.",
-        "Bioinformatics, XX(X), X-XX.",
-        "URL https://academic.oup.com/bioinformatics/article/XX/XX/XXXX/XXXXXXX/.")
-)
+citEntry(entry = "PhdThesis",
+  title        = "Computational challenges in biomarker discovery from high-throughput proteomic data",
+  author       = as.person(c("Jelena Cuklina <chuklina.jelena@gmail.com> [aut, cre]",
+                  "Chloe H. Lee [aut]", 
+                  "Evan G. Willams [dtc, ctb]",
+                  "Ben Collins [dtc]",
+                  "Tatjana Sajic [dtc]",
+                  "Patrick Pedrioli [aut]",
+                  "Maria Rodriguez-Martinez [ths]",
+                   "Ruedi Aebersold [ths, fnd]")),
+  url          = "https://doi.org/10.3929/ethz-b-000307772",
+  school = 'ETH Zurich',
+  year = '2018',
+  textVersion = paste("Cuklina J., Lee C.H., Williams E.G., Collins B., Sajic T., Pedrioli P., Rodriguez-Martinez M., Aebersold R.", 
+  "Chapter 3: Systematic overview of batch effects in proteomics", "Doctoral thesis, ETH Zurich, 2018", "https://doi.org/10.3929/ethz-b-000307772")
+  )
