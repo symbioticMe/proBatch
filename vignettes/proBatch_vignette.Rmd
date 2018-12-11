@@ -834,6 +834,13 @@ peptide_cor_batchCor <- plot_peptide_corr_distribution(batch_corrected_matrix,
 peptide_cor_batchCor + geom_hline(yintercept=0, linetype="dashed", color = "grey")
 ```
 
+# Citation
+
+To cite the package, please type:
+```{r, eval=FALSE}
+citation(package = 'proBatch')
+```
+
 
 
 # References
