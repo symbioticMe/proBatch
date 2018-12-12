@@ -207,7 +207,11 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
 #'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
 #'
 #' @family feature-level diagnostic functions
-#'
+#' 
+#' @examples \donotrun{plot_spike_in(quantile_normalized_long, example_sample_annotation, 
+#' peptide_annotation = generated_peptide_annotation, protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
+#' plot_title = 'Spike-in BOVINE protein peptides', color_by_batch = T, color_scheme = color_list[["MS_batch"]])}
+#' 
 #' @export
 #'
 plot_spike_in <- function(df_long, sample_annotation,
@@ -268,7 +272,6 @@ plot_spike_in <- function(df_long, sample_annotation,
 #'
 #' @export
 #'
-#' @examples
 plot_iRT <- function(df_long, sample_annotation,
                            peptide_annotation = NULL,
                            protein_col = 'ProteinName',
