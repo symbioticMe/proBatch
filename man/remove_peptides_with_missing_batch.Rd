@@ -40,8 +40,7 @@ useful for some downstream functions as ComBat normalization, that
   would not work otherwise
 }
 \seealso{
-Other dataset cleaning functions: \code{\link{clean_requants}},
-  \code{\link{summarize_peptides}}
+Other dataset cleaning functions: \code{\link{clean_requants}}
 }
 \concept{dataset cleaning functions}
 \keyword{internal}
