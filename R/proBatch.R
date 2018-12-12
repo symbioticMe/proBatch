@@ -1,15 +1,13 @@
 #' proBatch: A package for diagnostics and correction of batch effects,
 #' primarily in proteomics
 #'
-#' The proBatch package contains functions for diagnosing and removing batch effects 
+#' The proBatch package contains functions for analyzing and correcting batch effects 
 #' and other unwanted technical variation from high-thoughput experiments. Although 
-#' the package has primarily been developed for DIA (SWATH) proteomics data, it 
-#' should also be applicable to most omic data with minor adaptations.
-#' It addresses the following needs: \itemize{ \item prepare proteome data
-#' (e.g. OpenSWATH output matrix and sample annotation file) for analysis.
-#' Note that output may need additional `SWATH2stats` step.  \item Diagnose
-#' batch effects in sample-wide and feature-level \item Normalize and Correct for 
-#' batch effects. Other useful package for this purpose is `Normalyzer`.
+#' the package has primarily been developed for mass spectrometry proteomics (DIA/SWATH),
+#' it should also be applicable to most omic data with minor adaptations.
+#' It addresses the following needs: \itemize{ \item prepare the data for analysis
+#'\item Visualize batch effects in sample-wide and feature-level;
+#' \item Normalize and correct for batch effects.
 #' }
 #'
 #' To learn more about proBatch, start with the vignettes:
@@ -42,8 +40,7 @@
 #'   names.
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
-#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
-#'   examples)
+#' @param theme ggplot theme, by default `classic`. Can be easily overriden 
 #'
 #' @import dplyr
 #' @import ggfortify
