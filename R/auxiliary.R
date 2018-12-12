@@ -76,7 +76,7 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #' 
 #' @param annotation_col one or more columns contatining protein ID
 #'
-#' @return
+#' @return data frame containing petpide annotations 
 #' @export
 #' 
 #' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}},
