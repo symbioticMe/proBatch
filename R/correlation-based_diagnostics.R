@@ -357,12 +357,11 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 
 #' Plot distribution of peptide correlations within one protein and between proteins
 #'
-#' @param data_matrix
-#' @param peptide_annotation
-#' @param protein_col
-#' @param feature_id_col
-#' @param plot_title
-#' @param theme
+#' @inheritParams proBatch
+#' 
+#' @param protein_col the column name in \code{peptide_annotation} with protein names
+#' @plot_title Title of the plot, usually processing step 
+#' @param ... parameters for the \code{ggplot} visualisation
 #'
 #' @return \code{ggplot} type object with violin plot for each \code{plot_param}
 #' @export
