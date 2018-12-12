@@ -9,4 +9,4 @@ doc
 *.Rapp.history
 inst/doc
 #vignettes/
-
+/.Rd2pdf*
