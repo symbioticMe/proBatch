@@ -15,7 +15,3 @@ plot_within_prot_corr_distribution(data_matrix_list, peptide_annotation,
 \description{
 Plot distribution of median correlations of peptides within same protein
 }
-\examples{
-
-
-}
