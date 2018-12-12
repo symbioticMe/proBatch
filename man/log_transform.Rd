@@ -5,11 +5,13 @@
 \title{Log transformation of the data, ensuring that the row and column names
 are retained}
 \usage{
-log_transform(data_matrix)
+log_transform(data_matrix, log_base = 2)
 }
 \arguments{
 \item{data_matrix}{raw data matrix (features in rows and samples
 in columns)}
+
+\item{base}{base of the logarithm for transformation}
 }
 \value{
 `data_matrix`-size matrix, with columns log2 transformed
