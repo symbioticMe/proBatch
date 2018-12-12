@@ -360,7 +360,7 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' @inheritParams proBatch
 #' 
 #' @param protein_col the column name in \code{peptide_annotation} with protein names
-#' @plot_title Title of the plot, usually processing step 
+#' @param plot_title Title of the plot, usually processing step 
 #' @param ... parameters for the \code{ggplot} visualisation
 #'
 #' @return \code{ggplot} type object with violin plot for each \code{plot_param}
