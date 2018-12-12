@@ -252,7 +252,9 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #'
 #' @export
 #'
-#' @examples
+#' @examples \donotrun{plot_sample_corr_distribution(quantile_normalized_matrix,
+#' example_sample_annotation, batch_col = 'MS_batch', biospecimen_id_col = "EarTag", 
+#' plot_title = 'Quantile normalized',plot_param = 'batch_replicate')}
 #' @seealso \code{\link{get_sample_corr_distrib}}, \code{\link[ggplot2]{ggplot}}
 plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                    repeated_samples = NULL,
@@ -326,7 +328,6 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 #' @return
 #' @export
 #'
-#' @examples
 get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = 'ProteinName',
                              feature_id_col = 'peptide_group_label'){
   #since we only need unique pairs of samples, we create df of combinations to keep
@@ -366,7 +367,6 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' @return
 #' @export
 #'
-#' @examples
 plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
                                         protein_col = 'ProteinName',
                                         feature_id_col = 'peptide_group_label',
@@ -426,9 +426,6 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
 #' @return
 #' @export
 #'
-#' @examples
-#'
-#'
 plot_within_prot_corr_distribution <- function(data_matrix_list, peptide_annotation,
                                                protein_col = 'ProteinName',
                                                feature_id_col = 'peptide_group_label',
@@ -487,7 +484,6 @@ plot_within_prot_corr_distribution <- function(data_matrix_list, peptide_annotat
 #' @return
 #' @export
 #'
-#' @examples
 plot_peptide_correlation_distr_one_protein <- function(data_matrix_list,
                                                        protein_name,
                                                        peptide_annotation,
