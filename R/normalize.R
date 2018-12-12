@@ -22,7 +22,6 @@ NULL
 #' @return `data_matrix`-size matrix, with columns log2 transformed
 #' @export
 #'
-#' @examples
 log_transform <- function(data_matrix, log_base = 2){
   data_matrix_log = log(data_matrix + 1, base = log_base) 
   return(data_matrix_log)
@@ -37,7 +36,6 @@ log_transform <- function(data_matrix, log_base = 2){
 #' @return `data_matrix`-size matrix, with columns quantile-normalized
 #' @export
 #'
-#' @examples
 quantile_normalize <- function(data_matrix){
   q_norm_proteome = preprocessCore::normalize.quantiles(data_matrix)
   colnames(q_norm_proteome) = colnames(data_matrix)
@@ -53,7 +51,6 @@ quantile_normalize <- function(data_matrix){
 #' @return `df_long`-size matrix, with intensity scaled to global median
 #' @export
 #'
-#' @examples
 normalize_sample_medians <- function(df_long,
                                      sample_id_col = 'FullRunName',
                                      measure_col = 'Intensity'){
@@ -79,7 +76,9 @@ normalize_sample_medians <- function(df_long,
 #' @return `data_matrix`-size matrix, with columns normalized 
 #' @export
 #'
-#' @examples
+#' @examples \donotrun{median_normalized_matrix = normalize_data(data_matrix, 
+#' normalizeFunc = "medianCentering", log_base = 2)}
+#' 
 normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
   if(!is.null(log_base)){
       data_matrix = log_transform(data_matrix, log_base = log_base)
