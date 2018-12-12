@@ -127,7 +127,7 @@ install.packages("proBatch")
 
 # Alternatively, install the development version from GitHub:
 install.packages("devtools")
-devtools::install_github("symbioticMe/proBatch")
+devtools::install_github("symbioticMe/proBatch", build_vignettes = TRUE)
 ```
 
 \pagebreak
