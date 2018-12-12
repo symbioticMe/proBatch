@@ -52,6 +52,72 @@ fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x'
   return(fit_res)
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+
+loocv.nw <- function(reg.data, bw = 1.5, kernel = "normal",
+                     response.var = 'y', expl.var = 'x', ...){
+  ## Help function to calculate leave-one-out regression values
+  loo.reg.value.bw <- function(i, reg.data, bw, kernel = kernel,
+                               response.var = 'y', expl.var = 'x')
+    return(ksmooth(reg.data[[expl.var]][-i], reg.data[[response.var]][-i],
+                   x.points = reg.data[[expl.var]][i],
+                   kernel = kernel, bandwidth = bw)$y)
+  
+  ## Calculate LOO regression values using the help function above
+  n <- nrow(reg.data)
+  loo.values.bw <- sapply(1:n, loo.reg.value.bw, reg.data, bw, kernel,
+                          response.var, expl.var)
+  
+  ## Calculate and return MSE
+  return(mean((reg.data[[response.var]] - loo.values.bw)^2))
+}
+
+optimise_bw <- function(dataDF, response.var = 'y', expl.var = 'x',
+                        bws = c(0.01, 0.5, 1, 1.5, 2, 5, 10)){
+  cv.nw_mult = sapply(bws, function(bw) loocv.nw(dataDF, bw,
+                                                 response.var = response.var,
+                                                 expl.var = expl.var))
+  bw_best = bws[which.min(cv.nw_mult)]
+  return(bw_best)
+}
+
+reg.fcn.nw <- function(reg.x, reg.y, x, bw = 1.5)
+  ksmooth(reg.x, reg.y, x.points = x, kernel = "normal", bandwidth = bw)$y
+
+optimise_df <- function(dataDF, bw, response.var = 'y', expl.var = 'x'){
+  #find the best bandwidth
+  
+  n <- nrow(dataDF)
+  Id <- diag(n)
+  S.nw <- matrix(0, n, n)
+  for (j in 1:n)
+    S.nw[, j] <- reg.fcn.nw(dataDF[[expl.var]], Id[,j], dataDF[[expl.var]], bw = bw)
+  df.nw <- sum(diag(S.nw))
+  return(df.nw)
+}
+
+kernel_smooth <- function(x_all, y, x_to_fit, bw = 1.5, ...){
+  res = ksmooth(x_to_fit, y, x.point = x_all,
+                kernel = "normal", bandwidth = bw)$y
+  return(res)
+}
+
+smooth_spline <- function(x_all, y, x_to_fit, ...){
+  #allow to define nknots among other parameters or spar or whatever
+  
+  nknots = length(x_all)/2
+  
+  fit = smooth.spline(x_to_fit, y, nknots = nknots)
+  res = predict(fit, x_all)$y
+  return(res)
+}
+
+=======
+>>>>>>> b7001c9... non_linear fitting function with loess_regression only. The copy of script containing kernel and spline regression saved in polybox. The threshold of NA filtering is set at 20%
+>>>>>>> a8210dd4290c1e9c4a8c52aa3033202a897b0d1b
 loess_regression <- function(x_all, y, x_to_fit, ...){
   fit = loess(y ~ x_to_fit, surface = 'direct', ...)
   pred <- predict(fit, newdata = x_to_fit)
