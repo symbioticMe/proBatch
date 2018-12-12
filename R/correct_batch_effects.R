@@ -1,12 +1,30 @@
-#' Median normalization of the data (per batch median)
+#' Correction of batch effects in the data
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. Usually the log
+#'   transformed version of the original data
+#' @param df_long data frame where each row is a single feature in a single
+#'   sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+#'   \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+#'   file)
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param measure_col if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
+#' @name correct_batch
+NULL
+#> NULL
+
+#' Median centering of the peptides (per batch median)
 #'
-#' @name normalize
+#' @name correct_batch
 #'
-#' @return
+#' @return `data_matrix`-size data matrix with batch-effect corrected with
+#'   per-feature batch median centering
 #' @export
 #'
 #' @examples
-equalize_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
+center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
                                   sample_id_col = 'FullRunName',
                                   batch_col = 'MS_batch',
                                   feature_id_col = 'peptide_group_label',
@@ -33,9 +51,9 @@ equalize_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 }
 
 
-#' normalize with the custom (continuous) fit
+#' adjust batch signal trend with the custom (continuous) fit
 #'
-#' @name normalize
+#' @name correct_batch
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
 #' @param fit_func function to fit the (non)-linear trend
@@ -43,19 +61,21 @@ equalize_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #'   `df_long`) or "wide" (as `data_matrix`)
 #' @param ... other parameters, usually those of the `fit_func`
 #'
-#' @return
+#' @return list of two items: 1) `data_matrix`, adjusted with continious fit; 
+#' 2) fit_df, used to examine the fitting curves
 #' @export
 #'
 #' @examples
 #'
 #' @seealso \code{\link{fit_nonlinear}}
-normalize_custom_fit <- function(data_matrix, sample_annotation,
+adjust_batch_trend <- function(data_matrix, sample_annotation,
                                  batch_col = 'MS_batch',
                                  feature_id_col = 'peptide_group_label',
                                  sample_id_col = 'FullRunName',
                                  measure_col = 'Intensity',
                                  sample_order_col = 'order',
-                                 fit_func = fit_nonlinear, ...){
+                                 fit_func = fit_nonlinear, 
+                                 abs.threshold = 5, pct.threshold = 0.20, ...){
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
   sampleNames <- colnames(data_matrix)
@@ -71,7 +91,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
   
   data_matrix = as.data.frame(data_matrix)
   data_matrix[[feature_id_col]] = rownames(data_matrix)
-
+  
   df_long = data_matrix %>%
     melt(id.vars = feature_id_col)
   names(df_long) = c(feature_id_col, sample_id_col, measure_col)
@@ -86,7 +106,8 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
     nest() %>%
     mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
-                      expl.var = sample_order_col, ...)) %>%
+                      expl.var = sample_order_col, 
+                      abs.threshold = abs.threshold, pct.threshold = pct.threshold, ...)) %>%
     unnest() %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     mutate(mean_fit = mean(fit)) %>%
@@ -94,7 +115,7 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
     mutate_(Intensity_normalized = interp(~`+`(x, y),
                                           x = as.name('diff'),
                                           y = as.name(measure_col)))
-
+  
   fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
                                                     sample_id_col, batch_col)))
   
@@ -109,7 +130,6 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
               fit_df = fit_df))
 }
 
-
 #' Standardized input-output ComBat normalization ComBat allows users to adjust
 #' for batch effects in datasets where the batch covariate is known, using
 #' methodology described in Johnson et al. 2007. It uses either parametric or
@@ -118,8 +138,8 @@ normalize_custom_fit <- function(data_matrix, sample_annotation,
 #' batch effects. The input data are assumed to be cleaned and normalized before
 #' batch effect removal.
 #'
-#' @name normalize
-#' @param par.prior
+#' @name correct_batch
+#' @param par.prior whether parametrical or non-parametrical prior should be used
 #'
 #' @return `data_matrix`-size data matrix with batch-effect corrected by
 #'   `ComBat`
@@ -162,14 +182,14 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' @export
 #'
 #' @examples
-correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
+correct_batch_effects <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
                                 discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
                                 feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
                                 measure_col = 'Intensity',  sample_order_col = 'order', 
-                                loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.20, ...){
+                                abs.threshold = 5, pct.threshold = 0.20, ...){
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-  fit_list = normalize_custom_fit(data_matrix, sample_annotation = sample_annotation,
+  fit_list = adjust_batch_trend(data_matrix, sample_annotation = sample_annotation,
                                   batch_col = batch_col,
                                   feature_id_col = feature_id_col,
                                   sample_id_col = sample_id_col,
@@ -177,7 +197,6 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                                   sample_order_col = sample_order_col,
                                   fit_func = fit_nonlinear,
                                   fitFunc = fitFunc, 
-                                  loess.span = loess.span, 
                                   abs.threshold = abs.threshold, 
                                   pct.threshold = pct.threshold, ...)
   fit_matrix = fit_list$data_matrix
@@ -185,7 +204,7 @@ correct_batch_trend <- function(data_matrix, sample_annotation, fitFunc = 'loess
                             measure_col = measure_col, sample_id_col = sample_id_col)
   
   if(discreteFunc == 'MedianCentering'){
-    median_long = correct_medians_batch(df_long = fit_long, sample_annotation = sample_annotation,
+    median_long = center_peptide_batch_medians(df_long = fit_long, sample_annotation = sample_annotation,
                                           sample_id_col = sample_id_col,
                                           batch_col = batch_col,
                                           feature_id_col = feature_id_col,
