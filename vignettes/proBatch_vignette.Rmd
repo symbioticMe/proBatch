@@ -2,7 +2,8 @@
 title: "proBatch"
 author: "Jelena Čuklina, Chloe H. Lee, Patrick Pedrioli, Ruedi Aebersold"
 date: "`r Sys.Date()`"
-output: pdf_document
+#output: pdf_document
+output: html_document
 vignette: >
   %\VignetteIndexEntry{proBatch package overview}
   %\VignetteEngine{knitr::rmarkdown}
@@ -36,7 +37,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-## Batch effects in large-scale data.
+## Batch effects analysis in large-scale data
 Recent advances in mass-spectrometry enabled fast and near-exhaustive 
 identification and quantification of proteins in complex biological samples [1],
 allowing for the profiling of large-scale datasets. 
@@ -48,8 +49,6 @@ This introduces systematic technical variations known as batch effects.
 Batch effects can alter or obscure the biological signal in the data [2, 3]. 
 Thus, the presence and severity of batch effects should be assessed, and,
 if necessary, corrected.
-
-## Batch effects analysis workflow
 
 The fundamental objective of the batch effects adjustment procedure is to make all 
 measurements of samples comparable for a meaningful biological analysis. Normalization
@@ -66,7 +65,7 @@ whether the correction improved the quality of the data.
 
 The pipeline, summarizing this workflow, is shown in Fig.1.
 
-```{r, include = TRUE, fig.align = "center", echo=FALSE, fig.cap="proBatch in batch correction workflow", out.width = '50%'}
+```{r batch_workflow, include = TRUE, fig.align = "center", echo=FALSE, fig.cap="proBatch in batch correction workflow", out.width = '50%'}
 knitr::include_graphics("Batch_effects_workflow_staircase.png")
 ```
 
@@ -112,7 +111,7 @@ to infer the proteins (thus, fragment-level for inference tools such as aLFQ or 
 `proBatch` is primarily a wrapper of functions from other packages, therefore it has 
 numerous dependencies. If some of these dependencies are not installed, you will 
 need to do that before running `proBatch`.
-```{r, eval = FALSE}
+```{r dependencies, eval = FALSE}
 bioc_deps <- c("GO.db", "impute", "preprocessCore", "pvca","sva" )
 cran_deps <- c("corrplot", "data.table", "ggfortify","lazyeval", "pheatmap", "reshape2", 
                "rlang", "tidyverse","wesanderson","WGCNA") 
@@ -122,7 +121,7 @@ install.packages(cran_deps)
 ```
 
 To install the proBatch package, the following commands can be executed in R:
-```{r, fig.show='hold', eval = FALSE}
+```{r install_proBatch, fig.show='hold', eval = FALSE}
 # Once the proBatch package is in Bioconductor, can easily install by: 
 install.packages("proBatch") 
 
@@ -138,7 +137,7 @@ devtools::install_github("symbioticMe/proBatch")
 ### Loading the libraries
 
 In this vignette, we use functions from `dplyr` and other `tidyverse` package family to transform some data frames
-```{r}
+```{r load_tidyverse}
 require(tidyverse)
 ```
 
@@ -161,7 +160,7 @@ of a specific feature (peptide, fragment) in the specific sample. At least
 three columns are required: feature ID column, measurement (intensity) column and sample ID column.
 
 In this vignette, the essential columns have the following names:
-```{r}
+```{r col_names}
 feature_id_col = 'peptide_group_label'
 measure_col = 'Intensity'
 sample_id_col = 'FullRunName'
@@ -202,7 +201,7 @@ In our example data, these columns are:
 4. `biospecimen_id_col = "EarTag"`
 
 Thus, technical and biological factors are:
-```{r}
+```{r tech_bio_cols}
 technical_covariates = c('MS_batch', 'digestion_batch', 'RunDate', 'RunTime')
 biological_covariates = c('Strain', 'Diet', 'Sex', 'Age_Days')
 biospecimen_id_col = "EarTag"
@@ -242,7 +241,7 @@ several samples were repeated back-to-back in the end and in the beginning of tw
 
 
 The example SWATH data and annotation files can be loaded from the package with the function `data()`. 	
-```{r, fig.show='hold'}
+```{r load_data, fig.show='hold'}
 library(proBatch)
 data("example_proteome", "example_sample_annotation", "example_peptide_annotation", 
      package = "proBatch")
@@ -263,7 +262,7 @@ annotation. Using the `date_to_sample_order()` function one can infer
 sample order from the date and time of the measurements.
 
 You can specify the columns illustrating date and time with `time_column` and their formats with the `dateTimeFormat` parameters (see `POSIX` date format for reference).  
-```{r, fig.show='hold'}
+```{r date_to_order, fig.show='hold'}
 generated_sample_annotation <- date_to_sample_order(example_sample_annotation,
                                           time_column = c('RunDate','RunTime'),
                                           new_time_column = 'generated_DateTime',
@@ -285,7 +284,7 @@ From the OpenSWATH output, you can generate peptide annotation using
 `feature_id_col` and the annotation columns with the `annotation_col`
 parameters.
 
-```{r, fig.show='hold'}
+```{r pep_annotation, fig.show='hold'}
 generated_peptide_annotation <- create_peptide_annotation(example_proteome, 
                                         feature_id_col = 'peptide_group_label',
                                         annotation_col = c('ProteinName', 'Gene'))
@@ -312,7 +311,7 @@ Plotting functions accept data in either data matrix or long data
 frame formats. Our package provides the helper functions
 `long_to_matrix()` and `matrix_to_long()` to conveniently convert
 datasets back and forth.
-```{r}
+```{r long_to_matrix}
 example_matrix <- long_to_matrix(example_proteome)
 ```
 
@@ -333,7 +332,7 @@ colors into qualitative or sequential color scales.
 color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
        factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
        not_factor_columns = 'DateTime',
-       numeric_columns = c('Age_Days', 'order'))
+       numeric_columns = c('order'))
 color_list = color_scheme$list_of_colors
 ```
 
@@ -355,7 +354,7 @@ the samples order in the sample annotation is used for plotting.
 
 ### Plotting the sample mean 
 The `plot_sample_mean()` function illustrates global average vs. sample running order. This can be helpful to visualize the global quantitative pattern and to identify discrepancies within or between batches. 
-```{r, fig.show='hold', fig.width=5, fig.height=2}
+```{r plot_mean, fig.show='hold', fig.width=5, fig.height=2}
 batch_col = 'MS_batch'
 plot_sample_mean(log_transformed_matrix, example_sample_annotation, order_col = 'order', 
                  batch_col = batch_col, color_by_batch = T, ylimits = c(12, 16),
@@ -371,7 +370,7 @@ signal was decreasing.
 
 ### Plotting boxplots
 Alternatively, `plot_boxplots()` captures the global distribution vs. the sample running order.
-```{r, fig.show='hold', fig.width=10, fig.height=5}
+```{r plot_boxplots, fig.show='hold', fig.width=10, fig.height=5}
 log_transformed_long <- matrix_to_long(log_transformed_matrix)
 batch_col = 'MS_batch'
 plot_boxplot(log_transformed_long, example_sample_annotation, 
@@ -407,13 +406,13 @@ distributions of samples are dramatically different and this cannot be
 explained by non-technical factors, such as heterogeneity of samples,
 other approaches, such as quantile normalization need to be used.
 
-```{r, fig.show='hold'}
+```{r median_normalization_log, fig.show='hold'}
 median_normalized_matrix = normalize_data(log_transformed_matrix, 
                                           normalizeFunc = "medianCentering")
 ```
 
 Same result will be achieved with:
-```{r, fig.show='hold'}
+```{r median_normalization_raw, fig.show='hold'}
 median_normalized_matrix = normalize_data(example_matrix, 
                                           normalizeFunc = "medianCentering", log_base = 2)
 ```
@@ -427,7 +426,7 @@ of features (genes, proteins) is constant among the samples, thus also
 the distribution in principle are identical.
 
 
-```{r, fig.show='hold'}
+```{r quantile_norm, fig.show='hold'}
 quantile_normalized_matrix = normalize_data(log_transformed_matrix, 
                                             normalizeFunc = "quantile")
 ```
@@ -436,7 +435,7 @@ After quantile or median normalization, you can easily check if the
 global pattern improved by generating mean or boxplots and comparing
 them side by side. Here are the mean plots before and after
 normalization of the log transformed dataset.
-```{r, fig.show='hold', fig.width=5, fig.height=2}
+```{r plot_mean_normalized, fig.show='hold', fig.width=5, fig.height=2}
 plot_sample_mean(quantile_normalized_matrix, example_sample_annotation, 
                  color_by_batch = T, ylimits = c(12, 16), 
                  color_scheme = color_list[[batch_col]])
@@ -470,7 +469,7 @@ identify what is the driving force of the clustering.
 Once your color annotation is ready, for the specific covariates of
 interest, you can subset the color dataset and feed it into the
 clustering functions.
-```{r, fig.show='hold', fig.width=10, fig.height=5}
+```{r plot_hierarchical, fig.show='hold', fig.width=10, fig.height=5}
 color_annotation <- color_scheme$color_df
 selected_annotations <- c("MS_batch",  "digestion_batch", "Diet")
 #select only a subset of samples for plotting
@@ -489,7 +488,7 @@ specifying the required covariates with `sample_annotation_col`,
 
 \pagebreak
 
-```{r, fig.show='hold', fig.width=10, fig.height=11}
+```{r plot_heatmap, fig.show='hold', fig.width=10, fig.height=11}
 plot_heatmap(quantile_normalized_matrix, example_sample_annotation, 
              sample_annotation_col = selected_annotations, 
              cluster_cols = T, 
@@ -508,7 +507,7 @@ technique is particularly convenient to assess replicate similarity.
 
 You can identify the covariate leading the direction of variations by
 coloring potential candidates.
-```{r, fig.show='hold',  fig.width=3.4, fig.height=2.3}
+```{r plot_PCA, fig.show='hold',  fig.width=3.4, fig.height=2.3}
 plot_PCA(quantile_normalized_matrix, example_sample_annotation, color_by = 'MS_batch', 
               plot_title = "MS batch", colors_for_factor = color_list[[batch_col]])
 plot_PCA(quantile_normalized_matrix, example_sample_annotation, color_by = "digestion_batch", 
@@ -538,7 +537,7 @@ peptides it can easily take several hours.  So it is generally a
 good idea to run this analysis as a stand-alone script on a powerful
 machine.
 
-```{r, fig.show='hold', eval = FALSE}
+```{r plot_PVCA, fig.show='hold', eval = FALSE}
 pvca <- plot_PVCA(quantile_normalized_matrix, example_sample_annotation, 
                   technical_covariates = c('MS_batch', 'digestion_batch'),
                   biological_covariates = c(biological_covariates, biospecimen_id_col))
@@ -579,7 +578,7 @@ In mass-spectrometry, also the trends associated with this order can
 be assessed for a few representative peptides, thus the `order` column
 is also important for this diagnostics.
 
-```{r, fig.show='hold'}
+```{r plot_spikeIn, fig.show='hold'}
 quantile_normalized_long <- matrix_to_long(quantile_normalized_matrix, example_sample_annotation)
 plot_spike_in(quantile_normalized_long, example_sample_annotation, 
               peptide_annotation = generated_peptide_annotation,
@@ -618,7 +617,7 @@ batch-free as within-batch means and variances are
 batch-dependent. However, now the batches are discrete and thus can be
 corrected using discrete methods such as median-centering or ComBat.
 
-```{r, fig.show='hold', fig.width=5, fig.height=2.4}
+```{r loess_fit, fig.show='hold', fig.width=5, fig.height=2.4}
 loess_fit <- adjust_batch_trend(quantile_normalized_matrix, example_sample_annotation)
 loess_fit_matrix <- loess_fit$data_matrix
 ```
@@ -631,7 +630,7 @@ sensitive to fit the trend accurately. Currently, we suggest to
 evaluate several peptides to determine the best smoothing degree for a
 given dataset.
 
-```{r, fig.show='hold', fig.width=5, fig.height=2.4}
+```{r loess_30, fig.show='hold', fig.width=5, fig.height=2.4}
 loess_fit_30 <- adjust_batch_trend(quantile_normalized_matrix, example_sample_annotation, span = 0.3)
 
 quantile_normalized_long <- matrix_to_long(quantile_normalized_matrix)
@@ -641,7 +640,7 @@ plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2",
             fit_df = loess_fit_30$fit_df, plot_title = "Span = 30%")
 ```
 
-```{r, fig.show='hold', fig.width=5, fig.height=2.4}
+```{r loess_70, fig.show='hold', fig.width=5, fig.height=2.4}
 loess_fit_70 <- adjust_batch_trend(quantile_normalized_matrix, example_sample_annotation, span = 0.7)
 plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
             df_long = quantile_normalized_long, example_sample_annotation, 
@@ -664,7 +663,7 @@ Once the data are normalized and corrected for continuous drift, only
 discrete batch effects is left to be corrected.
 
 Currently, both batch correction procedures accept long format of the data:
-```{r}
+```{r loess_to_long}
 loess_fit_df <- matrix_to_long(loess_fit_matrix)
 ```
 
@@ -672,7 +671,7 @@ loess_fit_df <- matrix_to_long(loess_fit_matrix)
 #### Feature-level median centering 
 Feature-level median centering is the simplest approach for batch effects correction. 
 However, if the variance is different between batches, other approaches need to be used.
-```{r, fig.show='hold', fig.width=3, fig.height=2.4}
+```{r median_batch, fig.show='hold', fig.width=3, fig.height=2.4}
 peptide_median_df <- center_peptide_batch_medians(loess_fit_df, example_sample_annotation)
 plot_single_feature(pep_name = "46213_NVGVSFYADKPEVTQEQK_2", df_long = peptide_median_df, 
             example_sample_annotation, color_by_col = NULL, measure_col = 'Intensity_normalized',
@@ -687,12 +686,12 @@ Bayes framework for adjusting data for batch effects [11]. The
 function `correct_with_ComBat()` can incorporate several covariates
 and make data comparable across batches.
 
-```{r, fig.show='hold'}
+```{r comBat, fig.show='hold'}
 comBat_matrix <- correct_with_ComBat(loess_fit_matrix, example_sample_annotation)
 ```
 
 To illustrate the correction we use the "46213_NVGVSFYADKPEVTQEQK_2" spike-in peptide. 
-```{r, fig.show='hold',  fig.width=3, fig.height=2.4}
+```{r combat_result, fig.show='hold',  fig.width=3, fig.height=2.4}
 combat_df <- matrix_to_long(comBat_matrix)
 plot_single_feature (pep_name = "46213_NVGVSFYADKPEVTQEQK_2", loess_fit_df, 
           example_sample_annotation, plot_title = "Loess Fitted", color_by_col = NULL)
@@ -712,7 +711,7 @@ correction method is preferred at `discreteFunc` either “ComBat” or
 “MedianCentering” and supplement other arguments such as `span`,
 `abs.threshold` or `pct.threshold` as in `normalize_custom_fit()`.
 
-```{r, fig.show='hold'}
+```{r batch_corr_general, fig.show='hold'}
 batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalized_matrix, 
                                   example_sample_annotation, discreteFunc = 'ComBat',
                                   abs.threshold = 5, pct.threshold = 0.20)
@@ -739,7 +738,7 @@ illustrated by corrplot (`flavor = 'corrplot'`) or by "pretty
 heatmap", of "pheatmap" (`flavor = 'pheatmap'`)
 
 First, we specify, which samples we want to correlate
-```{r, fig.show='hold', fig.height=5, fig.width=8}
+```{r setup_corr_heatmap, fig.show='hold', fig.height=5, fig.width=8}
 earTags <- c("ET1524", "ET2078", "ET1322", "ET1566", "ET1354", "ET1420", "ET2154",
              "ET1515", "ET1506", "ET2577", "ET1681", "ET1585", "ET1518", "ET1906")
 
@@ -761,14 +760,14 @@ heatmap_colors = colorRampPalette(
   rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList))
 ```
 
-```{r, fig.show='hold', fig.height=4, fig.width=6}
+```{r corr_samples_heatmap, fig.show='hold', fig.height=2.12, fig.width=3.35}
 # Plot the heatmap 
 plot_sample_corr_heatmap(quantile_normalized_matrix, samples_to_plot = replicate_filenames, 
                          flavor = 'pheatmap', plot_title = 'Quantile Normalized', 
                          annotation_colors = color_list[factors_to_show], 
                          annotation_col = replicate_annotation,
                          color = heatmap_colors, breaks = breaksList, 
-                         cluster_rows=F, cluster_cols=F,fontsize = 7,
+                         cluster_rows=F, cluster_cols=F,fontsize = 4,
                          annotation_names_col = TRUE, annotation_legend = FALSE, 
                          show_colnames = F)
 
@@ -777,7 +776,7 @@ plot_sample_corr_heatmap(batch_corrected_matrix, samples_to_plot = replicate_fil
                          annotation_colors = color_list[factors_to_show], 
                          annotation_col = replicate_annotation,
                          color = heatmap_colors, breaks = breaksList, 
-                         cluster_rows=F, cluster_cols=F,fontsize = 7,
+                         cluster_rows=F, cluster_cols=F,fontsize = 4,
                          annotation_names_col = TRUE, annotation_legend = FALSE, 
                          show_colnames = F)
 ```
@@ -808,7 +807,7 @@ erroneous conclusion. The sample correlation is often used to prove
 the quality of the measurement, as it is typically very high (examples
 of the replicate correlation above .95 are common for mass
 spectrometry).
-```{r, fig.show='hold', fig.width=3.2, fig.height=3.5}
+```{r corr_samples_distrib, fig.show='hold', fig.width=3.2, fig.height=3.5}
 sample_cor_norm <- plot_sample_corr_distribution(quantile_normalized_matrix,
                                                  example_sample_annotation, 
                                                  batch_col = 'MS_batch', 
@@ -834,7 +833,7 @@ increases while that of different proteins stays the same.
 **NB:** For a data matrix containing several thousands of peptides, calculation of peptide correlation 
 is a computationally demanding procedure. It can easily take several hours. Therefore, it is generally 
 recommended to run this analysis as a stand-alone script on a powerful machine.
-```{r, fig.show='hold',fig.width=3, fig.height=2.5}
+```{r correlation_of_peptides, fig.show='hold',fig.width=3, fig.height=2.5}
 peptide_cor_norm <- plot_peptide_corr_distribution(quantile_normalized_matrix, 
           generated_peptide_annotation, protein_col = 'Gene', plot_title = 'Quantile normalized')
 peptide_cor_norm + geom_hline(yintercept=0, linetype="dashed", color = "grey")
@@ -843,6 +842,14 @@ peptide_cor_batchCor <- plot_peptide_corr_distribution(batch_corrected_matrix,
           generated_peptide_annotation, protein_col = 'Gene', plot_title = 'Batch corrected')
 peptide_cor_batchCor + geom_hline(yintercept=0, linetype="dashed", color = "grey")
 ```
+
+# Citation
+
+To cite this package, please use:
+```{r citation}
+citation('proBatch')
+```
+
 
 \pagebreak
 
