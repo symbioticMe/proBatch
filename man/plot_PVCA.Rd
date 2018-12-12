@@ -65,6 +65,11 @@ list of two items: plot =gg, df = pvca_res
 \description{
 Plot variance distribution by variable
 }
+\examples{
+\\donotrun{plot_PVCA(quantile_normalized_matrix, example_sample_annotation, 
+technical_covariates = c('MS_batch', 'digestion_batch'),
+biological_covariates = c(biological_covariates, biospecimen_id_col))}
+}
 \seealso{
 \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
 }

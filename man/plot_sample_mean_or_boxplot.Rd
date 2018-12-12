@@ -75,6 +75,13 @@ running order available)
 functions for quick visual assessment of trends associated, overall
   or specific covariate-associated (see `batch_col` and `facet_col`)
 }
+\examples{
+\\donotrun{plot_sample_mean(log_transformed_matrix, example_sample_annotation, 
+order_col = 'order', batch_col = "MS_batch", ylimits = c(12, 16))}
+
+\\donotrun{plot_boxplot(log_transformed_long, example_sample_annotation, batch_col = "MS_batch"}
+
+}
 \seealso{
 \code{\link[ggplot2]{ggplot}}
 }
