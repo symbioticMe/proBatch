@@ -2,26 +2,34 @@
 % Please edit documentation in R/auxiliary.R
 \name{create_peptide_annotation}
 \alias{create_peptide_annotation}
-\title{Create light-weight peptide annotation data frame for selection of illustrative proteins}
+\title{Prepare peptide annotation from long format data frame
+ 
+Create light-weight peptide annotation data frame for selection of illustrative proteins}
 \usage{
 create_peptide_annotation(df_long,
   feature_id_col = "peptide_group_label",
   annotation_col = c("ProteinName"))
 }
 \arguments{
-\item{peptide_col}{column containing peptide ID}
+\item{df_long}{data frame where each row is a single feature in a single
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+file)}
 
-\item{protein_col}{one or more columns contatining protein ID}
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
+
+\item{annotation_col}{one or more columns contatining protein ID}
+}
+\value{
+data frame containing petpide annotations
 }
 \description{
+Prepare peptide annotation from long format data frame
+ 
 Create light-weight peptide annotation data frame for selection of illustrative proteins
-}
-\examples{
-\\donotrun{
-peptide_annotation = create_peptide_annotation(example_proteome)
-peptide_summary =
-}
-
 }
 \seealso{
 \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}},
