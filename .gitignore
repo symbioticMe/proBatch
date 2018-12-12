@@ -1,3 +1,5 @@
+Meta
+doc
 *.Rproj
 *.Rapp*
 .Rproj.user
@@ -6,6 +8,5 @@
 .Ruserdata
 *.Rapp.history
 inst/doc
-vignettes/
-proBatch_marked_copy.pdf
+#vignettes/
 
