@@ -140,7 +140,7 @@ plot_protein_corrplot <- function(data_matrix,
 #'
 #' }
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
-plot_sample_heatmap <- function(data_matrix, samples_to_plot = NULL,
+plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                       flavor = 'corrplot', filename = NULL,
                                       width = NA, height = NA, unit = c('cm','in','mm'),
                                       plot_title = sprintf('Correlation matrix of sample %s', samples_to_plot), ...){
@@ -257,7 +257,7 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                    repeated_samples = NULL,
                                    sample_id_col = 'FullRunName',
-                                   batch_col = 'batch',
+                                   batch_col = 'MS_batch',
                                    biospecimen_id_col = 'EarTag',
                                    plot_title = 'Correlation distribution',
                                    plot_param = 'batch_replicate'){
