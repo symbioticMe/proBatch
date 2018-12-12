@@ -16,6 +16,10 @@ get_peptide_corr_df(peptide_cor, peptide_annotation,
 
 \item{feature_id_col}{column in \code{peptide_annotation} that captures peptide names are found}
 }
+\value{
+dataframe with peptide correlation coefficients that are suggested to use for
+plotting in \code{\link{plot_peptide_corr_distribution}} as \code{plot_param}:
+}
 \description{
 Transform square correlation matrix into long data frame of correlations
 }
