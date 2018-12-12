@@ -177,7 +177,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' @return `data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
 #' @export
 #'
-#' #' @examples \donotrun{
+#' @examples \donotrun{
 #' batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalized_matrix, 
 #'                                                 example_sample_annotation, discreteFunc = 'ComBat',
 #'                                                 batch_col = "MS_batch", span = 0.8,
