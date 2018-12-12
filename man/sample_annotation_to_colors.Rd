@@ -6,8 +6,8 @@
 \usage{
 sample_annotation_to_colors(sample_annotation,
   columns_for_plotting = NULL, sample_id_col = "FullRunName",
-  factor_columns = c("subtype", "caseControl"),
-  not_factor_columns = c("RunDate", "ProteinPrepDate"),
+  factor_columns = c("MS_batch", "EarTag", "Strain", "Diet", "Sex"),
+  not_factor_columns = "DateTime", numeric_columns = "Age_Days",
   rare_categories_to_other = T, numeric_palette_type = "brewer",
   granularity = 10)
 }
@@ -21,9 +21,13 @@ technical covariates (batches etc) }}
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
-\item{factor_columns}{columns of sample_annotation to be treated as factors. Note that factor and character columns are treated as factors by default.}
+\item{factor_columns}{columns of sample_annotation to be treated as factors. Note that 
+factor and character columns are treated as factors by default.}
 
-\item{not_factor_columns}{don't treat these columns as factors. This can be used to override the default behaviour of considering factors and character columns as factors.}
+\item{not_factor_columns}{don't treat these columns as factors. This can be used to 
+override the default behaviour of considering factors and character columns as factors.}
+
+\item{numeric_columns}{columns of sample_annotation to be treated as continuous numeric values.}
 
 \item{rare_categories_to_other}{if True rare categories will be merged as 'other'}
 
