@@ -6,7 +6,7 @@
 \usage{
 fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
   noFitRequants = F, fitFunc = "loess_regression", with_df = F,
-  abs.threshold = 5, pct.threshold = 0.2, ...)
+  loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.2, ...)
 }
 \arguments{
 \item{dataDF}{data frame containing response variable e.g. samples in order and explanatory 
