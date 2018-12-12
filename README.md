@@ -45,7 +45,7 @@ Install proBatch from github:
 
 ```
 library(devtools)
-install_github("symbioticMe/proBatch")
+install_github("symbioticMe/proBatch", build_vignettes = TRUE)
 ```
 
 ## Exploring the package
