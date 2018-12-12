@@ -46,9 +46,10 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
                            measure_col = 'Intensity',
                            sample_id_col = 'FullRunName',
                            step = NULL){
-  
-  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
-    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  if(!is.null(sample_annotation)){
+    if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+      warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  }
   
   df_long = data_matrix %>%
     as.data.frame() %>%
@@ -84,7 +85,7 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}},
 #' \code{\link{plot_within_prot_corr_distribution}}
 create_peptide_annotation <- function(df_long, feature_id_col = 'peptide_group_label',
-                                      annotation_col = c('RT', 'Intensity', "ProteinName" )){
+                                      annotation_col = c("ProteinName" )){
   peptide_annotation = df_long %>%
     select(one_of(c(feature_id_col, annotation_col))) %>%
     distinct()
