@@ -76,42 +76,37 @@ log_transformed_matrix <- log_transform(example_matrix)
 color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
        factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
        not_factor_columns = 'DateTime',
-       numeric_columns = c('Age_Days', 'order'))
+       numeric_columns = c('order'))
 color_list = color_scheme$list_of_colors
 
-## ---- fig.show='hold', fig.width=5, fig.height=2-------------------------
+## ----plot_mean, fig.show='hold', fig.width=5, fig.height=2---------------
 batch_col = 'MS_batch'
 plot_sample_mean(log_transformed_matrix, example_sample_annotation, order_col = 'order', 
                  batch_col = batch_col, color_by_batch = T, ylimits = c(12, 16),
                  color_scheme = color_list[[batch_col]])
 
-## ---- fig.show='hold', fig.width=10, fig.height=5------------------------
+## ----plot_boxplots, fig.show='hold', fig.width=10, fig.height=5----------
 log_transformed_long <- matrix_to_long(log_transformed_matrix)
 batch_col = 'MS_batch'
 plot_boxplot(log_transformed_long, example_sample_annotation, 
              batch_col = batch_col, color_scheme = color_list[[batch_col]])
 
-## ---- fig.show='hold'----------------------------------------------------
+## ----median_normalization_log, fig.show='hold'---------------------------
 median_normalized_matrix = normalize_data(log_transformed_matrix, 
                                           normalizeFunc = "medianCentering")
 
-## ---- fig.show='hold'----------------------------------------------------
+## ----median_normalization_raw, fig.show='hold'---------------------------
 median_normalized_matrix = normalize_data(example_matrix, 
                                           normalizeFunc = "medianCentering", log_base = 2)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ----quantile_norm, fig.show='hold'--------------------------------------
 quantile_normalized_matrix = normalize_data(log_transformed_matrix, 
                                             normalizeFunc = "quantile")
 
-## ---- fig.show='hold', fig.width=5, fig.height=2-------------------------
+## ----plot_mean_normalized, fig.show='hold', fig.width=5, fig.height=2----
 plot_sample_mean(quantile_normalized_matrix, example_sample_annotation, 
                  color_by_batch = T, ylimits = c(12, 16), 
                  color_scheme = color_list[[batch_col]])
-
-## ---- fig.show='hold'----------------------------------------------------
-batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalized_matrix, 
-                                  example_sample_annotation, discreteFunc = 'ComBat',
-                                  abs.threshold = 5, pct.threshold = 0.20)
 
 ## ---- fig.show='hold', fig.width=10, fig.height=5------------------------
 color_annotation <- color_scheme$color_df
@@ -124,7 +119,7 @@ plot_hierarchical_clustering(quantile_normalized_matrix, color_annotation,
                              distance = "euclidean", agglomeration = 'complete',
                              label_samples = F)
 
-## ---- fig.show='hold', fig.width=10, fig.height=15-----------------------
+## ---- fig.show='hold', fig.width=10, fig.height=11-----------------------
 plot_heatmap(quantile_normalized_matrix, example_sample_annotation, 
              sample_annotation_col = selected_annotations, 
              cluster_cols = T, 
@@ -209,7 +204,7 @@ factors_to_show = c("MS_batch", "EarTag")
 replicate_annotation <- example_sample_annotation %>%
   filter(MS_batch == 'Batch_2' | MS_batch == "Batch_3") %>%
   filter(EarTag %in% earTags) %>%
-  remove_rownames %>% 
+  remove_rownames() %>% 
   column_to_rownames(var="FullRunName") %>%
   select(factors_to_show) # Annotate MS_batch and EarTag on pheatmap 
 
@@ -218,26 +213,26 @@ replicate_filenames = replicate_annotation %>%
   rownames()
 
 breaksList <- seq(0.7, 1, by = 0.01) # color scale of pheatmap 
-heatmap_colors = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList))
+heatmap_colors = colorRampPalette(
+  rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList))
 
-## ---- fig.show='hold', fig.height=5, fig.width=8-------------------------
+## ---- fig.show='hold', fig.height=4, fig.width=6-------------------------
 # Plot the heatmap 
 plot_sample_corr_heatmap(quantile_normalized_matrix, samples_to_plot = replicate_filenames, 
                          flavor = 'pheatmap', plot_title = 'Quantile Normalized', 
                          annotation_colors = color_list[factors_to_show], 
                          annotation_col = replicate_annotation,
                          color = heatmap_colors, breaks = breaksList, 
-                         cluster_rows=F, cluster_cols=F,
+                         cluster_rows=F, cluster_cols=F,fontsize = 7,
                          annotation_names_col = TRUE, annotation_legend = FALSE, 
                          show_colnames = F)
 
-## ---- fig.show='hold', fig.height=5, fig.width=8-------------------------
 plot_sample_corr_heatmap(batch_corrected_matrix, samples_to_plot = replicate_filenames, 
                          flavor = 'pheatmap', plot_title = 'Batch Corrected',
                          annotation_colors = color_list[factors_to_show], 
                          annotation_col = replicate_annotation,
                          color = heatmap_colors, breaks = breaksList, 
-                         cluster_rows=F, cluster_cols=F,
+                         cluster_rows=F, cluster_cols=F,fontsize = 7,
                          annotation_names_col = TRUE, annotation_legend = FALSE, 
                          show_colnames = F)
 
