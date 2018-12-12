@@ -68,20 +68,17 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 
 
 
+#' Prepare peptide annotation from long format data frame
+#'  
 #' Create light-weight peptide annotation data frame for selection of illustrative proteins
 #'
-#' @param df_long
-#' @param peptide_col column containing peptide ID
-#' @param protein_col one or more columns contatining protein ID
+#' @inheritParams proBatch
+#' 
+#' @param annotation_col one or more columns contatining protein ID
 #'
 #' @return
 #' @export
-#'
-#' @examples \donotrun{
-#' peptide_annotation = create_peptide_annotation(example_proteome)
-#' peptide_summary =
-#' }
-#'
+#' 
 #' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}},
 #' \code{\link{plot_within_prot_corr_distribution}}
 create_peptide_annotation <- function(df_long, feature_id_col = 'peptide_group_label',
