@@ -1,24 +1,28 @@
 Package: proBatch
 Type: Package
 Title: Tools for Batch Effects Diagnostics and Correction
-Version: 1.1.1
-Author: Jelena Cuklina <chuklina.jelena@gmail.com>, Chloe H. Lee <chloe.h.lee94@gmail.com>
-Maintainer: The package maintainer <chuklina.jelena@gmail.com>
-Description: The proBatch package contains functions for diagnosing and removing
-    batch effects and other unwanted variation in high-thoughput experiment, primarily
-    designed for DIA proteomics data.
-    The diagnostic part of the package can be broadly divided in (1) Proteome-wide
-    and (2) Feature-specific functions, explained in corresponding vignettes. Since 
-    the diagnostic part for batch effects does require batch effect removal, here
-    we provide a few convenience wrappers for common batch-effect removal approaches,
-    namely, ComBat (Johnson et al. 2007 Biostatistics) and mean/median centering.
-    However, proteomics data may require more complicated technical artifact 
-    correction approaches like non-linear fitting, which is also found in "normalization"
-    section of this package. 
-    The approaches are described in (Cuklina et al. 2019, MCP)
-License: What license is it under?
-URL: https://github.com/jelenachuklina/proBatch
-BugReports: https://github.com/jelenachuklina/proBatch/issues
+Version: 1.0
+Author: Jelena Čuklina <chuklina.jelena@gmail.com>, Chloe H. Lee <chloe.h.lee94@gmail.com>, Patrick Pedrioli <pedrioli@gmail.com>
+Maintainer: The package maintainer Jelena Cuklina <chuklina.jelena@gmail.com>
+Description: The proBatch package facilitates batch effects analysis and correction
+    in high-thoughput experiments. Although the package has primarily been developed 
+    for mass-spectrometry proteomics (DIA/SWATH), it should also be applicable 
+    to most omic data with minor adaptations.
+    The package contains functions for diagnostics (proteome/genome-wide and feature-level),
+    correction (normalization and batch effects correction) and quality control.
+    Diagnostics part of the package features unified color scheme for plotting, 
+    that allows to produce publication-quality graphs.
+    Correction functions are convenient wrappers for common normalization and 
+    batch effects removal approaches such as quantile normalizetion and median centering. 
+    Furthermore, the package includes non-linear fitting based approaches to deal 
+    with complex, mass spectrometry-specific signal drifts.
+    Quality control step, mostly based on correlation analysis, allows to assess whether 
+    the correction improved the quality of the data.
+    All steps of batch effects analysis and correction are illustrated in the vignette,
+    using the subset of real-world large-scale dataset.
+License: GPL-3
+URL: https://github.com/symbioticMe/proBatch
+BugReports: https://github.com/symbioticMe/proBatch/issues
 Depends: R (>= 3.4.0)
 Encoding: UTF-8
 LazyData: true
@@ -31,6 +35,7 @@ Imports:
     lubridate,
     pheatmap,
     preprocessCore,
+    purrr,
     pvca,
     RColorBrewer,
     readr, 
@@ -45,3 +50,4 @@ Suggests: knitr,
     SWATH2stats
 VignetteBuilder: knitr
 RoxygenNote: 6.1.0
+Encoding: UTF-8
