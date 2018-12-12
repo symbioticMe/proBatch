@@ -96,38 +96,3 @@ remove_peptides_with_missing_batch <- function(df_long, sample_annotation,
   
   return(proteome_clean)
 }
-
-#' Summarize run features
-#'
-#' Summarizes various peptide properties on a per sample basis. By default will
-#' summarize RT, Intensity and m_score. If your feature does not have some of
-#' these set them to NULL when calling.
-#'
-#' @details summarize peptides by sample (ranking) and on the contrary, across
-#'   peptide-wise across samples
-#'
-#' @return a data frame summarizing features in a dataset on a per sample basis.
-#'   The following columns are returned: `RT_mean`, `Int_mean`, `numb_requants`,
-#'   `median_m_score`, `mean_m_score`, `median_good_m_score` (median of
-#'   `m_score` excluding requants)
-#'
-#' @family dataset cleaning functions
-#'
-#' @keywords internal
-summarize_peptides <- function(df_long, sample_id_col = 'FullRunName',
-                               feature_id_col = 'peptide_group_label',
-                               RT_col = "RT",
-                               measure_col = "Intensity",
-                               m_score = "m_score"){
-  peptide_summary = df_long %>%
-    group_by_at(vars(one_of(sample_id_col)))  %>%
-    mutate(rank = rank(measure_col))  %>%
-    group_by_at(vars(one_of(feature_id_col))) %>%
-    summarise(RT_mean = mean(RT_col ),
-              Int_mean = mean(measure_col), rank_mean = mean(rank),
-              numb_requants = sum(m_score > 1),
-              mean_m_score = mean(m_score),
-              median_m_score = median(m_score),
-              median_good_m_score = median(m_score[m_score < 1]))
-  return(peptide_summary)
-}
