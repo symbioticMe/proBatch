@@ -23,7 +23,6 @@ NULL
 #'   per-feature batch median centering
 #' @export
 #'
-#' @examples
 center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
                                   sample_id_col = 'FullRunName',
                                   batch_col = 'MS_batch',
@@ -64,8 +63,6 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @return list of two items: 1) `data_matrix`, adjusted with continious fit; 
 #' 2) fit_df, used to examine the fitting curves
 #' @export
-#'
-#' @examples
 #'
 #' @seealso \code{\link{fit_nonlinear}}
 adjust_batch_trend <- function(data_matrix, sample_annotation,
@@ -145,7 +142,6 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
 #'   `ComBat`
 #' @export
 #'
-#' @examples
 correct_with_ComBat <- function(data_matrix, sample_annotation, 
                                 sample_id_col = 'FullRunName',
                                 batch_col = 'MS_batch', 
@@ -181,7 +177,12 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' @return `data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
 #' @export
 #'
-#' @examples
+#' @examples \donotrun{
+#' batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalized_matrix, 
+#'                                                 example_sample_annotation, discreteFunc = 'ComBat',
+#'                                                 batch_col = "MS_batch", span = 0.8,
+#'                                                 abs.threshold = 5, pct.threshold = 0.20)
+#' }
 correct_batch_effects <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
                                 discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
                                 feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',

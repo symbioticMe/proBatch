@@ -62,6 +62,12 @@ Creates a spike-in facetted ggplot2 plot of the value in
 \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 be facetted by batch.
 }
+\examples{
+\\donotrun{plot_spike_in(quantile_normalized_long, example_sample_annotation, 
+peptide_annotation = generated_peptide_annotation, protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
+plot_title = 'Spike-in BOVINE protein peptides', color_by_batch = T, color_scheme = color_list[["MS_batch"]])}
+
+}
 \seealso{
 Other feature-level diagnostic functions: \code{\link{plot_iRT}},
   \code{\link{plot_peptides_of_one_protein}},
