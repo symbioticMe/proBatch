@@ -16,7 +16,6 @@
 #'
 #' @export
 #'
-#' @examples
 #' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
 #'   \code{\link[WGCNA]{plotDendroAndColors}}
 plot_hierarchical_clustering  <- function(data_matrix, color_df,
@@ -75,7 +74,6 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' @return object returned by \code{link[pheatmap]{pheatmap}}
 #' @export
 #'
-#' @examples
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
 plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 'FullRunName',
                          sample_annotation_col = NULL, 
@@ -192,7 +190,9 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
 #'
-#' @examples
+#' @examples \donotrun{plot_PVCA(quantile_normalized_matrix, example_sample_annotation, 
+#' technical_covariates = c('MS_batch', 'digestion_batch'),
+#' biological_covariates = c(biological_covariates, biospecimen_id_col))}
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
 plot_PVCA <- function(data_matrix, sample_annotation,
                       sample_id_col = 'FullRunName',
@@ -336,7 +336,9 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #'   `factor_to_color`
 #' @export
 #'
-#' @examples
+#' @examples \donotrun{plot_PCA(quantile_normalized_matrix, example_sample_annotation, 
+#' color_by = 'MS_batch', plot_title = "MS batch")
+#' }
 #' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, \code{\link[ggplot2]{ggplot}}
 plot_PCA <- function(data_matrix, sample_annotation,
                      feature_id_col = 'peptide_group_label',
