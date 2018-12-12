@@ -186,7 +186,11 @@ correct_batch_effects <- function(data_matrix, sample_annotation, fitFunc = 'loe
                                 discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
                                 feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
                                 measure_col = 'Intensity',  sample_order_col = 'order', 
+<<<<<<< HEAD:R/correct_batch_effects.R
                                 abs.threshold = 5, pct.threshold = 0.20, ...){
+=======
+                                loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.20, ...){
+>>>>>>> b7001c9... non_linear fitting function with loess_regression only. The copy of script containing kernel and spline regression saved in polybox. The threshold of NA filtering is set at 20%:R/correct_batch_effect.R
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
   fit_list = adjust_batch_trend(data_matrix, sample_annotation = sample_annotation,
