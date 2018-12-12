@@ -32,7 +32,6 @@ filenames (colnames of the data matrix are found)}
 Convert from a long data frame representation to a wide matrix representation
 }
 \seealso{
-Other matrix manipulation functions: \code{\link{join_data_matrices}},
-  \code{\link{matrix_to_long}}
+Other matrix manipulation functions: \code{\link{matrix_to_long}}
 }
 \concept{matrix manipulation functions}
