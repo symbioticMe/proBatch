@@ -10,7 +10,25 @@ plot_peptide_corr_distribution(data_matrix, peptide_annotation,
   theme = "classic")
 }
 \arguments{
-\item{theme}{}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. Usually the log
+transformed version of the original data}
+
+\item{protein_col}{the column name in \code{peptide_annotation} with protein names}
+
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
+
+\item{plot_title}{Title of the plot, usually processing step}
+
+\item{theme}{ggplot theme, by default `classic`. Can be easily overriden}
+
+\item{...}{parameters for the \code{ggplot} visualisation}
+}
+\value{
+\code{ggplot} type object with violin plot for each \code{plot_param}
 }
 \description{
 Plot distribution of peptide correlations within one protein and between proteins
