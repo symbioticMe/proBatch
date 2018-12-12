@@ -36,6 +36,11 @@ level (fragments, transitions, proteins))}
 \description{
 Useful to visualize within batch vs within replicate vs non-related sample correlation
 }
+\examples{
+\\donotrun{plot_sample_corr_distribution(quantile_normalized_matrix,
+example_sample_annotation, batch_col = 'MS_batch', biospecimen_id_col = "EarTag", 
+plot_title = 'Quantile normalized',plot_param = 'batch_replicate')}
+}
 \seealso{
 \code{\link{get_sample_corr_distrib}}, \code{\link[ggplot2]{ggplot}}
 }
