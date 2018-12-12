@@ -46,7 +46,6 @@ Cleans dataset \code{df_long} (\link{proBatch}) by removing requanted features
 and features not meeting user defined sparsness criterias.
 }
 \seealso{
-Other dataset cleaning functions: \code{\link{remove_peptides_with_missing_batch}},
-  \code{\link{summarize_peptides}}
+Other dataset cleaning functions: \code{\link{remove_peptides_with_missing_batch}}
 }
 \concept{dataset cleaning functions}
