@@ -158,13 +158,16 @@ features (for proteomics, peptides/fragments) and columns represent samples.
 In the long format, referred in this vignette as `df_long`, each row is a measurement 
 of a specific feature (peptide, fragment) in the specific sample. At least
 three columns are required: feature ID column, measurement (intensity) column and sample ID column.
+For batch correction, we also assume, that the imputed values, e.g. requants in SWATH,
+are flagged in quality column, such as m_score, so that they can be filtered out (see below).
 
 In this vignette, the essential columns have the following names:
 ```{r col_names}
 feature_id_col = 'peptide_group_label'
 measure_col = 'Intensity'
 sample_id_col = 'FullRunName'
-essential_columns = c(feature_id_col, measure_col, sample_id_col)
+quality_col = 'm_score'
+essential_columns = c(feature_id_col, measure_col, sample_id_col, quality_col)
 ```
 
 The names of the columns can be technology-specific. These column names are
@@ -294,13 +297,55 @@ In practice, the generation of peptide annotation from proteomic data
 allows one to remove peptide annotation columns from the intensity
 dataframe, thereby reducing the memory load, and can be achieved as
 follows:
-```{r}
+```{r reduce_proteome}
 example_proteome = example_proteome %>% select(one_of(essential_columns))
 gc()
 ```
 
 Additionally, smaller peptide annotation matrices allow for faster
 mapping of UniProt identifiers to gene names and other IDs.
+
+### Removing the imputed values
+
+Automatically imputed values (requants, imputed by OpenSWATH pipeline) can skew 
+the distribution and bias the normalization and hence the measurements. 
+
+Some peptides can have a lot of imputed values, that make their measurement unreliable:
+```{r plot_with_requants1}
+plot_single_feature('27827_IM(UniMod:35)FVGGPNTR_2', example_proteome, example_sample_annotation)
+```
+For some, imputed value are batch-specific:
+```{r plot_with_requants2}
+plot_single_feature('12295_TLDQVLEDVDQC(UniMod:4)C(UniMod:4)QALSQR_3', example_proteome, example_sample_annotation)
+```
+
+
+This is why we recommend to perform analysis with requant-free data matrix:
+```{r clean_requants}
+nrow(example_proteome)
+example_proteome = clean_requants(example_proteome, example_sample_annotation,
+                                  missing_frac_batch = .3, missing_frac_total = .3)
+nrow(example_proteome)
+```
+
+And this matrix has imputed values removed:
+```{r plot_without_requants1}
+plot_single_feature('27827_IM(UniMod:35)FVGGPNTR_2', example_proteome, example_sample_annotation)
+```
+
+```{r plot_without_requants2}
+plot_single_feature('12295_TLDQVLEDVDQC(UniMod:4)C(UniMod:4)QALSQR_3', example_proteome, example_sample_annotation)
+```
+
+Certain batch correction procedures, such as ComBat, will fail as they cannot 
+infer the value for a peptide, when the whole batch is missing. We recommend to 
+remove them when using such methods. 
+```{r remove_peps_miss_batch}
+length(example_proteome$peptide_group_label %>% unique())
+example_proteome = remove_peptides_with_missing_batch(example_proteome, example_sample_annotation)
+length(example_proteome$peptide_group_label %>% unique())
+```
+As you see, out of 535 original peptides, 94 had to be removed.
 
 \pagebreak
 
@@ -687,16 +732,16 @@ function `correct_with_ComBat()` can incorporate several covariates
 and make data comparable across batches.
 
 ```{r comBat, fig.show='hold'}
-comBat_matrix <- correct_with_ComBat(loess_fit_matrix, example_sample_annotation)
+#comBat_matrix <- correct_with_ComBat(loess_fit_matrix, example_sample_annotation)
 ```
 
 To illustrate the correction we use the "46213_NVGVSFYADKPEVTQEQK_2" spike-in peptide. 
 ```{r combat_result, fig.show='hold',  fig.width=3, fig.height=2.4}
-combat_df <- matrix_to_long(comBat_matrix)
-plot_single_feature (pep_name = "46213_NVGVSFYADKPEVTQEQK_2", loess_fit_df, 
-          example_sample_annotation, plot_title = "Loess Fitted", color_by_col = NULL)
-plot_single_feature (pep_name = "46213_NVGVSFYADKPEVTQEQK_2", combat_df, 
-          example_sample_annotation, plot_title = "ComBat corrected", color_by_col = NULL)
+#combat_df <- matrix_to_long(comBat_matrix)
+#plot_single_feature (pep_name = "46213_NVGVSFYADKPEVTQEQK_2", loess_fit_df, 
+#          example_sample_annotation, plot_title = "Loess Fitted", color_by_col = NULL)
+#plot_single_feature (pep_name = "46213_NVGVSFYADKPEVTQEQK_2", combat_df, 
+#          example_sample_annotation, plot_title = "ComBat corrected", color_by_col = NULL)
 ```
 
 ComBat fixed the discrete batch effects and also made the distributions
