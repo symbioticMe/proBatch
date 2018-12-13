@@ -214,18 +214,9 @@ correct_batch_effects <- function(data_matrix, sample_annotation, fitFunc = 'loe
   }
   
   if(discreteFunc == 'ComBat'){
-    filtered_long = remove_peptides_with_missing_batch(fit_long, sample_annotation,
-                                                       batch_col = batch_col,
-                                                       feature_id_col = feature_id_col,
-                                                       sample_id_col = sample_id_col)
-    filtered_matrix = long_to_matrix(filtered_long, feature_id_col = feature_id_col,
+    fit_matrix = long_to_matrix(fit_long, feature_id_col = feature_id_col,
                                      measure_col = measure_col, sample_id_col = sample_id_col)
-    
-    nfiltered = nrow(fit_matrix) - nrow(filtered_matrix)
-    if(nfiltered > 0){
-      warning(sprintf("%i rows have no measurement for one or more batches and are removed for ComBat batch correction", nfiltered))
-    }
-    normalized_matrix = correct_with_ComBat(filtered_matrix, sample_annotation = sample_annotation,
+    normalized_matrix = correct_with_ComBat(fit_matrix, sample_annotation = sample_annotation,
                                             batch_col = batch_col, par.prior = TRUE)
   }
   
