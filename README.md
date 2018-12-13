@@ -2,14 +2,20 @@
 
 ## General Overview
 
-The proBatch package facilitates batch effects analysis and correction high-thoughput experiments. Although the package has primarily been developed for DIA (SWATH) proteomics data, it should also be applicable to most omic data with minor adaptations.
+The proBatch package facilitates batch effects analysis and correction high-thoughput experiments. 
+Although the package has primarily been developed for DIA (SWATH) proteomics data, 
+it should also be applicable to most omic data with minor adaptations.
     
-The package contains functions for diagnostics (proteome/genome-wide and feature-level), correction (normalization and batch effects correction) and quality control.
+The package contains functions for diagnostics (proteome/genome-wide and feature-level), 
+correction (normalization and batch effects correction) and quality control.
 
 Diagnostics part of the package features unified color scheme for plotting, 
     that allows to produce publication-quality graphs.
 
-Correction functions are convenient wrappers for common normalization and batch effects removal approaches such as quantile normalizetion and median centering. Furthermore, the package includes non-linear fitting based approaches to deal with complex, mass spectrometry-specific signal drifts.
+Correction functions are convenient wrappers for common normalization and batch 
+effects removal approaches such as quantile normalizetion and median centering. 
+Furthermore, the package includes non-linear fitting based approaches to deal 
+with complex, mass spectrometry-specific signal drifts.
 
 Quality control step, mostly based on correlation analysis, allows to assess whether 
 the correction improved the quality of the data.
