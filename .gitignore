@@ -7,6 +7,6 @@ doc
 .RData
 .Ruserdata
 *.Rapp.history
-inst/doc
+#inst/doc
 #vignettes/
 /.Rd2pdf*
