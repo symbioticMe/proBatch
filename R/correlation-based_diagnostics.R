@@ -158,11 +158,11 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 #'
 #' @inheritParams proBatch
 #' @param cor_proteome sample correlation matrix (square)
-#' @param biospecimen_id_col column in `sample_annotation` that captures the
-#'  biological sample, that (possibly) was profiled several times as technical replicates.
+#' @param biospecimen_id_col column in `sample_annotation` that defines a unique bio ID, 
+#' which is usually a combination of conditions or groups.
 #'  Tip: if such ID is absent, but can be defined from several columns,
 #'  create new \code{biospecimen_id} column with code, such as the following:
-#'  \code{sample_annotation %>% mutate(biospecimen_id = paste(tumorNormal, patientID))}
+#'  \code{sample_annotation %>% mutate(biospecimen_id = paste('tumorNormal', 'patientID'))}
 #' @param batch_col column in `sample_annotation` that should be used for
 #'   batch comparison
 #'
