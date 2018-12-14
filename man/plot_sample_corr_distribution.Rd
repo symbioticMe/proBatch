@@ -19,6 +19,11 @@ filenames (colnames of the data matrix) are found}
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
+\item{biospecimen_id_col}{column in `sample_annotation` that captures the biological sample, 
+that (possibly) was profiled several times as technical replicates.
+Tip: if such ID is absent, but can be defined from several columns,
+create new \code{biospecimen_id} column}
+
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
