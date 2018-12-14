@@ -18,6 +18,11 @@ technical covariates (batches etc) }}
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
+\item{biospecimen_id_col}{column in `sample_annotation` 
+that defines a unique bio ID, which is usually a combination of conditions or groups.
+ Tip: if such ID is absent, but can be defined from several columns,
+ create new \code{biospecimen_id} column}
+
 \item{batch_col}{column in `sample_annotation` that should be used for
 batch comparison}
 }
