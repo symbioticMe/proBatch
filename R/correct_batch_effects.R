@@ -177,12 +177,11 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' @return `data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
 #' @export
 #'
-#' @examples \donotrun{
-#' batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalized_matrix, 
+#' @examples \donotrun{batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalized_matrix, 
 #'                                                 example_sample_annotation, discreteFunc = 'ComBat',
 #'                                                 batch_col = "MS_batch", span = 0.8,
-#'                                                 abs.threshold = 5, pct.threshold = 0.20)
-#' }
+#'                                                 abs.threshold = 5, pct.threshold = 0.20)}
+#'                                                 
 correct_batch_effects <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
                                 discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
                                 feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
