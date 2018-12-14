@@ -32,8 +32,9 @@ bioc_deps <- c("GO.db", "impute", "preprocessCore", "pvca","sva" )
 cran_deps <- c("corrplot", "data.table", "ggfortify","lazyeval", "pheatmap", "reshape2", "rlang", 
                 "tidyverse","wesanderson","WGCNA") 
 
-source("https://bioconductor.org/biocLite.R")
-biocLite(bioc_deps) 
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(bioc_deps) 
 install.packages(cran_deps)
 ```
 
