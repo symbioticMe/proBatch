@@ -10,3 +10,4 @@ doc
 #inst/doc
 #vignettes/
 /.Rd2pdf*
+#NAMESPACE
