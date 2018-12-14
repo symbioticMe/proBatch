@@ -47,7 +47,6 @@ Imports:
     wesanderson,
     WGCNA
 Suggests: knitr,
-    rmarkdown,
-    SWATH2stats
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 6.1.0
