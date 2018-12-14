@@ -210,7 +210,7 @@ sample_annotation_to_colors <- function(sample_annotation,
                                         numeric_palette_type = 'brewer',
                                         granularity = 10) {
   
-  
+  sample_annotation = as.data.frame(sample_annotation)
   sample_annotation <- sample_annotation %>%
     mutate_at(vars(factor_columns), as.factor) %>%
     mutate_at(vars(numeric_columns), as.numeric)
