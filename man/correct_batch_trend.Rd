@@ -28,10 +28,9 @@ Batch correction method allows correction of continuous sigal drift within batch
 discrete difference across batches.
 }
 \examples{
-\\donotrun{
-batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalized_matrix, 
+\\donotrun{batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalized_matrix, 
                                                 example_sample_annotation, discreteFunc = 'ComBat',
                                                 batch_col = "MS_batch", span = 0.8,
-                                                abs.threshold = 5, pct.threshold = 0.20)
-}
+                                                abs.threshold = 5, pct.threshold = 0.20)}
+                                                
 }
