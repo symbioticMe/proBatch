@@ -54,7 +54,7 @@ importFrom(tidyr,nest)
 importFrom(tidyr,unnest)
 importFrom("data.table", "fread", "setDT", "transpose")
 importFrom("grDevices", "colorRampPalette", "dev.off", "pdf")
-importFrom("stats", "as.formula", "complete.cases", "dist", "filter",
+importFrom("stats", "as.formula", "complete.cases", "dist", 
              "hclust", "loess", "median", "model.matrix", "prcomp",
              "predict", "reformulate", "setNames", "weights")
 importFrom("utils", "combn", "data")
