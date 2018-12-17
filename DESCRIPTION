@@ -31,7 +31,6 @@ Imports:
     Biobase,
     corrplot,
     data.table,
-    dplyr,
     ggfortify,
     ggplot2,
     lazyeval,
