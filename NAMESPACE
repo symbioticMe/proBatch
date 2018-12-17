@@ -52,7 +52,7 @@ importFrom(rlang,syms)
 importFrom(tidyr,complete)
 importFrom(tidyr,nest)
 importFrom(tidyr,unnest)
-importFrom("data.table", "as.matrix", "duplicated", "fread", "merge", "patterns", "setDT", "transpose")
+importFrom("data.table", "fread", "setDT", "transpose")
 importFrom("grDevices", "colorRampPalette", "dev.off", "pdf")
 importFrom("stats", "as.formula", "complete.cases", "dist", "filter",
              "hclust", "loess", "median", "model.matrix", "prcomp",
