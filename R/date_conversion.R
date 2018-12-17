@@ -22,6 +22,9 @@ dates_to_posix <- function(sample_annotation,
                            time_column = c('RunDate','RunTime'),
                            new_time_column = 'DateTime',
                            dateTimeFormat = c("%b_%d", "%H:%M:%S")){
+  
+  if(getRversion() >= "2.15.1")  utils::globalVariables(c("dateTime"))
+  
   if (length(time_column) == 1){
     if(is.null(new_time_column)) new_time_column = time_column
     time_col = as.character(sample_annotation[[time_column]])
