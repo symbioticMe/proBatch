@@ -52,6 +52,7 @@ importFrom(purrr,map2)
 # importFrom(tidyr,complete)
 # importFrom(tidyr,nest)
 # importFrom(tidyr,unnest)
+importFrom("ggplot2", "dplyr","tibble", "%>%")
 importFrom("grDevices", "colorRampPalette", "dev.off", "pdf")
 importFrom("stats", "as.formula", "complete.cases", "dist", "filter",
              "hclust", "loess", "median", "model.matrix", "prcomp",
