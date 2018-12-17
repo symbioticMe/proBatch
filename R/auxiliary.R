@@ -79,8 +79,7 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #' @return data frame containing petpide annotations 
 #' @export
 #' 
-#' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}},
-#' \code{\link{plot_within_prot_corr_distribution}}
+#' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}}
 create_peptide_annotation <- function(df_long, feature_id_col = 'peptide_group_label',
                                       annotation_col = c("ProteinName" )){
   peptide_annotation = df_long %>%
