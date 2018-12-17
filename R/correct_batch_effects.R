@@ -29,6 +29,8 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
                                   feature_id_col = 'peptide_group_label',
                                   measure_col = 'Intensity'){
   
+  if(getRversion() >= "2.15.1")  utils::globalVariables(c("median_global", "median_batch"))
+  
   if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
     warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   
@@ -73,6 +75,8 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
                                  sample_order_col = 'order',
                                  fit_func = fit_nonlinear, 
                                  abs.threshold = 5, pct.threshold = 0.20, ...){
+  
+  if(getRversion() >= "2.15.1")  utils::globalVariables(c("batch_total", "fit", "mean_fit"))
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
   sampleNames <- colnames(data_matrix)
