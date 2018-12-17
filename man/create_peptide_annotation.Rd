@@ -32,6 +32,5 @@ Prepare peptide annotation from long format data frame
 Create light-weight peptide annotation data frame for selection of illustrative proteins
 }
 \seealso{
-\code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}},
-\code{\link{plot_within_prot_corr_distribution}}
+\code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}}
 }
