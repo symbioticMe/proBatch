@@ -52,3 +52,8 @@ importFrom(purrr,map2)
 # importFrom(tidyr,complete)
 # importFrom(tidyr,nest)
 # importFrom(tidyr,unnest)
+importFrom("grDevices", "colorRampPalette", "dev.off", "pdf")
+importFrom("stats", "as.formula", "complete.cases", "dist", "filter",
+             "hclust", "loess", "median", "model.matrix", "prcomp",
+             "predict", "reformulate", "setNames", "weights")
+importFrom("utils", "combn", "data")
