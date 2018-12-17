@@ -30,6 +30,7 @@ LazyData: true
 Imports:
     Biobase,
     corrplot,
+    dplyr,
     data.table,
     ggfortify,
     ggplot2,
@@ -42,7 +43,6 @@ Imports:
     pvca,
     RColorBrewer,
     readr, 
-    reshape2,
     rlang,
     scales,
     sva,
