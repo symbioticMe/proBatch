@@ -22,6 +22,8 @@ fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x'
                           noFitRequants = F, fitFunc = 'loess_regression',
                           with_df = F, loess.span = 0.75, 
                           abs.threshold = 5, pct.threshold = 0.20, ...){
+  
+  if(getRversion() >= "2.15.1")  utils::globalVariables(c("optimise_bw", "optimise_df"))
 
   dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
   x_to_fit = dataDF[[expl.var]]
