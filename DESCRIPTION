@@ -43,6 +43,7 @@ Imports:
     pvca,
     RColorBrewer,
     readr, 
+    reshape2, 
     rlang,
     scales,
     sva,
