@@ -11,7 +11,7 @@ log_transform(data_matrix, log_base = 2)
 \item{data_matrix}{raw data matrix (features in rows and samples
 in columns)}
 
-\item{base}{base of the logarithm for transformation}
+\item{log_base}{base of the logarithm for transformation}
 }
 \value{
 `data_matrix`-size matrix, with columns log2 transformed
