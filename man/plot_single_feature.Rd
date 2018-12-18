@@ -46,12 +46,13 @@ names.}
 
 \item{color_by_batch}{(logical) whether to color points by batch}
 
-\item{color_scheme}{value in \code{color_by_col} column to color}
+\item{color_scheme}{color scheme for \code{ggplot} representation}
 
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
-\item{color_by_col}{column to color by certain value 
-denoted by \code{color_by_value}}
+\item{color_by_col}{column to color by certain value denoted by \code{color_by_value}}
+
+\item{color_by_value}{value in \code{color_by_col} to color}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
@@ -60,8 +61,6 @@ different batches}
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
-
-\item{color_scheme}{color scheme for \code{ggplot} representation}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},

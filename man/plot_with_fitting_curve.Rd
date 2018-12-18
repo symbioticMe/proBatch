@@ -49,24 +49,27 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{geom}{for the intensity \code{measure_col} profile:}
+\item{geom}{for the intensity \code{measure_col} profile}
 
 \item{color_by_batch}{(logical) whether to color points by batch}
 
-\item{color_scheme}{value in \code{color_by_col} column to color}
+\item{color_scheme}{color scheme for \code{ggplot} representation}
 
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
-\item{color_by_col}{column to color by certain value 
-denoted by \code{color_by_value}}
+\item{color_by_col}{column to color by certain value denoted by \code{color_by_value}}
+
+\item{color_by_value}{value in \code{color_by_col} to color}
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
 
 \item{vline_color}{color of vertical lines, typically denoting 
 different batches}
+
+\item{...}{additional arguments to \code{\link{plot_single_feature}} function}
 }
 \value{
 \code{ggplot}-class plot with minimally two facets (before and after
