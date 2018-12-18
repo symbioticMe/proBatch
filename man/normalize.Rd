@@ -36,7 +36,6 @@ Data normalization methods
 Normalization brings the samples to the same scale
 }
 \examples{
-\\donotrun{median_normalized_matrix = normalize_data(data_matrix, 
-normalizeFunc = "medianCentering", log_base = 2)}
+\dontrun{median_normalized_matrix = normalize_data(data_matrix, normalizeFunc = "medianCentering", log_base = 2)}
 
 }
