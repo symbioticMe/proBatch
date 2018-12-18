@@ -14,6 +14,9 @@ plot_peptide_corr_distribution(data_matrix, peptide_annotation,
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
+\item{peptide_annotation}{long format data with peptide ID and their corresponding 
+protein annotations}
+
 \item{protein_col}{the column name in \code{peptide_annotation} with protein names}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein

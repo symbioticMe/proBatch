@@ -20,6 +20,9 @@ plot_boxplot(df_long, sample_annotation = NULL,
   plot_title = NULL, order_per_facet = F)
 }
 \arguments{
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, 
+with feature IDs in rownames and file/sample names as colnames. in most function,}
+
 \item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
@@ -52,6 +55,8 @@ instrument), re-define order per-batch}
 
 \item{vline_color}{color of vertical line, typically to denote batches}
 
+\item{ylimits}{range of y-axis to plot feature-level trends}
+
 \item{df_long}{data frame where each row is a single feature in a single
 sample, thus it has minimally, `sample_id_col`, `feature_id_col` and
 `measure_col`, but usually also `m_score` (in OpenSWATH output result
@@ -60,8 +65,6 @@ file)}
 \item{measure_col}{if `df_long` is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
-
-\item{ylim}{range of y-axis to plot feature-level trends}
 }
 \value{
 ggplot2 class object. Thus, all aesthetics can be overriden
