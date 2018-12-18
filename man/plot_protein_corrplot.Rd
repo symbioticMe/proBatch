@@ -41,8 +41,6 @@ otherwise, the object is save into the file. Currently only pdf and png format i
 \item{plot_title}{The title of the plot}
 
 \item{...}{parameters for the corrplot visualisation}
-
-\item{peptide_col_name}{the column name in \code{peptide_annotation} with peptide names}
 }
 \description{
 Plots correlation plot of peptides from a single protein
