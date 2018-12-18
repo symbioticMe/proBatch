@@ -11,6 +11,14 @@ plot_sample_corr_distribution(data_matrix, sample_annotation,
   plot_param = "batch_replicate")
 }
 \arguments{
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. Usually the log
+transformed version of the original data}
+
+\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
+
 \item{repeated_samples}{if `NULL`, only repeated sample correlation is plotted}
 
 \item{sample_id_col}{name of the column in sample_annotation file, where the
