@@ -55,10 +55,18 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 
 #' adjust batch signal trend with the custom (continuous) fit
 #'
-#' @name correct_batch
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
+#' @param sample_annotation data frame with sample ID, technical (e.g. MS batches) 
+#'  and biological (e.g. Diet) covariates 
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param measure_col if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
+#' @param batch_col column in \code{sample_annotation} that should be 
+#'  used for batch comparison
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
 #' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
