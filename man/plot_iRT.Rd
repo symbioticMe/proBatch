@@ -22,6 +22,11 @@ file)}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
+\item{peptide_annotation}{long format data with peptide ID and their corresponding 
+protein annotations}
+
+\item{protein_col}{column where protein names are specified}
+
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for certain diagnostics and normalisations.}
 
