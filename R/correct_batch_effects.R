@@ -11,6 +11,8 @@
 #' @param measure_col if `df_long` is among the parameters, it is the column
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
+#' @param return_long whether the result should be the "long" data frame (as
+#'  df_long`) or "wide" (as `data_matrix`)
 #' @name correct_batch
 NULL
 #> NULL
@@ -56,6 +58,8 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
 #' @param fit_func function to fit the (non)-linear trend
+#' @param abs.threshold the absolute threshold to filter data for curve fitting 
+#' @param pct.threshold the percentage threshold to filter data for curve fitting 
 #' @param return_long whether the result should be the "long" data frame (as
 #'   `df_long`) or "wide" (as `data_matrix`)
 #' @param ... other parameters, usually those of the `fit_func`
@@ -169,7 +173,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' Batch correction method allows correction of continuous sigal drift within batch and 
 #' discrete difference across batches. 
 #'
-#' @name correct_batch_trend
+#' @name correct_batch
 #' @param fitFunct function to use for the fit (currently only `loess_regression` available)
 #' @param discreteFunc function to use for discrete batch correction (`MedianCentering` or `ComBat`)
 #' @param ... other parameters, usually of `normalize_custom_fit`, and `fit_func`
