@@ -42,7 +42,7 @@ level (fragments, transitions, proteins))}
 Useful to visualize within batch vs within replicate vs non-related sample correlation
 }
 \examples{
-\\donotrun{plot_sample_corr_distribution(quantile_normalized_matrix,
+\dontrun{plot_sample_corr_distribution(quantile_normalized_matrix,
 example_sample_annotation, batch_col = 'MS_batch', biospecimen_id_col = "EarTag", 
 plot_title = 'Quantile normalized',plot_param = 'batch_replicate')}
 }

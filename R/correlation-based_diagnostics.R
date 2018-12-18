@@ -73,13 +73,13 @@ plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
 #'
 #'
 #' @export
-#' @examples \donotrun{plot_corr_plot(q_norm_proteome, protein_name = 'Haao',
+#' @examples \dontrun{plot_corr_plot(q_norm_proteome, protein_name = 'Haao',
 #'                peptide_annotation = peptide_annotation, prot.column = 'Gene',
 #'                title = 'Haao protein peptides after quantile norm',
 #'                number.cex=0.75, tl.cex = .75
 #'                mar=c(0,0,1,0))}
 
-#' @examples \donotrun{lower = "ellipse", upper = "number",
+#' @examples \dontrun{lower = "ellipse", upper = "number",
 #'  tl.col = "black", diag = 'l', tl.pos = "lt", number.cex=0.75, tl.cex = .75}
 #'
 plot_protein_corrplot <- function(data_matrix,
@@ -250,7 +250,7 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #'
 #' @export
 #'
-#' @examples \donotrun{plot_sample_corr_distribution(quantile_normalized_matrix,
+#' @examples \dontrun{plot_sample_corr_distribution(quantile_normalized_matrix,
 #' example_sample_annotation, batch_col = 'MS_batch', biospecimen_id_col = "EarTag", 
 #' plot_title = 'Quantile normalized',plot_param = 'batch_replicate')}
 #' @seealso \code{\link{get_sample_corr_distrib}}, \code{\link[ggplot2]{ggplot}}
