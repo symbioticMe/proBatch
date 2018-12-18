@@ -9,8 +9,8 @@
 #' @param fitFunc function to use for the fit (`loess_regression`)
 #' @param with_df logical, whether to specify span by enp.target using approximately equivalent 
 #'   number of parameters
-#' @param abs.threshold the absolute threshold to filter data for curve fitting 
-#' @param pct.threshold the percentage threshold to filter data for curve fitting 
+#' @param abs_threshold the absolute threshold to filter data for curve fitting 
+#' @param pct_threshold the percentage threshold to filter data for curve fitting 
 #' @param ... additional paramters to be passed to the fitting function
 #'
 #' @return vector of fitted response values
@@ -20,15 +20,15 @@
 
 fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x',
                           noFitRequants = F, fitFunc = 'loess_regression',
-                          with_df = F, loess.span = 0.75, 
-                          abs.threshold = 5, pct.threshold = 0.20, ...){
+                          with_df = F, 
+                          abs_threshold = 5, pct_threshold = 0.20, ...){
 
   dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
   x_to_fit = dataDF[[expl.var]]
   y = dataDF[[response.var]]
-  pct.threshold = batch.size*pct.threshold
+  pct_threshold = batch.size*pct_threshold
   if(fitFunc == "loess_regression"){
-    if(length(x_to_fit) >= abs.threshold & length(x_to_fit) >= pct.threshold){
+    if(length(x_to_fit) >= abs_threshold & length(x_to_fit) >= pct_threshold){
       x_all = x_to_fit
       if(noFitRequants){
         x_all[dataDF$requant] = NA
