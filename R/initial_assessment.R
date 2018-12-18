@@ -2,6 +2,8 @@
 #' running order available)
 #' @details functions for quick visual assessment of trends associated, overall
 #'   or specific covariate-associated (see `batch_col` and `facet_col`)
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, 
+#' with feature IDs in rownames and file/sample names as colnames. in most function,
 #' @param df_long data frame where each row is a single feature in a single
 #'   sample, thus it has minimally, `sample_id_col`, `feature_id_col` and
 #'   `measure_col`, but usually also `m_score` (in OpenSWATH output result
@@ -30,7 +32,7 @@
 #' @param order_per_facet if order is defined ignoring facets (usually
 #'   instrument), re-define order per-batch
 #' @param vline_color color of vertical line, typically to denote batches
-#' @param ylim range of y-axis to plot feature-level trends 
+#' @param ylimits range of y-axis to plot feature-level trends 
 #' @return ggplot2 class object. Thus, all aesthetics can be overriden
 #'
 #' @seealso \code{\link[ggplot2]{ggplot}}
