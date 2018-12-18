@@ -23,6 +23,11 @@ file)}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
+\item{peptide_annotation}{long format data with peptide ID and their corresponding 
+protein annotations}
+
+\item{protein_col}{column where protein names are specified}
+
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for certain diagnostics and normalisations.}
 
@@ -46,12 +51,13 @@ names.}
 
 \item{color_by_batch}{(logical) whether to color points by batch}
 
-\item{color_scheme}{value in \code{color_by_col} column to color}
+\item{color_scheme}{color scheme for \code{ggplot} representation}
 
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
-\item{color_by_col}{column to color by certain value 
-denoted by \code{color_by_value}}
+\item{color_by_col}{column to color by certain value denoted by \code{color_by_value}}
+
+\item{color_by_value}{value in \code{color_by_col} to color}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
