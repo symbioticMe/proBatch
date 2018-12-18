@@ -56,6 +56,8 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #'   \item  technical covariates (batches etc)
 #' }; each column of sample annotation will get it's own row. If `cluster_cols = T` this will indicate,
 #' whether sample proximity is driven by one of biolical or technical factors
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
 #' @param fill_the_missing boolean value determining if missing values should be
 #'   substituted with -1 (and colored with black)
 #' @param cluster_rows boolean value determining if rows should be clustered
@@ -176,12 +178,8 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #'   variabilities that the selected principal components need to explain
 #' @param threshold_var the percentile value of weight each of the covariates
 #'   needs to explain (the rest will be lumped together)
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param feature_id_col name of the column with feature/gene/peptide/protein
-#'   ID used in the long format representation \code{df_long}. In the wide
-#'   formatted representation \code{data_matrix} this corresponds to the row
-#'   names.
+#' @param fill_the_missing numeric value that the missing values are
+#'   substituted with
 #' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
 #'   examples)
 #' @param plot_title Title of the plot (usually, processing step + representation

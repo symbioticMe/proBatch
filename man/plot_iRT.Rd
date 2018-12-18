@@ -45,7 +45,12 @@ names.}
 
 \item{color_by_batch}{(logical) whether to color points by batch}
 
+\item{color_scheme}{value in \code{color_by_col} column to color}
+
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
+
+\item{color_by_col}{column to color by certain value 
+denoted by \code{color_by_value}}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
