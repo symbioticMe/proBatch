@@ -76,8 +76,8 @@ normalize_sample_medians <- function(df_long,
 #' @return `data_matrix`-size matrix, with columns normalized 
 #' @export
 #'
-#' @examples \donotrun{median_normalized_matrix = normalize_data(data_matrix, 
-#' normalizeFunc = "medianCentering", log_base = 2)}
+#' @examples
+#' \dontrun{median_normalized_matrix = normalize_data(data_matrix, normalizeFunc = "medianCentering", log_base = 2)}
 #' 
 normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
   if(!is.null(log_base)){
