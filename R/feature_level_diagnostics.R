@@ -9,11 +9,15 @@
 #' @param geom whether to show the feature as points and/or connect by lines
 #' @param color_by_batch (logical) whether to color points by batch
 #' @param facet_by_batch (logical) whether to plot each batch in its own facet
+#' @param color_by_col column to color by certain value 
+#' denoted by \code{color_by_value}
+#' @param color_scheme value in \code{color_by_col} column to color 
 #' @param plot_title the string indicating the source of the peptides
-#' @param requant if data frame: requant values; if logical: whether to indicate
-#'   requant values (requires 'requant' or 'm_score' column in \code{df_long})
 #' @param theme plot theme (default is 'classical'; other options not
 #'   implemented)
+#' @param vline_color color of vertical lines, typically denoting 
+#'  different batches 
+#' @param color_scheme color scheme for \code{ggplot} representation
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{pep_name} and (optionally) by \code{batch_col}
@@ -32,7 +36,7 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
                                 geom = c('point', 'line'),
                                 color_by_batch = F, color_scheme = 'brewer',
                                 facet_by_batch = F,
-                                color_by_col = "m_score", color_by_value = 2,
+                                color_by_col = NULL, color_by_value = NULL,
                                 plot_title = NULL,
                                 vline_color ='red',
                                 theme = 'classic'){

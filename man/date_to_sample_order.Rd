@@ -22,6 +22,11 @@ converted to}
 
 \item{dateTimeFormat}{POSIX format of the date and time. See \code{\link{as.POSIXct}}
 from base R for details}
+
+\item{new_order_col}{name of column with generated the order of sample run 
+based on time columns}
+
+\item{instrument_col}{column, denoting different instrument used for measurements}
 }
 \value{
 sample annotation file with column names as 'new_time_column' with
