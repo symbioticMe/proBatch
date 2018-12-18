@@ -62,14 +62,13 @@ as covariate to fit the non-linear fit}
 
 \item{...}{other parameters, usually those of the `fit_func`}
 
+\item{fitFunc}{function to use for the fit (currently only `loess_regression` available)}
+
 \item{discreteFunc}{function to use for discrete batch correction (`MedianCentering` or `ComBat`)}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
 used in the long format representation df_long. In the wide formatted 
 representation data_matrix this corresponds to the row names.}
-
-\item{return_long}{whether the result should be the "long" data frame (as
-`df_long`) or "wide" (as `data_matrix`)}
 
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. Usually the log
@@ -81,8 +80,6 @@ as covariate to fit the non-linear fit}
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
 used in the long format representation df_long. In the wide formatted 
 representation data_matrix this corresponds to the row names.}
-
-\item{fitFunct}{function to use for the fit (currently only `loess_regression` available)}
 
 \item{abs_threshold}{the absolute threshold to filter data for curve fitting}
 
