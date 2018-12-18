@@ -273,6 +273,9 @@ plot_spike_in <- function(df_long, sample_annotation,
 #' @inheritParams plot_single_feature
 #' @param irt_pattern substring used to identify irts proteins in the column
 #'   'ProteinName'
+#' @param peptide_annotation long format data with peptide ID and their corresponding 
+#' protein annotations
+#' @param protein_col column where protein names are specified
 #' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
