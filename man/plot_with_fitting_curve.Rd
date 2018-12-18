@@ -53,12 +53,20 @@ names.}
 
 \item{color_by_batch}{(logical) whether to color points by batch}
 
+\item{color_scheme}{value in \code{color_by_col} column to color}
+
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
+\item{color_by_col}{column to color by certain value 
+denoted by \code{color_by_value}}
+
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
+
+\item{vline_color}{color of vertical lines, typically denoting 
+different batches}
 }
 \value{
 \code{ggplot}-class plot with minimally two facets (before and after
