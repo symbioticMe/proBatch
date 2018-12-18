@@ -48,12 +48,12 @@ otherwise, the object is save into the file. Currently only pdf and png format i
 Plots correlation plot of peptides from a single protein
 }
 \examples{
-\\donotrun{plot_corr_plot(q_norm_proteome, protein_name = 'Haao',
+\dontrun{plot_corr_plot(q_norm_proteome, protein_name = 'Haao',
                peptide_annotation = peptide_annotation, prot.column = 'Gene',
                title = 'Haao protein peptides after quantile norm',
                number.cex=0.75, tl.cex = .75
                mar=c(0,0,1,0))}
-\\donotrun{lower = "ellipse", upper = "number",
+\dontrun{lower = "ellipse", upper = "number",
  tl.col = "black", diag = 'l', tl.pos = "lt", number.cex=0.75, tl.cex = .75}
 
 }
