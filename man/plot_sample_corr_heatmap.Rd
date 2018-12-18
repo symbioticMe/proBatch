@@ -36,7 +36,7 @@ Plot correlation of selected samples
 }
 \examples{
 ### Example 1: Plot heatmap of pre-specified samples
-#'\dontrun{specified_samples = sample_annotation \%>\%
+\dontrun{specified_samples = sample_annotation \%>\%
 filter(RunID \%in\% paste('Run', 110:115, sep = '')) \%>\%
 pull(FullRunName)
 plot_samples_corr_heatmap(data_matrix, sample_to_plot = specified samples,
@@ -44,7 +44,7 @@ plot_samples_corr_heatmap(data_matrix, sample_to_plot = specified samples,
 
 }
 ### Example 2: Plot corrplot of pre-specified samples
-#' #'\dontrun{specified_samples = sample_annotation \%>\%
+\dontrun{specified_samples = sample_annotation \%>\%
 filter(RunID \%in\% paste('Run', 110:115, sep = '')) \%>\%
 pull(FullRunName)
 plot_samples_corr_heatmap(data_matrix, sample_to_plot = specified samples,
