@@ -366,6 +366,8 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' 
 #' @param protein_col the column name in \code{peptide_annotation} with protein names
 #' @param plot_title Title of the plot, usually processing step 
+#' @param peptide_annotation long format data with peptide ID and their corresponding 
+#' protein annotations
 #' @param ... parameters for the \code{ggplot} visualisation
 #'
 #' @return \code{ggplot} type object with violin plot for each \code{plot_param}
