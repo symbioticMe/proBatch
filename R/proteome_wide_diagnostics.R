@@ -190,7 +190,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
 #'
-#' @examples \donotrun{plot_PVCA(quantile_normalized_matrix, example_sample_annotation, 
+#' @examples \dontrun{plot_PVCA(quantile_normalized_matrix, example_sample_annotation, 
 #' technical_covariates = c('MS_batch', 'digestion_batch'),
 #' biological_covariates = c(biological_covariates, biospecimen_id_col))}
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
@@ -336,7 +336,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #'   `factor_to_color`
 #' @export
 #'
-#' @examples \donotrun{plot_PCA(quantile_normalized_matrix, example_sample_annotation, 
+#' @examples \dontrun{plot_PCA(quantile_normalized_matrix, example_sample_annotation, 
 #' color_by = 'MS_batch', plot_title = "MS batch")
 #' }
 #' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, \code{\link[ggplot2]{ggplot}}

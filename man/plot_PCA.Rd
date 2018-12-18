@@ -47,7 +47,7 @@ ggplot scatterplot colored by factor levels of column specified in
 plot PCA plot
 }
 \examples{
-\\donotrun{plot_PCA(quantile_normalized_matrix, example_sample_annotation, 
+\dontrun{plot_PCA(quantile_normalized_matrix, example_sample_annotation, 
 color_by = 'MS_batch', plot_title = "MS batch")
 }
 }
