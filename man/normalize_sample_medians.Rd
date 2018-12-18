@@ -8,7 +8,14 @@ normalize_sample_medians(df_long, sample_id_col = "FullRunName",
   measure_col = "Intensity")
 }
 \arguments{
-\item{data_matrix}{log transformed long format data matrix (see `df_long`)}
+\item{df_long}{log transformed long format data matrix (see `df_long`)}
+
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
+
+\item{measure_col}{if `df_long` is among the parameters, it is the column
+with expression/abundance/intensity, otherwise, it is used internally for
+consistency}
 }
 \value{
 `df_long`-size matrix, with intensity scaled to global median
