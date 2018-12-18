@@ -61,7 +61,6 @@ plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
 #' @param protein_name the name of the protein
 #' @param peptide_annotation df with peptides and their corresponding proteins
 #' @param protein_col the column name in \code{peptide_annotation} with protein names
-#' @param peptide_col_name the column name in \code{peptide_annotation} with peptide names
 #' @param flavor either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'
 #' @param filename path where the results are saved. If null the object is returned to the active window;
 #' otherwise, the object is save into the file. Currently only pdf and png format is supported
@@ -113,6 +112,8 @@ plot_protein_corrplot <- function(data_matrix,
 #' otherwise, the object is save into the file. Currently only pdf and png format is supported
 #' @param width option  determining the output image width
 #' @param height option  determining the output image width
+#' @param flavor either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'
+#' @param unit units: 'cm', 'in' or 'mm'
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
@@ -226,7 +227,13 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' Create violin plot of correlation distribution
 #'
 #' Useful to visualize within batch vs within replicate vs non-related sample correlation
-#'
+#' 
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. Usually the log
+#'   transformed version of the original data
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
 #' @param repeated_samples if `NULL`, only repeated sample correlation is plotted
 #' @param biospecimen_id_col column in `sample_annotation` that captures the biological sample, 
 #' that (possibly) was profiled several times as technical replicates.
