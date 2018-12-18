@@ -5,6 +5,7 @@
 \alias{center_peptide_batch_medians}
 \alias{adjust_batch_trend}
 \alias{correct_with_ComBat}
+\alias{correct_batch_effects}
 \title{Correction of batch effects in the data}
 \usage{
 center_peptide_batch_medians(df_long, sample_annotation = NULL,
@@ -20,6 +21,13 @@ adjust_batch_trend(data_matrix, sample_annotation,
 correct_with_ComBat(data_matrix, sample_annotation,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   par.prior = TRUE)
+
+correct_batch_effects(data_matrix, sample_annotation,
+  fitFunc = "loess_regression", discreteFunc = "MedianCentering",
+  batch_col = "MS_batch", feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  sample_order_col = "order", loess.span = 0.75, abs.threshold = 5,
+  pct.threshold = 0.2, ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -43,12 +51,25 @@ as covariate to fit the non-linear fit}
 
 \item{fit_func}{function to fit the (non)-linear trend}
 
+\item{abs.threshold}{the absolute threshold to filter data for curve fitting}
+
+\item{pct.threshold}{the percentage threshold to filter data for curve fitting}
+
 \item{...}{other parameters, usually those of the `fit_func`}
 
 \item{par.prior}{whether parametrical or non-parametrical prior should be used}
 
+\item{discreteFunc}{function to use for discrete batch correction (`MedianCentering` or `ComBat`)}
+
+\item{return_long}{whether the result should be the "long" data frame (as
+df_long`) or "wide" (as `data_matrix`)}
+
 \item{return_long}{whether the result should be the "long" data frame (as
 `df_long`) or "wide" (as `data_matrix`)}
+
+\item{fitFunct}{function to use for the fit (currently only `loess_regression` available)}
+
+\item{...}{other parameters, usually of `normalize_custom_fit`, and `fit_func`}
 }
 \value{
 `data_matrix`-size data matrix with batch-effect corrected with
@@ -59,6 +80,8 @@ list of two items: 1) `data_matrix`, adjusted with continious fit;
 
 `data_matrix`-size data matrix with batch-effect corrected by
   `ComBat`
+
+`data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
 }
 \description{
 Correction of batch effects in the data
@@ -74,6 +97,9 @@ non-parametric empirical Bayes frameworks for adjusting data for batch
 effects.  Users are returned an expression matrix that has been corrected for
 batch effects. The input data are assumed to be cleaned and normalized before
 batch effect removal.
+
+Batch correction method allows correction of continuous sigal drift within batch and 
+discrete difference across batches.
 }
 \seealso{
 \code{\link{fit_nonlinear}}
