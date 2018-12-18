@@ -35,6 +35,9 @@ technical covariates}
 \item{biological_covariates}{vector `sample_annotation` column names, that
 are biologically meaningful covariates}
 
+\item{fill_the_missing}{numeric value that the missing values are
+substituted with}
+
 \item{threshold_pca}{the percentile value of the minimum amount of the
 variabilities that the selected principal components need to explain}
 
@@ -50,14 +53,6 @@ examples)}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
-
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
-
-\item{feature_id_col}{name of the column with feature/gene/peptide/protein
-ID used in the long format representation \code{df_long}. In the wide
-formatted representation \code{data_matrix} this corresponds to the row
-names.}
 }
 \value{
 list of two items: plot =gg, df = pvca_res
