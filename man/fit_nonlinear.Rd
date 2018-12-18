@@ -6,7 +6,7 @@
 \usage{
 fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
   noFitRequants = F, fitFunc = "loess_regression", with_df = F,
-  loess.span = 0.75, abs.threshold = 5, pct.threshold = 0.2, ...)
+  abs_threshold = 5, pct_threshold = 0.2, ...)
 }
 \arguments{
 \item{dataDF}{data frame containing response variable e.g. samples in order and explanatory 
@@ -25,9 +25,9 @@ variable e.g. measurment}
 \item{with_df}{logical, whether to specify span by enp.target using approximately equivalent 
 number of parameters}
 
-\item{abs.threshold}{the absolute threshold to filter data for curve fitting}
+\item{abs_threshold}{the absolute threshold to filter data for curve fitting}
 
-\item{pct.threshold}{the percentage threshold to filter data for curve fitting}
+\item{pct_threshold}{the percentage threshold to filter data for curve fitting}
 
 \item{...}{additional paramters to be passed to the fitting function}
 }
