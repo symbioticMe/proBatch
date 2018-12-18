@@ -25,6 +25,9 @@ original data}
 }; each column of sample annotation will get it's own row. If `cluster_cols = T` this will indicate,
 whether sample proximity is driven by one of biolical or technical factors}
 
+\item{sample_id_col}{name of the column in sample_annotation file, where the
+filenames (colnames of the data matrix are found)}
+
 \item{sample_annotation_col}{biological or technical factors to be annotated in heatmap columns}
 
 \item{sample_annotation_row}{biological or technical factors to be annotated in heatmap rows}
