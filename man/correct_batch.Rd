@@ -4,7 +4,6 @@
 \alias{correct_batch}
 \alias{center_peptide_batch_medians}
 \alias{adjust_batch_trend}
-\alias{correct_with_ComBat}
 \alias{correct_batch_effects}
 \title{Correction of batch effects in the data}
 \usage{
@@ -16,18 +15,14 @@ adjust_batch_trend(data_matrix, sample_annotation,
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
   sample_order_col = "order", fit_func = fit_nonlinear,
-  abs.threshold = 5, pct.threshold = 0.2, ...)
-
-correct_with_ComBat(data_matrix, sample_annotation,
-  sample_id_col = "FullRunName", batch_col = "MS_batch",
-  par.prior = TRUE)
+  abs_threshold = 5, pct_threshold = 0.2, ...)
 
 correct_batch_effects(data_matrix, sample_annotation,
   fitFunc = "loess_regression", discreteFunc = "MedianCentering",
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  sample_order_col = "order", loess.span = 0.75, abs.threshold = 5,
-  pct.threshold = 0.2, ...)
+  sample_order_col = "order", abs_threshold = 5, pct_threshold = 0.2,
+  ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -35,8 +30,18 @@ sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
+\item{sample_annotation}{data frame with sample ID, technical (e.g. MS batches) 
+and biological (e.g. Diet) covariates}
+
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
+
+\item{batch_col}{column in \code{sample_annotation} that should be 
+used for batch comparison}
+
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
+used in the long format representation df_long. In the wide formatted 
+representation data_matrix this corresponds to the row names.}
 
 \item{measure_col}{if `df_long` is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
@@ -51,35 +56,46 @@ as covariate to fit the non-linear fit}
 
 \item{fit_func}{function to fit the (non)-linear trend}
 
-\item{abs.threshold}{the absolute threshold to filter data for curve fitting}
+\item{abs_threshold}{the absolute threshold to filter data for curve fitting}
 
-\item{pct.threshold}{the percentage threshold to filter data for curve fitting}
+\item{pct_threshold}{the percentage threshold to filter data for curve fitting}
 
 \item{...}{other parameters, usually those of the `fit_func`}
 
-\item{par.prior}{whether parametrical or non-parametrical prior should be used}
-
 \item{discreteFunc}{function to use for discrete batch correction (`MedianCentering` or `ComBat`)}
 
-\item{return_long}{whether the result should be the "long" data frame (as
-df_long`) or "wide" (as `data_matrix`)}
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
+used in the long format representation df_long. In the wide formatted 
+representation data_matrix this corresponds to the row names.}
 
 \item{return_long}{whether the result should be the "long" data frame (as
 `df_long`) or "wide" (as `data_matrix`)}
 
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. Usually the log
+transformed version of the original data}
+
+\item{sample_order_col}{column, determining the order of sample MS run, used
+as covariate to fit the non-linear fit}
+
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
+used in the long format representation df_long. In the wide formatted 
+representation data_matrix this corresponds to the row names.}
+
 \item{fitFunct}{function to use for the fit (currently only `loess_regression` available)}
+
+\item{abs_threshold}{the absolute threshold to filter data for curve fitting}
+
+\item{pct_threshold}{the percentage threshold to filter data for curve fitting}
 
 \item{...}{other parameters, usually of `normalize_custom_fit`, and `fit_func`}
 }
 \value{
-`data_matrix`-size data matrix with batch-effect corrected with
-  per-feature batch median centering
+`df_long`-size long format data with batch-effect corrected with
+  per-feature batch median centering in Intensity_normalized column
 
 list of two items: 1) `data_matrix`, adjusted with continious fit; 
 2) fit_df, used to examine the fitting curves
-
-`data_matrix`-size data matrix with batch-effect corrected by
-  `ComBat`
 
 `data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
 }
@@ -89,14 +105,6 @@ Correction of batch effects in the data
 Median centering of the peptides (per batch median)
 
 adjust batch signal trend with the custom (continuous) fit
-
-Standardized input-output ComBat normalization ComBat allows users to adjust
-for batch effects in datasets where the batch covariate is known, using
-methodology described in Johnson et al. 2007. It uses either parametric or
-non-parametric empirical Bayes frameworks for adjusting data for batch
-effects.  Users are returned an expression matrix that has been corrected for
-batch effects. The input data are assumed to be cleaned and normalized before
-batch effect removal.
 
 Batch correction method allows correction of continuous sigal drift within batch and 
 discrete difference across batches.
