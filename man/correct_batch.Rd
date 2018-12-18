@@ -3,19 +3,12 @@
 \name{correct_batch}
 \alias{correct_batch}
 \alias{center_peptide_batch_medians}
-\alias{adjust_batch_trend}
 \alias{correct_batch_effects}
 \title{Correction of batch effects in the data}
 \usage{
 center_peptide_batch_medians(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   feature_id_col = "peptide_group_label", measure_col = "Intensity")
-
-adjust_batch_trend(data_matrix, sample_annotation,
-  batch_col = "MS_batch", feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName", measure_col = "Intensity",
-  sample_order_col = "order", fit_func = fit_nonlinear,
-  abs_threshold = 5, pct_threshold = 0.2, ...)
 
 correct_batch_effects(data_matrix, sample_annotation,
   fitFunc = "loess_regression", discreteFunc = "MedianCentering",
@@ -51,48 +44,26 @@ consistency}
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
-\item{sample_order_col}{column, determining the order of sample MS run, used
-as covariate to fit the non-linear fit}
-
-\item{fit_func}{function to fit the (non)-linear trend}
-
-\item{abs_threshold}{the absolute threshold to filter data for curve fitting}
-
-\item{pct_threshold}{the percentage threshold to filter data for curve fitting}
-
-\item{...}{other parameters, usually those of the `fit_func`}
-
 \item{fitFunc}{function to use for the fit (currently only `loess_regression` available)}
 
 \item{discreteFunc}{function to use for discrete batch correction (`MedianCentering` or `ComBat`)}
 
-\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
-used in the long format representation df_long. In the wide formatted 
-representation data_matrix this corresponds to the row names.}
-
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. Usually the log
-transformed version of the original data}
-
 \item{sample_order_col}{column, determining the order of sample MS run, used
 as covariate to fit the non-linear fit}
-
-\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
-used in the long format representation df_long. In the wide formatted 
-representation data_matrix this corresponds to the row names.}
 
 \item{abs_threshold}{the absolute threshold to filter data for curve fitting}
 
 \item{pct_threshold}{the percentage threshold to filter data for curve fitting}
 
 \item{...}{other parameters, usually of `normalize_custom_fit`, and `fit_func`}
+
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
+used in the long format representation df_long. In the wide formatted 
+representation data_matrix this corresponds to the row names.}
 }
 \value{
 `df_long`-size long format data with batch-effect corrected with
   per-feature batch median centering in Intensity_normalized column
-
-list of two items: 1) `data_matrix`, adjusted with continious fit; 
-2) fit_df, used to examine the fitting curves
 
 `data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
 }
@@ -101,11 +72,6 @@ Correction of batch effects in the data
 
 Median centering of the peptides (per batch median)
 
-adjust batch signal trend with the custom (continuous) fit
-
 Batch correction method allows correction of continuous sigal drift within batch and 
 discrete difference across batches.
-}
-\seealso{
-\code{\link{fit_nonlinear}}
 }

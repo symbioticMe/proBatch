@@ -9,7 +9,7 @@ plot_single_feature(pep_name, df_long, sample_annotation,
   batch_col = "MS_batch", measure_col = "Intensity",
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
   color_by_batch = F, color_scheme = "brewer", facet_by_batch = F,
-  color_by_col = "m_score", color_by_value = 2, plot_title = NULL,
+  color_by_col = NULL, color_by_value = NULL, plot_title = NULL,
   vline_color = "red", theme = "classic")
 }
 \arguments{
@@ -46,15 +46,22 @@ names.}
 
 \item{color_by_batch}{(logical) whether to color points by batch}
 
+\item{color_scheme}{value in \code{color_by_col} column to color}
+
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
+\item{color_by_col}{column to color by certain value 
+denoted by \code{color_by_value}}
+
 \item{plot_title}{the string indicating the source of the peptides}
+
+\item{vline_color}{color of vertical lines, typically denoting 
+different batches}
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
 
-\item{requant}{if data frame: requant values; if logical: whether to indicate
-requant values (requires 'requant' or 'm_score' column in \code{df_long})}
+\item{color_scheme}{color scheme for \code{ggplot} representation}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
