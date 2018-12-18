@@ -2,18 +2,11 @@
 % Please edit documentation in R/normalize.R
 \name{normalize}
 \alias{normalize}
-\alias{normalize_data}
 \title{Data normalization methods}
-\usage{
-normalize_data(data_matrix, normalizeFunc = "quantile",
-  log_base = NULL)
-}
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
-
-\item{normalizeFunc}{global batch normalization method (`quantile` or `MedianCentering`)}
 
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
@@ -21,21 +14,7 @@ filenames (colnames of the data matrix are found)}
 \item{measure_col}{if `df_long` is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
-
-\item{data_matrix}{raw data matrix (features in rows and samples
-in columns)}
-
-\item{log}{whether to log transform data matrix before normalization (`NULL`, `2` or `10`)}
-}
-\value{
-`data_matrix`-size matrix, with columns normalized
 }
 \description{
 Data normalization methods
-
-Normalization brings the samples to the same scale
-}
-\examples{
-\dontrun{median_normalized_matrix = normalize_data(data_matrix, normalizeFunc = "medianCentering", log_base = 2)}
-
 }
