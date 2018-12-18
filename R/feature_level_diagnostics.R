@@ -9,9 +9,8 @@
 #' @param geom whether to show the feature as points and/or connect by lines
 #' @param color_by_batch (logical) whether to color points by batch
 #' @param facet_by_batch (logical) whether to plot each batch in its own facet
-#' @param color_by_col column to color by certain value 
-#' denoted by \code{color_by_value}
-#' @param color_scheme value in \code{color_by_col} column to color 
+#' @param color_by_col column to color by certain value denoted by \code{color_by_value}
+#' @param color_by_value value in \code{color_by_col} to color 
 #' @param plot_title the string indicating the source of the peptides
 #' @param theme plot theme (default is 'classical'; other options not
 #'   implemented)
@@ -144,6 +143,8 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
 #' be facetted by batch.
 #'
 #' @inheritParams plot_single_feature
+#' @param peptide_annotation long format data with peptide ID and their corresponding 
+#' protein annotations
 #' @param protein_name name of the protein as defined in \code{ProteinName}
 #' @param protein_col column where protein names are specified
 #' @param ... additional arguments to \code{\link{plot_single_feature}} function
@@ -205,6 +206,9 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
 #' @inheritParams plot_single_feature
 #' @param spike_ins substring used to identify spike-in proteins in the column
 #'   'ProteinName'
+#' @param peptide_annotation long format data with peptide ID and their corresponding 
+#' protein annotations
+#' @param protein_col column where protein names are specified
 #' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
@@ -327,7 +331,8 @@ plot_iRT <- function(df_long, sample_annotation,
 #' @param fit_df data frame typically output generated from nonlinear curve 
 #'   fitting by \code{normalize_custom_fit}
 #' @param fit_value_var column denoting intensity values, typically fitted to curve
-#' @param geom for the intensity \code{measure_col} profile:
+#' @param geom for the intensity \code{measure_col} profile
+#' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return \code{ggplot}-class plot with minimally two facets (before and after
 #'   non-linear fit) with \code{measure_col} (Intensity) vs \code{order_col}

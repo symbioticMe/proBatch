@@ -17,12 +17,16 @@ transformed version of the original data}
 
 \item{samples_to_plot}{string vector of samples in \code{data_matrix} to be used in the plot}
 
+\item{flavor}{either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'}
+
 \item{filename}{path where the results are saved. If null the object is returned to the active window;
 otherwise, the object is save into the file. Currently only pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
 
 \item{height}{option  determining the output image width}
+
+\item{unit}{units: 'cm', 'in' or 'mm'}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
