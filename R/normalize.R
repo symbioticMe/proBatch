@@ -17,7 +17,7 @@ NULL
 #'
 #' @param data_matrix raw data matrix (features in rows and samples
 #'   in columns)
-#' @param base base of the logarithm for transformation
+#' @param log_base base of the logarithm for transformation
 #'
 #' @return `data_matrix`-size matrix, with columns log2 transformed
 #' @export
@@ -46,8 +46,12 @@ quantile_normalize <- function(data_matrix){
 
 #' Normalization by centering sample medians to global median of the data
 #'
-#' @param data_matrix log transformed long format data matrix (see `df_long`)
-#'
+#' @param df_long log transformed long format data matrix (see `df_long`)
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param measure_col if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
 #' @return `df_long`-size matrix, with intensity scaled to global median
 #' @export
 #'
@@ -67,17 +71,17 @@ normalize_sample_medians <- function(df_long,
 
 #' Normalization brings the samples to the same scale
 #'
-#' @name normalize
 #' @param data_matrix raw data matrix (features in rows and samples
 #'   in columns)
 #' @param normalizeFunc global batch normalization method (`quantile` or `MedianCentering`)
-#' @param log whether to log transform data matrix before normalization (`NULL`, `2` or `10`)
+#' @param log_base whether to log transform data matrix before normalization (`NULL`, `2` or `10`)
 #'
 #' @return `data_matrix`-size matrix, with columns normalized 
 #' @export
 #'
 #' @examples
-#' \dontrun{median_normalized_matrix = normalize_data(data_matrix, normalizeFunc = "medianCentering", log_base = 2)}
+#' \dontrun{median_normalized_matrix = normalize_data(data_matrix, 
+#' normalizeFunc = "medianCentering", log_base = 2)}
 #' 
 normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
   if(!is.null(log_base)){
