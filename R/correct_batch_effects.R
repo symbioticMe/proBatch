@@ -67,8 +67,6 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @param fit_func function to fit the (non)-linear trend
 #' @param abs_threshold the absolute threshold to filter data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter data for curve fitting 
-#' @param return_long whether the result should be the "long" data frame (as
-#'   `df_long`) or "wide" (as `data_matrix`)
 #' @param ... other parameters, usually those of the `fit_func`
 #'
 #' @return list of two items: 1) `data_matrix`, adjusted with continious fit; 
@@ -197,7 +195,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
 #'  used in the long format representation df_long. In the wide formatted 
 #'  representation data_matrix this corresponds to the row names.
-#' @param fitFunct function to use for the fit (currently only `loess_regression` available)
+#' @param fitFunc function to use for the fit (currently only `loess_regression` available)
 #' @param discreteFunc function to use for discrete batch correction (`MedianCentering` or `ComBat`)
 #' @param abs_threshold the absolute threshold to filter data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter data for curve fitting 
