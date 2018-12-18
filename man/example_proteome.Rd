@@ -13,6 +13,7 @@
   where N is number of protein peptide group maps to. If 1/UniProtID, then this is proteotypic peptide}
   \item{Gene}{conventional gene name of corresponding ProteinName}
   \item{assay_rt}{retention time as in DIA library}
+  \item{filename}{filename of measurments typically from mass spectrometry}
   \item{m_score}{peptide group identification FDR as determined by pyProphet}
   \item{FullRunName}{name of the file, in most functions used for `sample_id_col`}
   #'   ...
