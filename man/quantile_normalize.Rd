@@ -18,3 +18,7 @@ in columns)}
 Quantile normalization of the data, ensuring that the row and column names
 are retained
 }
+\examples{
+quantile_normalized_matrix = quantile_normalize(example_proteome_matrix)
+
+}
