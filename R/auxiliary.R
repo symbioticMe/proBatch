@@ -55,7 +55,7 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
         as.data.frame() %>%
         rownames_to_column(var = feature_id_col) %>%
         melt(id.var = feature_id_col, value.name = measure_col,
-             variable.name = sample_id_col, factorsAsStrings = F)
+             variable.name = sample_id_col, factorsAsStrings = FALSE)
     if(!is.null(step)){
         df_long = df_long %>%
             mutate(Step = step)
