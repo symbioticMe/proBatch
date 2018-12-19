@@ -9,7 +9,7 @@
 #'   consistency
 #' @name normalize
 NULL
-#> NULL
+                                        #> NULL
 
 
 #' Log transformation of the data, ensuring that the row and column names
@@ -23,8 +23,8 @@ NULL
 #' @export
 #'
 log_transform <- function(data_matrix, log_base = 2){
-  data_matrix_log = log(data_matrix + 1, base = log_base) 
-  return(data_matrix_log)
+    data_matrix_log = log(data_matrix + 1, base = log_base) 
+    return(data_matrix_log)
 }
 
 #' Quantile normalization of the data, ensuring that the row and column names
@@ -37,10 +37,10 @@ log_transform <- function(data_matrix, log_base = 2){
 #' @export
 #'
 quantile_normalize <- function(data_matrix){
-  q_norm_proteome = preprocessCore::normalize.quantiles(data_matrix)
-  colnames(q_norm_proteome) = colnames(data_matrix)
-  rownames(q_norm_proteome) = rownames(data_matrix)
-  return(q_norm_proteome)
+    q_norm_proteome = preprocessCore::normalize.quantiles(data_matrix)
+    colnames(q_norm_proteome) = colnames(data_matrix)
+    rownames(q_norm_proteome) = rownames(data_matrix)
+    return(q_norm_proteome)
 }
 
 
@@ -58,15 +58,15 @@ quantile_normalize <- function(data_matrix){
 normalize_sample_medians <- function(df_long,
                                      sample_id_col = 'FullRunName',
                                      measure_col = 'Intensity'){
-  df_normalized = df_long  %>%
-    group_by_at(vars(one_of(sample_id_col))) %>%
-    mutate(median_run = median(UQ(sym(measure_col)), na.rm = T)) %>%
-    ungroup()
-  df_normalized = df_normalized %>%
-    mutate(median_global = median(UQ(sym(measure_col)), na.rm = T)) %>%
-    mutate(diff = median_global - median_run) %>%
-    mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
-  return(df_normalized)
+    df_normalized = df_long  %>%
+        group_by_at(vars(one_of(sample_id_col))) %>%
+        mutate(median_run = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+        ungroup()
+    df_normalized = df_normalized %>%
+        mutate(median_global = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+        mutate(diff = median_global - median_run) %>%
+        mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
+    return(df_normalized)
 }
 
 #' Normalization brings the samples to the same scale
@@ -84,20 +84,20 @@ normalize_sample_medians <- function(df_long,
 #' normalizeFunc = "medianCentering", log_base = 2)}
 #' 
 normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
-  if(!is.null(log_base)){
-      data_matrix = log_transform(data_matrix, log_base = log_base)
-  }
-  
-  if(normalizeFunc == "quantile"){
-    normalized_matrix = quantile_normalize(data_matrix)
-  } else if(normalizeFunc == "medianCentering"){
-    df_long = matrix_to_long(data_matrix, feature_id_col = 'peptide_group_label',
-                             measure_col = 'Intensity', sample_id_col = 'FullRunName')
-    normalized_df = normalize_sample_medians(df_long, sample_id_col = 'FullRunName',  measure_col = 'Intensity')
-    normalized_matrix = long_to_matrix(normalized_df)
-  } else {
-    stop("Only quantile and median centering normalization methods are available")
-  }
-  
-  return(normalized_matrix)
+    if(!is.null(log_base)){
+        data_matrix = log_transform(data_matrix, log_base = log_base)
+    }
+    
+    if(normalizeFunc == "quantile"){
+        normalized_matrix = quantile_normalize(data_matrix)
+    } else if(normalizeFunc == "medianCentering"){
+        df_long = matrix_to_long(data_matrix, feature_id_col = 'peptide_group_label',
+                                 measure_col = 'Intensity', sample_id_col = 'FullRunName')
+        normalized_df = normalize_sample_medians(df_long, sample_id_col = 'FullRunName',  measure_col = 'Intensity')
+        normalized_matrix = long_to_matrix(normalized_df)
+    } else {
+        stop("Only quantile and median centering normalization methods are available")
+    }
+    
+    return(normalized_matrix)
 }
