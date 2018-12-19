@@ -5,8 +5,8 @@
 \title{Fit a non-linear trend}
 \usage{
 fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
-  noFitRequants = F, fitFunc = "loess_regression", with_df = F,
-  abs_threshold = 5, pct_threshold = 0.2, ...)
+  noFitRequants = FALSE, fitFunc = "loess_regression",
+  with_df = FALSE, abs_threshold = 5, pct_threshold = 0.2, ...)
 }
 \arguments{
 \item{dataDF}{data frame containing response variable e.g. samples in order and explanatory 

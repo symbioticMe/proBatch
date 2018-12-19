@@ -361,7 +361,7 @@ The `plot_sample_mean()` function illustrates global average vs. sample running 
 ```{r plot_mean, fig.show='hold', fig.width=5, fig.height=2}
 batch_col = 'MS_batch'
 plot_sample_mean(log_transformed_matrix, example_sample_annotation, order_col = 'order', 
-                 batch_col = batch_col, color_by_batch = T, ylimits = c(12, 16),
+                 batch_col = batch_col, color_by_batch = TRUE, ylimits = c(12, 16),
                  color_scheme = color_list[[batch_col]])
 ```
 
@@ -441,7 +441,7 @@ them side by side. Here are the mean plots before and after
 normalization of the log transformed dataset.
 ```{r plot_mean_normalized, fig.show='hold', fig.width=5, fig.height=2}
 plot_sample_mean(quantile_normalized_matrix, example_sample_annotation, 
-                 color_by_batch = T, ylimits = c(12, 16), 
+                 color_by_batch = TRUE, ylimits = c(12, 16), 
                  color_scheme = color_list[[batch_col]])
 ```
 
@@ -482,7 +482,7 @@ color_annotation <- color_annotation %>% select(one_of(selected_annotations))
 #Plot clustering between samples 
 plot_hierarchical_clustering(quantile_normalized_matrix, color_annotation,  
                              distance = "euclidean", agglomeration = 'complete',
-                             label_samples = F)
+                             label_samples = FALSE)
 ```
 
 Similarly, you can plot a heatmap by supplementing the color list. You
@@ -495,9 +495,9 @@ specifying the required covariates with `sample_annotation_col`,
 ```{r plot_heatmap, fig.show='hold', fig.width=10, fig.height=11}
 plot_heatmap(quantile_normalized_matrix, example_sample_annotation, 
              sample_annotation_col = selected_annotations, 
-             cluster_cols = T, 
+             cluster_cols = TRUE, 
              annotation_color_list = color_scheme$list_of_colors,
-             show_rownames = F, show_colnames = F)
+             show_rownames = FALSE, show_colnames = FALSE)
 ```
 
 From the clustering analysis, we can clearly see that the driving
@@ -588,7 +588,7 @@ plot_spike_in(quantile_normalized_long, example_sample_annotation,
               peptide_annotation = generated_peptide_annotation,
               protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
               plot_title = 'Spike-in BOVINE protein peptides',
-              color_by_batch = T, color_scheme = color_list[[batch_col]])
+              color_by_batch = TRUE, color_scheme = color_list[[batch_col]])
 
 ```
 
@@ -640,7 +640,7 @@ loess_fit_30 <- adjust_batch_trend(quantile_normalized_matrix, example_sample_an
 quantile_normalized_long <- matrix_to_long(quantile_normalized_matrix)
 plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
             df_long = quantile_normalized_long, example_sample_annotation, 
-            color_by_batch = T, color_scheme = color_list[[batch_col]],
+            color_by_batch = TRUE, color_scheme = color_list[[batch_col]],
             fit_df = loess_fit_30$fit_df, plot_title = "Span = 30%")
 ```
 
@@ -648,7 +648,7 @@ plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2",
 loess_fit_70 <- adjust_batch_trend(quantile_normalized_matrix, example_sample_annotation, span = 0.7)
 plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
             df_long = quantile_normalized_long, example_sample_annotation, 
-            color_by_batch = T, color_scheme = color_list[[batch_col]],
+            color_by_batch = TRUE, color_scheme = color_list[[batch_col]],
             fit_df = loess_fit_70$fit_df, plot_title = "Span = 70%")
 ```
 
@@ -771,18 +771,18 @@ plot_sample_corr_heatmap(quantile_normalized_matrix, samples_to_plot = replicate
                          annotation_colors = color_list[factors_to_show], 
                          annotation_col = replicate_annotation,
                          color = heatmap_colors, breaks = breaksList, 
-                         cluster_rows=F, cluster_cols=F,fontsize = 4,
+                         cluster_rows= FALSE, cluster_cols=FALSE,fontsize = 4,
                          annotation_names_col = TRUE, annotation_legend = FALSE, 
-                         show_colnames = F)
+                         show_colnames = FALSE)
 
 plot_sample_corr_heatmap(batch_corrected_matrix, samples_to_plot = replicate_filenames, 
                          flavor = 'pheatmap', plot_title = 'Batch Corrected',
                          annotation_colors = color_list[factors_to_show], 
                          annotation_col = replicate_annotation,
                          color = heatmap_colors, breaks = breaksList, 
-                         cluster_rows=F, cluster_cols=F,fontsize = 4,
+                         cluster_rows=FALSE, cluster_cols=FALSE,fontsize = 4,
                          annotation_names_col = TRUE, annotation_legend = FALSE, 
-                         show_colnames = F)
+                         show_colnames = FALSE)
 ```
 
 Before the correction, samples from one batch correlate better and

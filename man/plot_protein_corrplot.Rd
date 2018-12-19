@@ -42,6 +42,9 @@ otherwise, the object is save into the file. Currently only pdf and png format i
 
 \item{...}{parameters for the corrplot visualisation}
 }
+\value{
+Nothing
+}
 \description{
 Plots correlation plot of peptides from a single protein
 }
