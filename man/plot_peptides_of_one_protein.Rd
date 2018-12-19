@@ -54,7 +54,8 @@ names.}
 
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
-\item{color_by_col}{column to color by certain value denoted by \code{color_by_value}}
+\item{color_by_col}{column to color by certain value denoted 
+by \code{color_by_value}}
 
 \item{color_by_value}{value in \code{color_by_col} to color}
 
@@ -71,6 +72,14 @@ Creates a spike-in facetted ggplot2 plot of the value in
 \code{measure_col} vs \code{order_col} using
 \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 be facetted by batch.
+}
+\examples{
+plot_peptides_of_one_protein (protein_name = "Haao",  
+protein_col = "Gene", df_long = example_proteome, 
+example_sample_annotation, 
+order_col = 'order', sample_id_col = 'FullRunName', 
+batch_col = 'MS_batch')
+
 }
 \seealso{
 Other feature-level diagnostic functions: \code{\link{plot_iRT}},
