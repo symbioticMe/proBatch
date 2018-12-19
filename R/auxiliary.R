@@ -14,13 +14,13 @@ long_to_matrix <- function(df_long,
                            feature_id_col = 'peptide_group_label',
                            measure_col = 'Intensity',
                            sample_id_col = 'FullRunName') {
-  casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
-                                      sep =  " ~ "))
-  proteome_wide = dcast(df_long, formula = casting_formula,
-                        value.var = measure_col) %>%
-    column_to_rownames(feature_id_col) %>%
-    as.matrix()
-  return(proteome_wide)
+    casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
+                                        sep =  " ~ "))
+    proteome_wide = dcast(df_long, formula = casting_formula,
+                          value.var = measure_col) %>%
+        column_to_rownames(feature_id_col) %>%
+        as.matrix()
+    return(proteome_wide)
 }
 
 
@@ -46,24 +46,24 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
                            measure_col = 'Intensity',
                            sample_id_col = 'FullRunName',
                            step = NULL){
-  if(!is.null(sample_annotation)){
-    if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
-      warning('Sample IDs in sample annotation not consistent with samples in input data.')}
-  }
-  
-  df_long = data_matrix %>%
-    as.data.frame() %>%
-    rownames_to_column(var = feature_id_col) %>%
-    melt(id.var = feature_id_col, value.name = measure_col,
-         variable.name = sample_id_col, factorsAsStrings = F)
-  if(!is.null(step)){
-    df_long = df_long %>%
-      mutate(Step = step)
-  }
-  if(!is.null(sample_annotation))
-    df_long = df_long %>%
-      merge(sample_annotation, by = sample_id_col)
-  return(df_long)
+    if(!is.null(sample_annotation)){
+        if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
+            warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+    }
+    
+    df_long = data_matrix %>%
+        as.data.frame() %>%
+        rownames_to_column(var = feature_id_col) %>%
+        melt(id.var = feature_id_col, value.name = measure_col,
+             variable.name = sample_id_col, factorsAsStrings = FALSE)
+    if(!is.null(step)){
+        df_long = df_long %>%
+            mutate(Step = step)
+    }
+    if(!is.null(sample_annotation))
+        df_long = df_long %>%
+            merge(sample_annotation, by = sample_id_col)
+    return(df_long)
 }
 
 
@@ -82,8 +82,8 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}}
 create_peptide_annotation <- function(df_long, feature_id_col = 'peptide_group_label',
                                       annotation_col = c("ProteinName" )){
-  peptide_annotation = df_long %>%
-    select(one_of(c(feature_id_col, annotation_col))) %>%
-    distinct()
-  return(peptide_annotation)
+    peptide_annotation = df_long %>%
+        select(one_of(c(feature_id_col, annotation_col))) %>%
+        distinct()
+    return(peptide_annotation)
 }
