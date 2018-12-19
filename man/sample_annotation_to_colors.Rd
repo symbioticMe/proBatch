@@ -8,7 +8,7 @@ sample_annotation_to_colors(sample_annotation,
   columns_for_plotting = NULL, sample_id_col = "FullRunName",
   factor_columns = c("MS_batch", "EarTag", "Strain", "Diet", "Sex"),
   not_factor_columns = "DateTime", numeric_columns = "Age_Days",
-  rare_categories_to_other = T, numeric_palette_type = "brewer",
+  rare_categories_to_other = TRUE, numeric_palette_type = "brewer",
   granularity = 10)
 }
 \arguments{
