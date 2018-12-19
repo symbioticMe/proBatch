@@ -32,7 +32,8 @@ map_numbers_to_colors <-
              granularity = 10) {
         n_colors_to_create <- ncol(annotation_df_numbers)
         if ((n_colors_to_create > 4 & palette_type == 'viridis')) {
-            warning('Too many colors for viridis palette, switching to Brewer palettes')
+            warning('Too many colors for viridis palette, 
+                    switching to Brewer palettes')
         }
         if ((n_colors_to_create > 18)) {
             stop('Not enough color paletters to visualize the annotation')
@@ -70,9 +71,8 @@ map_numbers_to_colors <-
         color_list = lapply(ann_col_covariate, function(item)
             item$color_vector)
         names(color_list) = names(annotation_df_numbers)
-
-        new_sample_annotation = data.frame(lapply(ann_col_covariate, function(item)
-            item$new_annotation))
+        new_sample_annotation = data.frame(lapply(
+          ann_col_covariate, function(item)item$new_annotation))
         names(new_sample_annotation) = names(annotation_df_numbers)
 
         return(list(color_list = color_list,
@@ -106,7 +106,8 @@ generate_colors_for_numeric <- function(num_col,
                                         i = 1,
                                         granularity = 10) {
     if ((palette_type == 'viridis') && (i > 4 || i < 1)) {
-        warning('When using viridis palette i must be >= 1 and <= 4. Setting it to 1.')
+        warning('When using viridis palette i 
+                must be >= 1 and <= 4. Setting it to 1.')
         i = 1
     }
     
@@ -132,7 +133,8 @@ generate_colors_for_numeric <- function(num_col,
     if (is.numeric(num_col)) {
         num_vec = cut(num_col, breaks = granularity)
     } else if (lubridate::is.POSIXct(num_col)) {
-        interval = (max(num_col, na.rm = TRUE) - min(num_col, na.rm = TRUE)) / granularity
+        interval = (max(num_col, na.rm = TRUE) - 
+                      min(num_col, na.rm = TRUE)) / granularity
         if (any(is.na(num_col))) {
             warning('NAs in the numeric vector')
         }
@@ -140,7 +142,8 @@ generate_colors_for_numeric <- function(num_col,
         num_vec = cut(num_col, breaks = interval_char)
     }
     
-    color_to_plot = colorRampPalette(color_for_column)(nlevels(num_vec))[1:nlevels(num_vec)]
+    color_to_plot = colorRampPalette(color_for_column)(
+      nlevels(num_vec))[1:nlevels(num_vec)]
     names(color_to_plot) = levels(num_vec)
     
     if (!is.null(non_numeric_values)) {
@@ -188,25 +191,30 @@ merge_rare_levels <- function(column) {
 #' the list is named as columns included to use in potting functions
 #'
 #' @inheritParams proBatch
-#' @param columns_for_plotting only consider these columns from sample_annotation
+#' @param columns_for_plotting only consider these 
+#' columns from sample_annotation
 #' @param factor_columns columns of sample_annotation to be 
 #' treated as factors. Note that 
 #' factor and character columns are treated as factors by default.
 #' @param not_factor_columns don't treat these columns as factors. 
-#' This can be used to override the default behaviour of considering factors and 
+#' This can be used to override the default behaviour of 
+#' considering factors and 
 #' character columns as factors.
 #' @param numeric_columns columns of sample_annotation to be 
 #' treated as continuous numeric values. 
-#' @param rare_categories_to_other if True rare categories will be merged as 'other'
+#' @param rare_categories_to_other if True rare categories 
+#' will be merged as 'other'
 #' @param granularity number of colors to map to the number 
 #' vector (equally spaced between minimum and maximum)
-#' @param numeric_palette_type palette to be used for numeric values coloring
+#' @param numeric_palette_type palette to be used for 
+#' numeric values coloring
 #'
 #' @return list of colors
 #' 
 #' @examples 
 #' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
-#' factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
+#' factor_columns = c('MS_batch','EarTag', "Strain", 
+#' "Diet", "digestion_batch", "Sex"),
 #' not_factor_columns = 'DateTime',
 #' numeric_columns = c('order'))
 #' @export
@@ -243,7 +251,7 @@ sample_annotation_to_colors <- function(sample_annotation,
         ))
     }
     
-    factor_like_columns = names(sample_annotation)[sapply(sample_annotation,
+    factor_like_columns = names(sample_annotation)[vapply(sample_annotation,
                                                           function(column)
                                                               is.factor(column) |
                                                                   is.character(column))]
@@ -277,9 +285,9 @@ sample_annotation_to_colors <- function(sample_annotation,
          !identical(non_factor_cols, character(0))) {
         numeric_df = sample_annotation %>%
             select(one_of(non_factor_cols))
-        map_of_colors_to_num_vec = map_numbers_to_colors(numeric_df,
-                                                         palette_type = numeric_palette_type,
-                                                         granularity = granularity)
+        map_of_colors_to_num_vec = map_numbers_to_colors(
+          numeric_df,palette_type = numeric_palette_type,
+          granularity = granularity)
         list_of_col_for_numeric = map_of_colors_to_num_vec$color_list
         numeric_factor_df = map_of_colors_to_num_vec$new_sample_annotation
         sample_annotation = cbind(factor_df, numeric_factor_df)
@@ -301,9 +309,12 @@ sample_annotation_to_colors <- function(sample_annotation,
 #' Turn color list to df (some plotting functions require the latter)
 #'
 #' @param color_list list of colors
-#' @param sample_annotation factor-based configuration of the sample annotation
-#'
+#' @param sample_annotation factor-based configuration 
+#' of the sample annotation
+#' 
 #' @return a data frame representation of the input color list
+#' 
+#' @keywords internal
 #'
 color_list_to_df <- function(color_list, sample_annotation) {
     list_df = lapply(names(sample_annotation), function(col_name) {
