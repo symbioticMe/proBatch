@@ -8,13 +8,18 @@
 #'   These will be used to determine the run order
 #' @param new_time_column name of the new column to which date&time will be
 #'   converted to
-#' @param dateTimeFormat POSIX format of the date and time. See \code{\link{as.POSIXct}}
-#'   from base R for details
+#' @param dateTimeFormat POSIX format of the date and time. 
+#'   See \code{\link{as.POSIXct}} from base R for details
 #'
 #' @return sample annotation file with column names as 'new_time_column' with
 #'   POSIX-formatted date
 #'
 #' @family date
+#' @examples 
+#' dates_to_posix(example_sample_annotation, 
+#' time_column = c('RunDate','RunTime'),
+#' new_time_column = 'DateTime', 
+#' dateTimeFormat = c("%b_%d", "%H:%M:%S"))
 #'
 #' @export
 #'
@@ -50,11 +55,21 @@ dates_to_posix <- function(sample_annotation,
 #'
 #' @param new_order_col name of column with generated the order of sample run 
 #'  based on time columns
-#' @param instrument_col column, denoting different instrument used for measurements
+#' @param instrument_col column, denoting different 
+#' instrument used for measurements
 #' @return sample annotation file with column names as 'new_time_column' with
-#'   POSIX-formatted date & \code{new_order_col} used in some diagnostic plots (e.g.
+#'   POSIX-formatted date & \code{new_order_col} used 
+#'   in some diagnostic plots (e.g.
 #'   \code{\link{plot_iRT}}, \code{\link{plot_sample_mean}})
-#'
+#' @examples 
+#' sample_annotation_worder <- date_to_sample_order(
+#' example_sample_annotation,
+#' time_column = c('RunDate','RunTime'),
+#' new_time_column = 'DateTime',
+#' dateTimeFormat = c("%b_%d", "%H:%M:%S"),
+#' new_order_col = 'order',
+#' instrument_col = NULL)
+#' 
 #' @export
 #'
 date_to_sample_order <- function(sample_annotation,
