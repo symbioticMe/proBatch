@@ -6,6 +6,9 @@
 \usage{
 merge_rare_levels(column)
 }
+\value{
+column with rare occurences replaced by other
+}
 \description{
 Replaces levels with a maximal occurence of 1 with other
 }
