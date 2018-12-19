@@ -50,6 +50,12 @@ list of two items: 1) `data_matrix`, adjusted with continious fit;
 \description{
 adjust batch signal trend with the custom (continuous) fit
 }
+\examples{
+adjust_batch_trend(example_proteome_matrix, 
+example_sample_annotation, span = 0.7, 
+abs_threshold = 5, pct_threshold = 0.20)
+
+}
 \seealso{
 \code{\link{fit_nonlinear}}
 }
