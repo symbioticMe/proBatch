@@ -24,8 +24,11 @@ NULL
 #'   file)
 #' @return `df_long`-size long format data with batch-effect corrected with
 #'   per-feature batch median centering in Intensity_normalized column
+#'   
 #' @examples 
-#' center_peptide_batch_medians(example_proteome, example_sample_annotation)
+#' median_centered_proteome <- center_peptide_batch_medians(
+#' example_proteome, example_sample_annotation)
+#' 
 #' @export
 #'
 center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
