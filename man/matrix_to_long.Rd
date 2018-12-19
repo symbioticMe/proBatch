@@ -40,6 +40,11 @@ naming with numbers, e.g. `1_raw`, `2_quantile`}
 \description{
 Convert from wide matrix to a long data frame representation
 }
+\examples{
+{proteome_long <- matrix_to_long(example_proteome_matrix, 
+example_sample_annotation)}
+
+}
 \seealso{
 Other matrix manipulation functions: \code{\link{long_to_matrix}}
 }
