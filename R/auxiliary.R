@@ -7,6 +7,7 @@
 #' @return \code{data_matrix} (\link{proBatch}) like matrix (features in rows, samples in columns)
 #'
 #' @family matrix manipulation functions
+#' @examples {proteome_matrix <- long_to_marix(example_proteome)}
 #'
 #' @export
 #'
@@ -38,6 +39,8 @@ long_to_matrix <- function(df_long,
 #' @return \code{df_long} (\link{proBatch}) like data frame
 #'
 #' @family matrix manipulation functions
+#' @examples {proteome_long <- matrix_to_long(example_proteome_matrix, 
+#' example_sample_annotation)}
 #'
 #' @export
 #'
@@ -78,6 +81,8 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #'
 #' @return data frame containing petpide annotations 
 #' @export
+#' @examples {generated_peptide_annotation <- create_peptide_annotation(example_proteome,
+#' feature_id_col = 'peptide_group_label',annotation_col = c("ProteinName" ))}
 #' 
 #' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}}
 create_peptide_annotation <- function(df_long, feature_id_col = 'peptide_group_label',
