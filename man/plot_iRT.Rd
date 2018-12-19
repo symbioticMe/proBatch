@@ -55,7 +55,8 @@ names.}
 
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
-\item{color_by_col}{column to color by certain value denoted by \code{color_by_value}}
+\item{color_by_col}{column to color by certain value denoted 
+by \code{color_by_value}}
 
 \item{color_by_value}{value in \code{color_by_col} to color}
 
@@ -65,7 +66,8 @@ names.}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
-  faceted by \code{irt_pattern} containing proteins and (optionally) by \code{batch_col}
+  faceted by \code{irt_pattern} containing proteins 
+  and (optionally) by \code{batch_col}
 }
 \description{
 Creates a iRT facetted ggplot2 plot of the value in
