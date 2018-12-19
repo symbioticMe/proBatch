@@ -49,6 +49,12 @@ Nothing
 Plots correlation plot of peptides from a single protein
 }
 \examples{
+plot_corr_plot(example_proteome_matrix, protein_name = 'Haao',
+               peptide_annotation = example_peptide_annotation, 
+               protein_col = 'Gene',
+               number.cex=0.75, tl.cex = .75
+               mar=c(0,0,1,0))
+               
 \dontrun{lower = "ellipse", upper = "number",
  tl.col = "black", diag = 'l', tl.pos = "lt", number.cex=0.75, tl.cex = .75}
 
