@@ -65,23 +65,6 @@
 #' @importFrom data.table transpose
 #' @importFrom data.table :=
 #' @importFrom data.table IDateTime
-#' @importFrom grDevices colorRampPalette
-#' @importFrom grDevices dev.off
-#' @importFrom grDevices pdf
-#' @importFrom stats as.formula
-#' @importFrom stats complete.cases
-#' @importFrom stats dist
-#' @importFrom stats hclust
-#' @importFrom stats loess
-#' @importFrom stats median
-#' @importFrom stats model.matrix
-#' @importFrom stats prcomp
-#' @importFrom stats predict
-#' @importFrom stats reformulate
-#' @importFrom stats setNames
-#' @importFrom stats weights
-#' @importFrom utils combn
-#' @importFrom utils data
 #' @importFrom purrr map2
 #' 
 #' @docType package
