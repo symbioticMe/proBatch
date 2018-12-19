@@ -251,7 +251,7 @@ sample_annotation_to_colors <- function(sample_annotation,
         ))
     }
     
-    factor_like_columns = names(sample_annotation)[vapply(sample_annotation,
+    factor_like_columns = names(sample_annotation)[sapply(sample_annotation,
                                                           function(column)
                                                               is.factor(column) |
                                                                   is.character(column))]
