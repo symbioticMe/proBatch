@@ -14,6 +14,8 @@
 #'   level (fragments, transitions, proteins))
 #' @param ... other parameters of `plotDendroAndColors` from `WGCNA` package
 #'
+#' @return No return
+#' 
 #' @export
 #'
 #' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
