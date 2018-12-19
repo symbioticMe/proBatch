@@ -80,14 +80,9 @@ plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
 #'
 #' @export
 #' @examples 
-#' plot_corr_plot(example_proteome_matrix, protein_name = 'Haao',
+#' plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
 #'                peptide_annotation = example_peptide_annotation, 
-#'                protein_col = 'Gene',
-#'                number.cex=0.75, tl.cex = .75
-#'                mar=c(0,0,1,0))
-#'                
-#' \dontrun{lower = "ellipse", upper = "number",
-#'  tl.col = "black", diag = 'l', tl.pos = "lt", number.cex=0.75, tl.cex = .75}
+#'                protein_col = 'Gene', flavor = "pheatmap")
 #'
 plot_protein_corrplot <- function(data_matrix,
                                   protein_name,
@@ -150,7 +145,7 @@ plot_protein_corrplot <- function(data_matrix,
 #'  annotation_names_col = TRUE, annotation_legend = FALSE, 
 #'  show_colnames = FALSE)
 #'
-#' plot_samples_corr_heatmap(data_matrix, sample_to_plot = specified_samples,
+#' plot_sample_corr_heatmap(data_matrix, sample_to_plot = specified_samples,
 #'  flavor = 'corrplot', lower = "ellipse", upper = "number")
 #'
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
