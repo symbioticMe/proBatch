@@ -8,9 +8,9 @@ plot_peptides_of_one_protein(protein_name, protein_col = "ProteinName",
   df_long, sample_annotation, peptide_annotation = NULL,
   order_col = "order", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
-  feature_id_col = "peptide_group_label", color_by_batch = F,
-  color_scheme = "brewer", facet_by_batch = F, color_by_col = NULL,
-  color_by_value = NULL,
+  feature_id_col = "peptide_group_label", color_by_batch = FALSE,
+  color_scheme = "brewer", facet_by_batch = FALSE,
+  color_by_col = NULL, color_by_value = NULL,
   plot_title = sprintf("Peptides of \%s protein", protein_name), ...)
 }
 \arguments{
