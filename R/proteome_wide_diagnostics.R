@@ -8,13 +8,26 @@
 #'   `sample_annotation_to_colors`
 #' @param distance distance metric used for clustering
 #' @param agglomeration agglomeration methods as used by `hclust`
-#' @param label_samples if \code{TRUE} sample IDs (column names of \code{data_matrix}) will be printed
-#' @param label_font size of the font. Is active if \code{label_samples} is \code{TRUE}, ignored otherwise
+#' @param label_samples if \code{TRUE} sample IDs (column names of 
+#' \code{data_matrix}) will be printed
+#' @param label_font size of the font. Is active if \code{label_samples} is 
+#' \code{TRUE}, ignored otherwise
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #' @param ... other parameters of `plotDendroAndColors` from `WGCNA` package
 #'
 #' @return No return
+#' @examples
+#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
+#' not_factor_columns = 'DateTime',
+#' numeric_columns = c('order'))
+#' 
+#' color_annotation <- color_scheme$color_df
+#' 
+#' plot_hierarchical_clustering(example_proteome_matrix, color_annotation,  
+#' distance = "euclidean", agglomeration = 'complete',
+#' label_samples = FALSE)
 #' 
 #' @export
 #'
@@ -77,6 +90,17 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' 
 #' @return object returned by \code{link[pheatmap]{pheatmap}}
 #' @export
+#' 
+#' @examples 
+#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
+#' not_factor_columns = 'DateTime',
+#' numeric_columns = c('order'))
+#' 
+#' plot_heatmap(example_proteome_matrix, example_sample_annotation, 
+#' sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
+#' cluster_cols = TRUE, annotation_color_list = color_scheme$list_of_colors,
+#' show_rownames = FALSE, show_colnames = FALSE)
 #'
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
 plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 'FullRunName',
@@ -190,7 +214,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
 #'
-#' @examples \dontrun{plot_PVCA(quantile_normalized_matrix, example_sample_annotation, 
+#' @examples \dontrun{plot_PVCA(example_proteome_marix, example_sample_annotation, 
 #' technical_covariates = c('MS_batch', 'digestion_batch'),
 #' biological_covariates = c(biological_covariates, biospecimen_id_col))}
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
@@ -336,9 +360,10 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #'   `factor_to_color`
 #' @export
 #'
-#' @examples \dontrun{plot_PCA(quantile_normalized_matrix, example_sample_annotation, 
-#' color_by = 'MS_batch', plot_title = "MS batch")
-#' }
+#' @examples 
+#' plot_PCA(example_proteome_matrix, example_sample_annotation, 
+#' color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
+#' 
 #' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, \code{\link[ggplot2]{ggplot}}
 plot_PCA <- function(data_matrix, sample_annotation,
                      feature_id_col = 'peptide_group_label',
