@@ -167,8 +167,7 @@ In this vignette, the essential columns have the following names:
 feature_id_col = 'peptide_group_label'
 measure_col = 'Intensity'
 sample_id_col = 'FullRunName'
-quality_col = 'm_score'
-essential_columns = c(feature_id_col, measure_col, sample_id_col, quality_col)
+essential_columns = c(feature_id_col, measure_col, sample_id_col)
 ```
 
 The names of the columns can be technology-specific. These column names are
