@@ -6,7 +6,7 @@
 \usage{
 plot_hierarchical_clustering(data_matrix, color_df,
   distance = "euclidean", agglomeration = "complete",
-  label_samples = T, label_font = 0.2, plot_title = NULL, ...)
+  label_samples = TRUE, label_font = 0.2, plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

@@ -7,7 +7,8 @@
 plot_heatmap(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", sample_annotation_col = NULL,
   sample_annotation_row = NULL, fill_the_missing = T,
-  cluster_rows = T, cluster_cols = F, annotation_color_list = NA,
+  cluster_rows = True, cluster_cols = FALSE,
+  annotation_color_list = NA,
   heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7,
   name = "RdYlBu")))(100), color_for_missing = "black", filename = NA,
   plot_title = NA, ...)
