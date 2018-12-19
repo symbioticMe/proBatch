@@ -99,62 +99,60 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
                                sample_order_col = 'order',
                                fit_func = fit_nonlinear, 
                                abs_threshold = 5, pct_threshold = 0.20, ...){
-    
-    sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-    sampleNames <- colnames(data_matrix)
-    s_a <- sample_annotation[[sample_id_col]]
-    all <- union(sampleNames, s_a)
-    non_matched <- all[!all %in% intersect(sampleNames, s_a)]
-    if(length(non_matched)!=0){warning("Sample ID in data matrix 
-                                       and sample annotation don't match. 
-                                       Non-matching elements are removed for analysis")}
-    
-    sample_annotation = sample_annotation %>%
-        filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
-        arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
-        droplevels()
-    
-    data_matrix = as.data.frame(data_matrix)
-    data_matrix[[feature_id_col]] = rownames(data_matrix)
-    
-    df_long = data_matrix %>%
-        melt(id.vars = feature_id_col)
-    names(df_long) = c(feature_id_col, sample_id_col, measure_col)
-    batch_table <- as.data.frame(table(sample_annotation[[batch_col]], 
-                                       dnn = list(batch_col)), responseName = "batch_total")
-    sample_annotation = sample_annotation %>%
-        full_join(batch_table, by = batch_col)
-    
-    df_normalized = df_long %>%
-        filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
-        merge(sample_annotation, by = sample_id_col) %>%
-        arrange_(feature_id_col, sample_order_col) %>%
-        group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% 
-        mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
-                          expl.var = sample_order_col, 
-                          abs_threshold = abs_threshold, 
-                          pct_threshold = pct_threshold, ...)) %>%
-        unnest() %>%
-        group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
-        mutate(mean_fit = mean(fit)) %>%
-        mutate(diff = mean_fit - fit) %>%
-        mutate_(Intensity_normalized = interp(~`+`(x, y),
-                                              x = as.name('diff'),
-                                              y = as.name(measure_col)))
-    
-    fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
-                                                      sample_id_col, batch_col)))
-    
-    casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
-                                        sep =  " ~ "))
-    df_normalized = dcast(df_normalized, formula = casting_formula,
-                          value.var = 'Intensity_normalized')
-    df_normalized_matrix = as.matrix(df_normalized[,2:ncol(df_normalized)])
-    rownames(df_normalized_matrix) = df_normalized[,1]
-    
-    return(list(data_matrix = df_normalized_matrix,
-                fit_df = fit_df))
+  
+  sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+  sampleNames <- colnames(data_matrix)
+  s_a <- sample_annotation[[sample_id_col]]
+  all <- union(sampleNames, s_a)
+  non_matched <- all[!all %in% intersect(sampleNames, s_a)]
+  if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
+  
+  sample_annotation = sample_annotation %>%
+    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
+    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
+    droplevels()
+  
+  data_matrix = as.data.frame(data_matrix)
+  data_matrix[[feature_id_col]] = rownames(data_matrix)
+  
+  df_long = data_matrix %>%
+    melt(id.vars = feature_id_col)
+  names(df_long) = c(feature_id_col, sample_id_col, measure_col)
+  batch_table <- as.data.frame(table(sample_annotation[[batch_col]], dnn = list(batch_col)), responseName = "batch_total")
+  sample_annotation = sample_annotation %>%
+    full_join(batch_table, by = batch_col)
+  
+  df_normalized = df_long %>%
+    filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
+    merge(sample_annotation, by = sample_id_col) %>%
+    arrange_(feature_id_col, sample_order_col) %>%
+    group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
+    nest() %>%
+    mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
+                      expl.var = sample_order_col, 
+                      abs_threshold = abs_threshold, pct_threshold = pct_threshold, ...)) %>%
+    unnest() %>%
+    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
+    mutate(mean_fit = mean(fit)) %>%
+    mutate(diff = mean_fit - fit) %>%
+    mutate_(Intensity_normalized = interp(~`+`(x, y),
+                                          x = as.name('diff'),
+                                          y = as.name(measure_col)))
+  
+  fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
+                                                    sample_id_col, batch_col)))
+  
+  casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
+                                      sep =  " ~ "))
+  df_normalized = dcast(df_normalized, formula = casting_formula,
+                        value.var = 'Intensity_normalized')
+  df_normalized_matrix = as.matrix(df_normalized[,2:ncol(df_normalized)])
+  rownames(df_normalized_matrix) = df_normalized[,1]
+  
+  return(list(data_matrix = df_normalized_matrix,
+              fit_df = fit_df))
 }
+
 
 #' Standardized input-output ComBat normalization ComBat allows users to adjust
 #' for batch effects in datasets where the batch covariate is known, using
