@@ -13,7 +13,7 @@
 #' representation data_matrix this corresponds to the row names.
 #' @name correct_batch
 NULL
-#> NULL
+                                        #> NULL
 
 #' Median centering of the peptides (per batch median)
 #'
@@ -27,29 +27,29 @@ NULL
 #' @export
 #'
 center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
-                                  sample_id_col = 'FullRunName',
-                                  batch_col = 'MS_batch',
-                                  feature_id_col = 'peptide_group_label',
-                                  measure_col = 'Intensity'){
-  
-  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
-    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
-  
-  if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
-      !is.null(sample_annotation)){
-    df_long = df_long %>% merge(sample_annotation, by = sample_id_col)
-  }
-  df_normalized = df_long %>%
-    group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
-    mutate(median_batch = median(UQ(sym(measure_col)), na.rm = T)) %>%
-    ungroup() %>%
-    group_by_at(vars(one_of(feature_id_col))) %>%
-    mutate(median_global = median(UQ(sym(measure_col)), na.rm = T)) %>%
-    ungroup() %>%
-    mutate(diff = median_global - median_batch) %>%
-    mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
-  
-  return(df_normalized)
+                                         sample_id_col = 'FullRunName',
+                                         batch_col = 'MS_batch',
+                                         feature_id_col = 'peptide_group_label',
+                                         measure_col = 'Intensity'){
+    
+    if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+        warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+    
+    if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
+         !is.null(sample_annotation)){
+        df_long = df_long %>% merge(sample_annotation, by = sample_id_col)
+    }
+    df_normalized = df_long %>%
+        group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
+        mutate(median_batch = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+        ungroup() %>%
+        group_by_at(vars(one_of(feature_id_col))) %>%
+        mutate(median_global = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+        ungroup() %>%
+        mutate(diff = median_global - median_batch) %>%
+        mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
+    
+    return(df_normalized)
 }
 
 
@@ -83,65 +83,65 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #'
 #' @seealso \code{\link{fit_nonlinear}}
 adjust_batch_trend <- function(data_matrix, sample_annotation,
-                                 batch_col = 'MS_batch',
-                                 feature_id_col = 'peptide_group_label',
-                                 sample_id_col = 'FullRunName',
-                                 measure_col = 'Intensity',
-                                 sample_order_col = 'order',
-                                 fit_func = fit_nonlinear, 
-                                 abs_threshold = 5, pct_threshold = 0.20, ...){
-  
-  sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-  sampleNames <- colnames(data_matrix)
-  s_a <- sample_annotation[[sample_id_col]]
-  all <- union(sampleNames, s_a)
-  non_matched <- all[!all %in% intersect(sampleNames, s_a)]
-  if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
-  
-  sample_annotation = sample_annotation %>%
-    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
-    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
-    droplevels()
-  
-  data_matrix = as.data.frame(data_matrix)
-  data_matrix[[feature_id_col]] = rownames(data_matrix)
-  
-  df_long = data_matrix %>%
-    melt(id.vars = feature_id_col)
-  names(df_long) = c(feature_id_col, sample_id_col, measure_col)
-  batch_table <- as.data.frame(table(sample_annotation[[batch_col]], dnn = list(batch_col)), responseName = "batch_total")
-  sample_annotation = sample_annotation %>%
-    full_join(batch_table, by = batch_col)
-  
-  df_normalized = df_long %>%
-    filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
-    merge(sample_annotation, by = sample_id_col) %>%
-    arrange_(feature_id_col, sample_order_col) %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
-    nest() %>%
-    mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
-                      expl.var = sample_order_col, 
-                      abs_threshold = abs_threshold, pct_threshold = pct_threshold, ...)) %>%
-    unnest() %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
-    mutate(mean_fit = mean(fit)) %>%
-    mutate(diff = mean_fit - fit) %>%
-    mutate_(Intensity_normalized = interp(~`+`(x, y),
-                                          x = as.name('diff'),
-                                          y = as.name(measure_col)))
-  
-  fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
-                                                    sample_id_col, batch_col)))
-  
-  casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
-                                      sep =  " ~ "))
-  df_normalized = dcast(df_normalized, formula = casting_formula,
-                        value.var = 'Intensity_normalized')
-  df_normalized_matrix = as.matrix(df_normalized[,2:ncol(df_normalized)])
-  rownames(df_normalized_matrix) = df_normalized[,1]
-  
-  return(list(data_matrix = df_normalized_matrix,
-              fit_df = fit_df))
+                               batch_col = 'MS_batch',
+                               feature_id_col = 'peptide_group_label',
+                               sample_id_col = 'FullRunName',
+                               measure_col = 'Intensity',
+                               sample_order_col = 'order',
+                               fit_func = fit_nonlinear, 
+                               abs_threshold = 5, pct_threshold = 0.20, ...){
+    
+    sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+    sampleNames <- colnames(data_matrix)
+    s_a <- sample_annotation[[sample_id_col]]
+    all <- union(sampleNames, s_a)
+    non_matched <- all[!all %in% intersect(sampleNames, s_a)]
+    if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
+    
+    sample_annotation = sample_annotation %>%
+        filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
+        arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
+        droplevels()
+    
+    data_matrix = as.data.frame(data_matrix)
+    data_matrix[[feature_id_col]] = rownames(data_matrix)
+    
+    df_long = data_matrix %>%
+        melt(id.vars = feature_id_col)
+    names(df_long) = c(feature_id_col, sample_id_col, measure_col)
+    batch_table <- as.data.frame(table(sample_annotation[[batch_col]], dnn = list(batch_col)), responseName = "batch_total")
+    sample_annotation = sample_annotation %>%
+        full_join(batch_table, by = batch_col)
+    
+    df_normalized = df_long %>%
+        filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
+        merge(sample_annotation, by = sample_id_col) %>%
+        arrange_(feature_id_col, sample_order_col) %>%
+        group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
+        nest() %>%
+        mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
+                          expl.var = sample_order_col, 
+                          abs_threshold = abs_threshold, pct_threshold = pct_threshold, ...)) %>%
+        unnest() %>%
+        group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
+        mutate(mean_fit = mean(fit)) %>%
+        mutate(diff = mean_fit - fit) %>%
+        mutate_(Intensity_normalized = interp(~`+`(x, y),
+                                              x = as.name('diff'),
+                                              y = as.name(measure_col)))
+    
+    fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
+                                                      sample_id_col, batch_col)))
+    
+    casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
+                                        sep =  " ~ "))
+    df_normalized = dcast(df_normalized, formula = casting_formula,
+                          value.var = 'Intensity_normalized')
+    df_normalized_matrix = as.matrix(df_normalized[,2:ncol(df_normalized)])
+    rownames(df_normalized_matrix) = df_normalized[,1]
+    
+    return(list(data_matrix = df_normalized_matrix,
+                fit_df = fit_df))
 }
 
 #' Standardized input-output ComBat normalization ComBat allows users to adjust
@@ -171,23 +171,23 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
                                 sample_id_col = 'FullRunName',
                                 batch_col = 'MS_batch', 
                                 par.prior = TRUE){
-  
-  sampleNames = colnames(data_matrix)
-  s_a <- sample_annotation[[sample_id_col]]
-  all <- union(sampleNames, s_a)
-  non_matched <- all[!all %in% intersect(sampleNames, s_a)]
-  if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
-  
-  sample_annotation = sample_annotation %>%
-    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
-    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
-    droplevels()
-  
-  batches = sample_annotation[[batch_col]]
-  modCombat = model.matrix(~1, data = sample_annotation)
-  corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
-                                   mod = modCombat, par.prior = par.prior)
-  return(corrected_proteome)
+    
+    sampleNames = colnames(data_matrix)
+    s_a <- sample_annotation[[sample_id_col]]
+    all <- union(sampleNames, s_a)
+    non_matched <- all[!all %in% intersect(sampleNames, s_a)]
+    if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
+    
+    sample_annotation = sample_annotation %>%
+        filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
+        arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
+        droplevels()
+    
+    batches = sample_annotation[[batch_col]]
+    modCombat = model.matrix(~1, data = sample_annotation)
+    corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
+                                     mod = modCombat, par.prior = par.prior)
+    return(corrected_proteome)
 }
 
 
@@ -210,12 +210,12 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' @export
 #'                                                 
 correct_batch_effects <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
-                                discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
-                                feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
-                                measure_col = 'Intensity',  sample_order_col = 'order', 
-                                abs_threshold = 5, pct_threshold = 0.20, ...){
-  sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-  fit_list = adjust_batch_trend(data_matrix, sample_annotation = sample_annotation,
+                                  discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
+                                  feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
+                                  measure_col = 'Intensity',  sample_order_col = 'order', 
+                                  abs_threshold = 5, pct_threshold = 0.20, ...){
+    sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+    fit_list = adjust_batch_trend(data_matrix, sample_annotation = sample_annotation,
                                   batch_col = batch_col,
                                   feature_id_col = feature_id_col,
                                   sample_id_col = sample_id_col,
@@ -225,27 +225,27 @@ correct_batch_effects <- function(data_matrix, sample_annotation, fitFunc = 'loe
                                   fitFunc = fitFunc, 
                                   abs_threshold = abs_threshold, 
                                   pct_threshold = pct_threshold, ...)
-  fit_matrix = fit_list$data_matrix
-  fit_long = matrix_to_long(fit_matrix, feature_id_col = feature_id_col,
-                            measure_col = measure_col, sample_id_col = sample_id_col)
-  
-  if(discreteFunc == 'MedianCentering'){
-    median_long = center_peptide_batch_medians(df_long = fit_long, sample_annotation = sample_annotation,
-                                          sample_id_col = sample_id_col,
-                                          batch_col = batch_col,
-                                          feature_id_col = feature_id_col,
-                                          measure_col = measure_col)
-    normalized_matrix = long_to_matrix(median_long, feature_id_col = feature_id_col,
-                                       measure_col = measure_col, sample_id_col = sample_id_col)
-  }
-  
-  if(discreteFunc == 'ComBat'){
-    fit_matrix = long_to_matrix(fit_long, feature_id_col = feature_id_col,
-                                     measure_col = measure_col, sample_id_col = sample_id_col)
-    normalized_matrix = correct_with_ComBat(fit_matrix, sample_annotation = sample_annotation,
-                                            batch_col = batch_col, par.prior = TRUE)
-  }
-  
-  return(normalized_matrix)
+    fit_matrix = fit_list$data_matrix
+    fit_long = matrix_to_long(fit_matrix, feature_id_col = feature_id_col,
+                              measure_col = measure_col, sample_id_col = sample_id_col)
+    
+    if(discreteFunc == 'MedianCentering'){
+        median_long = center_peptide_batch_medians(df_long = fit_long, sample_annotation = sample_annotation,
+                                                   sample_id_col = sample_id_col,
+                                                   batch_col = batch_col,
+                                                   feature_id_col = feature_id_col,
+                                                   measure_col = measure_col)
+        normalized_matrix = long_to_matrix(median_long, feature_id_col = feature_id_col,
+                                           measure_col = measure_col, sample_id_col = sample_id_col)
+    }
+    
+    if(discreteFunc == 'ComBat'){
+        fit_matrix = long_to_matrix(fit_long, feature_id_col = feature_id_col,
+                                    measure_col = measure_col, sample_id_col = sample_id_col)
+        normalized_matrix = correct_with_ComBat(fit_matrix, sample_annotation = sample_annotation,
+                                                batch_col = batch_col, par.prior = TRUE)
+    }
+    
+    return(normalized_matrix)
 }
 
