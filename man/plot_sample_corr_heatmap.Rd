@@ -57,7 +57,7 @@ samples_to_plot = specified_samples,
  annotation_names_col = TRUE, annotation_legend = FALSE, 
  show_colnames = FALSE)
 
-plot_samples_corr_heatmap(data_matrix, sample_to_plot = specified_samples,
+plot_sample_corr_heatmap(data_matrix, sample_to_plot = specified_samples,
  flavor = 'corrplot', lower = "ellipse", upper = "number")
 
 }
