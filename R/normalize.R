@@ -20,8 +20,7 @@ NULL
 #'
 #' @return `data_matrix`-size matrix, with columns log2 transformed
 #' @examples 
-#' log_transformed_matrix <- log_transform(example_proteome_matrix
-#' log_base = 2)
+#' log_transformed_matrix <- log_transform(example_proteome_matrix)
 #' 
 #' @export
 #'
@@ -32,7 +31,7 @@ log_transform <- function(data_matrix, log_base = 2){
     }else if(log_base ==10){
       data_matrix_log = log10(data_matrix + 1)
     }else {
-      stop("only log_base = 2 or log_base = 10 is applicable")
+      stop("Only log_base = 2 or log_base = 10 is applicable")
     }
   }
     return(data_matrix_log)
