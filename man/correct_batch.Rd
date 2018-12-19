@@ -44,9 +44,11 @@ consistency}
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
-\item{fitFunc}{function to use for the fit (currently only `loess_regression` available)}
+\item{fitFunc}{function to use for the fit (currently 
+only `loess_regression` available)}
 
-\item{discreteFunc}{function to use for discrete batch correction (`MedianCentering` or `ComBat`)}
+\item{discreteFunc}{function to use for discrete 
+batch correction (`MedianCentering` or `ComBat`)}
 
 \item{sample_order_col}{column, determining the order of sample MS run, used
 as covariate to fit the non-linear fit}
@@ -61,13 +63,25 @@ as covariate to fit the non-linear fit}
 `df_long`-size long format data with batch-effect corrected with
   per-feature batch median centering in Intensity_normalized column
 
-`data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
+`data_matrix`-size data matrix with batch-effect 
+corrected by fit and discrete functions
 }
 \description{
 Correction of batch effects in the data
 
 Median centering of the peptides (per batch median)
 
-Batch correction method allows correction of continuous sigal drift within batch and 
+Batch correction method allows correction of 
+continuous sigal drift within batch and 
 discrete difference across batches.
+}
+\examples{
+center_peptide_batch_medians(example_proteome, example_sample_annotation)
+correct_batch_effects(example_protome_matrix, example_sample_annotation, 
+fitFunc = 'loess_regression', 
+discreteFunc = 'MedianCentering', 
+batch_col = 'MS_batch',  
+span = 0.7,
+abs_threshold = 5, pct_threshold = 0.20)
+
 }
