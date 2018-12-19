@@ -1,3 +1,4 @@
+
 #' Fit a non-linear trend
 #'
 #' @param dataDF data frame containing response variable e.g. samples in order and explanatory 
@@ -19,47 +20,47 @@
 #' @keywords internal
 
 fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x',
-                          noFitRequants = F, fitFunc = 'loess_regression',
-                          with_df = F, 
+                          noFitRequants = FALSE, fitFunc = 'loess_regression',
+                          with_df = FALSE, 
                           abs_threshold = 5, pct_threshold = 0.20, ...){
 
-  dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
-  x_to_fit = dataDF[[expl.var]]
-  y = dataDF[[response.var]]
-  pct_threshold = batch.size*pct_threshold
-  if(fitFunc == "loess_regression"){
-    if(length(x_to_fit) >= abs_threshold & length(x_to_fit) >= pct_threshold){
-      x_all = x_to_fit
-      if(noFitRequants){
-        x_all[dataDF$requant] = NA
-      }
-      if(!with_df){
-        fit_res = switch(fitFunc,
-                         loess_regression = loess_regression(x_all, y, x_to_fit,...)
-        )
-      } else {
-        bw = optimise_bw(dataDF, response.var = response.var, expl.var = expl.var)
-        df = optimise_df(dataDF, bw, response.var = response.var, expl.var = expl.var)
-        fit_res = switch(fitFunc,
-                         loess_regression = loess_regression_opt(x_all, y, x_to_fit, df, ...))
-      }
+    dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
+    x_to_fit = dataDF[[expl.var]]
+    y = dataDF[[response.var]]
+    pct_threshold = batch.size*pct_threshold
+    if(fitFunc == "loess_regression"){
+        if(length(x_to_fit) >= abs_threshold & length(x_to_fit) >= pct_threshold){
+            x_all = x_to_fit
+            if(noFitRequants){
+                x_all[dataDF$requant] = NA
+            }
+            if(!with_df){
+                fit_res = switch(fitFunc,
+                                 loess_regression = loess_regression(x_all, y, x_to_fit,...)
+                                 )
+            } else {
+                bw = optimise_bw(dataDF, response.var = response.var, expl.var = expl.var)
+                df = optimise_df(dataDF, bw, response.var = response.var, expl.var = expl.var)
+                fit_res = switch(fitFunc,
+                                 loess_regression = loess_regression_opt(x_all, y, x_to_fit, df, ...))
+            }
+        }else{
+            fit_res = rep(NA, length(x_to_fit))
+        }
     }else{
-      fit_res = rep(NA, length(x_to_fit))
+        stop("Only loess regression fitting is available for current version")
     }
-  }else{
-   stop("Only loess regression fitting is available for current version")
-  }
-  return(fit_res)
+    return(fit_res)
 }
 
 loess_regression <- function(x_all, y, x_to_fit, ...){
-  fit = loess(y ~ x_to_fit, surface = 'direct', ...)
-  pred <- predict(fit, newdata = x_to_fit)
-  return(pred)
+    fit = loess(y ~ x_to_fit, surface = 'direct', ...)
+    pred <- predict(fit, newdata = x_to_fit)
+    return(pred)
 }
 
 loess_regression_opt <- function(x_all, y, x_to_fit, df, ...){
-  fit = loess(y ~ x_all, enp.target = df, surface = 'direct', ...)
-  res = predict(fit, newdata = x_to_fit)
-  return(res)
+    fit = loess(y ~ x_all, enp.target = df, surface = 'direct', ...)
+    res = predict(fit, newdata = x_to_fit)
+    return(res)
 }
