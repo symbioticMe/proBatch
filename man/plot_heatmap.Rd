@@ -60,6 +60,18 @@ object returned by \code{link[pheatmap]{pheatmap}}
 \description{
 Plot the heatmap of samples
 }
+\examples{
+color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
+not_factor_columns = 'DateTime',
+numeric_columns = c('order'))
+
+plot_heatmap(example_proteome_matrix, example_sample_annotation, 
+sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
+cluster_cols = TRUE, annotation_color_list = color_scheme$list_of_colors,
+show_rownames = FALSE, show_colnames = FALSE)
+
+}
 \seealso{
 \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
 }

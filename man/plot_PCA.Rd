@@ -47,9 +47,9 @@ ggplot scatterplot colored by factor levels of column specified in
 plot PCA plot
 }
 \examples{
-\dontrun{plot_PCA(quantile_normalized_matrix, example_sample_annotation, 
-color_by = 'MS_batch', plot_title = "MS batch")
-}
+plot_PCA(example_proteome_matrix, example_sample_annotation, 
+color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
+
 }
 \seealso{
 \code{\link[ggfortify]{autoplot.pca_common}}, \code{\link[ggplot2]{ggplot}}
