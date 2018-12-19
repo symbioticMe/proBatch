@@ -27,112 +27,112 @@
 #'
 
 plot_single_feature  <- function(pep_name, df_long, sample_annotation,
-                                order_col = 'order',
-                                sample_id_col = 'FullRunName',
-                                batch_col = 'MS_batch',
-                                measure_col = 'Intensity',
-                                feature_id_col = 'peptide_group_label',
-                                geom = c('point', 'line'),
-                                color_by_batch = F, color_scheme = 'brewer',
-                                facet_by_batch = F,
-                                color_by_col = NULL, color_by_value = NULL,
-                                plot_title = NULL,
-                                vline_color ='red',
-                                theme = 'classic'){
-  #TODO: suggest faceting by instrument
-  
-  plot_df = df_long %>%
-    filter(UQ(sym(feature_id_col)) %in% pep_name)
-  if (!all(names(sample_annotation) %in% names(df_long))){
+                                 order_col = 'order',
+                                 sample_id_col = 'FullRunName',
+                                 batch_col = 'MS_batch',
+                                 measure_col = 'Intensity',
+                                 feature_id_col = 'peptide_group_label',
+                                 geom = c('point', 'line'),
+                                 color_by_batch = FALSE, color_scheme = 'brewer',
+                                 facet_by_batch = FALSE,
+                                 color_by_col = NULL, color_by_value = NULL,
+                                 plot_title = NULL,
+                                 vline_color ='red',
+                                 theme = 'classic'){
+                                        #TODO: suggest faceting by instrument
+    
+    plot_df = df_long %>%
+        filter(UQ(sym(feature_id_col)) %in% pep_name)
+    if (!all(names(sample_annotation) %in% names(df_long))){
+        sample_annotation = sample_annotation %>%
+            arrange(!!sym(order_col))
+        common_cols = intersect(names(sample_annotation), names(plot_df))
+        cols_to_remove = setdiff(common_cols, sample_id_col)
+        plot_df = plot_df %>%
+            select(-one_of(cols_to_remove))
+        plot_df = plot_df %>%
+            merge(sample_annotation, by = sample_id_col)
+    }
+    
     sample_annotation = sample_annotation %>%
-      arrange(!!sym(order_col))
-    common_cols = intersect(names(sample_annotation), names(plot_df))
-    cols_to_remove = setdiff(common_cols, sample_id_col)
-    plot_df = plot_df %>%
-      select(-one_of(cols_to_remove))
-    plot_df = plot_df %>%
-      merge(sample_annotation, by = sample_id_col)
-  }
-  
-  sample_annotation = sample_annotation %>%
-    subset(sample_annotation[[sample_id_col]] %in% plot_df[[sample_id_col]])
-  
-  if(is.null(order_col)){
-    warning("order column wasn't specified, putting row number as an order within a batch")
-    plot_df = plot_df %>%
-      group_by_at(vars(one_of(batch_col))) %>%
-      mutate(order = row_number())
-    order_col = 'order'
-  }
-  
-  gg = ggplot(plot_df,
-              aes_string(x = order_col, y = measure_col))
-  if (identical(geom, 'line')){
-    gg = gg + geom_line(color = 'darkgrey', size = .3)
-  }
-  if (identical(geom, 'point')){
-    gg = gg + geom_point()
-  }
-  
-  if (identical(geom, c('point', 'line'))){
-    gg = gg + geom_point() +
-      geom_line(color = 'black', alpha = .7, linetype = 'dashed')
-  }
-  if(color_by_batch & !is.null(batch_col)){
-    gg = gg + aes_string(color = batch_col)
-    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
-      n_batches <- length(unique(sample_annotation[[batch_col]]))
-      if (n_batches <= 9){
-        gg = gg + scale_color_brewer(palette = 'Set1')
-      } else {
-        if (n_batches <= 12){
-          gg = gg + scale_color_brewer(palette = 'Set3')
-        } else {
-          warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
+        subset(sample_annotation[[sample_id_col]] %in% plot_df[[sample_id_col]])
+    
+    if(is.null(order_col)){
+        warning("order column wasn't specified, putting row number as an order within a batch")
+        plot_df = plot_df %>%
+            group_by_at(vars(one_of(batch_col))) %>%
+            mutate(order = row_number())
+        order_col = 'order'
+    }
+    
+    gg = ggplot(plot_df,
+                aes_string(x = order_col, y = measure_col))
+    if (identical(geom, 'line')){
+        gg = gg + geom_line(color = 'darkgrey', size = .3)
+    }
+    if (identical(geom, 'point')){
+        gg = gg + geom_point()
+    }
+    
+    if (identical(geom, c('point', 'line'))){
+        gg = gg + geom_point() +
+            geom_line(color = 'black', alpha = .7, linetype = 'dashed')
+    }
+    if(color_by_batch & !is.null(batch_col)){
+        gg = gg + aes_string(color = batch_col)
+        if(length(color_scheme) == 1 & color_scheme == 'brewer'){
+            n_batches <- length(unique(sample_annotation[[batch_col]]))
+            if (n_batches <= 9){
+                gg = gg + scale_color_brewer(palette = 'Set1')
+            } else {
+                if (n_batches <= 12){
+                    gg = gg + scale_color_brewer(palette = 'Set3')
+                } else {
+                    warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
                           consider defining color scheme with sample_annotation_to_colors function', n_batches))
+                }
+            }
+            
+        } else{
+            gg = gg + scale_color_manual(values = color_scheme)
         }
-      }
-      
-    } else{
-      gg = gg + scale_color_manual(values = color_scheme)
     }
-  }
-  
-  if(!is.null(batch_col)){
-    batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
-    gg = gg + geom_vline(xintercept = batch.tipping.points,
-                         color = vline_color, linetype = 'dashed')
-  } 
     
-  if(facet_by_batch){
+    if(!is.null(batch_col)){
+        batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
+        gg = gg + geom_vline(xintercept = batch.tipping.points,
+                             color = vline_color, linetype = 'dashed')
+    } 
+    
+    if(facet_by_batch){
+        if (length(pep_name) > 1){
+            gg = gg + facet_grid(reformulate(batch_col, pep_name), scales = 'free_y')
+        } else {
+            gg = gg  + facet_wrap(as.formula(paste("~", batch_col)), scales = 'free_y')
+        }
+    }
+    
     if (length(pep_name) > 1){
-      gg = gg + facet_grid(reformulate(batch_col, pep_name), scales = 'free_y')
-    } else {
-      gg = gg  + facet_wrap(as.formula(paste("~", batch_col)), scales = 'free_y')
+        gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
     }
-  }
-  
-  if (length(pep_name) > 1){
-    gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
-  }
-  if(!is.null(plot_title)){
-    gg = gg + ggtitle(plot_title)
-  }
-  
-  if(!is.null(color_by_col)){
-    col_data = plot_df %>%
-      filter(UQ(as.name(feature_id_col)) %in% pep_name) %>%
-      filter(UQ(as.name(color_by_col)) == color_by_value)
+    if(!is.null(plot_title)){
+        gg = gg + ggtitle(plot_title)
+    }
     
-    gg = gg + geom_point(data = col_data,
-                         aes_string(x = order_col, y = measure_col),
-                         color = 'red', size = .3, shape = 8)
-  }
-  
-  if (theme == 'classic'){
-    gg = gg + theme_classic()
-  }
-  return(gg)
+    if(!is.null(color_by_col)){
+        col_data = plot_df %>%
+            filter(UQ(as.name(feature_id_col)) %in% pep_name) %>%
+            filter(UQ(as.name(color_by_col)) == color_by_value)
+        
+        gg = gg + geom_point(data = col_data,
+                             aes_string(x = order_col, y = measure_col),
+                             color = 'red', size = .3, shape = 8)
+    }
+    
+    if (theme == 'classic'){
+        gg = gg + theme_classic()
+    }
+    return(gg)
 }
 
 #' Plot peptides of one protein
@@ -164,36 +164,36 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
                                          batch_col = 'MS_batch',
                                          measure_col = 'Intensity',
                                          feature_id_col = 'peptide_group_label',
-                                         color_by_batch = F, color_scheme = 'brewer',
-                                         facet_by_batch = F,
+                                         color_by_batch = FALSE, color_scheme = 'brewer',
+                                         facet_by_batch = FALSE,
                                          color_by_col = NULL, color_by_value = NULL,
                                          plot_title = sprintf('Peptides of %s protein', protein_name),...){
-  
-  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
-    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
-  
-  if (!is.null(peptide_annotation)){
-    peptides = peptide_annotation %>%
-      filter((!!sym(protein_col)) == protein_name) %>%
-      pull(!!sym(feature_id_col)) %>% unique()
-    peptides = peptides[peptides %in% df_long[[feature_id_col]]]
-  } else {
-    peptides = df_long %>%
-      filter((!!sym(protein_col)) == protein_name) %>%
-      pull(feature_id_col) %>% unique()
-  }
-  gg = plot_single_feature(peptides, df_long = df_long,
-                          sample_annotation = sample_annotation,
-                          order_col = order_col,
-                          sample_id_col = sample_id_col,
-                          batch_col = batch_col, measure_col = measure_col,
-                          feature_id_col = feature_id_col,
-                          color_by_batch = color_by_batch, color_scheme = color_scheme,
-                          facet_by_batch = facet_by_batch,
-                          color_by_col = color_by_col, 
-                          color_by_value = color_by_value,
-                          plot_title = plot_title, ...)
-  return(gg)
+    
+    if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+        warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+    
+    if (!is.null(peptide_annotation)){
+        peptides = peptide_annotation %>%
+            filter((!!sym(protein_col)) == protein_name) %>%
+            pull(!!sym(feature_id_col)) %>% unique()
+        peptides = peptides[peptides %in% df_long[[feature_id_col]]]
+    } else {
+        peptides = df_long %>%
+            filter((!!sym(protein_col)) == protein_name) %>%
+            pull(feature_id_col) %>% unique()
+    }
+    gg = plot_single_feature(peptides, df_long = df_long,
+                             sample_annotation = sample_annotation,
+                             order_col = order_col,
+                             sample_id_col = sample_id_col,
+                             batch_col = batch_col, measure_col = measure_col,
+                             feature_id_col = feature_id_col,
+                             color_by_batch = color_by_batch, color_scheme = color_scheme,
+                             facet_by_batch = facet_by_batch,
+                             color_by_col = color_by_col, 
+                             color_by_value = color_by_value,
+                             plot_title = plot_title, ...)
+    return(gg)
 }
 
 #' Plot spike-in measurements
@@ -233,33 +233,33 @@ plot_spike_in <- function(df_long, sample_annotation,
                           batch_col = 'MS_batch',
                           measure_col = 'Intensity',
                           feature_id_col = 'peptide_group_label',
-                          color_by_batch = F, color_scheme = 'brewer',
-                          facet_by_batch = F,
+                          color_by_batch = FALSE, color_scheme = 'brewer',
+                          facet_by_batch = FALSE,
                           color_by_col = NULL, color_by_value = NULL,
                           plot_title = 'Spike-in BOVINE protein peptides', ...){
-  
-  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
-    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
-  
-  if (!is.null(peptide_annotation)){
-    df_long = df_long %>%
-      merge(peptide_annotation, by = feature_id_col)
-  }
-  spike_in_peptides = df_long %>%
-    filter(grepl(spike_ins, !!sym(protein_col))) %>%
-    pull(feature_id_col) %>% as.character() %>% unique()
-  gg = plot_single_feature(spike_in_peptides, df_long = df_long,
-                          sample_annotation = sample_annotation,
-                          order_col = order_col,
-                          sample_id_col = sample_id_col,
-                          batch_col = batch_col, measure_col = measure_col,
-                          feature_id_col = feature_id_col,
-                          color_by_batch = color_by_batch, color_scheme = color_scheme,
-                          facet_by_batch = facet_by_batch,
-                          color_by_col = color_by_col, 
-                          color_by_value = color_by_value,
-                          plot_title = plot_title, ...)
-  return(gg)
+    
+    if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+        warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+    
+    if (!is.null(peptide_annotation)){
+        df_long = df_long %>%
+            merge(peptide_annotation, by = feature_id_col)
+    }
+    spike_in_peptides = df_long %>%
+        filter(grepl(spike_ins, !!sym(protein_col))) %>%
+        pull(feature_id_col) %>% as.character() %>% unique()
+    gg = plot_single_feature(spike_in_peptides, df_long = df_long,
+                             sample_annotation = sample_annotation,
+                             order_col = order_col,
+                             sample_id_col = sample_id_col,
+                             batch_col = batch_col, measure_col = measure_col,
+                             feature_id_col = feature_id_col,
+                             color_by_batch = color_by_batch, color_scheme = color_scheme,
+                             facet_by_batch = facet_by_batch,
+                             color_by_col = color_by_col, 
+                             color_by_value = color_by_value,
+                             plot_title = plot_title, ...)
+    return(gg)
 }
 
 
@@ -286,41 +286,41 @@ plot_spike_in <- function(df_long, sample_annotation,
 #' @export
 #'
 plot_iRT <- function(df_long, sample_annotation,
-                           peptide_annotation = NULL,
-                           protein_col = 'ProteinName',
-                           order_col = 'order',
-                           irt_pattern = 'iRT',
-                           sample_id_col = 'FullRunName',
-                           batch_col = 'MS_batch',
-                           measure_col = 'Intensity',
-                           feature_id_col = 'peptide_group_label',
-                           color_by_batch = F, color_scheme = 'brewer',
-                           facet_by_batch = F,
-                           color_by_col = NULL, color_by_value = NULL,
-                           plot_title = 'iRT peptide profile', ...){
-  
-  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
-    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
-  
-  if (!is.null(peptide_annotation)){
-    df_long = df_long %>%
-      merge(peptide_annotation, by = protein_col)
-  }
-  iRT_peptides = df_long %>%
-    filter(grepl(irt_pattern, !!sym(protein_col))) %>%
-    pull(feature_id_col)  %>% unique()
-  gg = plot_single_feature(iRT_peptides, df_long, sample_annotation,
-                          order_col = order_col,
-                          sample_id_col = sample_id_col,
-                          batch_col = batch_col,
-                          measure_col = measure_col,
-                          feature_id_col = feature_id_col,
-                          color_by_batch = color_by_batch, color_scheme = color_scheme,
-                          facet_by_batch = facet_by_batch,
-                          color_by_col = color_by_col, 
-                          color_by_value = color_by_value,
-                          plot_title = plot_title, ...)
-  return(gg)
+                     peptide_annotation = NULL,
+                     protein_col = 'ProteinName',
+                     order_col = 'order',
+                     irt_pattern = 'iRT',
+                     sample_id_col = 'FullRunName',
+                     batch_col = 'MS_batch',
+                     measure_col = 'Intensity',
+                     feature_id_col = 'peptide_group_label',
+                     color_by_batch = FALSE, color_scheme = 'brewer',
+                     facet_by_batch = FALSE,
+                     color_by_col = NULL, color_by_value = NULL,
+                     plot_title = 'iRT peptide profile', ...){
+    
+    if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+        warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+    
+    if (!is.null(peptide_annotation)){
+        df_long = df_long %>%
+            merge(peptide_annotation, by = protein_col)
+    }
+    iRT_peptides = df_long %>%
+        filter(grepl(irt_pattern, !!sym(protein_col))) %>%
+        pull(feature_id_col)  %>% unique()
+    gg = plot_single_feature(iRT_peptides, df_long, sample_annotation,
+                             order_col = order_col,
+                             sample_id_col = sample_id_col,
+                             batch_col = batch_col,
+                             measure_col = measure_col,
+                             feature_id_col = feature_id_col,
+                             color_by_batch = color_by_batch, color_scheme = color_scheme,
+                             facet_by_batch = facet_by_batch,
+                             color_by_col = color_by_col, 
+                             color_by_value = color_by_value,
+                             plot_title = plot_title, ...)
+    return(gg)
 }
 
 
@@ -347,53 +347,53 @@ plot_iRT <- function(df_long, sample_annotation,
 #'
 
 plot_with_fitting_curve <- function(pep_name, df_long,
-                        sample_annotation,
-                        fit_df,
-                        fit_value_var = 'fit', 
-                        order_col = 'order',
-                        sample_id_col = 'FullRunName',
-                        batch_col = 'MS_batch',
-                        measure_col = 'Intensity',
-                        feature_id_col = 'peptide_group_label',
-                        geom = c('point', 'line'),
-                        color_by_batch = F, color_scheme = 'brewer',
-                        facet_by_batch = F,
-                        plot_title = sprintf("Fitting curve of %s peptide", pep_name), 
-                        color_by_col = NULL, color_by_value = NULL,
-                        theme = 'classic', vline_color = 'grey', ...){
-  
-  if(length(pep_name) > 10){
-    warning("Visualisation of individual features can be suboptimal,
+                                    sample_annotation,
+                                    fit_df,
+                                    fit_value_var = 'fit', 
+                                    order_col = 'order',
+                                    sample_id_col = 'FullRunName',
+                                    batch_col = 'MS_batch',
+                                    measure_col = 'Intensity',
+                                    feature_id_col = 'peptide_group_label',
+                                    geom = c('point', 'line'),
+                                    color_by_batch = FALSE, color_scheme = 'brewer',
+                                    facet_by_batch = FALSE,
+                                    plot_title = sprintf("Fitting curve of %s peptide", pep_name), 
+                                    color_by_col = NULL, color_by_value = NULL,
+                                    theme = 'classic', vline_color = 'grey', ...){
+    
+    if(length(pep_name) > 10){
+        warning("Visualisation of individual features can be suboptimal,
             consider exploring no more than 5 features at a time")
-  }
-  gg = plot_single_feature(pep_name, df_long = df_long,
-                           sample_annotation = sample_annotation,
-                           order_col = order_col,
-                           sample_id_col = sample_id_col,
-                           batch_col = batch_col,
-                           measure_col = measure_col,
-                           feature_id_col = feature_id_col,
-                           plot_title = plot_title,
-                           facet_by_batch = facet_by_batch,
-                           color_by_col = color_by_col, 
-                           color_by_value = color_by_value,
-                           vline_color = vline_color, ...)
-  
-  fit_df = fit_df %>%
-    filter(UQ(sym(feature_id_col)) %in% pep_name) %>%
-    merge(sample_annotation, by = c(sample_id_col, batch_col))
-  if(identical(color_by_batch, FALSE)){
-    gg = gg + geom_line(data = fit_df,
-                        aes_string(y = fit_value_var, x = order_col, group = batch_col),
-                        color = 'red')
-  } else {
-    gg = gg + geom_line(data = fit_df,
-                        aes_string(y = fit_value_var, x = order_col,
-                                   group = batch_col, color = batch_col), size = 1.25)
-    if(color_by_batch & length(color_scheme) == length(unique(fit_df[[batch_col]]))){
-      gg = gg + scale_color_manual(values = color_scheme)
     }
-  }
-  
-  return(gg)
-  }
+    gg = plot_single_feature(pep_name, df_long = df_long,
+                             sample_annotation = sample_annotation,
+                             order_col = order_col,
+                             sample_id_col = sample_id_col,
+                             batch_col = batch_col,
+                             measure_col = measure_col,
+                             feature_id_col = feature_id_col,
+                             plot_title = plot_title,
+                             facet_by_batch = facet_by_batch,
+                             color_by_col = color_by_col, 
+                             color_by_value = color_by_value,
+                             vline_color = vline_color, ...)
+    
+    fit_df = fit_df %>%
+        filter(UQ(sym(feature_id_col)) %in% pep_name) %>%
+        merge(sample_annotation, by = c(sample_id_col, batch_col))
+    if(identical(color_by_batch, FALSE)){
+        gg = gg + geom_line(data = fit_df,
+                            aes_string(y = fit_value_var, x = order_col, group = batch_col),
+                            color = 'red')
+    } else {
+        gg = gg + geom_line(data = fit_df,
+                            aes_string(y = fit_value_var, x = order_col,
+                                       group = batch_col, color = batch_col), size = 1.25)
+        if(color_by_batch & length(color_scheme) == length(unique(fit_df[[batch_col]]))){
+            gg = gg + scale_color_manual(values = color_scheme)
+        }
+    }
+    
+    return(gg)
+}
