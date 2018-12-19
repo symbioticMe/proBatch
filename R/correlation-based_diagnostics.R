@@ -347,7 +347,7 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
                                         #merging with sample annotation, where we keep only sample_id_col, batch_col and biospecimen_col
         merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
               by.x = paste(feature_id_col,'1', sep = '_'),
-              by.y = feature_id_col, all.x = T) %>%
+              by.y = feature_id_col, all.x = TRUE) %>%
                                         #to make it unambiguous, we rename columns, related to info of the left hand sample with "1" suffix, e.g. "Batch_1" meaning "batch of sample 1"
         data.table::setnames(old = protein_col, new = paste(protein_col, 1, sep = '')) %>%
         merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
