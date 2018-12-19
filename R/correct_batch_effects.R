@@ -41,10 +41,10 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
     }
     df_normalized = df_long %>%
         group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
-        mutate(median_batch = median(UQ(sym(measure_col)), na.rm = T)) %>%
+        mutate(median_batch = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
         ungroup() %>%
         group_by_at(vars(one_of(feature_id_col))) %>%
-        mutate(median_global = median(UQ(sym(measure_col)), na.rm = T)) %>%
+        mutate(median_global = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
         ungroup() %>%
         mutate(diff = median_global - median_batch) %>%
         mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
