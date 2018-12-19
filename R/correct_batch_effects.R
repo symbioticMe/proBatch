@@ -24,6 +24,8 @@ NULL
 #'   file)
 #' @return `df_long`-size long format data with batch-effect corrected with
 #'   per-feature batch median centering in Intensity_normalized column
+#' @examples 
+#' center_peptide_batch_medians(example_proteome, example_sample_annotation)
 #' @export
 #'
 center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
@@ -32,8 +34,10 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
                                          feature_id_col = 'peptide_group_label',
                                          measure_col = 'Intensity'){
     
-    if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
-        warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+    if(setequal(unique(sample_annotation[[sample_id_col]]), 
+                unique(df_long[[sample_id_col]])) == FALSE){
+        warning('Sample IDs in sample annotation not 
+                consistent with samples in input data.')}
     
     if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
          !is.null(sample_annotation)){
@@ -79,6 +83,11 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #'
 #' @return list of two items: 1) `data_matrix`, adjusted with continious fit; 
 #' 2) fit_df, used to examine the fitting curves
+#' @examples 
+#' adjust_batch_trend(example_proteome_matrix, 
+#' example_sample_annotation, span = 0.7, 
+#' abs_threshold = 5, pct_threshold = 0.20)
+#' 
 #' @export
 #'
 #' @seealso \code{\link{fit_nonlinear}}
@@ -96,7 +105,9 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
     s_a <- sample_annotation[[sample_id_col]]
     all <- union(sampleNames, s_a)
     non_matched <- all[!all %in% intersect(sampleNames, s_a)]
-    if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
+    if(length(non_matched)!=0){warning("Sample ID in data matrix 
+                                       and sample annotation don't match. 
+                                       Non-matching elements are removed for analysis")}
     
     sample_annotation = sample_annotation %>%
         filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
@@ -109,7 +120,8 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
     df_long = data_matrix %>%
         melt(id.vars = feature_id_col)
     names(df_long) = c(feature_id_col, sample_id_col, measure_col)
-    batch_table <- as.data.frame(table(sample_annotation[[batch_col]], dnn = list(batch_col)), responseName = "batch_total")
+    batch_table <- as.data.frame(table(sample_annotation[[batch_col]], 
+                                       dnn = list(batch_col)), responseName = "batch_total")
     sample_annotation = sample_annotation %>%
         full_join(batch_table, by = batch_col)
     
@@ -117,11 +129,11 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
         filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
         merge(sample_annotation, by = sample_id_col) %>%
         arrange_(feature_id_col, sample_order_col) %>%
-        group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
-        nest() %>%
+        group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% 
         mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
                           expl.var = sample_order_col, 
-                          abs_threshold = abs_threshold, pct_threshold = pct_threshold, ...)) %>%
+                          abs_threshold = abs_threshold, 
+                          pct_threshold = pct_threshold, ...)) %>%
         unnest() %>%
         group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
         mutate(mean_fit = mean(fit)) %>%
@@ -165,6 +177,10 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
 #'
 #' @return `data_matrix`-size data matrix with batch-effect corrected by
 #'   `ComBat`
+#'
+#' @examples 
+#' correct_with_ComBat(examle_proteome_matrix, example_sample_annotation)
+#' 
 #' @export
 #'
 correct_with_ComBat <- function(data_matrix, sample_annotation, 
@@ -176,7 +192,9 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
     s_a <- sample_annotation[[sample_id_col]]
     all <- union(sampleNames, s_a)
     non_matched <- all[!all %in% intersect(sampleNames, s_a)]
-    if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
+    if(length(non_matched)!=0){warning("Sample ID in data matrix and 
+                                       sample annotation don't match. 
+                                       Non-matching elements are removed for analysis")}
     
     sample_annotation = sample_annotation %>%
         filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
@@ -191,7 +209,8 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 }
 
 
-#' Batch correction method allows correction of continuous sigal drift within batch and 
+#' Batch correction method allows correction of 
+#' continuous sigal drift within batch and 
 #' discrete difference across batches. 
 #'
 #' @rdname correct_batch
@@ -200,22 +219,38 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #'   transformed version of the original data
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
-#' @param fitFunc function to use for the fit (currently only `loess_regression` available)
-#' @param discreteFunc function to use for discrete batch correction (`MedianCentering` or `ComBat`)
+#' @param fitFunc function to use for the fit (currently 
+#' only `loess_regression` available)
+#' @param discreteFunc function to use for discrete 
+#' batch correction (`MedianCentering` or `ComBat`)
 #' @param abs_threshold the absolute threshold to filter data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter data for curve fitting 
 #' @param ... other parameters, usually of `normalize_custom_fit`, and `fit_func`
 #'
-#' @return `data_matrix`-size data matrix with batch-effect corrected by fit and discrete functions
+#' @return `data_matrix`-size data matrix with batch-effect 
+#' corrected by fit and discrete functions
+#' 
+#' @examples 
+#' correct_batch_effects(example_protome_matrix, example_sample_annotation, 
+#' fitFunc = 'loess_regression', 
+#' discreteFunc = 'MedianCentering', 
+#' batch_col = 'MS_batch',  
+#' span = 0.7,
+#' abs_threshold = 5, pct_threshold = 0.20)
+#' 
 #' @export
 #'                                                 
-correct_batch_effects <- function(data_matrix, sample_annotation, fitFunc = 'loess_regression', 
-                                  discreteFunc = 'MedianCentering', batch_col = 'MS_batch',  
-                                  feature_id_col = 'peptide_group_label', sample_id_col = 'FullRunName',
+correct_batch_effects <- function(data_matrix, sample_annotation, 
+                                  fitFunc = 'loess_regression', 
+                                  discreteFunc = 'MedianCentering', 
+                                  batch_col = 'MS_batch',  
+                                  feature_id_col = 'peptide_group_label', 
+                                  sample_id_col = 'FullRunName',
                                   measure_col = 'Intensity',  sample_order_col = 'order', 
                                   abs_threshold = 5, pct_threshold = 0.20, ...){
     sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-    fit_list = adjust_batch_trend(data_matrix, sample_annotation = sample_annotation,
+    fit_list = adjust_batch_trend(data_matrix, 
+                                  sample_annotation = sample_annotation,
                                   batch_col = batch_col,
                                   feature_id_col = feature_id_col,
                                   sample_id_col = sample_id_col,
@@ -230,19 +265,22 @@ correct_batch_effects <- function(data_matrix, sample_annotation, fitFunc = 'loe
                               measure_col = measure_col, sample_id_col = sample_id_col)
     
     if(discreteFunc == 'MedianCentering'){
-        median_long = center_peptide_batch_medians(df_long = fit_long, sample_annotation = sample_annotation,
+        median_long = center_peptide_batch_medians(df_long = fit_long, 
+                                                   sample_annotation = sample_annotation,
                                                    sample_id_col = sample_id_col,
                                                    batch_col = batch_col,
                                                    feature_id_col = feature_id_col,
                                                    measure_col = measure_col)
         normalized_matrix = long_to_matrix(median_long, feature_id_col = feature_id_col,
-                                           measure_col = measure_col, sample_id_col = sample_id_col)
+                                           measure_col = measure_col, 
+                                           sample_id_col = sample_id_col)
     }
     
     if(discreteFunc == 'ComBat'){
         fit_matrix = long_to_matrix(fit_long, feature_id_col = feature_id_col,
                                     measure_col = measure_col, sample_id_col = sample_id_col)
-        normalized_matrix = correct_with_ComBat(fit_matrix, sample_annotation = sample_annotation,
+        normalized_matrix = correct_with_ComBat(fit_matrix, 
+                                                sample_annotation = sample_annotation,
                                                 batch_col = batch_col, par.prior = TRUE)
     }
     
