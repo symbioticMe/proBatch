@@ -30,6 +30,9 @@ level (fragments, transitions, proteins))}
 
 \item{...}{other parameters of `plotDendroAndColors` from `WGCNA` package}
 }
+\value{
+No return
+}
 \description{
 cluster the data matrix to visually inspect which confounder dominates
 }

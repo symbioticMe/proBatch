@@ -167,7 +167,10 @@ check_rare_levels <- function(column) {
 #' Replaces rare levels with other
 #'
 #' Replaces levels with a maximal occurence of 1 with other
+#'
 #' @keywords internal
+#'
+#' @return column with rare occurences replaced by other
 merge_rare_levels <- function(column) {
     is_factor_col = is.factor(column)
     tb_col = table(column)
