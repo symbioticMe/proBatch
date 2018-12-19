@@ -9,7 +9,6 @@
 #'   consistency
 #' @name normalize
 NULL
-                                        #> NULL
 
 
 #' Log transformation of the data, ensuring that the row and column names
@@ -20,10 +19,22 @@ NULL
 #' @param log_base base of the logarithm for transformation
 #'
 #' @return `data_matrix`-size matrix, with columns log2 transformed
+#' @examples 
+#' log_transformed_matrix <- log_transform(example_proteome_matrix
+#' log_base = 2)
+#' 
 #' @export
 #'
 log_transform <- function(data_matrix, log_base = 2){
-    data_matrix_log = log(data_matrix + 1, base = log_base) 
+  if(!is.null(log_base)){
+    if(log_base == 2){
+      data_matrix_log = log2(data_matrix + 1)
+    }else if(log_base ==10){
+      data_matrix_log = log10(data_matrix + 1)
+    }else {
+      stop("only log_base = 2 or log_base = 10 is applicable")
+    }
+  }
     return(data_matrix_log)
 }
 
@@ -34,6 +45,9 @@ log_transform <- function(data_matrix, log_base = 2){
 #'   in columns)
 #'
 #' @return `data_matrix`-size matrix, with columns quantile-normalized
+#' @examples 
+#' quantile_normalized_matrix = quantile_normalize(example_proteome_matrix)
+#' 
 #' @export
 #'
 quantile_normalize <- function(data_matrix){
@@ -53,6 +67,9 @@ quantile_normalize <- function(data_matrix){
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
 #' @return `df_long`-size matrix, with intensity scaled to global median
+#' @examples 
+#' median_normalized_matrix = normalize_sample_medians(example_proteome)
+#' 
 #' @export
 #'
 normalize_sample_medians <- function(df_long,
@@ -73,15 +90,17 @@ normalize_sample_medians <- function(df_long,
 #'
 #' @param data_matrix raw data matrix (features in rows and samples
 #'   in columns)
-#' @param normalizeFunc global batch normalization method (`quantile` or `MedianCentering`)
-#' @param log_base whether to log transform data matrix before normalization (`NULL`, `2` or `10`)
+#' @param normalizeFunc global batch normalization method 
+#' (`quantile` or `MedianCentering`)
+#' @param log_base whether to log transform data matrix 
+#' before normalization (`NULL`, `2` or `10`)
 #'
 #' @return `data_matrix`-size matrix, with columns normalized 
 #' @export
 #'
 #' @examples
-#' \dontrun{median_normalized_matrix = normalize_data(data_matrix, 
-#' normalizeFunc = "medianCentering", log_base = 2)}
+#' quantile_normalized_matrix = normalize_data(example_proteome_matrix, 
+#' normalizeFunc = "quantile", log_base = 2)
 #' 
 normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
     if(!is.null(log_base)){
@@ -91,9 +110,13 @@ normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = N
     if(normalizeFunc == "quantile"){
         normalized_matrix = quantile_normalize(data_matrix)
     } else if(normalizeFunc == "medianCentering"){
-        df_long = matrix_to_long(data_matrix, feature_id_col = 'peptide_group_label',
-                                 measure_col = 'Intensity', sample_id_col = 'FullRunName')
-        normalized_df = normalize_sample_medians(df_long, sample_id_col = 'FullRunName',  measure_col = 'Intensity')
+        df_long = matrix_to_long(data_matrix, 
+                                 feature_id_col = 'peptide_group_label',
+                                 measure_col = 'Intensity', 
+                                 sample_id_col = 'FullRunName')
+        normalized_df = normalize_sample_medians(df_long, 
+                                                 sample_id_col = 'FullRunName', 
+                                                 measure_col = 'Intensity')
         normalized_matrix = long_to_matrix(normalized_df)
     } else {
         stop("Only quantile and median centering normalization methods are available")
