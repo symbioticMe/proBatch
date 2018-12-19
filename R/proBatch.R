@@ -13,7 +13,9 @@
 #' To learn more about proBatch, start with the vignettes:
 #' `browseVignettes(package = "proBatch")`
 #'
-#' @section common arguments to the functions:
+#' @section Section:
+#' Common arguments to the functions.
+#' 
 #'
 #' @param df_long data frame where each row is a single feature in a single
 #'   sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
@@ -84,6 +86,7 @@
 #' 
 #' @docType package
 #' @name proBatch
+if(getRversion() >= "2.15.1")  utils::globalVariables(c(".", "batch_size", "batch_the_same", "batch_total", "category", "dateTime", "fit", "label", "mean_fit", "median_batch", "median_global", "median_run", "optimise_bw", "optimise_df", "peptide_col_name", "sample_annotatation_col", "Step", "tipping.poings", "Var1", "Var2"))
 NULL
 
 
