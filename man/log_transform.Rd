@@ -21,7 +21,6 @@ Log transformation of the data, ensuring that the row and column names
 are retained
 }
 \examples{
-log_transformed_matrix <- log_transform(example_proteome_matrix
-log_base = 2)
+log_transformed_matrix <- log_transform(example_proteome_matrix)
 
 }
