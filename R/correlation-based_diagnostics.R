@@ -151,8 +151,7 @@ plot_protein_corrplot <- function(data_matrix,
 #'  show_colnames = FALSE)
 #'
 #' plot_samples_corr_heatmap(data_matrix, sample_to_plot = specified_samples,
-#'  flavor = 'corrplot', lower = "ellipse", upper = "number",
-#'  tl.col = "black", diag = 'l', tl.pos = "lt", number.cex=0.75, tl.cex = .75)
+#'  flavor = 'corrplot', lower = "ellipse", upper = "number")
 #'
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
 plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
