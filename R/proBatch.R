@@ -49,12 +49,39 @@
 #' @import reshape2
 #' @import tibble
 #' @import lazyeval
+#' @import WGCNA
+#' @import viridis
+#' @import RColorBrewer
+#' @import readr
+#' @import tidyverse
 #' @importFrom corrplot corrplot.mixed
 #' @importFrom magrittr %>%
-#' @importFrom  purrr map
+#' @importFrom purrr map
 #' @importFrom rlang UQ sym syms
 #' @importFrom tidyr complete nest unnest
-#'
+#' @importFrom data.table setDT
+#' @importFrom data.table transpose
+#' @importFrom data.table :=
+#' @importFrom data.table IDateTime
+#' @importFrom grDevices colorRampPalette
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices pdf
+#' @importFrom stats as.formula
+#' @importFrom stats complete.cases
+#' @importFrom stats dist
+#' @importFrom stats hclust
+#' @importFrom stats loess
+#' @importFrom stats median
+#' @importFrom stats model.matrix
+#' @importFrom stats prcomp
+#' @importFrom stats predict
+#' @importFrom stats reformulate
+#' @importFrom stats setNames
+#' @importFrom stats weights
+#' @importFrom utils combn
+#' @importFrom utils data
+#' @importFrom purrr map2
+#' 
 #' @docType package
 #' @name proBatch
 NULL
