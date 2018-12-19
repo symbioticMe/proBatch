@@ -16,7 +16,8 @@ sample_annotation_to_colors(sample_annotation,
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{columns_for_plotting}{only consider these columns from sample_annotation}
+\item{columns_for_plotting}{only consider these 
+columns from sample_annotation}
 
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
@@ -26,15 +27,18 @@ treated as factors. Note that
 factor and character columns are treated as factors by default.}
 
 \item{not_factor_columns}{don't treat these columns as factors. 
-This can be used to override the default behaviour of considering factors and 
+This can be used to override the default behaviour of 
+considering factors and 
 character columns as factors.}
 
 \item{numeric_columns}{columns of sample_annotation to be 
 treated as continuous numeric values.}
 
-\item{rare_categories_to_other}{if True rare categories will be merged as 'other'}
+\item{rare_categories_to_other}{if True rare categories 
+will be merged as 'other'}
 
-\item{numeric_palette_type}{palette to be used for numeric values coloring}
+\item{numeric_palette_type}{palette to be used for 
+numeric values coloring}
 
 \item{granularity}{number of colors to map to the number 
 vector (equally spaced between minimum and maximum)}
@@ -48,7 +52,8 @@ the list is named as columns included to use in potting functions
 }
 \examples{
 color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
-factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
+factor_columns = c('MS_batch','EarTag', "Strain", 
+"Diet", "digestion_batch", "Sex"),
 not_factor_columns = 'DateTime',
 numeric_columns = c('order'))
 }

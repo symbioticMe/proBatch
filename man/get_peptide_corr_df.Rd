@@ -27,3 +27,4 @@ that are suggested to use for plotting in
 \description{
 Transform square correlation matrix into long data frame of correlations
 }
+\keyword{internal}
