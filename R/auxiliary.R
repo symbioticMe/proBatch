@@ -4,10 +4,12 @@
 #'
 #' @inheritParams proBatch
 #'
-#' @return \code{data_matrix} (\link{proBatch}) like matrix (features in rows, samples in columns)
+#' @return \code{data_matrix} (\link{proBatch}) like matrix 
+#' (features in rows, samples in columns)
 #'
 #' @family matrix manipulation functions
-#' @examples {proteome_matrix <- long_to_marix(example_proteome)}
+#' @examples 
+#' proteome_matrix <- long_to_marix(example_proteome)
 #'
 #' @export
 #'
@@ -39,8 +41,9 @@ long_to_matrix <- function(df_long,
 #' @return \code{df_long} (\link{proBatch}) like data frame
 #'
 #' @family matrix manipulation functions
-#' @examples {proteome_long <- matrix_to_long(example_proteome_matrix, 
-#' example_sample_annotation)}
+#' @examples 
+#' proteome_long <- matrix_to_long(example_proteome_matrix, 
+#' example_sample_annotation)
 #'
 #' @export
 #'
@@ -50,8 +53,10 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
                            sample_id_col = 'FullRunName',
                            step = NULL){
     if(!is.null(sample_annotation)){
-        if(setequal(unique(sample_annotation[[sample_id_col]]), unique(colnames(data_matrix))) == FALSE){
-            warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+        if(setequal(unique(sample_annotation[[sample_id_col]]), 
+                    unique(colnames(data_matrix))) == FALSE){
+            warning('Sample IDs in sample annotation not 
+                    consistent with samples in input data.')}
     }
     
     df_long = data_matrix %>%
@@ -73,7 +78,8 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 
 #' Prepare peptide annotation from long format data frame
 #'  
-#' Create light-weight peptide annotation data frame for selection of illustrative proteins
+#' Create light-weight peptide annotation data frame 
+#' for selection of illustrative proteins
 #'
 #' @inheritParams proBatch
 #' 
@@ -81,10 +87,13 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #'
 #' @return data frame containing petpide annotations 
 #' @export
-#' @examples {generated_peptide_annotation <- create_peptide_annotation(example_proteome,
-#' feature_id_col = 'peptide_group_label',annotation_col = c("ProteinName" ))}
+#' @examples 
+#' generated_peptide_annotation <- create_peptide_annotation(
+#' example_proteome, feature_id_col = "peptide_group_label",
+#' annotation_col = c("ProteinName" ))
 #' 
-#' @seealso \code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}}
+#' @seealso \code{\link{plot_peptides_of_one_protein}}, 
+#' \code{\link{plot_protein_corrplot}}
 create_peptide_annotation <- function(df_long, feature_id_col = 'peptide_group_label',
                                       annotation_col = c("ProteinName" )){
     peptide_annotation = df_long %>%
