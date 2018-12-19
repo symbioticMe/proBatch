@@ -19,8 +19,8 @@ These will be used to determine the run order}
 \item{new_time_column}{name of the new column to which date&time will be
 converted to}
 
-\item{dateTimeFormat}{POSIX format of the date and time. See \code{\link{as.POSIXct}}
-from base R for details}
+\item{dateTimeFormat}{POSIX format of the date and time. 
+See \code{\link{as.POSIXct}} from base R for details}
 }
 \value{
 sample annotation file with column names as 'new_time_column' with
@@ -29,5 +29,12 @@ sample annotation file with column names as 'new_time_column' with
 \description{
 convert date/time column of sample_annotation to POSIX format required to
 keep number-like behaviour
+}
+\examples{
+dates_to_posix(example_sample_annotation, 
+time_column = c('RunDate','RunTime'),
+new_time_column = 'DateTime', 
+dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"))
+
 }
 \concept{date}
