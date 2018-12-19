@@ -2,7 +2,7 @@ Package: proBatch
 Type: Package
 Title: Tools for Batch Effects Diagnostics and Correction
 Version: 1.0.0
-Author: Jelena Čuklina <chuklina.jelena@gmail.com>, Chloe H. Lee <chloe.h.lee94@gmail.com>, Patrick Pedrioli <pedrioli@gmail.com>
+Author: Jelena Cuklina <chuklina.jelena@gmail.com>, Chloe H. Lee <chloe.h.lee94@gmail.com>, Patrick Pedrioli <pedrioli@gmail.com>
 Maintainer: The package maintainer Jelena Cuklina <chuklina.jelena@gmail.com>
 Description: The proBatch package facilitates batch effects analysis and correction
     in high-thoughput experiments. Although the package has primarily been developed 
@@ -20,7 +20,7 @@ Description: The proBatch package facilitates batch effects analysis and correct
     the correction improved the quality of the data.
     All steps of batch effects analysis and correction are illustrated in the vignette,
     using the subset of real-world large-scale dataset.
-biocViews: 	BatchEffect, Normalization, Preprocessing, Software, MassSpectrometry,Proteomics, QualityControl
+biocViews: BatchEffect, Normalization, Preprocessing, Software, MassSpectrometry,Proteomics, QualityControl
 License: GPL-3
 URL: https://github.com/symbioticMe/proBatch
 BugReports: https://github.com/symbioticMe/proBatch/issues
@@ -30,23 +30,29 @@ LazyData: true
 Imports:
     Biobase,
     corrplot,
+    dplyr,
     data.table,
     ggfortify,
+    ggplot2,
     lazyeval,
     lubridate,
+    magrittr,
     pheatmap,
     preprocessCore,
     purrr,
     pvca,
     RColorBrewer,
     readr, 
-    reshape2,
+    reshape2, 
+    rlang,
     scales,
     sva,
+    tidyr,
     tidyverse,
+    tibble,
     wesanderson,
     WGCNA
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
