@@ -76,7 +76,9 @@ continuous sigal drift within batch and
 discrete difference across batches.
 }
 \examples{
-center_peptide_batch_medians(example_proteome, example_sample_annotation)
+median_centered_proteome <- center_peptide_batch_medians(
+example_proteome, example_sample_annotation)
+
 correct_batch_effects(example_protome_matrix, example_sample_annotation, 
 fitFunc = 'loess_regression', 
 discreteFunc = 'MedianCentering', 
