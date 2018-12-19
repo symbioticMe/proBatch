@@ -29,6 +29,9 @@ level (fragments, transitions, proteins))}
 \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
   help to corresponding functions}
 }
+\value{
+Nothing
+}
 \description{
 Plot correlation of selected  samples or peptides
 }
