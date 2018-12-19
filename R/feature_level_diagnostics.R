@@ -12,6 +12,9 @@
 #' @param plot_title the string indicating the source of the peptides
 #' @param requant if data frame: requant values; if logical: whether to indicate
 #'   requant values (requires 'requant' or 'm_score' column in \code{df_long})
+#' @param vline_color color of the vertical line (default - red, other recommended option is grey)
+#' @param color_by_col column to color points by. `m_score` or other "missingness" flag is assumed. Flag value see in `color_by_value`
+#' @param color_by_value Value of `color_by_col` which flags the point as missing, but inferred value
 #' @param theme plot theme (default is 'classical'; other options not
 #'   implemented)
 #'
@@ -32,17 +35,23 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
                                 geom = c('point', 'line'),
                                 color_by_batch = F, color_scheme = 'brewer',
                                 facet_by_batch = F,
+                                facet_col = NULL,
                                 color_by_col = "m_score", color_by_value = 2,
                                 plot_title = NULL,
                                 vline_color ='red',
                                 theme = 'classic'){
   #TODO: suggest faceting by instrument
   
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
   plot_df = df_long %>%
-    filter(UQ(sym(feature_id_col)) %in% pep_name)
+    filter(!!(rlang::sym(feature_id_col)) %in% pep_name)
   if (!all(names(sample_annotation) %in% names(df_long))){
-    sample_annotation = sample_annotation %>%
-      arrange(!!sym(order_col))
+    if(!is.null(order_col)){
+      sample_annotation = sample_annotation %>%
+        dplyr::arrange(!!rlang::sym(order_col))
+    }
     common_cols = intersect(names(sample_annotation), names(plot_df))
     cols_to_remove = setdiff(common_cols, sample_id_col)
     plot_df = plot_df %>%
@@ -51,15 +60,30 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
       merge(sample_annotation, by = sample_id_col)
   }
   
-  sample_annotation = sample_annotation %>%
-    subset(sample_annotation[[sample_id_col]] %in% plot_df[[sample_id_col]])
+  if (is.null(order_col)){
+    warning('order column not defined, taking order of files in the data matrix instead')
+    order_col = 'order_temp_col'
+    plot_df[[order_col]] = match(plot_df[[sample_id_col]],
+                                 unique(plot_df[[sample_id_col]]))
+  } else if (!(order_col %in% names(sample_annotation)) &
+             !(order_col %in% names(plot_df))){
+    warning('order column not found in sample annotation, taking order of files in the data matrix instead')
+    order_col = 'order_temp_col'
+    plot_df[[order_col]] = match(plot_df[[sample_id_col]],
+                                 unique(plot_df[[sample_id_col]]))
+    order_per_facet = T
+  }
   
-  if(is.null(order_col)){
-    warning("order column wasn't specified, putting row number as an order within a batch")
-    plot_df = plot_df %>%
-      group_by_at(vars(one_of(batch_col))) %>%
-      mutate(order = row_number())
-    order_col = 'order'
+  if(!is.null(facet_col)){
+    if(!(facet_col %in% names(df_ave))){
+      stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
+                   check sample annotation data frame', facet_col))
+    }
+    if (order_per_facet){
+      df_ave = df_ave %>%
+        group_by_at(vars(one_of(facet_col))) %>%
+        mutate(order = rank(UQ(sym(order_col))))
+    }
   }
   
   gg = ggplot(plot_df,
@@ -97,8 +121,11 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
   
   if(!is.null(batch_col)){
     batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
-    gg = gg + geom_vline(xintercept = batch.tipping.points,
-                         color = vline_color, linetype = 'dashed')
+    if (!is.null(vline_color)){
+      gg = gg + geom_vline(xintercept = batch.tipping.points,
+                           color = vline_color, linetype = 'dashed')
+    }
+    
   } 
     
   if(facet_by_batch){
@@ -118,16 +145,18 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
   
   if(!is.null(color_by_col)){
     col_data = plot_df %>%
-      filter(UQ(as.name(feature_id_col)) %in% pep_name) %>%
-      filter(UQ(as.name(color_by_col)) == color_by_value)
+      filter(!!(as.name(feature_id_col)) %in% pep_name) %>%
+      filter(!!(as.name(color_by_col)) == color_by_value)
     
     gg = gg + geom_point(data = col_data,
                          aes_string(x = order_col, y = measure_col),
                          color = 'red', size = .3, shape = 8)
   }
   
-  if (theme == 'classic'){
-    gg = gg + theme_classic()
+  if (!is.null(theme)){
+    if(theme == 'classic'){
+      gg = gg + theme_classic()
+    }
   }
   return(gg)
 }
