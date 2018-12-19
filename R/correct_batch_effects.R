@@ -8,20 +8,20 @@
 #'   consistency
 #' @param batch_col column in \code{sample_annotation} that should be 
 #'  used for batch comparison
+#' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
+#' used in the long format representation df_long. In the wide formatted 
+#' representation data_matrix this corresponds to the row names.
 #' @name correct_batch
 NULL
 #> NULL
 
 #' Median centering of the peptides (per batch median)
 #'
-#' @name correct_batch
+#' @rdname correct_batch
 #' @param df_long data frame where each row is a single feature in a single
 #'   sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 #'   \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 #'   file)
-#' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
-#' used in the long format representation df_long. In the wide formatted 
-#' representation data_matrix this corresponds to the row names.
 #' @return `df_long`-size long format data with batch-effect corrected with
 #'   per-feature batch median centering in Intensity_normalized column
 #' @export
@@ -194,15 +194,12 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' Batch correction method allows correction of continuous sigal drift within batch and 
 #' discrete difference across batches. 
 #'
-#' @name correct_batch
+#' @rdname correct_batch
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
-#' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
-#'  used in the long format representation df_long. In the wide formatted 
-#'  representation data_matrix this corresponds to the row names.
 #' @param fitFunc function to use for the fit (currently only `loess_regression` available)
 #' @param discreteFunc function to use for discrete batch correction (`MedianCentering` or `ComBat`)
 #' @param abs_threshold the absolute threshold to filter data for curve fitting 

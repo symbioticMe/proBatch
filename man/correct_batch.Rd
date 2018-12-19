@@ -56,10 +56,6 @@ as covariate to fit the non-linear fit}
 \item{pct_threshold}{the percentage threshold to filter data for curve fitting}
 
 \item{...}{other parameters, usually of `normalize_custom_fit`, and `fit_func`}
-
-\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
-used in the long format representation df_long. In the wide formatted 
-representation data_matrix this corresponds to the row names.}
 }
 \value{
 `df_long`-size long format data with batch-effect corrected with
