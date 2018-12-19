@@ -46,3 +46,4 @@ created the same as \code{sample_id_1}
 \description{
 Calculates correlation distribution for all pairs of the replicated samples
 }
+\keyword{internal}

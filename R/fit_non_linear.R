@@ -18,7 +18,7 @@
 #'
 #' @export
 #' @keywords internal
-
+#' 
 fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x',
                           noFitRequants = FALSE, fitFunc = 'loess_regression',
                           with_df = FALSE, 
