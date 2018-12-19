@@ -132,7 +132,7 @@ generate_colors_for_numeric <- function(num_col,
         num_vec = cut(num_col, breaks = granularity)
     } else if (lubridate::is.POSIXct(num_col)) {
                                         # num_col is a vector of dates
-        interval = (max(num_col, na.rm = T) - min(num_col, na.rm = T)) / granularity
+        interval = (max(num_col, na.rm = TRUE) - min(num_col, na.rm = TRUE)) / granularity
         if (any(is.na(num_col))) {
             warning('NAs in the numeric vector')
         }
@@ -206,7 +206,7 @@ sample_annotation_to_colors <- function(sample_annotation,
                                         factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "Sex"),
                                         not_factor_columns = 'DateTime',
                                         numeric_columns = 'Age_Days',
-                                        rare_categories_to_other = T,
+                                        rare_categories_to_other = TRUE,
                                         numeric_palette_type = 'brewer',
                                         granularity = 10) {
     
