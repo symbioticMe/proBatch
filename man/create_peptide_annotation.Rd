@@ -4,7 +4,8 @@
 \alias{create_peptide_annotation}
 \title{Prepare peptide annotation from long format data frame
  
-Create light-weight peptide annotation data frame for selection of illustrative proteins}
+Create light-weight peptide annotation data frame 
+for selection of illustrative proteins}
 \usage{
 create_peptide_annotation(df_long,
   feature_id_col = "peptide_group_label",
@@ -29,13 +30,16 @@ data frame containing petpide annotations
 \description{
 Prepare peptide annotation from long format data frame
  
-Create light-weight peptide annotation data frame for selection of illustrative proteins
+Create light-weight peptide annotation data frame 
+for selection of illustrative proteins
 }
 \examples{
-{generated_peptide_annotation <- create_peptide_annotation(example_proteome,
-feature_id_col = 'peptide_group_label',annotation_col = c("ProteinName" ))}
+generated_peptide_annotation <- create_peptide_annotation(
+example_proteome, feature_id_col = "peptide_group_label",
+annotation_col = c("ProteinName" ))
 
 }
 \seealso{
-\code{\link{plot_peptides_of_one_protein}}, \code{\link{plot_protein_corrplot}}
+\code{\link{plot_peptides_of_one_protein}}, 
+\code{\link{plot_protein_corrplot}}
 }
