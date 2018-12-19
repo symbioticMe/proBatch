@@ -36,9 +36,11 @@ plotting in \code{\link{plot_sample_corr_distribution}} as \code{plot_param}:
 \item \code{batches}
 }
 other columns are: \enumerate{
-\item \code{sample_id_1} & \code{sample_id_2}, both generated from \code{sample_id_col} variable
+\item \code{sample_id_1} & \code{sample_id_2}, both 
+generated from \code{sample_id_col} variable
 \item \code{correlation} - correlation of two corresponding samples
-\item \code{batch_1} & \code{batch_2} or analogous, created the same as \code{sample_id_1}
+\item \code{batch_1} & \code{batch_2} or analogous, 
+created the same as \code{sample_id_1}
 }
 }
 \description{
