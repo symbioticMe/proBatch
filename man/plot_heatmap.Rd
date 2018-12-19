@@ -23,29 +23,38 @@ original data}
 \item  `sample_id_col` (this can be repeated as row names)
   \item  biological and
   \item  technical covariates (batches etc)
-}; each column of sample annotation will get it's own row. If `cluster_cols = T` this will indicate,
-whether sample proximity is driven by one of biolical or technical factors}
+}; each column of sample annotation will get it's own row. 
+If `cluster_cols = T` this will indicate,
+whether sample proximity is driven by one of 
+biolical or technical factors}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in 
+sample_annotation file, where the
+  filenames (colnames of the data matrix are found)}
 
-\item{sample_annotation_col}{biological or technical factors to be annotated in heatmap columns}
+\item{sample_annotation_col}{biological or technical 
+factors to be annotated in heatmap columns}
 
-\item{sample_annotation_row}{biological or technical factors to be annotated in heatmap rows}
+\item{sample_annotation_row}{biological or technical 
+factors to be annotated in heatmap rows}
 
-\item{fill_the_missing}{boolean value determining if missing values should be
-substituted with -1 (and colored with black)}
+\item{fill_the_missing}{boolean value determining if 
+missing values should be
+  substituted with -1 (and colored with black)}
 
-\item{cluster_rows}{boolean value determining if rows should be clustered}
+\item{cluster_rows}{boolean value determining if rows 
+should be clustered}
 
-\item{cluster_cols}{boolean value determining if columns should be clustered}
+\item{cluster_cols}{boolean value determining if columns 
+should be clustered}
 
-\item{annotation_color_list}{list specifying colors for columns (samples).
-Best created by `sample_annotation_to_colors`}
+\item{annotation_color_list}{list specifying colors 
+for columns (samples). Best created by `sample_annotation_to_colors`}
 
 \item{heatmap_color}{vector of colors used in heatmap (typicall a gradient)}
 
-\item{color_for_missing}{special color to make missing values. Usually black or white, depending on `heatmap_color`}
+\item{color_for_missing}{special color to make missing values. 
+Usually black or white, depending on `heatmap_color`}
 
 \item{filename}{filepath where to save the image}
 
@@ -62,13 +71,16 @@ Plot the heatmap of samples
 }
 \examples{
 color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
-factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
+factor_columns = c('MS_batch','EarTag', "Strain", 
+"Diet", "digestion_batch", "Sex"),
 not_factor_columns = 'DateTime',
 numeric_columns = c('order'))
 
-plot_heatmap(example_proteome_matrix, example_sample_annotation, 
+plot_heatmap(example_proteome_matrix, 
+example_sample_annotation, 
 sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
-cluster_cols = TRUE, annotation_color_list = color_scheme$list_of_colors,
+cluster_cols = TRUE, 
+annotation_color_list = color_scheme$list_of_colors,
 show_rownames = FALSE, show_colnames = FALSE)
 
 }

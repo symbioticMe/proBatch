@@ -23,3 +23,7 @@ consistency}
 \description{
 Normalization by centering sample medians to global median of the data
 }
+\examples{
+median_normalized_matrix = normalize_sample_medians(example_proteome)
+
+}
