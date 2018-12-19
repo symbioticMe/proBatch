@@ -46,6 +46,7 @@ Imports:
     reshape2, 
     rlang,
     scales,
+    viridis,
     sva,
     tidyr,
     tidyverse,
