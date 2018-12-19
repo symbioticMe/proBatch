@@ -15,12 +15,16 @@ plot_sample_corr_heatmap(data_matrix, samples_to_plot = NULL,
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
-\item{samples_to_plot}{string vector of samples in \code{data_matrix} to be used in the plot}
+\item{samples_to_plot}{string vector of samples in 
+\code{data_matrix} to be used in the plot}
 
-\item{flavor}{either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'}
+\item{flavor}{either corrplot from 'corrplot' package or 
+heatmap, as in 'pheatmap'}
 
-\item{filename}{path where the results are saved. If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only pdf and png format is supported}
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. 
+Currently only pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
 
@@ -28,12 +32,12 @@ otherwise, the object is save into the file. Currently only pdf and png format i
 
 \item{unit}{units: 'cm', 'in' or 'mm'}
 
-\item{plot_title}{Title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
+\item{plot_title}{Title of the plot (usually, processing step + 
+representation level (fragments, transitions, proteins))}
 
 \item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
-\code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
-  help to corresponding functions}
+\code{\link[pheatmap]{pheatmap}} visualisation, for details see 
+  examples and help to corresponding functions}
 }
 \value{
 Nothing
@@ -42,23 +46,21 @@ Nothing
 Plot correlation of selected samples
 }
 \examples{
-### Example 1: Plot heatmap of pre-specified samples
-\dontrun{specified_samples = sample_annotation \%>\%
+specified_samples = sample_annotation \%>\%
 filter(RunID \%in\% paste('Run', 110:115, sep = '')) \%>\%
 pull(FullRunName)
-plot_samples_corr_heatmap(data_matrix, sample_to_plot = specified samples,
- flavor = 'pheatmap', cluster_rows = F, cluster_cols = F)
 
-}
-### Example 2: Plot corrplot of pre-specified samples
-\dontrun{specified_samples = sample_annotation \%>\%
-filter(RunID \%in\% paste('Run', 110:115, sep = '')) \%>\%
-pull(FullRunName)
-plot_samples_corr_heatmap(data_matrix, sample_to_plot = specified samples,
+plot_sample_corr_heatmap(example_proteome_matrix, 
+samples_to_plot = specified_samples, 
+ flavor = 'pheatmap', 
+ cluster_rows= FALSE, cluster_cols=FALSE,fontsize = 4,
+ annotation_names_col = TRUE, annotation_legend = FALSE, 
+ show_colnames = FALSE)
+
+plot_samples_corr_heatmap(data_matrix, sample_to_plot = specified_samples,
  flavor = 'corrplot', lower = "ellipse", upper = "number",
  tl.col = "black", diag = 'l', tl.pos = "lt", number.cex=0.75, tl.cex = .75)
 
-}
 }
 \seealso{
 \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
