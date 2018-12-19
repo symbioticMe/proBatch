@@ -8,9 +8,9 @@ plot_spike_in(df_long, sample_annotation, peptide_annotation = NULL,
   protein_col = "ProteinName", order_col = "order",
   spike_ins = "BOVIN", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
-  feature_id_col = "peptide_group_label", color_by_batch = F,
-  color_scheme = "brewer", facet_by_batch = F, color_by_col = NULL,
-  color_by_value = NULL,
+  feature_id_col = "peptide_group_label", color_by_batch = FALSE,
+  color_scheme = "brewer", facet_by_batch = FALSE,
+  color_by_col = NULL, color_by_value = NULL,
   plot_title = "Spike-in BOVINE protein peptides", ...)
 }
 \arguments{
