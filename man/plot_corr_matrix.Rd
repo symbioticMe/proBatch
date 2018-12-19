@@ -13,8 +13,10 @@ plot_corr_matrix(corr_matrix, flavor = "corrplot", filename = NULL,
 
 \item{flavor}{either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'}
 
-\item{filename}{path where the results are saved. If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only pdf and png format is supported}
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. Currently only 
+pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
 

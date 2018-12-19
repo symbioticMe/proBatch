@@ -43,3 +43,7 @@ effects.  Users are returned an expression matrix that has been corrected for
 batch effects. The input data are assumed to be cleaned and normalized before
 batch effect removal.
 }
+\examples{
+correct_with_ComBat(examle_proteome_matrix, example_sample_annotation)
+
+}
