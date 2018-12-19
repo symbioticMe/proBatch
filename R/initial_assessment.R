@@ -40,8 +40,9 @@
 #'
 #' @export
 #'
-#' @examples \dontrun{plot_sample_mean(log_transformed_matrix, example_sample_annotation, 
-#' order_col = 'order', batch_col = "MS_batch", ylimits = c(12, 16))}
+#' @examples 
+#' plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+#' order_col = 'order', batch_col = "MS_batch")
 #' 
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              sample_id_col = 'FullRunName',
@@ -149,8 +150,9 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' 
 #' @export
 #'
-#' @examples \dontrun{plot_boxplot(log_transformed_long, example_sample_annotation, 
-#' batch_col = "MS_batch"}
+#' @examples
+#' plot_boxplot(example_proteome, example_sample_annotation, 
+#' batch_col = "MS_batch")
 #' 
 plot_boxplot <- function(df_long, sample_annotation = NULL,
                          sample_id_col = 'FullRunName',

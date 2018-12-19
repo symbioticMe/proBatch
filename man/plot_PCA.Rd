@@ -52,5 +52,6 @@ color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
 
 }
 \seealso{
-\code{\link[ggfortify]{autoplot.pca_common}}, \code{\link[ggplot2]{ggplot}}
+\code{\link[ggfortify]{autoplot.pca_common}}, 
+\code{\link[ggplot2]{ggplot}}
 }
