@@ -57,7 +57,8 @@ It addresses the following needs: \itemize{ \item prepare the data for analysis
 To learn more about proBatch, start with the vignettes:
 `browseVignettes(package = "proBatch")`
 }
-\section{common arguments to the functions}{
+\section{Section}{
 
+Common arguments to the functions.
 }
 
