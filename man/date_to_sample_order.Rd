@@ -20,20 +20,32 @@ These will be used to determine the run order}
 \item{new_time_column}{name of the new column to which date&time will be
 converted to}
 
-\item{dateTimeFormat}{POSIX format of the date and time. See \code{\link{as.POSIXct}}
-from base R for details}
+\item{dateTimeFormat}{POSIX format of the date and time. 
+See \code{\link{as.POSIXct}} from base R for details}
 
 \item{new_order_col}{name of column with generated the order of sample run 
 based on time columns}
 
-\item{instrument_col}{column, denoting different instrument used for measurements}
+\item{instrument_col}{column, denoting different 
+instrument used for measurements}
 }
 \value{
 sample annotation file with column names as 'new_time_column' with
-  POSIX-formatted date & \code{new_order_col} used in some diagnostic plots (e.g.
+  POSIX-formatted date & \code{new_order_col} used 
+  in some diagnostic plots (e.g.
   \code{\link{plot_iRT}}, \code{\link{plot_sample_mean}})
 }
 \description{
 Converts date/time columns fo sample_annotation to POSIXct format and
 calculates sample run rank in order column
+}
+\examples{
+sample_annotation_worder <- date_to_sample_order(
+example_sample_annotation,
+time_column = c('RunDate','RunTime'),
+new_time_column = 'DateTime',
+dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"),
+new_order_col = 'order',
+instrument_col = NULL)
+
 }
