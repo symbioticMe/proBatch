@@ -11,9 +11,11 @@ normalize_data(data_matrix, normalizeFunc = "quantile",
 \item{data_matrix}{raw data matrix (features in rows and samples
 in columns)}
 
-\item{normalizeFunc}{global batch normalization method (`quantile` or `MedianCentering`)}
+\item{normalizeFunc}{global batch normalization method 
+(`quantile` or `MedianCentering`)}
 
-\item{log_base}{whether to log transform data matrix before normalization (`NULL`, `2` or `10`)}
+\item{log_base}{whether to log transform data matrix 
+before normalization (`NULL`, `2` or `10`)}
 }
 \value{
 `data_matrix`-size matrix, with columns normalized
@@ -22,7 +24,7 @@ in columns)}
 Normalization brings the samples to the same scale
 }
 \examples{
-\dontrun{median_normalized_matrix = normalize_data(data_matrix, 
-normalizeFunc = "medianCentering", log_base = 2)}
+quantile_normalized_matrix = normalize_data(example_proteome_matrix, 
+normalizeFunc = "quantile", log_base = 2)
 
 }
