@@ -21,9 +21,11 @@ original data}
 
 \item{agglomeration}{agglomeration methods as used by `hclust`}
 
-\item{label_samples}{if \code{TRUE} sample IDs (column names of \code{data_matrix}) will be printed}
+\item{label_samples}{if \code{TRUE} sample IDs (column names of 
+\code{data_matrix}) will be printed}
 
-\item{label_font}{size of the font. Is active if \code{label_samples} is \code{TRUE}, ignored otherwise}
+\item{label_font}{size of the font. Is active if \code{label_samples} is 
+\code{TRUE}, ignored otherwise}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
@@ -35,6 +37,19 @@ No return
 }
 \description{
 cluster the data matrix to visually inspect which confounder dominates
+}
+\examples{
+color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
+not_factor_columns = 'DateTime',
+numeric_columns = c('order'))
+
+color_annotation <- color_scheme$color_df
+
+plot_hierarchical_clustering(example_proteome_matrix, color_annotation,  
+distance = "euclidean", agglomeration = 'complete',
+label_samples = FALSE)
+
 }
 \seealso{
 \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
