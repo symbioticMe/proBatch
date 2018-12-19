@@ -40,3 +40,4 @@ Plot correlation of selected  samples or peptides
 \seealso{
 \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
 }
+\keyword{internal}
