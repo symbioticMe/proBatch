@@ -59,7 +59,8 @@ names.}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
-\item{color_by_col}{column to color by certain value denoted by \code{color_by_value}}
+\item{color_by_col}{column to color by certain value denoted 
+by \code{color_by_value}}
 
 \item{color_by_value}{value in \code{color_by_col} to color}
 
@@ -79,6 +80,15 @@ different batches}
 \description{
 Plot Intensity of a few representative peptides for each step of the analysis
 including the fitting curve
+}
+\examples{
+loess_fit_70 <- adjust_batch_trend(example_proteome_matrix, 
+example_sample_annotation, span = 0.7)
+
+plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
+df_long = example_proteome, example_sample_annotation, 
+fit_df = loess_fit_30$fit_df, plot_title = "Curve fitting with 70\% span")
+
 }
 \seealso{
 Other feature-level diagnostic functions: \code{\link{plot_iRT}},
