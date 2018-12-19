@@ -22,7 +22,8 @@ to virids_pal ()}
 list, containing the following items:
 \enumerate{
 \item `color_vector` - string-like vector of colors
-\item `new_annotation` - factor representation of numeric vector (factor with number of levels equal to "granularity")
+\item `new_annotation` - factor representation of numeric vector 
+(factor with number of levels equal to "granularity")
 }
 }
 \description{
