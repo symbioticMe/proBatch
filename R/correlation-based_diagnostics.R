@@ -21,6 +21,8 @@
 #' @return Nothing
 #' 
 #' @export
+#' 
+#' @keywords internal
 #'
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
 plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
@@ -82,9 +84,9 @@ plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
 #'                peptide_annotation = example_peptide_annotation, 
 #'                protein_col = 'Gene',
 #'                number.cex=0.75, tl.cex = .75
-#'                mar=c(0,0,1,0))}
-
-#' @examples \dontrun{lower = "ellipse", upper = "number",
+#'                mar=c(0,0,1,0))
+#'                
+#' \dontrun{lower = "ellipse", upper = "number",
 #'  tl.col = "black", diag = 'l', tl.pos = "lt", number.cex=0.75, tl.cex = .75}
 #'
 plot_protein_corrplot <- function(data_matrix,
@@ -196,7 +198,8 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 #' \item \code{batch_1} & \code{batch_2} or analogous, 
 #' created the same as \code{sample_id_1}
 #' }
-#'
+#' 
+#' @keywords internal
 #'
 #' @export
 #'
@@ -354,6 +357,8 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 #' @return dataframe with peptide correlation coefficients 
 #' that are suggested to use for plotting in 
 #' \code{\link{plot_peptide_corr_distribution}} as \code{plot_param}:
+#' 
+#' @keywords internal
 #' 
 #' @export
 get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = 'ProteinName',
