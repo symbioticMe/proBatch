@@ -26,13 +26,14 @@ internally for consistency}
 filenames (colnames of the data matrix are found)}
 }
 \value{
-\code{data_matrix} (\link{proBatch}) like matrix (features in rows, samples in columns)
+\code{data_matrix} (\link{proBatch}) like matrix 
+(features in rows, samples in columns)
 }
 \description{
 Convert from a long data frame representation to a wide matrix representation
 }
 \examples{
-{proteome_matrix <- long_to_marix(example_proteome)}
+proteome_matrix <- long_to_marix(example_proteome)
 
 }
 \seealso{
