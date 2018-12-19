@@ -50,7 +50,8 @@ names.}
 
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
-\item{color_by_col}{column to color by certain value denoted by \code{color_by_value}}
+\item{color_by_col}{column to color by certain value denoted 
+by \code{color_by_value}}
 
 \item{color_by_value}{value in \code{color_by_col} to color}
 
@@ -70,6 +71,12 @@ ggplot2 type plot of \code{measure_col} vs \code{order_col},
 Creates a peptide facetted ggplot2 plot of the value in \code{measure_col}
 vs \code{order_col}. Additionally, the resulting plot can also be facetted
 by batch.
+}
+\examples{
+plot_single_feature(pep_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+df_long = example_proteome, example_sample_annotation, 
+color_by_col = NULL)
+
 }
 \seealso{
 Other feature-level diagnostic functions: \code{\link{plot_iRT}},

@@ -55,7 +55,8 @@ names.}
 
 \item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
 
-\item{color_by_col}{column to color by certain value denoted by \code{color_by_value}}
+\item{color_by_col}{column to color by certain value denoted 
+by \code{color_by_value}}
 
 \item{color_by_value}{value in \code{color_by_col} to color}
 
@@ -65,7 +66,8 @@ names.}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
-  faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
+  faceted by \code{spike_ins} containing proteins and (optionally) 
+  by \code{batch_col}
 }
 \description{
 Creates a spike-in facetted ggplot2 plot of the value in
@@ -74,11 +76,9 @@ Creates a spike-in facetted ggplot2 plot of the value in
 be facetted by batch.
 }
 \examples{
-\dontrun{plot_spike_in(quantile_normalized_long, example_sample_annotation, 
-peptide_annotation = generated_peptide_annotation, 
+plot_spike_in(example_proteome, example_sample_annotation, 
 protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
-plot_title = 'Spike-in BOVINE protein peptides', 
-color_by_batch = T, color_scheme = color_list[["MS_batch"]])}
+plot_title = "Spike-in BOVINE protein peptides")
 
 }
 \seealso{
