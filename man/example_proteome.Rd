@@ -3,20 +3,16 @@
 \docType{data}
 \name{example_proteome}
 \alias{example_proteome}
-\title{Example protein data}
-\format{A data frame with 200625 rows and 9 variables:
+\title{Example protein data in long format}
+\format{A data frame with 124655 rows and 5 variables:
 \describe{
   \item{peptide_group_label}{peptide ID, which is regular feature level. This column is mostly used as `feature_id_col`}
-  \item{RT}{retention time. Relevant to identify retention time related bias}
   \item{Intensity}{peptide group intensity in given sample. Used in function as `measure_col`}
   \item{ProteinName}{Protein group ID, specified as N/UniProtID1|UniProtID2|...,
   where N is number of protein peptide group maps to. If 1/UniProtID, then this is proteotypic peptide}
   \item{Gene}{conventional gene name of corresponding ProteinName}
-  \item{assay_rt}{retention time as in DIA library}
-  \item{filename}{filename of measurments typically from mass spectrometry}
-  \item{m_score}{peptide group identification FDR as determined by pyProphet}
   \item{FullRunName}{name of the file, in most functions used for `sample_id_col`}
-  #'   ...
+...
 }}
 \source{
 PRIDE ID will be added in future
@@ -25,7 +21,7 @@ PRIDE ID will be added in future
 example_proteome
 }
 \description{
-This is data from Evan's aging study with all iRT, spike-in peptides,
+This is data from Aging study with all iRT, spike-in peptides,
 few random peptides and QTL proteins for biological signal improvement demonstration
 }
 \keyword{datasets}
