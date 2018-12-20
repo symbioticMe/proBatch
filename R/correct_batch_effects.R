@@ -232,8 +232,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' corrected by fit and discrete functions
 #' 
 #' @examples 
-#' correct_batch_effects(example_protome_matrix, example_sample_annotation, 
-#' fitFunc = 'loess_regression', 
+#' correct_batch_effects(example_proteome_matrix, example_sample_annotation, 
 #' discreteFunc = 'MedianCentering', 
 #' batch_col = 'MS_batch',  
 #' span = 0.7,
