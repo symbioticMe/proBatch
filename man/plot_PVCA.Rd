@@ -63,7 +63,7 @@ Plot variance distribution by variable
 \examples{
 \dontrun{plot_PVCA(example_proteome_marix, example_sample_annotation, 
 technical_covariates = c('MS_batch', 'digestion_batch'),
-biological_covariates = c(biological_covariates, biospecimen_id_col))}
+biological_covariates = c("Diet", "Sex", "Strain"))}
 }
 \seealso{
 \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
