@@ -140,9 +140,8 @@ plot_protein_corrplot <- function(data_matrix,
 #' @export
 #'
 #' @examples
-#' specified_samples = example_sample_annotation %>%
-#' filter(order %in% 110:115) %>%
-#' pull(FullRunName)
+#' specified_samples = example_sample_annotation$FullRunName[
+#' which(example_sample_annotation$order %in% 110:115)] 
 #' 
 #' plot_sample_corr_heatmap(example_proteome_matrix, 
 #' samples_to_plot = specified_samples, 
@@ -150,9 +149,6 @@ plot_protein_corrplot <- function(data_matrix,
 #'  cluster_rows= FALSE, cluster_cols=FALSE,
 #'  annotation_names_col = TRUE, annotation_legend = FALSE, 
 #'  show_colnames = FALSE)
-#'
-#' plot_sample_corr_heatmap(example_proteome_matrix, 
-#' flavor = 'corrplot', lower = "ellipse", upper = "number")
 #'
 #' @seealso \code{\link[pheatmap]{pheatmap}}, 
 #' \code{\link[corrplot]{corrplot.mixed}}
