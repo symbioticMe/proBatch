@@ -9,7 +9,7 @@
 #'
 #' @family matrix manipulation functions
 #' @examples 
-#' proteome_matrix <- long_to_marix(example_proteome)
+#' proteome_matrix <- long_to_matrix(example_proteome)
 #'
 #' @export
 #'
