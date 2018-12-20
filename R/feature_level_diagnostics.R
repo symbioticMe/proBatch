@@ -372,7 +372,7 @@ plot_iRT <- function(df_long, sample_annotation,
 #' 
 #' plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
 #' df_long = example_proteome, example_sample_annotation, 
-#' fit_df = loess_fit_30$fit_df, plot_title = "Curve fitting with 70% span")
+#' fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70% span")
 #'
 #' @export
 #'
