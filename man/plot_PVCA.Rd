@@ -61,7 +61,7 @@ list of two items: plot =gg, df = pvca_res
 Plot variance distribution by variable
 }
 \examples{
-\dontrun{plot_PVCA(example_proteome_marix, example_sample_annotation, 
+\dontrun{plot_PVCA(example_proteome_matrix, example_sample_annotation, 
 technical_covariates = c('MS_batch', 'digestion_batch'),
 biological_covariates = c("Diet", "Sex", "Strain"))}
 }
