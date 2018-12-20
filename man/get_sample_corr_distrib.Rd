@@ -2,7 +2,8 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{get_sample_corr_distrib}
 \alias{get_sample_corr_distrib}
-\title{Calculates correlation distribution for all pairs of the replicated samples}
+\title{Calculates correlation distribution for all pairs 
+of the replicated samples}
 \usage{
 get_sample_corr_distrib(cor_proteome, sample_annotation,
   sample_id_col = "FullRunName", biospecimen_id_col = "EarTag",
@@ -19,7 +20,8 @@ technical covariates (batches etc) }}
 filenames (colnames of the data matrix are found)}
 
 \item{biospecimen_id_col}{column in `sample_annotation` 
-that defines a unique bio ID, which is usually a combination of conditions or groups.
+that defines a unique bio ID, which is usually a 
+combination of conditions or groups.
  Tip: if such ID is absent, but can be defined from several columns,
  create new \code{biospecimen_id} column}
 
@@ -27,8 +29,9 @@ that defines a unique bio ID, which is usually a combination of conditions or gr
 batch comparison}
 }
 \value{
-dataframe with the following columns, that are suggested to use for
-plotting in \code{\link{plot_sample_corr_distribution}} as \code{plot_param}:
+dataframe with the following columns, that 
+are suggested to use for plotting in 
+\code{\link{plot_sample_corr_distribution}} as \code{plot_param}:
 \enumerate{
 \item \code{replicate}
 \item \code{batch_the_same}
@@ -44,6 +47,7 @@ created the same as \code{sample_id_1}
 }
 }
 \description{
-Calculates correlation distribution for all pairs of the replicated samples
+Calculates correlation distribution for all pairs 
+of the replicated samples
 }
 \keyword{internal}
