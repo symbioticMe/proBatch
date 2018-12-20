@@ -58,7 +58,6 @@ samples_to_plot = specified_samples,
  show_colnames = FALSE)
 
 plot_sample_corr_heatmap(example_proteome_matrix, 
-sample_to_plot = specified_samples,
 flavor = 'corrplot', lower = "ellipse", upper = "number")
 
 }
