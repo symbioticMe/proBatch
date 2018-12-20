@@ -11,7 +11,8 @@ plot_corr_matrix(corr_matrix, flavor = "corrplot", filename = NULL,
 \arguments{
 \item{corr_matrix}{square correlation matrix}
 
-\item{flavor}{either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'}
+\item{flavor}{either corrplot from 'corrplot' package or 
+heatmap, as in 'pheatmap'}
 
 \item{filename}{path where the results are saved. 
 If null the object is returned to the active window;
@@ -24,8 +25,8 @@ pdf and png format is supported}
 
 \item{unit}{units: 'cm', 'in' or 'mm'}
 
-\item{plot_title}{Title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
+\item{plot_title}{Title of the plot (usually, processing step + 
+representation level (fragments, transitions, proteins))}
 
 \item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and

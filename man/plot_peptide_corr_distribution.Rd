@@ -2,7 +2,8 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{plot_peptide_corr_distribution}
 \alias{plot_peptide_corr_distribution}
-\title{Plot distribution of peptide correlations within one protein and between proteins}
+\title{Plot distribution of peptide correlations within one 
+protein and between proteins}
 \usage{
 plot_peptide_corr_distribution(data_matrix, peptide_annotation,
   protein_col = "ProteinName", feature_id_col = "peptide_group_label",
@@ -14,10 +15,12 @@ plot_peptide_corr_distribution(data_matrix, peptide_annotation,
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
-\item{peptide_annotation}{long format data with peptide ID and their corresponding 
+\item{peptide_annotation}{long format data with peptide ID
+and their corresponding 
 protein annotations}
 
-\item{protein_col}{the column name in \code{peptide_annotation} with protein names}
+\item{protein_col}{the column name in \code{peptide_annotation} 
+with protein names}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
@@ -31,10 +34,12 @@ names.}
 \item{...}{parameters for the \code{ggplot} visualisation}
 }
 \value{
-\code{ggplot} type object with violin plot for each \code{plot_param}
+\code{ggplot} type object with violin 
+plot for each \code{plot_param}
 }
 \description{
-Plot distribution of peptide correlations within one protein and between proteins
+Plot distribution of peptide correlations within one 
+protein and between proteins
 }
 \examples{
 plot_peptide_corr_distribution(example_proteome_matrix, 

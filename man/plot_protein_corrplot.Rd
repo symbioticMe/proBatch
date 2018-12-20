@@ -18,19 +18,24 @@ transformed version of the original data}
 
 \item{protein_name}{the name of the protein}
 
-\item{peptide_annotation}{df with peptides and their corresponding proteins}
+\item{peptide_annotation}{df with peptides and 
+their corresponding proteins}
 
-\item{protein_col}{the column name in \code{peptide_annotation} with protein names}
+\item{protein_col}{the column name in \code{peptide_annotation} 
+with protein names}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{flavor}{either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'}
+\item{flavor}{either corrplot from 'corrplot' 
+package or heatmap, as in 'pheatmap'}
 
-\item{filename}{path where the results are saved. If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only pdf and png format is supported}
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. Currently 
+only pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
 
