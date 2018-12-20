@@ -3,7 +3,7 @@
 #' This is data from BXD aging study with mock instruments to show how
 #' instrument-specific functionality works
 #'
-#' @format A data frame with 375 rows and 14 variables:
+#' @format A data frame with 233 rows and 11 variables:
 #' \describe{
 #'   \item{FullRunName}{name of the file, in most functions used for `sample_id_col`}
 #'   \item{MS_batch}{mass-spectrometry batch: 7-level factor of manually annotated batches}
@@ -21,31 +21,37 @@
 #' }
 "example_sample_annotation"
 
-#' Example protein data
+#' Example protein data in long format  
 #'
-#' This is data from Evan's aging study with all iRT, spike-in peptides,
+#' This is data from Aging study with all iRT, spike-in peptides,
 #' few random peptides and QTL proteins for biological signal improvement demonstration
 #'
-#' @format A data frame with 200625 rows and 9 variables:
+#' @format A data frame with 124655 rows and 5 variables:
 #' \describe{
 #'   \item{peptide_group_label}{peptide ID, which is regular feature level. This column is mostly used as `feature_id_col`}
-#'   \item{RT}{retention time. Relevant to identify retention time related bias}
 #'   \item{Intensity}{peptide group intensity in given sample. Used in function as `measure_col`}
 #'   \item{ProteinName}{Protein group ID, specified as N/UniProtID1|UniProtID2|...,
 #'   where N is number of protein peptide group maps to. If 1/UniProtID, then this is proteotypic peptide}
 #'   \item{Gene}{conventional gene name of corresponding ProteinName}
-#'   \item{assay_rt}{retention time as in DIA library}
-#'   \item{filename}{filename of measurments typically from mass spectrometry}
-#'   \item{m_score}{peptide group identification FDR as determined by pyProphet}
 #'   \item{FullRunName}{name of the file, in most functions used for `sample_id_col`}
-#'   #'   ...
+#' ...
 #' }
 #' @source PRIDE ID will be added in future
 "example_proteome"
 
+#' Example protein data in matrix 
+#'
+#' This is measurement data from Aging study with columns
+#' representing samples and rows representing peptides
+#'
+#' @format A matrix with 534 rows and 233 columns:
+#' 
+#' @source PRIDE ID will be added in future
+"example_proteome_matrix"
+
 #' Peptide annotation data
 #'
-#' This is data from Evan's aging study annotated with gene names
+#' This is data from Aging study annotated with gene names
 #'
 #' @format A data frame with 535 rows and 10 variables:
 #' \describe{
