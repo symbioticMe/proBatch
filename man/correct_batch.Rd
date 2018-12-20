@@ -19,9 +19,9 @@ correct_batch_effects(data_matrix, sample_annotation,
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
-\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file)}
+sample. It minimally has a \code{sample_id_col}, a 
+\code{feature_id_col} and a \code{measure_col}, but 
+usually also an \code{m_score} (in OpenSWATH output result file)}
 
 \item{sample_annotation}{data frame with sample ID, technical (e.g. MS batches) 
 and biological (e.g. Diet) covariates}
