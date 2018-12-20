@@ -6,7 +6,8 @@
 \title{Peptide annotation data}
 \format{A data frame with 535 rows and 10 variables:
 \describe{
-  \item{peptide_group_label}{peptide group label ID, identical to `peptide_group_label` in `example_proteome`}
+  \item{peptide_group_label}{peptide group label ID, identical to 
+  `peptide_group_label` in `example_proteome`}
   \item{Gene}{HUGO gene ID}
   \item{ProteinName}{protein group name as specified in `example_proteome`}
   }}
