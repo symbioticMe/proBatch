@@ -4,7 +4,7 @@
 \name{example_sample_annotation}
 \alias{example_sample_annotation}
 \title{Sample annotation data version 1}
-\format{A data frame with 375 rows and 14 variables:
+\format{A data frame with 233 rows and 11 variables:
 \describe{
   \item{FullRunName}{name of the file, in most functions used for `sample_id_col`}
   \item{MS_batch}{mass-spectrometry batch: 7-level factor of manually annotated batches}

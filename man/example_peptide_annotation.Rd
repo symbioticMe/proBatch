@@ -14,6 +14,6 @@
 example_peptide_annotation
 }
 \description{
-This is data from Evan's aging study annotated with gene names
+This is data from Aging study annotated with gene names
 }
 \keyword{datasets}
