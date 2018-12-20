@@ -62,12 +62,12 @@ dates_to_posix <- function(sample_annotation,
 #'   in some diagnostic plots (e.g.
 #'   \code{\link{plot_iRT}}, \code{\link{plot_sample_mean}})
 #' @examples 
-#' sample_annotation_worder <- date_to_sample_order(
+#' sample_annotation_wOrder <- date_to_sample_order(
 #' example_sample_annotation,
 #' time_column = c('RunDate','RunTime'),
-#' new_time_column = 'DateTime',
+#' new_time_column = 'new_DateTime',
 #' dateTimeFormat = c("%b_%d", "%H:%M:%S"),
-#' new_order_col = 'order',
+#' new_order_col = 'new_order',
 #' instrument_col = NULL)
 #' 
 #' @export
