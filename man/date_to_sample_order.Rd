@@ -40,12 +40,12 @@ Converts date/time columns fo sample_annotation to POSIXct format and
 calculates sample run rank in order column
 }
 \examples{
-sample_annotation_worder <- date_to_sample_order(
+sample_annotation_wOrder <- date_to_sample_order(
 example_sample_annotation,
 time_column = c('RunDate','RunTime'),
-new_time_column = 'DateTime',
+new_time_column = 'new_DateTime',
 dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"),
-new_order_col = 'order',
+new_order_col = 'new_order',
 instrument_col = NULL)
 
 }
