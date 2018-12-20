@@ -47,19 +47,19 @@ Plot correlation of selected samples
 }
 \examples{
 specified_samples = example_sample_annotation \%>\%
-filter(RunID \%in\% paste('Run', 110:115, sep = '')) \%>\%
+filter(order \%in\% 110:115) \%>\%
 pull(FullRunName)
 
 plot_sample_corr_heatmap(example_proteome_matrix, 
 samples_to_plot = specified_samples, 
  flavor = 'pheatmap', 
- cluster_rows= FALSE, cluster_cols=FALSE,fontsize = 4,
+ cluster_rows= FALSE, cluster_cols=FALSE,
  annotation_names_col = TRUE, annotation_legend = FALSE, 
  show_colnames = FALSE)
 
 plot_sample_corr_heatmap(example_proteome_matrix, 
 sample_to_plot = specified_samples,
- flavor = 'corrplot', lower = "ellipse", upper = "number")
+flavor = 'corrplot', lower = "ellipse", upper = "number")
 
 }
 \seealso{
