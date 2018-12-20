@@ -4,7 +4,8 @@
 #'
 #' @inheritParams proBatch
 #' @param corr_matrix square correlation matrix
-#' @param flavor either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'
+#' @param flavor either corrplot from 'corrplot' package or 
+#' heatmap, as in 'pheatmap'
 #' @param filename path where the results are saved. 
 #' If null the object is returned to the active window;
 #' otherwise, the object is save into the file. Currently only 
@@ -12,8 +13,8 @@
 #' @param width option  determining the output image width
 #' @param height option  determining the output image width
 #' @param unit units: 'cm', 'in' or 'mm'
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
+#' @param plot_title Title of the plot (usually, processing step + 
+#' representation level (fragments, transitions, proteins))
 #' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 #' \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
 #'   help to corresponding functions
@@ -65,11 +66,16 @@ plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
 #'
 #' @inheritParams proBatch
 #' @param protein_name the name of the protein
-#' @param peptide_annotation df with peptides and their corresponding proteins
-#' @param protein_col the column name in \code{peptide_annotation} with protein names
-#' @param flavor either corrplot from 'corrplot' package or heatmap, as in 'pheatmap'
-#' @param filename path where the results are saved. If null the object is returned to the active window;
-#' otherwise, the object is save into the file. Currently only pdf and png format is supported
+#' @param peptide_annotation df with peptides and 
+#' their corresponding proteins
+#' @param protein_col the column name in \code{peptide_annotation} 
+#' with protein names
+#' @param flavor either corrplot from 'corrplot' 
+#' package or heatmap, as in 'pheatmap'
+#' @param filename path where the results are saved. 
+#' If null the object is returned to the active window;
+#' otherwise, the object is save into the file. Currently 
+#' only pdf and png format is supported
 #' @param width option  determining the output image width
 #' @param height option  determining the output image width
 #' @param unit units: 'cm', 'in' or 'mm'
@@ -145,10 +151,13 @@ plot_protein_corrplot <- function(data_matrix,
 #'  annotation_names_col = TRUE, annotation_legend = FALSE, 
 #'  show_colnames = FALSE)
 #'
-#' plot_sample_corr_heatmap(data_matrix, sample_to_plot = specified_samples,
+#' plot_sample_corr_heatmap(data_matrix, 
+#' sample_to_plot = specified_samples,
 #'  flavor = 'corrplot', lower = "ellipse", upper = "number")
 #'
-#' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
+#' @seealso \code{\link[pheatmap]{pheatmap}}, 
+#' \code{\link[corrplot]{corrplot.mixed}}
+#' 
 plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                      flavor = 'corrplot', filename = NULL,
                                      width = NA, height = NA, 
@@ -166,19 +175,22 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 }
 
 
-#' Calculates correlation distribution for all pairs of the replicated samples
+#' Calculates correlation distribution for all pairs 
+#' of the replicated samples
 #'
 #' @inheritParams proBatch
 #' @param cor_proteome sample correlation matrix (square)
 #' @param biospecimen_id_col column in `sample_annotation` 
-#' that defines a unique bio ID, which is usually a combination of conditions or groups.
+#' that defines a unique bio ID, which is usually a 
+#' combination of conditions or groups.
 #'  Tip: if such ID is absent, but can be defined from several columns,
 #'  create new \code{biospecimen_id} column
 #' @param batch_col column in `sample_annotation` that should be used for
 #'   batch comparison
 #'
-#' @return dataframe with the following columns, that are suggested to use for
-#' plotting in \code{\link{plot_sample_corr_distribution}} as \code{plot_param}:
+#' @return dataframe with the following columns, that 
+#' are suggested to use for plotting in 
+#' \code{\link{plot_sample_corr_distribution}} as \code{plot_param}:
 #' \enumerate{
 #' \item \code{replicate}
 #' \item \code{batch_the_same}
@@ -234,7 +246,8 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 
 #' Create violin plot of correlation distribution
 #'
-#' Useful to visualize within batch vs within replicate vs non-related sample correlation
+#' Useful to visualize within batch vs within replicate 
+#' vs non-related sample correlation
 #' 
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
@@ -262,13 +275,15 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' \item \code{batches}
 #' };
 #'
-#' @return \code{ggplot} type object with violin plot for each \code{plot_param}
+#' @return \code{ggplot} type object with violin plot 
+#' for each \code{plot_param}
 #'
 #' @export
 #'
 #' @examples 
 #' plot_sample_corr_distribution(example_proteome_matrix,
-#' example_sample_annotation, batch_col = 'MS_batch', biospecimen_id_col = "EarTag", 
+#' example_sample_annotation, batch_col = 'MS_batch', 
+#' biospecimen_id_col = "EarTag", 
 #' plot_param = 'batch_replicate')
 #' 
 #' @seealso \code{\link{get_sample_corr_distrib}}, \code{\link[ggplot2]{ggplot}}
@@ -377,17 +392,21 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
     return(corr_distribution)
 }
 
-#' Plot distribution of peptide correlations within one protein and between proteins
+#' Plot distribution of peptide correlations within one 
+#' protein and between proteins
 #'
 #' @inheritParams proBatch
 #' 
-#' @param protein_col the column name in \code{peptide_annotation} with protein names
+#' @param protein_col the column name in \code{peptide_annotation} 
+#' with protein names
 #' @param plot_title Title of the plot, usually processing step 
-#' @param peptide_annotation long format data with peptide ID and their corresponding 
+#' @param peptide_annotation long format data with peptide ID
+#' and their corresponding 
 #' protein annotations
 #' @param ... parameters for the \code{ggplot} visualisation
 #'
-#' @return \code{ggplot} type object with violin plot for each \code{plot_param}
+#' @return \code{ggplot} type object with violin 
+#' plot for each \code{plot_param}
 #' 
 #' @examples 
 #' plot_peptide_corr_distribution(example_proteome_matrix, 
@@ -400,15 +419,16 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
                                            feature_id_col = 'peptide_group_label',
                                            plot_title = 'Distribution of peptide correlation',
                                            theme = 'classic'){
-    corr_distribution_prot <- function(data_matrix, 
-                                       peptide_annotation, protein_col, feature_id_col){
-                                                   corr_matrix = cor(t(data_matrix), use = "pairwise.complete.obs")
-                                                   corr_distribution = get_peptide_corr_df(peptide_cor = corr_matrix,
-                                                                                           peptide_annotation = peptide_annotation,
-                                                                                           protein_col = protein_col,
-                                                                                           feature_id_col = feature_id_col)
-                                                   return(corr_distribution)
-                                                   }
+    corr_distribution_prot <- 
+      function(data_matrix, peptide_annotation, protein_col, feature_id_col){
+        corr_matrix = cor(t(data_matrix), use = "pairwise.complete.obs")
+        corr_distribution = get_peptide_corr_df(peptide_cor = corr_matrix,
+                                                peptide_annotation = peptide_annotation,
+                                                protein_col = protein_col,
+                                                feature_id_col = feature_id_col)
+        return(corr_distribution)
+      }
+    
     if (!is.list(data_matrix)){
         corr_distribution = corr_distribution_prot(data_matrix, peptide_annotation,
                                                    protein_col, feature_id_col)
