@@ -33,7 +33,7 @@ filenames (colnames of the data matrix are found)}
 Convert from a long data frame representation to a wide matrix representation
 }
 \examples{
-proteome_matrix <- long_to_marix(example_proteome)
+proteome_matrix <- long_to_matrix(example_proteome)
 
 }
 \seealso{
