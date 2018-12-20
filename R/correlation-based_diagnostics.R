@@ -103,9 +103,9 @@ plot_protein_corrplot <- function(data_matrix,
                                     protein_name), ...) {
 
     peptides = peptide_annotation %>%
-        filter(UQ(sym(peptide_col_name)) %in% rownames(data_matrix)) %>%
+        filter(UQ(sym(feature_id_col)) %in% rownames(data_matrix)) %>%
         filter(UQ(sym(protein_col)) == protein_name) %>%
-        pull(peptide_col_name) %>% as.character()
+        pull(feature_id_col) %>% as.character()
     data_matrix_sub = data_matrix[peptides,]
     corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
     plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = flavor,
