@@ -180,7 +180,7 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
 #'   `ComBat`
 #'
 #' @examples 
-#' correct_with_ComBat(examle_proteome_matrix, example_sample_annotation)
+#' correct_with_ComBat(example_proteome_matrix, example_sample_annotation)
 #' 
 #' @export
 #'
