@@ -1,17 +1,24 @@
 
 #' Fit a non-linear trend
 #'
-#' @param dataDF data frame containing response variable e.g. samples in order and explanatory 
+#' @param dataDF data frame containing response variable e.g. 
+#' samples in order and explanatory 
 #'   variable e.g. measurment
-#' @param batch.size the total number of samples in the batch to compute for percentage threshold 
-#' @param response.var the name of the column in dataDF with the response variable
-#' @param expl.var the name of the column in dataDF with the explanatory variable
+#' @param batch.size the total number of samples in the batch to 
+#' compute for percentage threshold 
+#' @param response.var the name of the column in dataDF with 
+#' the response variable
+#' @param expl.var the name of the column in dataDF with the 
+#' explanatory variable
 #' @param noFitRequants (logical) whether to fit requanted values
 #' @param fitFunc function to use for the fit (`loess_regression`)
-#' @param with_df logical, whether to specify span by enp.target using approximately equivalent 
+#' @param with_df logical, whether to specify span by enp.target 
+#' using approximately equivalent 
 #'   number of parameters
-#' @param abs_threshold the absolute threshold to filter data for curve fitting 
-#' @param pct_threshold the percentage threshold to filter data for curve fitting 
+#' @param abs_threshold the absolute threshold to filter 
+#' data for curve fitting 
+#' @param pct_threshold the percentage threshold to filter 
+#' data for curve fitting 
 #' @param ... additional paramters to be passed to the fitting function
 #'
 #' @return vector of fitted response values
@@ -36,13 +43,17 @@ fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x'
             }
             if(!with_df){
                 fit_res = switch(fitFunc,
-                                 loess_regression = loess_regression(x_all, y, x_to_fit,...)
+                                 loess_regression = loess_regression(
+                                   x_all, y, x_to_fit,...)
                                  )
             } else {
-                bw = optimise_bw(dataDF, response.var = response.var, expl.var = expl.var)
-                df = optimise_df(dataDF, bw, response.var = response.var, expl.var = expl.var)
+                bw = optimise_bw(dataDF, response.var = response.var, 
+                                 expl.var = expl.var)
+                df = optimise_df(dataDF, bw, response.var = response.var, 
+                                 expl.var = expl.var)
                 fit_res = switch(fitFunc,
-                                 loess_regression = loess_regression_opt(x_all, y, x_to_fit, df, ...))
+                                 loess_regression = loess_regression_opt(
+                                   x_all, y, x_to_fit, df, ...))
             }
         }else{
             fit_res = rep(NA, length(x_to_fit))
