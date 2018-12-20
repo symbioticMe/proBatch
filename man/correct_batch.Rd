@@ -79,8 +79,7 @@ discrete difference across batches.
 median_centered_proteome <- center_peptide_batch_medians(
 example_proteome, example_sample_annotation)
 
-correct_batch_effects(example_protome_matrix, example_sample_annotation, 
-fitFunc = 'loess_regression', 
+correct_batch_effects(example_proteome_matrix, example_sample_annotation, 
 discreteFunc = 'MedianCentering', 
 batch_col = 'MS_batch',  
 span = 0.7,
