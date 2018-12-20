@@ -9,25 +9,32 @@ fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
   with_df = FALSE, abs_threshold = 5, pct_threshold = 0.2, ...)
 }
 \arguments{
-\item{dataDF}{data frame containing response variable e.g. samples in order and explanatory 
-variable e.g. measurment}
+\item{dataDF}{data frame containing response variable e.g. 
+samples in order and explanatory 
+  variable e.g. measurment}
 
-\item{batch.size}{the total number of samples in the batch to compute for percentage threshold}
+\item{batch.size}{the total number of samples in the batch to 
+compute for percentage threshold}
 
-\item{response.var}{the name of the column in dataDF with the response variable}
+\item{response.var}{the name of the column in dataDF with 
+the response variable}
 
-\item{expl.var}{the name of the column in dataDF with the explanatory variable}
+\item{expl.var}{the name of the column in dataDF with the 
+explanatory variable}
 
 \item{noFitRequants}{(logical) whether to fit requanted values}
 
 \item{fitFunc}{function to use for the fit (`loess_regression`)}
 
-\item{with_df}{logical, whether to specify span by enp.target using approximately equivalent 
-number of parameters}
+\item{with_df}{logical, whether to specify span by enp.target 
+using approximately equivalent 
+  number of parameters}
 
-\item{abs_threshold}{the absolute threshold to filter data for curve fitting}
+\item{abs_threshold}{the absolute threshold to filter 
+data for curve fitting}
 
-\item{pct_threshold}{the percentage threshold to filter data for curve fitting}
+\item{pct_threshold}{the percentage threshold to filter 
+data for curve fitting}
 
 \item{...}{additional paramters to be passed to the fitting function}
 }

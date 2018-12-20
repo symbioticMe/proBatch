@@ -13,15 +13,14 @@
 #' representation data_matrix this corresponds to the row names.
 #' @name correct_batch
 NULL
-                                        #> NULL
 
 #' Median centering of the peptides (per batch median)
 #'
 #' @rdname correct_batch
 #' @param df_long data frame where each row is a single feature in a single
-#'   sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
-#'   \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-#'   file)
+#'   sample. It minimally has a \code{sample_id_col}, a 
+#'   \code{feature_id_col} and a \code{measure_col}, but 
+#'   usually also an \code{m_score} (in OpenSWATH output result file)
 #' @return `df_long`-size long format data with batch-effect corrected with
 #'   per-feature batch median centering in Intensity_normalized column
 #'   
@@ -108,7 +107,9 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
   s_a <- sample_annotation[[sample_id_col]]
   all <- union(sampleNames, s_a)
   non_matched <- all[!all %in% intersect(sampleNames, s_a)]
-  if(length(non_matched)!=0){warning("Sample ID in data matrix and sample annotation don't match. Non-matching elements are removed for analysis")}
+  if(length(non_matched)!=0){warning("Sample ID in data matrix 
+                                     and sample annotation don't match. 
+                                     Non-matching elements are removed for analysis")}
   
   sample_annotation = sample_annotation %>%
     filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
@@ -121,7 +122,9 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
   df_long = data_matrix %>%
     melt(id.vars = feature_id_col)
   names(df_long) = c(feature_id_col, sample_id_col, measure_col)
-  batch_table <- as.data.frame(table(sample_annotation[[batch_col]], dnn = list(batch_col)), responseName = "batch_total")
+  batch_table <- as.data.frame(table(sample_annotation[[batch_col]], 
+                                     dnn = list(batch_col)), 
+                               responseName = "batch_total")
   sample_annotation = sample_annotation %>%
     full_join(batch_table, by = batch_col)
   
@@ -129,11 +132,12 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
     filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
     merge(sample_annotation, by = sample_id_col) %>%
     arrange_(feature_id_col, sample_order_col) %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>% #group_by(peptide_group_label, MS_batch.final, tota_batch) 
+    group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>%  
     nest() %>%
     mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
                       expl.var = sample_order_col, 
-                      abs_threshold = abs_threshold, pct_threshold = pct_threshold, ...)) %>%
+                      abs_threshold = abs_threshold, 
+                      pct_threshold = pct_threshold, ...)) %>%
     unnest() %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
     mutate(mean_fit = mean(fit)) %>%
@@ -246,7 +250,8 @@ correct_batch_effects <- function(data_matrix, sample_annotation,
                                   batch_col = 'MS_batch',  
                                   feature_id_col = 'peptide_group_label', 
                                   sample_id_col = 'FullRunName',
-                                  measure_col = 'Intensity',  sample_order_col = 'order', 
+                                  measure_col = 'Intensity',  
+                                  sample_order_col = 'order', 
                                   abs_threshold = 5, pct_threshold = 0.20, ...){
     sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
     fit_list = adjust_batch_trend(data_matrix, 
