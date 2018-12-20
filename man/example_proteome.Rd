@@ -6,10 +6,14 @@
 \title{Example protein data in long format}
 \format{A data frame with 124655 rows and 5 variables:
 \describe{
-  \item{peptide_group_label}{peptide ID, which is regular feature level. This column is mostly used as `feature_id_col`}
-  \item{Intensity}{peptide group intensity in given sample. Used in function as `measure_col`}
-  \item{ProteinName}{Protein group ID, specified as N/UniProtID1|UniProtID2|...,
-  where N is number of protein peptide group maps to. If 1/UniProtID, then this is proteotypic peptide}
+  \item{peptide_group_label}{peptide ID, which is regular feature level. 
+  This column is mostly used as `feature_id_col`}
+  \item{Intensity}{peptide group intensity in given sample. 
+  Used in function as `measure_col`}
+  \item{ProteinName}{Protein group ID, specified as 
+  N/UniProtID1|UniProtID2|...,
+  where N is number of protein peptide group maps to. If 
+  1/UniProtID, then this is proteotypic peptide}
   \item{Gene}{conventional gene name of corresponding ProteinName}
   \item{FullRunName}{name of the file, in most functions used for `sample_id_col`}
 ...
@@ -22,6 +26,7 @@ example_proteome
 }
 \description{
 This is data from Aging study with all iRT, spike-in peptides,
-few random peptides and QTL proteins for biological signal improvement demonstration
+few random peptides and QTL proteins for biological 
+signal improvement demonstration
 }
 \keyword{datasets}
