@@ -54,6 +54,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              plot_title = NULL, order_per_facet = FALSE,
                              vline_color = 'grey',
                              ylimits = NULL){
+<<<<<<< HEAD
     sample_average = colMeans(data_matrix, na.rm = TRUE)
     names(sample_average) = colnames(data_matrix)
     
@@ -73,6 +74,41 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     if (!(order_col %in% names(sample_annotation))){
         warning('order column not found in sample annotation, taking order of files in the data matrix instead')
         order_col = 'order_temp_col'
+=======
+  if(setequal(unique(sample_annotation[[sample_id_col]]), colnames(data_matrix)) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  
+  sample_average = colMeans(data_matrix, na.rm = T)
+  names(sample_average) = colnames(data_matrix)
+  
+  df_ave = data.frame(Average_Intensity = sample_average,
+                      order_temp_col = 1:length(sample_average),
+                      sample_id_col = colnames(data_matrix))
+  names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
+  
+  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_ave[[sample_id_col]])) == FALSE){
+    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  df_ave = df_ave %>%
+    merge(sample_annotation, by = sample_id_col)
+  
+  if (is.null(order_col)){
+    warning('order column not defined, taking order of files in the data matrix instead')
+    order_col = 'order_temp_col'
+    df_ave[[order_col]] = match(df_ave[[sample_id_col]],
+                                 unique(df_ave[[sample_id_col]]))
+  } else if (!(order_col %in% names(sample_annotation)) &
+             !(order_col %in% names(df_ave))){
+    warning('order column not found in sample annotation, taking order of files in the data matrix instead')
+    order_col = 'order_temp_col'
+    df_ave[[order_col]] = match(df_ave[[sample_id_col]],
+                                 unique(df_ave[[sample_id_col]]))
+    order_per_facet = T
+  }
+  if(!is.null(facet_col)){
+    if(!(facet_col %in% names(df_ave))){
+      stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
+                   check sample annotation data frame', facet_col))
+>>>>>>> 4cc6d10206942da98ac234fbc0ab821c6f93030c
     }
     if(!is.null(facet_col)){
         if(!(facet_col %in% names(df_ave))){
@@ -85,6 +121,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                 mutate(order = rank(UQ(sym(order_col))))
         }
     }
+<<<<<<< HEAD
     gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
         geom_point()
     if(!is.null(ylimits)){
@@ -103,6 +140,28 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                     gg = gg + scale_color_brewer(palette = 'Set3')
                 } else {
                     warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
+=======
+  }
+  
+  gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
+    geom_point()
+  if(!is.null(ylimits)){
+    gg = gg +
+      ylim(ylimits)
+  }
+  
+  if(color_by_batch & !is.null(batch_col)){
+    gg = gg + aes_string(color = batch_col)
+    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
+      n_batches <- length(unique(sample_annotation[[batch_col]]))
+      if (n_batches <= 9){
+        gg = gg + scale_color_brewer(palette = 'Set1')
+      } else {
+        if (n_batches <= 12){
+          gg = gg + scale_color_brewer(palette = 'Set3')
+        } else {
+          warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
+>>>>>>> 4cc6d10206942da98ac234fbc0ab821c6f93030c
                           consider defining color scheme with sample_annotation_to_colors function', n_batches))
                 }
             }
@@ -178,6 +237,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
             if (color_by_batch){
                 stop('batches cannot be colored if the batch column cannot be defined,
              check sample_annotation and data matrix')
+<<<<<<< HEAD
             }
         }
     }
@@ -202,6 +262,35 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                 group_by_at(vars(one_of(facet_col))) %>%
                 mutate(order = rank(UQ(sym(order_col))))
         }
+=======
+      }
+    }
+  }
+  
+  if (is.null(order_col)){
+    warning('order column not defined, taking order of files in the data matrix instead')
+    order_col = 'order_temp_col'
+    df_long[[order_col]] = match(df_long[[sample_id_col]],
+                                 unique(df_long[[sample_id_col]]))
+  } else if (!(order_col %in% names(sample_annotation)) &
+             !(order_col %in% names(df_long))){
+    warning('order column not found in sample annotation, taking order of files in the data matrix instead')
+    order_col = 'order_temp_col'
+    df_long[[order_col]] = match(df_long[[sample_id_col]],
+                                 unique(df_long[[sample_id_col]]))
+    order_per_facet = T
+  }
+  
+  if(!is.null(facet_col)){
+    if(!(facet_col %in% names(df_long))){
+      stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
+                   check sample annotation data frame', facet_col))
+    }
+    if (order_per_facet){
+      df_long = df_long %>%
+        group_by_at(vars(one_of(facet_col))) %>%
+        mutate(order = rank(UQ(sym(order_col))))
+>>>>>>> 4cc6d10206942da98ac234fbc0ab821c6f93030c
     }
     
     gg = ggplot(df_long, aes_string(x = order_col, y = measure_col,
