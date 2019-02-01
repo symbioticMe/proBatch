@@ -15,7 +15,7 @@
 #' @param unit units: 'cm', 'in' or 'mm'
 #' @param plot_title Title of the plot (usually, processing step + 
 #' representation level (fragments, transitions, proteins))
-#' @param \code{...} parameters for the \code{\link[corrplot]{corrplot.mixed}} or
+#' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 #' \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
 #'   help to corresponding functions
 #'
@@ -26,6 +26,11 @@
 #' @keywords internal
 #'
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
+#' 
+#' @examples 
+#' corr_matrix = cor(example_proteome_matrix, use = 'complete.obs')
+#' plot_corr_matrix(corr_matrix, flavor = "pheatmap")
+#' 
 plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'), 
                              filename = NULL, width = NA, height = NA, 
                              unit = c('cm','in','mm'),
@@ -84,7 +89,7 @@ plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'),
 #' @param height option  determining the output image width
 #' @param unit units: 'cm', 'in' or 'mm'
 #' @param plot_title The title of the plot
-#' @param \code{...} parameters for the corrplot visualisation
+#' @param ... parameters for the corrplot visualisation
 #'
 #' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 #'
@@ -136,7 +141,7 @@ plot_protein_corrplot <- function(data_matrix,
 #' @param unit units: 'cm', 'in' or 'mm'
 #' @param plot_title Title of the plot (usually, processing step + 
 #' representation level (fragments, transitions, proteins))
-#' @param \code{...} parameters for the \code{\link[corrplot]{corrplot.mixed}} or
+#' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 #' \code{\link[pheatmap]{pheatmap}} visualisation, for details see 
 #'   examples and help to corresponding functions
 #'
@@ -454,7 +459,7 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' @param peptide_annotation long format data with peptide ID
 #' and their corresponding 
 #' protein annotations
-#' @param \code{...} parameters for the \code{ggplot} visualisation
+#' @param ... parameters for the \code{ggplot} visualisation
 #'
 #' @return \code{ggplot} type object with violin 
 #' plot for each \code{plot_param}
