@@ -53,8 +53,8 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
                            sample_id_col = 'FullRunName',
                            step = NULL){
     if(!is.null(sample_annotation)){
-        if(setequal(unique(sample_annotation[[sample_id_col]]), 
-                    unique(colnames(data_matrix))) == FALSE){
+        if(!setequal(unique(sample_annotation[[sample_id_col]]), 
+                    unique(colnames(data_matrix)))){
             warning('Sample IDs in sample annotation not 
                     consistent with samples in input data.')}
     }
