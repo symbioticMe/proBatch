@@ -19,7 +19,7 @@
 #' \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
 #'   help to corresponding functions
 #'
-#' @return Nothing
+#' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 #' 
 #' @export
 #' 
@@ -82,7 +82,7 @@ plot_corr_matrix <- function(corr_matrix, flavor = 'corrplot', filename = NULL,
 #' @param plot_title The title of the plot
 #' @param ... parameters for the corrplot visualisation
 #'
-#' @return Nothing
+#' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 #'
 #' @export
 #' @examples 
@@ -135,7 +135,7 @@ plot_protein_corrplot <- function(data_matrix,
 #' \code{\link[pheatmap]{pheatmap}} visualisation, for details see 
 #'   examples and help to corresponding functions
 #'
-#' @return Nothing
+#' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 #' 
 #' @export
 #'
