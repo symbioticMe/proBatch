@@ -856,6 +856,12 @@ peptide_cor_batchCor <- plot_peptide_corr_distribution(batch_corrected_matrix,
 peptide_cor_batchCor + geom_hline(yintercept=0, linetype="dashed", color = "grey")
 ```
 
+# SessionInfo
+
+```{r global_options, eval=TRUE}
+sessionInfo()
+```
+
 # Citation
 
 To cite this package, please use:
