@@ -28,10 +28,7 @@
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
 #' 
 #' @examples 
-#' peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2",
-#' "1131_AQGSVALSVTQDPAR_2", "12111_TGKPNPDQLLK_2" , "1217_ASFQPPVC(UniMod:4)NK_2",                   "13503_VLEQGQHR_2"                              
-#' "14845_YYVGDTEDVLFEK_2",  "15010_FANTM(UniMod:35)GLVIER_2", "27827_IM(UniMod:35)FVGGPNTR_2" ,
-#' "30298_KDYHIEEGEEVFYQLEGDMILR_4" , "3347_ELPFPLNTR_2")
+#' peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2")
 #' 
 #' data_matrix_sub = example_proteome_matrix[peptides,]
 #' corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
