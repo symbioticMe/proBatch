@@ -240,6 +240,65 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
     return(corr_distribution)
 }
 
+
+#' Calculates correlation of data matrix and calculates correlation distribution for all pairs 
+#' of the replicated samples 
+#'
+#' @inheritParams proBatch
+#' @param data_matrix  features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. Usually the log
+#'   transformed version of the original data
+#' @param repeated_samples if `NULL`, only repeated sample correlation is plotted
+#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#'   repeated as row names) 2) biological and 3) technical covariates (batches
+#'   etc)
+#' @param biospecimen_id_col column in `sample_annotation` 
+#' that defines a unique bio ID, which is usually a 
+#' combination of conditions or groups.
+#'  Tip: if such ID is absent, but can be defined from several columns,
+#'  create new \code{biospecimen_id} column
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix) are found
+#' @param batch_col column in `sample_annotation` that should be used for
+#'   batch comparison
+#'
+#' @return dataframe with the following columns, that 
+#' are suggested to use for plotting in 
+#' \code{\link{plot_sample_corr_distribution}} as \code{plot_param}:
+#' \enumerate{
+#' \item \code{replicate}
+#' \item \code{batch_the_same}
+#' \item \code{batch_replicate}
+#' \item \code{batches}
+#' }
+#' other columns are: \enumerate{
+#' \item \code{sample_id_1} & \code{sample_id_2}, both 
+#' generated from \code{sample_id_col} variable
+#' \item \code{correlation} - correlation of two corresponding samples
+#' \item \code{batch_1} & \code{batch_2} or analogous, 
+#' created the same as \code{sample_id_1}
+#' }
+#' 
+#' @keywords internal
+#'
+#' @export
+#'
+.corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
+                              biospecimen_id_col, sample_id_col, batch_col) {
+  if (!is.null(repeated_samples)){
+    print('plotting correlation of repeated samples only')
+    corr_matrix = cor(data_matrix[,repeated_samples], use = 'complete.obs')
+  } else {
+    corr_matrix = cor(data_matrix, use = 'complete.obs')
+  }
+  corr_distribution = get_sample_corr_distrib(cor_proteome = corr_matrix,
+                                              sample_annotation = sample_annotation,
+                                              sample_id_col = sample_id_col,
+                                              biospecimen_id_col = biospecimen_id_col,
+                                              batch_col = batch_col)
+  return(corr_distribution)
+}
+
 #' Create violin plot of correlation distribution
 #'
 #' Useful to visualize within batch vs within replicate 
@@ -296,31 +355,21 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
         warning('Sample IDs in sample annotation not 
                 consistent with samples in input data.')}
     
-    corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
-                                  biospecimen_id_col, sample_id_col, batch_col) {
-        if (!is.null(repeated_samples)){
-            print('plotting correlation of repeated samples only')
-            corr_matrix = cor(data_matrix[,repeated_samples], use = 'complete.obs')
-        } else {
-            corr_matrix = cor(data_matrix, use = 'complete.obs')
-        }
-        corr_distribution = get_sample_corr_distrib(cor_proteome = corr_matrix,
-                                                    sample_annotation = sample_annotation,
-                                                    sample_id_col = sample_id_col,
-                                                    biospecimen_id_col = biospecimen_id_col,
-                                                    batch_col = batch_col)
-        return(corr_distribution)
-    }
     if (!is.list(data_matrix)){
-        corr_distribution = corr_distribution(data_matrix, 
-                                              repeated_samples, sample_annotation,
-                                              biospecimen_id_col, sample_id_col, batch_col)
+        corr_distribution = .corr_distribution(data_matrix = data_matrix, 
+                                              repeated_samples = repeated_samples, 
+                                              sample_annotation = sample_annotation,
+                                              biospecimen_id_col = biospecimen_id_col, 
+                                              sample_id_col = sample_id_col, 
+                                              batch_col = batch_col)
     } else {
         corr_distribution = lapply(1:length(data_matrix), function(i) {
             dm = data_matrix[[i]]
-            corr_distribution = corr_distribution(dm, repeated_samples, 
-                                                  sample_annotation,
-                                                  biospecimen_id_col, sample_id_col, batch_col)
+            corr_distribution = .corr_distribution(data_matrix = dm, 
+                                                  repeated_samples = repeated_samples, 
+                                                  sample_annotation = sample_annotation,
+                                                  biospecimen_id_col = biospecimen_id_col, 
+                                                  sample_id_col =sample_id_col, batch_col = batch_col)
             corr_distribution$Step = names(data_matrix)[i]
             return(corr_distribution)
         })
