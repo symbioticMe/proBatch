@@ -62,7 +62,7 @@ by \code{color_by_value}}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
-\item{...}{additional arguments to \code{\link{plot_single_feature}} function}
+\item{\code{...}}{additional arguments to \code{\link{plot_single_feature}} function}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
