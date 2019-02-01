@@ -61,7 +61,7 @@ Usually black or white, depending on `heatmap_color`}
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
-\item{\code{...}}{other parameters of \code{link[pheatmap]{pheatmap}}}
+\item{...}{other parameters of \code{link[pheatmap]{pheatmap}}}
 }
 \value{
 object returned by \code{link[pheatmap]{pheatmap}}
