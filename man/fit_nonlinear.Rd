@@ -11,7 +11,7 @@ fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
 \arguments{
 \item{dataDF}{data frame containing response variable e.g. 
 samples in order and explanatory 
-  variable e.g. measurment}
+  variable e.g. measurement}
 
 \item{batch.size}{the total number of samples in the batch to 
 compute for percentage threshold}
@@ -36,7 +36,7 @@ data for curve fitting}
 \item{pct_threshold}{the percentage threshold to filter 
 data for curve fitting}
 
-\item{...}{additional paramters to be passed to the fitting function}
+\item{\code{...}}{additional paramters to be passed to the fitting function}
 }
 \value{
 vector of fitted response values
