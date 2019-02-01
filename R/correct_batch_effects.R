@@ -255,13 +255,16 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #'                                                 
 correct_batch_effects <- function(data_matrix, sample_annotation, 
                                   fitFunc = 'loess_regression', 
-                                  discreteFunc = 'MedianCentering', 
+                                  discreteFunc = c("MedianCentering", "ComBat"), 
                                   batch_col = 'MS_batch',  
                                   feature_id_col = 'peptide_group_label', 
                                   sample_id_col = 'FullRunName',
                                   measure_col = 'Intensity',  
                                   sample_order_col = 'order', 
                                   abs_threshold = 5, pct_threshold = 0.20, ...){
+ 
+    discreteFunc <- match.arg(discreteFunc)
+  
     sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
     fit_list = adjust_batch_trend(data_matrix, 
                                   sample_annotation = sample_annotation,
