@@ -41,7 +41,7 @@ as covariate to fit the non-linear fit}
 
 \item{pct_threshold}{the percentage threshold to filter data for curve fitting}
 
-\item{\code{...}}{other parameters, usually those of the `fit_func`}
+\item{...}{other parameters, usually those of the `fit_func`}
 }
 \value{
 list of two items: 1) `data_matrix`, adjusted with continious fit; 
