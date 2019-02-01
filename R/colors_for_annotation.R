@@ -49,25 +49,17 @@ map_numbers_to_colors <-
         }
 
         if (length(granularity) == 1) {
-            ann_col_covariate = lapply(1:ncol(annotation_df_numbers),
-                                       function(i)
-                                           generate_colors_for_numeric(
-                                               annotation_df_numbers[, i],
-                                               i = i,
-                                               palette_type = palette_type,
-                                               granularity = granularity
-                                           ))
-        } else {
-            ann_col_covariate = lapply(1:ncol(annotation_df_numbers),
-                                       function(i)
-                                           generate_colors_for_numeric(
-                                               annotation_df_numbers[, i],
-                                               i = i,
-                                               palette_type = palette_type,
-                                               granularity = granularity[i]
-                                           ))
-        }
-
+          granularity <- rep(granularity, ncol(annotation_df_numbers))}
+        
+        ann_col_covariate <- lapply(1:ncol(annotation_df_numbers),
+                                    function(i)
+                                      generate_colors_for_numeric(
+                                        annotation_df_numbers[, i],
+                                        i = i,
+                                        palette_type = palette_type,
+                                        granularity = granularity[i]
+                                      ))
+                             
         color_list = lapply(ann_col_covariate, function(item)
             item$color_vector)
         names(color_list) = names(annotation_df_numbers)
