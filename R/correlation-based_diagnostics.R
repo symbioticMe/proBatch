@@ -28,9 +28,14 @@
 #' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
 #' 
 #' @examples 
-#' corr_matrix = cor(example_proteome_matrix, use = 'complete.obs')
-#' plot_corr_matrix(corr_matrix, flavor = "pheatmap")
+#' peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2",
+#' "1131_AQGSVALSVTQDPAR_2", "12111_TGKPNPDQLLK_2" , "1217_ASFQPPVC(UniMod:4)NK_2",                   "13503_VLEQGQHR_2"                              
+#' "14845_YYVGDTEDVLFEK_2",  "15010_FANTM(UniMod:35)GLVIER_2", "27827_IM(UniMod:35)FVGGPNTR_2" ,
+#' "30298_KDYHIEEGEEVFYQLEGDMILR_4" , "3347_ELPFPLNTR_2")
 #' 
+#' data_matrix_sub = example_proteome_matrix[peptides,]
+#' corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
+#' plot_corr_matrix(corr_matrix,  flavor = "corrplot")
 plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'), 
                              filename = NULL, width = NA, height = NA, 
                              unit = c('cm','in','mm'),
