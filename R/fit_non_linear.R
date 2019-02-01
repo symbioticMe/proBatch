@@ -3,7 +3,7 @@
 #'
 #' @param dataDF data frame containing response variable e.g. 
 #' samples in order and explanatory 
-#'   variable e.g. measurment
+#'   variable e.g. measurement
 #' @param batch.size the total number of samples in the batch to 
 #' compute for percentage threshold 
 #' @param response.var the name of the column in dataDF with 
