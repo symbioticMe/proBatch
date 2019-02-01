@@ -291,8 +291,8 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                           plot_title = 'Correlation distribution',
                                           plot_param = 'batch_replicate'){
     
-    if(setequal(unique(sample_annotation[[sample_id_col]]), 
-                unique(colnames(data_matrix))) == FALSE){
+    if(!setequal(unique(sample_annotation[[sample_id_col]]), 
+                unique(colnames(data_matrix)))){
         warning('Sample IDs in sample annotation not 
                 consistent with samples in input data.')}
     
