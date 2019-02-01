@@ -77,7 +77,7 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @param fit_func function to fit the (non)-linear trend
 #' @param abs_threshold the absolute threshold to filter data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter data for curve fitting 
-#' @param ... other parameters, usually those of the `fit_func`
+#' @param \code{...} other parameters, usually those of the `fit_func`
 #'
 #' @return list of two items: 1) `data_matrix`, adjusted with continious fit; 
 #' 2) fit_df, used to examine the fitting curves
@@ -239,7 +239,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' batch correction (`MedianCentering` or `ComBat`)
 #' @param abs_threshold the absolute threshold to filter data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter data for curve fitting 
-#' @param ... other parameters, usually of `normalize_custom_fit`, and `fit_func`
+#' @param \code{...} other parameters, usually of `normalize_custom_fit`, and `fit_func`
 #'
 #' @return `data_matrix`-size data matrix with batch-effect 
 #' corrected by fit and discrete functions
