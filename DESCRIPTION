@@ -39,6 +39,7 @@ Imports:
     viridis,
     sva,
     tidyr,
+    tidyverse,
     tibble,
     wesanderson,
     WGCNA
