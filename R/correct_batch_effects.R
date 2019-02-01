@@ -36,8 +36,8 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
                                          feature_id_col = 'peptide_group_label',
                                          measure_col = 'Intensity'){
     
-    if(setequal(unique(sample_annotation[[sample_id_col]]), 
-                unique(df_long[[sample_id_col]])) == FALSE){
+    if(!setequal(unique(sample_annotation[[sample_id_col]]), 
+                unique(df_long[[sample_id_col]]))){
         warning('Sample IDs in sample annotation not 
                 consistent with samples in input data.')}
     
