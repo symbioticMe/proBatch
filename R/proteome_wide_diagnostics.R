@@ -243,8 +243,8 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                       theme = 'classic', plot_title = NULL){
     factors_for_PVCA = c(technical_covariates, biological_covariates)
 
-    if(setequal(unique(sample_annotation[[sample_id_col]]), 
-                unique(colnames(data_matrix))) == FALSE){
+    if(!setequal(unique(sample_annotation[[sample_id_col]]), 
+                unique(colnames(data_matrix)))){
         warning('Sample IDs in sample annotation not 
                 consistent with samples in input data.')}
     
