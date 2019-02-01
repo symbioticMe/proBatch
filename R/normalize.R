@@ -101,7 +101,10 @@ normalize_sample_medians <- function(df_long,
 #' quantile_normalized_matrix = normalize_data(example_proteome_matrix, 
 #' normalizeFunc = "quantile", log_base = 2)
 #' 
-normalize_data <- function(data_matrix, normalizeFunc = "quantile", log_base = NULL){
+normalize_data <- function(data_matrix, normalizeFunc = c("quantile", "MedianCentering"), 
+                           log_base = NULL){
+  
+    normalizeFunc <- match.arg(normalizeFunc)    
     if(!is.null(log_base)){
         data_matrix = log_transform(data_matrix, log_base = log_base)
     }
