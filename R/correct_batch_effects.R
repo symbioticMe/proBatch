@@ -157,8 +157,15 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
 }
 
 
-#' Adjusts for discrete batch effects in datasets where the batch covariate is known, 
-#' using either parametric or non-parametric empirical Bayes frameworks. 
+#' Adjusts for discrete batch effects using ComBat
+#'
+#' @description Standardized input-output ComBat normalization ComBat allows users to adjust
+#' for batch effects in datasets where the batch covariate is known, using
+#' methodology described in Johnson et al. 2007. It uses either parametric or
+#' non-parametric empirical Bayes frameworks for adjusting data for batch
+#' effects. Users are returned an expression matrix that has been corrected for
+#' batch effects. The input data are assumed to be cleaned and normalized before
+#' batch effect removal.
 #'
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
