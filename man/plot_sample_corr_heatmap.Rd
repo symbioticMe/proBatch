@@ -5,8 +5,8 @@
 \title{Sample correlation matrix (heatmap)}
 \usage{
 plot_sample_corr_heatmap(data_matrix, samples_to_plot = NULL,
-  flavor = "corrplot", filename = NULL, width = NA, height = NA,
-  unit = c("cm", "in", "mm"),
+  flavor = c("pheatmap", "corrplot"), filename = NULL, width = NA,
+  height = NA, unit = c("cm", "in", "mm"),
   plot_title = sprintf("Correlation matrix of sample \%s",
   samples_to_plot), ...)
 }
@@ -35,12 +35,12 @@ Currently only pdf and png format is supported}
 \item{plot_title}{Title of the plot (usually, processing step + 
 representation level (fragments, transitions, proteins))}
 
-\item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
+\item{\code{...}}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 \code{\link[pheatmap]{pheatmap}} visualisation, for details see 
   examples and help to corresponding functions}
 }
 \value{
-Nothing
+\code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 }
 \description{
 Plot correlation of selected samples
