@@ -183,8 +183,8 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
                                          plot_title = sprintf('Peptides of %s protein', 
                                                               protein_name),...){
   
-  if(setequal(unique(sample_annotation[[sample_id_col]]), 
-              unique(df_long[[sample_id_col]])) == FALSE){
+  if(!setequal(unique(sample_annotation[[sample_id_col]]), 
+              unique(df_long[[sample_id_col]]))){
     warning('Sample IDs in sample annotation not consistent 
             with samples in input data.')}
   
@@ -255,8 +255,8 @@ plot_spike_in <- function(df_long, sample_annotation,
                           color_by_col = NULL, color_by_value = NULL,
                           plot_title = 'Spike-in BOVINE protein peptides', ...){
   
-  if(setequal(unique(sample_annotation[[sample_id_col]]), 
-              unique(df_long[[sample_id_col]])) == FALSE){
+  if(!setequal(unique(sample_annotation[[sample_id_col]]), 
+              unique(df_long[[sample_id_col]]))){
     warning('Sample IDs in sample annotation not 
             consistent with samples in input data.')}
   
@@ -320,8 +320,8 @@ plot_iRT <- function(df_long, sample_annotation,
                      color_by_col = NULL, color_by_value = NULL,
                      plot_title = 'iRT peptide profile', ...){
   
-  if(setequal(unique(sample_annotation[[sample_id_col]]), 
-              unique(df_long[[sample_id_col]])) == FALSE){
+  if(!setequal(unique(sample_annotation[[sample_id_col]]), 
+              unique(df_long[[sample_id_col]]))){
     warning('Sample IDs in sample annotation not consistent 
             with samples in input data.')}
   
