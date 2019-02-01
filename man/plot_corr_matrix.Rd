@@ -28,7 +28,7 @@ pdf and png format is supported}
 \item{plot_title}{Title of the plot (usually, processing step + 
 representation level (fragments, transitions, proteins))}
 
-\item{\code{...}}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
+\item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
   help to corresponding functions}
 }
@@ -37,6 +37,11 @@ representation level (fragments, transitions, proteins))}
 }
 \description{
 Plot correlation of selected  samples or peptides
+}
+\examples{
+corr_matrix = cor(example_proteome_matrix, use = 'complete.obs')
+plot_corr_matrix(corr_matrix, flavor = "pheatmap")
+
 }
 \seealso{
 \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
