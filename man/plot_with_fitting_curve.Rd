@@ -70,7 +70,7 @@ implemented)}
 \item{vline_color}{color of vertical lines, typically denoting 
 different batches}
 
-\item{...}{additional arguments to \code{\link{plot_single_feature}} function}
+\item{\code{...}}{additional arguments to \code{\link{plot_single_feature}} function}
 }
 \value{
 \code{ggplot}-class plot with minimally two facets (before and after
