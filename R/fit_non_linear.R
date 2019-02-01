@@ -19,7 +19,7 @@
 #' data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter 
 #' data for curve fitting 
-#' @param ... additional paramters to be passed to the fitting function
+#' @param \code{...} additional paramters to be passed to the fitting function
 #'
 #' @return vector of fitted response values
 #'
