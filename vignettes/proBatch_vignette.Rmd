@@ -1,6 +1,16 @@
 ---
 title: "proBatch"
-author: "Jelena Čuklina, Chloe H. Lee, Patrick Pedrioli, Ruedi Aebersold"
+author:
+- name: Jelena Čuklina
+  affiliation: 
+  - &id Institute of Molecular Systems Biology, Department of Biology, ETH Zurich, Switzerland 
+- name: Chloe H. Lee
+  affiliation: *id
+- name: Patrick Pedrioli
+  affiliation: *id
+- name: Ruedi Aebersold
+  affiliation: *id
+
 date: "`r Sys.Date()`"
 output: pdf_document
 #output: html_document
