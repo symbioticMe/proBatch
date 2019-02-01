@@ -49,7 +49,7 @@ as covariate to fit the non-linear fit}
 
 \item{pct_threshold}{the percentage threshold to filter data for curve fitting}
 
-\item{\code{...}}{other parameters, usually of `normalize_custom_fit`, and `fit_func`}
+\item{...}{other parameters, usually of `normalize_custom_fit`, and `fit_func`}
 }
 \value{
 `data_matrix`-size data matrix with batch-effect 
