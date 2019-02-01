@@ -42,21 +42,21 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
     dist_matrix = dist(t(as.matrix(data_matrix)), method = distance)
     hierarchical_clust = hclust(dist_matrix, method = agglomeration)
     if (label_samples){
+      cex.dendroLabels = label_font
         if (ncol(data_matrix) > 80){
             warning('Too many samples, adjust the font with `label_font` argument or
               remove labels by setting `label_samples = FALSE` in function call')
-        }
-        WGCNA::plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
-                                   main = plot_title,
-                                   hang = -0.1, addGuide = TRUE, dendroLabels = NULL,
-                                   cex.dendroLabels = label_font, ...)
-
+          }
     } else{
-        WGCNA::plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
-                                   main = plot_title,
-                                   hang = -0.1, addGuide = TRUE, dendroLabels = FALSE, ...)
+      cex.dendroLabels = 0.9
     }
 
+    WGCNA::plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
+                               main = plot_title,
+                               hang = -0.1, addGuide = TRUE, dendroLabels = FALSE, 
+                               cex.dendroLabels = cex.dendroLabels,
+                               ...)
+    
 }
 
 #' Plot the heatmap of samples
