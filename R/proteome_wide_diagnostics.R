@@ -14,7 +14,7 @@
 #' \code{TRUE}, ignored otherwise
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
-#' @param ... other parameters of `plotDendroAndColors` from `WGCNA` package
+#' @param \code{...} other parameters of `plotDendroAndColors` from `WGCNA` package
 #'
 #' @return No return
 #' @examples
@@ -95,7 +95,7 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' @param filename filepath where to save the image
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
-#' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
+#' @param \code{...} other parameters of \code{link[pheatmap]{pheatmap}}
 #' 
 #' @return object returned by \code{link[pheatmap]{pheatmap}}
 #' @export
