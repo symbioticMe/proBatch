@@ -5,7 +5,7 @@
 \title{Normalization brings the samples to the same scale}
 \usage{
 normalize_data(data_matrix, normalizeFunc = c("quantile",
-  "MedianCentering"), log_base = NULL)
+  "medianCentering"), log_base = NULL)
 }
 \arguments{
 \item{data_matrix}{raw data matrix (features in rows and samples
