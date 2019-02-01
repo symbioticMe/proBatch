@@ -2,13 +2,7 @@
 % Please edit documentation in R/correct_batch_effects.R
 \name{correct_with_ComBat}
 \alias{correct_with_ComBat}
-\title{Standardized input-output ComBat normalization ComBat allows users to adjust
-for batch effects in datasets where the batch covariate is known, using
-methodology described in Johnson et al. 2007. It uses either parametric or
-non-parametric empirical Bayes frameworks for adjusting data for batch
-effects.  Users are returned an expression matrix that has been corrected for
-batch effects. The input data are assumed to be cleaned and normalized before
-batch effect removal.}
+\title{Adjusts for discrete batch effects using ComBat}
 \usage{
 correct_with_ComBat(data_matrix, sample_annotation,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
@@ -39,7 +33,7 @@ Standardized input-output ComBat normalization ComBat allows users to adjust
 for batch effects in datasets where the batch covariate is known, using
 methodology described in Johnson et al. 2007. It uses either parametric or
 non-parametric empirical Bayes frameworks for adjusting data for batch
-effects.  Users are returned an expression matrix that has been corrected for
+effects. Users are returned an expression matrix that has been corrected for
 batch effects. The input data are assumed to be cleaned and normalized before
 batch effect removal.
 }
