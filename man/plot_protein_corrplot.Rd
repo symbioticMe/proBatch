@@ -6,8 +6,8 @@
 \usage{
 plot_protein_corrplot(data_matrix, protein_name, peptide_annotation,
   protein_col = "ProteinName", feature_id_col = "peptide_group_label",
-  flavor = "corrplot", filename = NULL, width = NA, height = NA,
-  unit = c("cm", "in", "mm"),
+  flavor = c("pheatmap", "corrplot"), filename = NULL, width = NA,
+  height = NA, unit = c("cm", "in", "mm"),
   plot_title = sprintf("Peptide correlation matrix of \%s protein",
   protein_name), ...)
 }
@@ -45,10 +45,10 @@ only pdf and png format is supported}
 
 \item{plot_title}{The title of the plot}
 
-\item{...}{parameters for the corrplot visualisation}
+\item{\code{...}}{parameters for the corrplot visualisation}
 }
 \value{
-Nothing
+\code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 }
 \description{
 Plots correlation plot of peptides from a single protein
