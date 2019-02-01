@@ -858,7 +858,7 @@ peptide_cor_batchCor + geom_hline(yintercept=0, linetype="dashed", color = "grey
 
 # SessionInfo
 
-```{r global_options, eval=TRUE}
+```{r sessionInfo, eval=TRUE}
 sessionInfo()
 ```
 
