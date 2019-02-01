@@ -154,7 +154,7 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
 #' protein annotations
 #' @param protein_name name of the protein as defined in \code{ProteinName}
 #' @param protein_col column where protein names are specified
-#' @param \code{...} additional arguments to \code{\link{plot_single_feature}} function
+#' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
@@ -226,7 +226,7 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
 #' @param peptide_annotation long format data with peptide ID and their corresponding 
 #' protein annotations
 #' @param protein_col column where protein names are specified
-#' @param \code{...} additional arguments to \code{\link{plot_single_feature}} function
+#' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{spike_ins} containing proteins and (optionally) 
@@ -296,7 +296,7 @@ plot_spike_in <- function(df_long, sample_annotation,
 #' @param peptide_annotation long format data with peptide ID and their corresponding 
 #' protein annotations
 #' @param protein_col column where protein names are specified
-#' @param \code{...} additional arguments to \code{\link{plot_single_feature}} function
+#' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{irt_pattern} containing proteins 
@@ -359,7 +359,7 @@ plot_iRT <- function(df_long, sample_annotation,
 #'   fitting by \code{normalize_custom_fit}
 #' @param fit_value_var column denoting intensity values, typically fitted to curve
 #' @param geom for the intensity \code{measure_col} profile
-#' @param \code{...} additional arguments to \code{\link{plot_single_feature}} function
+#' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return \code{ggplot}-class plot with minimally two facets (before and after
 #'   non-linear fit) with \code{measure_col} (Intensity) vs \code{order_col}
