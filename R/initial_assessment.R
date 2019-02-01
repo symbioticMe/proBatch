@@ -62,7 +62,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                       sample_id_col = colnames(data_matrix))
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
   
-  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_ave[[sample_id_col]])) == FALSE){
+  if(!setequal(unique(sample_annotation[[sample_id_col]]), unique(df_ave[[sample_id_col]]))){
     warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   df_ave = df_ave %>%
     merge(sample_annotation, by = sample_id_col)
@@ -164,7 +164,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                          theme = 'classic',
                          plot_title = NULL, order_per_facet = FALSE){
   
-  if(setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]])) == FALSE){
+  if(!setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]]))){
     warning('Sample IDs in sample annotation not consistent with samples in input data.')}
   
   if (!all(c(batch_col, sample_id_col) %in% names(df_long))){
