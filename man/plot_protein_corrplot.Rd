@@ -45,7 +45,7 @@ only pdf and png format is supported}
 
 \item{plot_title}{The title of the plot}
 
-\item{\code{...}}{parameters for the corrplot visualisation}
+\item{...}{parameters for the corrplot visualisation}
 }
 \value{
 \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
