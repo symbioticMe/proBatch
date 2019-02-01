@@ -4,9 +4,9 @@
 \alias{plot_corr_matrix}
 \title{Visualise correlation matrix}
 \usage{
-plot_corr_matrix(corr_matrix, flavor = "corrplot", filename = NULL,
-  width = NA, height = NA, unit = c("cm", "in", "mm"),
-  plot_title = NULL, ...)
+plot_corr_matrix(corr_matrix, flavor = c("pheatmap", "corrplot"),
+  filename = NULL, width = NA, height = NA, unit = c("cm", "in",
+  "mm"), plot_title = NULL, ...)
 }
 \arguments{
 \item{corr_matrix}{square correlation matrix}
@@ -28,12 +28,12 @@ pdf and png format is supported}
 \item{plot_title}{Title of the plot (usually, processing step + 
 representation level (fragments, transitions, proteins))}
 
-\item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
+\item{\code{...}}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
   help to corresponding functions}
 }
 \value{
-Nothing
+\code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 }
 \description{
 Plot correlation of selected  samples or peptides
