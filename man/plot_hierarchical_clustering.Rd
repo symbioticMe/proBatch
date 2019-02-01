@@ -30,7 +30,7 @@ original data}
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
-\item{\code{...}}{other parameters of `plotDendroAndColors` from `WGCNA` package}
+\item{...}{other parameters of `plotDendroAndColors` from `WGCNA` package}
 }
 \value{
 No return
