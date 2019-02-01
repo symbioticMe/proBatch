@@ -1,4 +1,9 @@
-#' Correction of batch effects in the data
+#' Median centering of the peptides (per batch median)
+#'
+#' @param df_long data frame where each row is a single feature in a single
+#'   sample. It minimally has a \code{sample_id_col}, a 
+#'   \code{feature_id_col} and a \code{measure_col}, but 
+#'   usually also an \code{m_score} (in OpenSWATH output result file)
 #' @param sample_annotation data frame with sample ID, technical (e.g. MS batches) 
 #'  and biological (e.g. Diet) covariates 
 #' @param sample_id_col name of the column in sample_annotation file, where the
@@ -11,16 +16,7 @@
 #' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
 #' used in the long format representation df_long. In the wide formatted 
 #' representation data_matrix this corresponds to the row names.
-#' @name correct_batch
-NULL
-
-#' Median centering of the peptides (per batch median)
-#'
-#' @rdname correct_batch
-#' @param df_long data frame where each row is a single feature in a single
-#'   sample. It minimally has a \code{sample_id_col}, a 
-#'   \code{feature_id_col} and a \code{measure_col}, but 
-#'   usually also an \code{m_score} (in OpenSWATH output result file)
+#' 
 #' @return `df_long`-size long format data with batch-effect corrected with
 #'   per-feature batch median centering in Intensity_normalized column
 #'   
@@ -218,10 +214,21 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' continuous sigal drift within batch and 
 #' discrete difference across batches. 
 #'
-#' @rdname correct_batch
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
+#' @param sample_annotation data frame with sample ID, technical (e.g. MS batches) 
+#'  and biological (e.g. Diet) covariates 
+#' @param sample_id_col name of the column in sample_annotation file, where the
+#'   filenames (colnames of the data matrix are found)
+#' @param measure_col if `df_long` is among the parameters, it is the column
+#'   with expression/abundance/intensity, otherwise, it is used internally for
+#'   consistency
+#' @param batch_col column in \code{sample_annotation} that should be 
+#'  used for batch comparison
+#' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
+#' used in the long format representation df_long. In the wide formatted 
+#' representation data_matrix this corresponds to the row names. 
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
 #' @param fitFunc function to use for the fit (currently 
