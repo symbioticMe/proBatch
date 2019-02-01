@@ -36,7 +36,7 @@ data for curve fitting}
 \item{pct_threshold}{the percentage threshold to filter 
 data for curve fitting}
 
-\item{\code{...}}{additional paramters to be passed to the fitting function}
+\item{...}{additional paramters to be passed to the fitting function}
 }
 \value{
 vector of fitted response values
