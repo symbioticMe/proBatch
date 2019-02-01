@@ -31,7 +31,7 @@ names.}
 
 \item{theme}{ggplot theme, by default `classic`. Can be easily overriden}
 
-\item{\code{...}}{parameters for the \code{ggplot} visualisation}
+\item{...}{parameters for the \code{ggplot} visualisation}
 }
 \value{
 \code{ggplot} type object with violin 
