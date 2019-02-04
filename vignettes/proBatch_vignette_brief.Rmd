@@ -53,7 +53,7 @@ Thus, the presence and severity of batch effects should be assessed, and,
 if necessary, corrected. The pipeline, summarizing recommended batch 
 correction workflow, is shown in Fig.1.
 
-```{r batch_workflow, include = TRUE, fig.align = "center", echo=FALSE, fig.cap="proBatch in batch correction workflow", out.width = '40%'}
+```{r batch_workflow, include = TRUE, fig.align = "center", echo=FALSE, fig.cap="Fig 1. proBatch in batch correction workflow", out.width = '40%'}
 knitr::include_graphics("Batch_effects_workflow_staircase.png")
 ```
 
