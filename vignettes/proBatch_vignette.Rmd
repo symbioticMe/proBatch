@@ -1,8 +1,7 @@
 ---
 title: "proBatch"
-author:
-  - name: "Jelena Čuklina, Chloe H. Lee, Patrick Pedrioli and Ruedi Aebersold"
-    affiliation: Institute of Molecular Systems Biology, Department of Biology, ETH Zurich, Switzerland
+author: "Jelena Čuklina, Chloe H. Lee, Patrick Pedrioli and Ruedi Aebersold"
+affiliation: Institute of Molecular Systems Biology, Department of Biology, ETH Zurich, Switzerland
 date: "`r Sys.Date()`"
 output: pdf_document
 #output: html_document
@@ -678,7 +677,7 @@ Feature-level median centering is the simplest approach for batch effects correc
 However, if the variance is different between batches, other approaches need to be used.
 ```{r median_batch, fig.show='hold', fig.width=3, fig.height=2.4}
 peptide_median_df <- center_peptide_batch_medians(loess_fit_df, example_sample_annotation)
-plot_single_feature(pep_name = "46213_NVGVSFYADKPEVTQEQK_2", df_long = peptide_median_df, 
+plot_single_feature(pep_name = "10231_QDVDVWLWQQEGSSK_2", df_long = peptide_median_df, 
             example_sample_annotation, color_by_col = NULL, measure_col = 'Intensity_normalized',
             plot_title = "Feature-level Median Centered")
 ```
@@ -695,12 +694,12 @@ and make data comparable across batches.
 comBat_matrix <- correct_with_ComBat(loess_fit_matrix, example_sample_annotation)
 ```
 
-To illustrate the correction we use the "46213_NVGVSFYADKPEVTQEQK_2" spike-in peptide. 
+To illustrate the correction we use the "10231_QDVDVWLWQQEGSSK_2" spike-in peptide. 
 ```{r combat_result, fig.show='hold',  fig.width=3, fig.height=2.4}
 combat_df <- matrix_to_long(comBat_matrix)
-plot_single_feature (pep_name = "46213_NVGVSFYADKPEVTQEQK_2", loess_fit_df, 
+plot_single_feature (pep_name = "10231_QDVDVWLWQQEGSSK_2", loess_fit_df, 
           example_sample_annotation, plot_title = "Loess Fitted", color_by_col = NULL)
-plot_single_feature (pep_name = "46213_NVGVSFYADKPEVTQEQK_2", combat_df, 
+plot_single_feature (pep_name = "10231_QDVDVWLWQQEGSSK_2", combat_df, 
           example_sample_annotation, plot_title = "ComBat corrected", color_by_col = NULL)
 ```
 
@@ -838,7 +837,9 @@ increases while that of different proteins stays the same.
 **NB:** For a data matrix containing several thousands of peptides, calculation of peptide correlation 
 is a computationally demanding procedure. It can easily take several hours. Therefore, it is generally 
 recommended to run this analysis as a stand-alone script on a powerful machine.
-```{r correlation_of_peptides, fig.show='hold',fig.width=3, fig.height=2.5}
+
+The `plot_peptide_corr_distribution()` function plots correlation distribution between peptides of the same protein. However, an improvement of peptide correlation may not be clearly exhibited for a reduced dataset. 
+```{r correlation_of_peptides, eval = FALSE}
 peptide_cor_norm <- plot_peptide_corr_distribution(quantile_normalized_matrix, 
           generated_peptide_annotation, protein_col = 'Gene', plot_title = 'Quantile normalized')
 peptide_cor_norm + geom_hline(yintercept=0, linetype="dashed", color = "grey")
@@ -846,6 +847,14 @@ peptide_cor_norm + geom_hline(yintercept=0, linetype="dashed", color = "grey")
 peptide_cor_batchCor <- plot_peptide_corr_distribution(batch_corrected_matrix, 
           generated_peptide_annotation, protein_col = 'Gene', plot_title = 'Batch corrected')
 peptide_cor_batchCor + geom_hline(yintercept=0, linetype="dashed", color = "grey")
+```
+
+\pagebreak
+
+Here shows peptide correlation distribution generated from a complete dataset of the BXD mouse aging
+study:
+```{r, include = TRUE, fig.align = "center", echo=FALSE, fig.height=1.5, fig.width=4}
+knitr::include_graphics("peptide_cor_distribution.png")
 ```
 
 # SessionInfo
