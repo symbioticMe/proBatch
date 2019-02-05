@@ -15,14 +15,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
   %\usepackage[utf8]{inputenc}
 abstract: |
-  This vignette describes how to apply different functions from the `proBatch` package to diagnose and correct for batch effects. Most of the functions are applicable any "omic" data, however, the package has a number of functions, designed specifically for mass spectrometry-based proteomics, and has been tested on SWATH data.
+  This vignette describes how to apply the `proBatch` package to diagnose and correct for batch effects. The package is applicable to any "omic" data, although some functions are specific for mass spectrometry-based proteomics. We illustrate the application with SWATH-MS data.
   
-  The `proBatch` package provides a complete functionality for batch correction workflow: to prepare the data for analysis, diagnose and correct batch effects and finally, to evaluate the correction with quality control metrics. 
-  
-  The `proBatch` package was programmed and intended for use by researchers without extensive programming skills, but with basic R knowledge. 
-  
-  Note that this vignette includes a very brief explanation about the package. For details, please refer to detailed vignette in pdf. 
-
+  This vignette provides a quick overview of the package. For more details, refer to the extended vignette. 
 ---
 
 ```{r global_options, include=FALSE}
@@ -42,33 +37,37 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction: Batch effects analysis in large-scale data
-Recent advances in mass-spectrometry enabled fast and near-exhaustive 
-identification and quantification of proteins in complex biological samples [1],
-allowing for the profiling of large-scale datasets. 
-Obtaining a sufficiently large dataset is, however, introduces systematic technical 
-variations known as batch effects.
-
-Batch effects can alter or obscure the biological signal in the data [2, 3]. 
-Thus, the presence and severity of batch effects should be assessed, and,
-if necessary, corrected. The pipeline, summarizing recommended batch 
-correction workflow, is shown in Fig.1.
+Batch effects alter or even obscure the biological signal in the data. 
+Assessment and correction of batch effects is a critical step of large-scale 
+data processing. This procedure aims to ensure all measumerments are comparable for downstream analysis. 
+The procedure can be represented as the workflow shown in Fig 1. 
 
 ```{r batch_workflow, include = TRUE, fig.align = "center", echo=FALSE, fig.cap="Fig 1. proBatch in batch correction workflow", out.width = '40%'}
 knitr::include_graphics("Batch_effects_workflow_staircase.png")
 ```
 
-We recommend users to follow this batch correction workflow to ensure all 
-measurements are comparable for downstream analysis. We provide step-by-step 
-illustrations to implement this workflow in the next sections.
+We illustrate each step of the workflow in the next sections. Here is the gallery of plots to be demonstrated in this vignette. 
+
+```{r gallery, include = TRUE, fig.align = "center", echo=FALSE, out.width = '100%'}
+knitr::include_graphics("gallery_.png")
+```
+
+One highlight of `proBatch` is the application of uniform color schemes to
+different diagnostic plots. For color annotation, you first assign colors to biological and
+technical covariates with `sample_annotation_to_colors()`. Using this function
+columns are assigned to factoric, non-factoric or numeric types to specify
+colors into qualitative or sequential color scales.
 
 # Preparing the data for analysis
 
-## Input data formats
-To analyze an experiment for batch effects, three tables need to be loaded into environment:
+## Input data format
+To analyze an experiment for batch effects, three data tables are typically required: 
 
-The package typically requires three datasets: 1) measurement (data matrix), 
-2) sample annotation, and 3) feature annotation (optional) tables. If you are familiar 
-with the `Biobase` package, these correspond to 1) `assayData`, 2) joined `phenoData` and 
+1. "omics"data (data matrix), futher referred to as "measurement data"
+2. sample annotation
+3. feature annotation (optional) tables. 
+
+If you are familiar with the `Biobase` package, these correspond to 1) `assayData`, 2) joined `phenoData` and 
 `protocolData`, and 3)`featureData`.
 
 **1) Measurement table**
@@ -112,12 +111,8 @@ and name of corresponding protein (in this vignette, we use `Gene` name).
 
 ## Example dataset
 
-The `proBatch` package can be applied to any dataset, for which an
-intensity matrix and a sample annotation tables are available. However,
-the package was primarily designed with proteomic data in mind, and
-thoroughly tested on SWATH data. Thus, as the example dataset, we include
-a reduced SWATH-MS measurement file, generated from a BXD mouse aging
-study. Refer to detailed vignette for description about the dataset. 
+As the example dataset, we include a SWATH-MS proteomic measurement data, obtained from a BXD mouse aging
+study. Refer to extended vignette for the detailed description of the dataset. 
 
 The example SWATH data and annotation files can be loaded from the package with the function `data()`. 	
 ```{r load_data, fig.show='hold'}
@@ -139,31 +134,32 @@ sample and peptide annotation. These include `date_to_sample_order()`,
 `create_peptide_annotation()`, `long_to_matrix()`, `log_transform()`and etc. 
 Please refer to detailed vignette for examples. 
 
-## Defining the color scheme
-One highlight of `proBatch` is the ability to apply uniform color schemes to
-different diagnostic plots. For color annotation, you first assign colors to biological and
-technical covariates with `sample_annotation_to_colors()`. Using this function
-columns are assigned to factoric, non-factoric or numeric types to specify
-colors into qualitative or sequential color scales.
-
-```{r, fig.show='hold'}
-color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
-       factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
-       not_factor_columns = 'DateTime',
-       numeric_columns = c('order'))
-color_list = color_scheme$list_of_colors
-```
-
 # Step-by-step workflow
 Now we provide step-by-step workflow for dataset containing both continuous and discrete batch effects. 
 
-## Initial assessment of the raw data matrix 
+## Initial assessment of the uncorrected data  
 Before any correction, it is informative to set the baseline of the data quality 
 by examining global quantitative patterns in the raw data matrix.
 Commonly, batch effects manifest as batch-specific intensity distribution changes.
 
-### Plotting the sample mean 
-The `plot_sample_mean()` function illustrates global average vs. sample running order. This can be helpful to visualize the global quantitative pattern and to identify discrepancies within or between batches. 
+### Inspecting boxplots {#boxplot}
+Plotting boxplots demonstrate the global distribution of data samples. 
+```{r plot_boxplots, fig.show='hold', fig.width=8, fig.height=4}
+batch_col = 'MS_batch'
+
+color_scheme <- sample_annotation_to_colors(example_sample_annotation, 
+       factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
+       not_factor_columns = 'DateTime',
+       numeric_columns = c('order'))
+color_list = color_scheme$list_of_colors
+
+log_transformed_long <- matrix_to_long(log_transformed_matrix)
+plot_boxplot(log_transformed_long, example_sample_annotation, 
+             batch_col = batch_col, color_scheme = color_list[[batch_col]])
+```
+
+### Plotting the sample mean vs. running order {#meanplot}
+In mass spectrometry, order-associated intensity drifts are common. It is easier to inspect them by plotting sample mean:
 ```{r plot_mean, fig.show='hold', fig.width=5, fig.height=2}
 batch_col = 'MS_batch'
 plot_sample_mean(log_transformed_matrix, example_sample_annotation, order_col = 'order', 
@@ -171,96 +167,43 @@ plot_sample_mean(log_transformed_matrix, example_sample_annotation, order_col = 
                  color_scheme = color_list[[batch_col]])
 ```
 
-We can clearly see down-sloping trends in the BXD aging dataset. 
+In this dataset, we see downward trends in the example dataset. 
 
-### Plotting boxplots
-Alternatively, `plot_boxplots()` captures the global distribution vs. the sample running order.
-```{r plot_boxplots, fig.show='hold', fig.width=8, fig.height=4}
-log_transformed_long <- matrix_to_long(log_transformed_matrix)
-batch_col = 'MS_batch'
-plot_boxplot(log_transformed_long, example_sample_annotation, 
-             batch_col = batch_col, color_scheme = color_list[[batch_col]])
-```
-
-In many cases, global quantitative properties such as sample medians
-or standard deviations won’t match. The initial assessment via mean
-plots or boxplots can capture such information and hint at which
-normalization method is better suitable. If the distributions are
-comparable, methods as simple as global median centering can fix the
-signal shift, while quantile normalization can help in case of
-divergent distributions.
+In many cases, global quantitative properties such as sample medians or standard deviations won’t match.
+The initial assessment via boxplots or mean plots captures discrepancies between global sample patterns
+such as different sample medians or standard deviations. This guides the choice of normalization method. 
+For example, global median centering equalizes sample medians but quantile normalization also 
+equalizes standard deviations. 
 
 ## Normalization
 
-In large-scale experiments, the total intensity of the samples is
-likely to be different due to a number of reasons, such as different
-amount of sample loaded or fluctuations in measurement instrument
-sensitivity. To make samples comparable, they need to be scaled. This
+To make samples comparable, they need to be brought to the same scale. This
 processed is called normalization.  In `proBatch`, two normalization
-approaches are used: median centering and quantile normalization. The
+approaches are implemented: median centering and quantile normalization. The
 normalization function `normalize_data()` by default takes
 log-transformed data, and if needed, log-transformation can be done
 on-the-fly by specifying `log_base = 2` for log2-transformation.
-
-Quantile normalization sets different distributions of individual
-samples to the same quantiles. This method is computationally effective and 
-has simple assumption that the majority of features (genes, proteins) is 
-constant among the samples, thus also the distribution in principle are identical.
 
 ```{r quantile_norm, fig.show='hold'}
 quantile_normalized_matrix = normalize_data(log_transformed_matrix, 
                                             normalizeFunc = "quantile")
 ```
 
-After quantile or median normalization, you can easily check if the
+After normalization, user can easily check if the
 global pattern improved by generating mean or boxplots and comparing
-them side by side. Here are the mean plots before and after
-normalization of the log transformed dataset.
+them. Here are the mean plots after normalization of the log transformed dataset.
 ```{r plot_mean_normalized, fig.show='hold', fig.width=5, fig.height=2}
 plot_sample_mean(quantile_normalized_matrix, example_sample_annotation, 
                  color_by_batch = TRUE, ylimits = c(12, 16), 
                  color_scheme = color_list[[batch_col]])
 ```
 
-\pagebreak
-
 ## Diagnostics of batch effects in normalized data 
-Now is the time to diagnose for batch effects and evaluate to what
-extent technical variance still exists in the normalized data
-matrix. The positive effect of normalization is sometimes not
-sufficient to control for peptide and protein-specific biases
-associated with a certain batch source. These biases can be identified
-via diagnostic plots. Here, we describe our essential toolbox of batch
-effect diagnostic approaches. Note that sample annotation and/or
-peptide annotation are necessary for the implementation of these
-plots.
-
-### Hierarchical clustering
-Hierarchical clustering is an algorithm that groups similar samples
-into a tree-like structure called dendrogram. Our package provides 
-`plot_sample_clustering()` and `plot_heatmap()`
-to plot the dendrogram by itself or with a heatmap. You can easily
-color annotations on the leaves of the dendrograms or heatmaps to
-identify what is the driving force of the clustering.
-
-Once your color annotation is ready, for the specific covariates of
-interest, you can subset the color dataset and feed it into the
-clustering functions.
-```{r plot_hierarchical, fig.show='hold', fig.width=8, fig.height=4}
-color_annotation <- color_scheme$color_df
-selected_annotations <- c("MS_batch",  "digestion_batch", "Diet")
-
-#select only a subset of samples for plotting
-color_annotation <- color_annotation %>% select(one_of(selected_annotations))
-
-#Plot clustering between samples 
-plot_hierarchical_clustering(quantile_normalized_matrix, color_annotation,  
-                             distance = "euclidean", agglomeration = 'complete',
-                             label_samples = FALSE)
-```
-
-From the clustering analysis, we can clearly see that the driving
-force behind the sample clustering is the MS batch.
+After normalization, batch effects can still be present in the data. 
+This has to be diagnosed with methods such as PCA or hiearchical clustering (with or without heatmap). 
+The contribution of each technical and biological factor can be quantified and illustrated with PVCA 
+(principal variance component analysis). Additionally, it is useful to diagnose batch effects on feature level
+for example, by plotting several peptides of the same protein. 
 
 ### Principal component analysis (PCA)
 PCA is a technique that identifies the leading directions of
@@ -270,11 +213,9 @@ technique is particularly convenient to assess replicate similarity.
 
 You can identify the covariate leading the direction of variations by
 coloring potential candidates.
-```{r plot_PCA, fig.show='hold',  fig.width=4, fig.height=2.7}
+```{r plot_PCA, fig.show='hold',  fig.width=3.5, fig.height=2.5}
 plot_PCA(quantile_normalized_matrix, example_sample_annotation, color_by = 'MS_batch', 
               plot_title = "MS batch", colors_for_factor = color_list[[batch_col]])
-plot_PCA(quantile_normalized_matrix, example_sample_annotation, color_by = "digestion_batch", 
-         plot_title = "Digestion batch", colors_for_factor = color_list[["digestion_batch"]])
 plot_PCA(quantile_normalized_matrix, example_sample_annotation, color_by = "Diet",  
          plot_title = "Diet", colors_for_factor = color_list[["Diet"]])
 ```
@@ -311,14 +252,14 @@ while technical variance should be kept at minimum^[Application of
 hierarchical clustering, PCA and PVCA in their classical
 implementation is not possible if missing values are present in the
 matrix. It has been noticed previously that missing values can be
-associated with technical bias [8], and most commonly, it is
-suggested that missing values need to be imputed [8-9]. However, we
+associated with technical bias [1], and most commonly, it is
+suggested that missing values need to be imputed [1-2]. However, we
 would like to suggest to use missing value imputation with extreme
 caution. First of all, missing value imputation alters the sample
 proximity. Additionally, imputed missing values, which can be obtained
 for SWATH data, can alter the correction of the batches.].
 
-### Peptide-level diagnostics and spike-ins
+### Peptide-level diagnostics and spike-ins {#feature_trend}
 Feature-level diagnostics are very informative for batch effect
 correction. To assess the bias in the data, one can choose a feature
 (peptide, protein, gene), the quantitative behaviour of which is
@@ -328,19 +269,18 @@ In our package, `plot_peptides_of_one_protein()` allows
 plotting peptides of interest e.g. from biologically well understood
 protein. If spike-in proteins or peptides have been added to the
 mixture, one can use the `plot_spike_ins()` function instead. In most
-DIA datasets iRT peptides [10] are added in controlled quantities and
+DIA datasets iRT peptides are added in controlled quantities and
 can be visualized with the `plot_iRT()` function. In mass-spectrometry, 
 the trends associated with order can be assessed for a few representative peptides, 
 thus the `order` column is also important for this diagnostics.
 
-```{r plot_spikeIn, fig.show='hold', fig.align = "center", out.width = '80%'}
+```{r plot_spikeIn, fig.show='hold', fig.align = "center", fig.width=7, fig.height=2.7}
 quantile_normalized_long <- matrix_to_long(quantile_normalized_matrix, example_sample_annotation)
-plot_spike_in(quantile_normalized_long, example_sample_annotation, 
-              peptide_annotation = example_peptide_annotation,
-              protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
-              plot_title = 'Spike-in BOVINE protein peptides',
-              color_by_batch = TRUE, color_scheme = color_list[[batch_col]])
 
+BOVINE_A1ag <- c("1724_DAC(UniMod:4)GPLEK_2", "46215_NVGVSFYADKPEVTQEQKK_4")
+plot_single_feature(pep_name = BOVINE_A1ag, quantile_normalized_long, example_sample_annotation,
+                    color_by_batch = TRUE, plot_title = "Spike-in BOVINE protein peptides",
+                    color_scheme = color_list[[batch_col]])
 ```
 
 It is clear that while the pre-determined quantities of spike-ins or
@@ -350,70 +290,48 @@ either continuous or discrete batch effects exist in a dataset, by one
 or more of these methods, proceed by selecting a batch correction
 method.
 
-## Correction of batch effects
-Depending on the type of batch effects, different batch correction
-methods should be implemented.
+Note that details of other diagnostic plots can be found in extended vignette. 
 
-For continuous signal drifts, we provide `adjust_batch_trend()` based on 
-LOESS regression fitting. For discrete batch effects, feature median-centering
-can be applied, or, to use across-feature information in a Bayesian
-framework, the ComBat approach can be used.  
+## Correction of batch effects
+Different batch correction methods should be applied depending on the type of batch effects: 
+continuous (see fig [meanplot](#meanplot) and [feature-level plots](#feature_trend)) or discrete [boxplot](#boxplot). 
+Most of the batch effect correcito methods adjusts for feature-level biases [4]. 
+
+For continuous signal drifts, common for mass spectrometry data, we 
+introduce a new correction method `adjust_batch_trend()` based on LOESS regression. 
+
+For discrete batch effects, we implemented two methods:
+1. batch median centering of each feature (`center_peptide_batch_medians`)
+2. ComBat (`correct_with_ComBat`)
 
 ### Continuous drift correction 
-In this package, we suggest a novel procedure to correct for
-MS signal drift. We developed a procedure based on nonlinear LOESS
-fitting. For each peptide and each batch, a non-linear trend is fitted
-to the normalized data and this trend is subtracted to correct for
-within-batch variation. 
-
-One important parameter in LOESS fitting is span, which determines the
-degree of smoothing. The LOESS span ranges from 0 to 1: the greater
-the value of span, the smoother is the fitted curve. Since we want the
-curve to reflect signal drift, we want to avoid overfitting but be
-sensitive to fit the trend accurately. Currently, we suggest to
-evaluate several peptides to determine the best smoothing degree for a
-given dataset.
+Signal drift can be different for different peptides (refer to [feature-level plots](#feature_trend)). 
+This is why for each feature, we fit a non-linear trend based on LOESS regression.
 
 ```{r loess_70, fig.show='hold', fig.width=5, fig.height=2.4}
 loess_fit <- adjust_batch_trend(quantile_normalized_matrix, example_sample_annotation, span = 0.7)
 loess_fit_matrix <- loess_fit$data_matrix
+```
 
+LOESS fit depends on the parameter called span, which is dataset specific. 
+For more detail on span choice, refer to extended vignette.
+
+To evaluate the goodness of fit, we plot fitting curve. 
+```{r loess_fitting_curve, fig.show='hold', fig.width=5, fig.height=2.4}
 plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
             df_long = quantile_normalized_long, example_sample_annotation, 
             color_by_batch = TRUE, color_scheme = color_list[[batch_col]],
             fit_df = loess_fit$fit_df, plot_title = "Curve fitting with Span = 70%")
 ```
 
-Note that the resulting data are not batch-free as within-batch means and variances are
-batch-dependent. However, now the batches are discrete and thus can be
-corrected using discrete methods such as median-centering or ComBat.
+Note that the trend is corrected but the means are still batch-dependent. However, the batch effects are discrete now and thus can be corrected using converntional methods for batch correction such as median-centering or ComBat.
 
-### Discrete batch correction: combat or peptide-level median centering 
-Once the data are normalized and corrected for continuous drift, only
-discrete batch effects is left to be corrected.
+### Discrete batch effects correction: ComBat or feature-level median centering 
 
-Currently, both batch correction procedures accept long format of the data:
-```{r loess_to_long}
-loess_fit_df <- matrix_to_long(loess_fit_matrix)
-```
-
-#### Feature-level median centering 
-Feature-level median centering is the simplest approach for batch effects correction. 
-However, if the variance is different between batches, other approaches need to be used.
-```{r median_batch, fig.show='hold', fig.width=4.2, fig.height=2.8}
-peptide_median_df <- center_peptide_batch_medians(loess_fit_df, example_sample_annotation)
-plot_single_feature(pep_name = "46213_NVGVSFYADKPEVTQEQK_2", df_long = loess_fit_df, 
-            example_sample_annotation, color_by_col = NULL, plot_title = "Feature-level Loess Fitted")
-plot_single_feature(pep_name = "46213_NVGVSFYADKPEVTQEQK_2", df_long = peptide_median_df, 
-            example_sample_annotation, color_by_col = NULL, measure_col = 'Intensity_normalized',
-            plot_title = "Feature-level Median Centered")
-```
-
-#### ComBat
 ComBat is well-suited for batches with distinct distributions, but
 restricted to peptides that don't have missing batch
 measurements. ComBat, uses parametric and non-parametric empirical
-Bayes framework for adjusting data for batch effects [11]. The
+Bayes framework for adjusting data for batch effects [3]. The
 function `correct_with_ComBat()` can incorporate several covariates
 and make data comparable across batches.
 
@@ -421,18 +339,20 @@ and make data comparable across batches.
 comBat_matrix <- correct_with_ComBat(loess_fit_matrix, example_sample_annotation)
 ```
 
-To illustrate the correction we use the "46213_NVGVSFYADKPEVTQEQK_2" spike-in peptide. 
-```{r combat_result, fig.show='hold',  fig.width=4.2, fig.height=2.8}
+To illustrate the correction we use the "1724_DAC(UniMod:4)GPLEK_2" spike-in peptide. 
+```{r combat_result, fig.show='hold',  fig.width=3.5, fig.height=2.5}
+loess_fit_df <- matrix_to_long(loess_fit_matrix)
 combat_df <- matrix_to_long(comBat_matrix)
-plot_single_feature (pep_name = "46213_NVGVSFYADKPEVTQEQK_2", loess_fit_df, 
+plot_single_feature (pep_name = "1724_DAC(UniMod:4)GPLEK_2", loess_fit_df, 
           example_sample_annotation, plot_title = "Loess Fitted", color_by_col = NULL)
-plot_single_feature (pep_name = "46213_NVGVSFYADKPEVTQEQK_2", combat_df, 
+plot_single_feature (pep_name = "1724_DAC(UniMod:4)GPLEK_2", combat_df, 
           example_sample_annotation, plot_title = "ComBat corrected", color_by_col = NULL)
 ```
 
 ComBat fixed the discrete batch effects and also made the distributions
 between batches similar to one another.
 
+Refer to extended vignette for feature-level median centering. 
 
 ###	Correct batch effects: universal function 
 We provide a convenient all-in-one function for batch correction. The
@@ -451,12 +371,12 @@ batch_corrected_matrix <- correct_batch_effects(data_matrix = quantile_normalize
 \pagebreak
 
 ## Quality control on batch-corrected data matrix 
-In most cases, the batch effect correction method is evaluated by its
+To ensure that batch effects were properly adjusted, it is important to control the quality of normalization and correction. 
+
+In most cases, the batch effect adjustment is evaluated by its
 ability to remove technical confounding, visible on hierarchical
-clustering or PCA. However, it is rarely shown whether the biological
-signal is not destroyed, or, better even, improved. Here, We provide quality 
-control metrics based on sample and peptide correlations to illustrate 
-higher correlation among biological replicates and peptides of the same protein. 
+clustering or PCA. However, it does not show whether the data quality improved. In `proBatch`, We introduces quality 
+control metrics based on sample and peptide correlations. It is anticipated that batch effects adjustment improves replicated sample correlation and correlation of peptides of the same protein.
 
 ### Heatmap of selected replicate samples
 In this study, 10 samples were run in the same order before and after
@@ -514,34 +434,8 @@ of ten higher than the replicates. However, after the correction, the
 correlation between replicates becomes higher than the correlation
 between non-related samples regardless of the batch.
 
-### Correlation distribution of samples
-For example, in the mice aging experiment, biological replicates,
-`ET1506` and `ET1524`, were injected every 30-40 MS runs. The
-correlation between these biological replicates should improve after
-normalization and batch correction.
+We also provide `plot_sample_corr_distribution()` function to plot correlation distribution between biological replicates and non-biological replicates in the same or different batches. Refer to extended vignette for details. 
 
-The `plot_sample_corr_distribution()` function plots correlation
-distribution between biological replicates and non-replicates in the
-same or different batches by `plot_param =
-'batch_replicate'`. Alternatively, you can compute the correlation
-between different batches by `plot_param = 'batches'`.
-
-```{r corr_samples_distrib, fig.show='hold', fig.width=4.5, fig.height=4}
-sample_cor_norm <- plot_sample_corr_distribution(quantile_normalized_matrix,
-                                                 example_sample_annotation, 
-                                                 batch_col = 'MS_batch', 
-                                                 biospecimen_id_col = "EarTag", 
-                                                 plot_title = 'Quantile normalized',
-                                                 plot_param = 'batch_replicate')
-sample_cor_norm + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ylim(0.7,1)
-
-sample_cor_batchCor <- plot_sample_corr_distribution(batch_corrected_matrix,
-                                                     example_sample_annotation, 
-                                                     batch_col = 'MS_batch', 
-                                                     plot_title = 'Batch corrected',
-                                                     plot_param = 'batch_replicate')
-sample_cor_batchCor + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ylim(0.7, 1)
-```
 
 ### Correlation of peptide distributions within and between proteins 
 Peptides of the same protein are likely to correlate. Therefore, we
@@ -552,14 +446,12 @@ increases while that of different proteins stays the same.
 **NB:** For a data matrix containing several thousands of peptides, calculation of peptide correlation 
 is a computationally demanding procedure. It can easily take several hours. Therefore, it is generally 
 recommended to run this analysis as a stand-alone script on a powerful machine.
-```{r correlation_of_peptides, fig.show='hold',fig.width=4, fig.height=3}
-peptide_cor_norm <- plot_peptide_corr_distribution(quantile_normalized_matrix, 
-          example_peptide_annotation, protein_col = 'Gene', plot_title = 'Quantile normalized')
-peptide_cor_norm + geom_hline(yintercept=0, linetype="dashed", color = "grey")
 
-peptide_cor_batchCor <- plot_peptide_corr_distribution(batch_corrected_matrix, 
-          example_peptide_annotation, protein_col = 'Gene', plot_title = 'Batch corrected')
-peptide_cor_batchCor + geom_hline(yintercept=0, linetype="dashed", color = "grey")
+Here shows peptide correlation distribution generated from a complete dataset of the BXD mouse aging
+study:
+
+```{r, include = TRUE, fig.align = "center", echo=FALSE, out.width = '60%'}
+knitr::include_graphics("peptide_cor_distribution.png")
 ```
 
 # SessionInfo
@@ -579,24 +471,10 @@ citation('proBatch')
 \pagebreak
 
 # References
-[1] O. T. Schubert, H. L. Röst, B. C. Collins, G.Rosenberger, and R. Aebersold. «Quantitative proteomics: challenges and opportunities in basic and applied research». Nature Protocols 12:7 (2017), pp. 1289–1294.
+[1] Y. V. Karpievitch, A. R. Dabney, and R. D. Smith. «Normalization and missing value imputation for label-free LC-MS analysis». BMC Bioinformatics 13:Suppl 16 (2012), S5.
 
-[2] E. G. Williams, Y. Wu, P. Jha et al. «Systems proteomics of liver mitochondria function». Science 352:6291 (2016), aad0189.
+[2] S. Tyanova, T. Temu, P. Sinitcyn et al. «The Perseus computational platform for comprehensive analysis of (prote)omics data». Nat Methods 13:9 (2016), pp. 731–740.
 
-[3] Y. Liu, A. Buil, B. C. Collins et al. «Quantitative variability of 342 plasma proteins in a human twin population». Molecular Systems Biology 11:2 (2015), pp. 786–786.
+[3] A. W. B. Johnston, Y. Li, and L. Ogilvie. «Metagenomic marine nitrogen fixation–feast or famine?» Trends in microbiology 13:9 (2005), pp. 416–20.
 
-[4] H. L. Rost, G. Rosenberger, P. Navarro et al. «OpenSWATH enables automated, targeted analysis of data-independent acquisition MS data.» Nature biotechnology 32:3 (2014), pp. 219–23.
-
-[5] P. G. Pedrioli, «Trans-Proteomic Pipeline: A Pipeline for Proteomic Analysis.»  Methods in Molecular Biology Proteome Bioinformatics, May 2009, pp. 213–238.
-
-[6] G. Rosenberger et al.  «Statistical control of peptide and protein error rates in large-scale targeted data-independent acquisition analysis.» Nature Methods 14:9 (2017), pp. 921–927.
-
-[7] P. R. Bushel. pvca: Principal Variance Component Analysis (PVCA). Package version 1.18.0. 2013.
-
-[8] Y. V. Karpievitch, A. R. Dabney, and R. D. Smith. «Normalization and missing value imputation for label-free LC-MS analysis». BMC Bioinformatics 13:Suppl 16 (2012), S5.
-
-[9] S. Tyanova, T. Temu, P. Sinitcyn et al. «The Perseus computational platform for comprehensive analysis of (prote)omics data». Nat Methods 13:9 (2016), pp. 731–740.
-
-[10] C. Escher, L. Reiter, B. Maclean et al. «Using iRT, a normalized retention time for more targeted measurement of peptides». Proteomics 12:8 (2012), pp. 1111–1121.
-
-[11] A. W. B. Johnston, Y. Li, and L. Ogilvie. «Metagenomic marine nitrogen fixation–feast or famine?» Trends in microbiology 13:9 (2005), pp. 416–20.
+[4] J. T. Leek, R. B. Scharpf, H. C. H. C. Bravo et al. «Tackling the widespread and critical impact of batch effects in high-throughput data». Nat Rev Genet 11:10 (2010), pp. 733–739.
