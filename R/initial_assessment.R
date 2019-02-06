@@ -23,8 +23,10 @@
 #'   color?
 #' @param color_scheme named vector, names corresponding to unique batch values
 #'   as specified in `sample_annotation`
-#' @param facet_col recommended if more than one batch covariate is present.
-#'   Faceting is most suited to examine instruments separately
+#' @param facet_col column  in `sample_annotation` with a batch factor to separate 
+#' plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
+#' MS experiments (where each instrument has its own order-associated effects) 
+#' or simultaneous examination of two batch factors (e.g. preparation day and measurement day)
 #' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
 #'   examples)
 #' @param plot_title Title of the plot (usually, processing step + representation
@@ -123,7 +125,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
         group_by(!!sym(facet_col)) %>%
         mutate(tipping.points = cumsum(batch_size))%>%
         mutate(tipping.poings = tipping.points+.5)
-      gg = gg + geom_vline(data = tipping.points, aes(xintercept = tipping.poings),
+      gg = gg + geom_vline(data = tipping.points, aes(xintercept = tipping.points),
                            color = vline_color, linetype = 'dashed')
     } else {
       batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
