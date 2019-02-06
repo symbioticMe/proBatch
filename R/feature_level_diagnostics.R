@@ -8,7 +8,10 @@
 #' @param pep_name name of the peptide for diagnostic profiling
 #' @param geom whether to show the feature as points and/or connect by lines
 #' @param color_by_batch (logical) whether to color points by batch
-#' @param facet_by_batch (logical) whether to plot each batch in its own facet
+#' @param facet_col column  in `sample_annotation` with a batch factor to separate 
+#' plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
+#' MS experiments (where each instrument has its own order-associated effects) 
+#' or simultaneous examination of two batch factors (e.g. preparation day and measurement day)
 #' @param color_by_col column to color by certain value denoted 
 #' by \code{color_by_value}
 #' @param color_by_value value in \code{color_by_col} to color 
@@ -39,7 +42,7 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
                                  feature_id_col = 'peptide_group_label',
                                  geom = c('point', 'line'),
                                  color_by_batch = FALSE, color_scheme = 'brewer',
-                                 facet_by_batch = FALSE,
+                                 facet_col = NULL,
                                  color_by_col = NULL, color_by_value = NULL,
                                  plot_title = NULL,
                                  vline_color ='red',
@@ -111,12 +114,23 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
                          color = vline_color, linetype = 'dashed')
   } 
   
-  if(facet_by_batch){
+  if(!is.null(facet_col)){
+    order_vars <- c(facet_col, order_col)
+    batch_vars = c(facet_col, batch_col)
     if (length(pep_name) > 1){
       gg = gg + facet_grid(reformulate(batch_col, pep_name), scales = 'free_y')
     } else {
       gg = gg  + facet_wrap(as.formula(paste("~", batch_col)), scales = 'free_y')
     }
+    
+
+    tipping.points = df_ave %>%
+      arrange(!!!syms(order_vars))%>%
+      group_by(!!!syms(batch_vars)) %>%
+      summarise(batch_size = n()) %>%
+      group_by(!!sym(facet_col)) %>%
+      mutate(tipping.points = cumsum(batch_size))%>%
+      mutate(tipping.poings = tipping.points+.5)
   }
   
   if (length(pep_name) > 1){
