@@ -10,7 +10,7 @@ output:
     toc_depth: 2 
     number_sections: true 
 vignette: >
-  %\VignetteIndexEntry{proBatch package overview}
+  %\VignetteIndexEntry{proBatch package in brief}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\usepackage[utf8]{inputenc}
