@@ -49,7 +49,7 @@ knitr::include_graphics("Batch_effects_workflow_staircase.png")
 We illustrate each step of the workflow in the next sections. Here is the gallery of plots to be demonstrated in this vignette. 
 
 ```{r gallery, include = TRUE, fig.align = "center", echo=FALSE, out.width = '100%'}
-knitr::include_graphics("gallery_.png")
+knitr::include_graphics("plot_gallery.png")
 ```
 
 One highlight of `proBatch` is the application of uniform color schemes to
@@ -201,9 +201,9 @@ plot_sample_mean(quantile_normalized_matrix, example_sample_annotation,
 ## Diagnostics of batch effects in normalized data 
 After normalization, batch effects can still be present in the data. 
 This has to be diagnosed with methods such as PCA or hiearchical clustering (with or without heatmap). 
-The contribution of each technical and biological factor can be quantified and illustrated with PVCA 
+Moreover, the contribution of each technical and biological factor can be quantified and illustrated with PVCA 
 (principal variance component analysis). Additionally, it is useful to diagnose batch effects on feature level
-for example, by plotting several peptides of the same protein. 
+for example, by plotting several peptides of the same protein. We start illustrations of diagnostic plots with PCA.
 
 ### Principal component analysis (PCA)
 PCA is a technique that identifies the leading directions of
