@@ -31,7 +31,8 @@
 #'   level (fragments, transitions, proteins))
 #' @param order_per_facet if order is defined ignoring facets (usually
 #'   instrument), re-define order per-batch
-#' @param vline_color color of vertical line, typically to denote batches
+#' @param vline_color color of vertical lines, typically denoting 
+#'  different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order
 #' @param ylimits range of y-axis to plot feature-level trends 
 #' @return ggplot2 class object. Thus, all aesthetics can be overriden
 #'
