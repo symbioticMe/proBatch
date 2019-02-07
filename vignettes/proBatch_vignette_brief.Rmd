@@ -48,7 +48,7 @@ knitr::include_graphics("Batch_effects_workflow_staircase.png")
 We illustrate each step of the workflow in the next sections. Here is the gallery of plots to be demonstrated in this vignette. 
 
 ```{r gallery, include = TRUE, fig.align = "center", echo=FALSE, out.width = '100%'}
-knitr::include_graphics("gallery.PNG")
+knitr::include_graphics("gallery.png")
 ```
 
 One highlight of `proBatch` is the application of uniform color schemes to
