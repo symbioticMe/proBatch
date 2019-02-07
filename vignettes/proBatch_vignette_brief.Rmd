@@ -10,10 +10,9 @@ output:
     toc_depth: 2 
     number_sections: true 
 vignette: >
-  %\VignetteIndexEntry{proBatch package in brief}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{proBatch in brief}
   %\VignetteEncoding{UTF-8}
-  %\usepackage[utf8]{inputenc}
 abstract: |
   This vignette describes how to apply the `proBatch` package to diagnose and correct for batch effects. The package is applicable to any "omic" data, although some functions are specific for mass spectrometry-based proteomics. We illustrate the application with SWATH-MS data.
   
@@ -49,7 +48,7 @@ knitr::include_graphics("Batch_effects_workflow_staircase.png")
 We illustrate each step of the workflow in the next sections. Here is the gallery of plots to be demonstrated in this vignette. 
 
 ```{r gallery, include = TRUE, fig.align = "center", echo=FALSE, out.width = '100%'}
-knitr::include_graphics("plot_gallery.png")
+knitr::include_graphics("gallery.PNG")
 ```
 
 One highlight of `proBatch` is the application of uniform color schemes to
