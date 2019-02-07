@@ -177,7 +177,7 @@ equalizes standard deviations.
 ## Normalization
 
 To make samples comparable, they need to be brought to the same scale. This
-processed is called normalization.  In `proBatch`, two normalization
+process is called normalization.  In `proBatch`, two normalization
 approaches are implemented: median centering and quantile normalization. The
 normalization function `normalize_data()` by default takes
 log-transformed data, and if needed, log-transformation can be done
@@ -294,7 +294,7 @@ Note that details of other diagnostic plots can be found in extended vignette.
 ## Correction of batch effects
 Different batch correction methods should be applied depending on the type of batch effects: 
 continuous (see fig [meanplot](#meanplot) and [feature-level plots](#feature_trend)) or discrete [boxplot](#boxplot). 
-Most of the batch effect correcito methods adjusts for feature-level biases [4]. 
+Most of the batch effect correciton methods adjusts for feature-level biases [4]. 
 
 For continuous signal drifts, common for mass spectrometry data, we 
 introduce a new correction method `adjust_batch_trend()` based on LOESS regression. 
@@ -428,9 +428,8 @@ plot_sample_corr_heatmap(batch_corrected_matrix, samples_to_plot = replicate_fil
                          show_colnames = FALSE)
 ```
 
-Before the correction, samples from one batch correlate better and
-of ten higher than the replicates. However, after the correction, the
-correlation between replicates becomes higher than the correlation
+Before the correction, samples from the same batch correlate better than between replicates. 
+However, after the correction, the correlation between replicates becomes higher than the correlation
 between non-related samples regardless of the batch.
 
 We also provide `plot_sample_corr_distribution()` function to plot correlation distribution between biological replicates and non-biological replicates in the same or different batches. Refer to extended vignette for details. 
@@ -446,7 +445,7 @@ increases while that of different proteins stays the same.
 is a computationally demanding procedure. It can easily take several hours. Therefore, it is generally 
 recommended to run this analysis as a stand-alone script on a powerful machine.
 
-Here shows peptide correlation distribution generated from a complete dataset of the BXD mouse aging
+Here we show peptide correlation distribution generated from a complete dataset of the BXD mouse aging
 study:
 
 ```{r, include = TRUE, fig.align = "center", echo=FALSE, out.width = '60%'}
