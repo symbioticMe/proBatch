@@ -1,7 +1,7 @@
 Package: proBatch
 Type: Package
 Title: Tools for Diagnostics and Corrections of Batch Effects in Proteomics 
-Version: 0.99.9
+Version: 0.99.10
 Author: Jelena Cuklina <chuklina.jelena@gmail.com>, Chloe H. Lee <chloe.h.lee94@gmail.com>, Patrick Pedrioli <pedrioli@gmail.com>
 Maintainer: The package maintainer Chloe H. Lee <chloe.h.lee94@gmail.com>
 Description: The proBatch package facilitates batch effects analysis and correction in 
