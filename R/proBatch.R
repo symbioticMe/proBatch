@@ -11,7 +11,7 @@
 #' }
 #'
 #' To learn more about proBatch, start with the vignettes:
-#' `browseVignettes(package = "proBatch")`
+#' \code{browseVignettes(package = "proBatch")}
 #'
 #' @section Section:
 #' Common arguments to the functions.
@@ -42,7 +42,7 @@
 #'   names.
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
-#' @param theme ggplot theme, by default `classic`. Can be easily overriden 
+#' @param theme ggplot theme, by default \code{classic}. Can be easily overriden 
 #'
 #' @import dplyr
 #' @import ggfortify
