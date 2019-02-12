@@ -18,7 +18,7 @@ in columns)}
 before normalization (`NULL`, `2` or `10`)}
 }
 \value{
-`data_matrix`-size matrix, with columns normalized
+\code{data_matrix}-size matrix, with columns normalized
 }
 \description{
 Normalization brings the samples to the same scale
