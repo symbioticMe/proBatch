@@ -114,8 +114,9 @@ numerous dependencies. If some of these dependencies are not installed, you will
 need to do that before running `proBatch`.
 ```{r dependencies, eval = FALSE}
 bioc_deps <- c("GO.db", "impute", "preprocessCore", "pvca","sva" )
-cran_deps <- c("corrplot", "data.table", "ggfortify","lazyeval", "pheatmap", "reshape2", 
-               "rlang", "tidyverse","wesanderson","WGCNA") 
+cran_deps <- c("corrplot", "data.table", "ggplot2", "ggfortify","lazyeval", "pheatmap", "reshape2", "rlang", 
+               "tibble", "dplyr", "tidyr" "wesanderson","WGCNA") 
+
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install(bioc_deps)  
@@ -138,9 +139,11 @@ devtools::install_github("symbioticMe/proBatch", build_vignettes = TRUE)
 
 ### Loading the libraries
 
-In this vignette, we use functions from `dplyr` and other `tidyverse` package family to transform some data frames
-```{r load_tidyverse}
-require(tidyverse)
+In this vignette, we use functions from `dplyr`, `tibble` and other `tidyverse` package family to transform some data frames
+```{r load_packages}
+require(dplyr)
+require(tibble)
+require(ggplot2)
 ```
 
 
