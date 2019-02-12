@@ -23,7 +23,7 @@ converted to}
 See \code{\link{as.POSIXct}} from base R for details}
 }
 \value{
-sample annotation file with column names as 'new_time_column' with
+sample annotation file with a new column \code{new_time_column} with
   POSIX-formatted date
 }
 \description{
