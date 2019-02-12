@@ -24,7 +24,9 @@ knitr::opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE, fig.pos = 'h')
 ```
 
 ```{r include=FALSE}
-require(tidyverse)
+require(dplyr)
+require(tibble)
+require(ggplot2)
 ```
 
 ```{r setup, include = FALSE}
