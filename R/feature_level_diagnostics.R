@@ -16,7 +16,8 @@
 #' @param theme plot theme (default is 'classical'; other options not
 #'   implemented)
 #' @param vline_color color of vertical lines, typically denoting 
-#'  different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order
+#'  different MS batches in ordered runs; should be \code{NULL} for 
+#'  experiments without intrinsic order
 #' @param color_scheme color scheme for \code{ggplot} representation
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
