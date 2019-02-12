@@ -9,7 +9,7 @@ Description: The proBatch package facilitates batch effects analysis and correct
   but could also be applicable to most omic data with minor adaptations. The package contains functions 
   for diagnostics (proteome/genome-wide and feature-level), correction (normalization and batch effects 
   correction) and quality control. Non-linear fitting based approaches were also included to deal with 
-  complex, mass spectrometry-specific signal drifts
+  complex, mass spectrometry-specific signal drifts.
 biocViews: BatchEffect, Normalization, Preprocessing, Software, MassSpectrometry,Proteomics, QualityControl
 License: GPL-3
 URL: https://github.com/symbioticMe/proBatch
