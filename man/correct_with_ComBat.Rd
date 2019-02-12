@@ -25,8 +25,8 @@ used for batch comparison}
 \item{par.prior}{whether parametrical or non-parametrical prior should be used}
 }
 \value{
-`data_matrix`-size data matrix with batch-effect corrected by
-  `ComBat`
+\code{data_matrix}-size data matrix with batch-effect corrected by
+  \code{ComBat}
 }
 \description{
 Standardized input-output ComBat normalization ComBat allows users to adjust

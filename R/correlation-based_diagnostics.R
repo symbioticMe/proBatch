@@ -189,12 +189,12 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 #'
 #' @inheritParams proBatch
 #' @param cor_proteome sample correlation matrix (square)
-#' @param biospecimen_id_col column in `sample_annotation` 
+#' @param biospecimen_id_col column in \code{sample_annotation} 
 #' that defines a unique bio ID, which is usually a 
 #' combination of conditions or groups.
 #'  Tip: if such ID is absent, but can be defined from several columns,
 #'  create new \code{biospecimen_id} column
-#' @param batch_col column in `sample_annotation` that should be used for
+#' @param batch_col column in \code{sample_annotation} that should be used for
 #'   batch comparison
 #'
 #' @return dataframe with the following columns, that 
@@ -260,18 +260,18 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' @param data_matrix  features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
-#' @param repeated_samples if `NULL`, only repeated sample correlation is plotted
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#' @param repeated_samples if \code{NULL}, only repeated sample correlation is plotted
+#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
-#' @param biospecimen_id_col column in `sample_annotation` 
+#' @param biospecimen_id_col column in \code{sample_annotation} 
 #' that defines a unique bio ID, which is usually a 
 #' combination of conditions or groups.
 #'  Tip: if such ID is absent, but can be defined from several columns,
 #'  create new \code{biospecimen_id} column
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix) are found
-#' @param batch_col column in `sample_annotation` that should be used for
+#' @param batch_col column in \code{sample_annotation} that should be used for
 #'   batch comparison
 #'
 #' @return dataframe with the following columns, that 
@@ -317,11 +317,11 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
-#' @param repeated_samples if `NULL`, only repeated sample correlation is plotted
-#' @param biospecimen_id_col column in `sample_annotation` 
+#' @param repeated_samples if \code{NULL}, only repeated sample correlation is plotted
+#' @param biospecimen_id_col column in \code{sample_annotation} 
 #' that captures the biological sample, 
 #' that (possibly) was profiled several times as technical replicates.
 #' Tip: if such ID is absent, but can be defined from several columns,
