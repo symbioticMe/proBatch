@@ -92,7 +92,7 @@ map_numbers_to_colors <-
 #' (factor with number of levels equal to "granularity")
 #' }
 #' @keywords internal
-
+#' 
 generate_colors_for_numeric <- function(num_col,
                                         palette_type = 'brewer',
                                         i = 1,
