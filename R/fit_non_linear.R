@@ -11,7 +11,7 @@
 #' @param expl.var the name of the column in dataDF with the 
 #' explanatory variable
 #' @param noFitRequants (logical) whether to fit requanted values
-#' @param fitFunc function to use for the fit (`loess_regression`)
+#' @param fitFunc function to use for the fit (\code[loess_regression})
 #' @param with_df logical, whether to specify span by enp.target 
 #' using approximately equivalent 
 #'   number of parameters
