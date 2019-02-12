@@ -4,17 +4,17 @@
 #'   feature IDs in rownames and file/sample names as colnames. in most
 #'   function, it is assumed that this is the log transformed version of the
 #'   original data
-#' @param color_df data frame of colors, as created by
-#'   `sample_annotation_to_colors`
+#' @param color_df data frame of colors, as created by \code{sample_annotation_to_colors}
+#'   
 #' @param distance distance metric used for clustering
-#' @param agglomeration agglomeration methods as used by `hclust`
+#' @param agglomeration agglomeration methods as used by \code{hclust}
 #' @param label_samples if \code{TRUE} sample IDs (column names of 
 #' \code{data_matrix}) will be printed
 #' @param label_font size of the font. Is active if \code{label_samples} is 
 #' \code{TRUE}, ignored otherwise
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
-#' @param ... other parameters of `plotDendroAndColors` from `WGCNA` package
+#' @param ... other parameters of \code{plotDendroAndColors} from \code{WGCNA} package
 #'
 #' @return No return
 #' @examples
@@ -66,11 +66,11 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #'   function, it is assumed that this is the log transformed version of the
 #'   original data
 #' @param sample_annotation data matrix with \enumerate{
-#' \item  `sample_id_col` (this can be repeated as row names)
+#' \item  \code{sample_id_col} (this can be repeated as row names)
 #'   \item  biological and
 #'   \item  technical covariates (batches etc)
 #' }; each column of sample annotation will get it's own row. 
-#' If `cluster_cols = T` this will indicate,
+#' If \code{cluster_cols = T} this will indicate,
 #' whether sample proximity is driven by one of 
 #' biolical or technical factors
 #' @param sample_id_col name of the column in 
@@ -88,10 +88,10 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' @param sample_annotation_row biological or technical 
 #' factors to be annotated in heatmap rows 
 #' @param annotation_color_list list specifying colors 
-#' for columns (samples). Best created by `sample_annotation_to_colors`
+#' for columns (samples). Best created by \code{sample_annotation_to_colors}
 #' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
 #' @param color_for_missing special color to make missing values. 
-#' Usually black or white, depending on `heatmap_color`
+#' Usually black or white, depending on \code{heatmap_color}
 #' @param filename filepath where to save the image
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
@@ -198,7 +198,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #'   feature IDs in rownames and file/sample names as colnames. in most
 #'   function, it is assumed that this is the log transformed version of the
 #'   original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
 #' @param sample_id_col name of the column in sample_annotation file, where the
@@ -207,9 +207,9 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #'   ID used in the long format representation \code{df_long}. In the wide
 #'   formatted representation \code{data_matrix} this corresponds to the row
 #'   names.
-#' @param technical_covariates vector `sample_annotation` column names that are
+#' @param technical_covariates vector \code{sample_annotation} column names that are
 #'   technical covariates
-#' @param biological_covariates vector `sample_annotation` column names, that
+#' @param biological_covariates vector \code{sample_annotation} column names, that
 #'   are biologically meaningful covariates
 #' @param colors_for_bars four-item color vector, specifying colors for the
 #'   following categories: c('residual', 'biological', 'biol:techn',
@@ -220,7 +220,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #'   needs to explain (the rest will be lumped together)
 #' @param fill_the_missing numeric value that the missing values are
 #'   substituted with
-#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
+#' @param theme ggplot theme, by default \code{classic}. Can be easily overriden (see
 #'   examples)
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
@@ -360,25 +360,25 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #'   feature IDs in rownames and file/sample names as colnames. in most
 #'   function, it is assumed that this is the log transformed version of the
 #'   original data
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
 #' @param feature_id_col name of the column with feature/gene/peptide/protein
 #'   ID used in the long format representation \code{df_long}. In the wide
 #'   formatted representation \code{data_matrix} this corresponds to the row
 #'   names.
-#' @param color_by column name (as in `sample_annotation`) to color by
+#' @param color_by column name (as in \code{sample_annotation}) to color by
 #' @param PC_to_plot principal component numbers for x and y axis
-#' @param colors_for_factor named vector of colors for the `color_by` variable
+#' @param colors_for_factor named vector of colors for the \code{color_by} variable
 #' @param fill_the_missing boolean value determining if missing values should be
 #'   substituted with -1 (and colored with black)
-#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
+#' @param theme ggplot theme, by default \code{classic}. Can be easily overriden (see
 #'   examples)
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #'
 #' @return ggplot scatterplot colored by factor levels of column specified in
-#'   `factor_to_color`
+#'   \code{factor_to_color}
 #' @export
 #'
 #' @examples 
