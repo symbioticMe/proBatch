@@ -15,7 +15,7 @@ feature IDs in rownames and file/sample names as colnames. in most
 function, it is assumed that this is the log transformed version of the
 original data}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+\item{sample_annotation}{data matrix with 1) \code{sample_id_col} (this can be
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
 
@@ -24,16 +24,16 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{color_by}{column name (as in `sample_annotation`) to color by}
+\item{color_by}{column name (as in \code{sample_annotation}) to color by}
 
 \item{PC_to_plot}{principal component numbers for x and y axis}
 
 \item{fill_the_missing}{boolean value determining if missing values should be
 substituted with -1 (and colored with black)}
 
-\item{colors_for_factor}{named vector of colors for the `color_by` variable}
+\item{colors_for_factor}{named vector of colors for the \code{color_by} variable}
 
-\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden (see
 examples)}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
@@ -41,7 +41,7 @@ level (fragments, transitions, proteins))}
 }
 \value{
 ggplot scatterplot colored by factor levels of column specified in
-  `factor_to_color`
+  \code{factor_to_color}
 }
 \description{
 plot PCA plot
