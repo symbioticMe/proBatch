@@ -68,7 +68,7 @@ by \code{color_by_value}}
 implemented)}
 
 \item{vline_color}{color of vertical lines, typically denoting 
-different batches}
+different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
 
 \item{...}{additional arguments to \code{\link{plot_single_feature}} function}
 }
