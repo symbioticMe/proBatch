@@ -30,7 +30,7 @@ based on time columns}
 instrument used for measurements}
 }
 \value{
-sample annotation file with column names as 'new_time_column' with
+sample annotation file with a new column \code{new_time_column} with
   POSIX-formatted date & \code{new_order_col} used 
   in some diagnostic plots (e.g.
   \code{\link{plot_iRT}}, \code{\link{plot_sample_mean}})
