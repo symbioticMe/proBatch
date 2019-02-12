@@ -87,8 +87,8 @@ map_numbers_to_colors <-
 #'
 #' @return list, containing the following items:
 #' \enumerate{
-#' \item `color_vector` - string-like vector of colors
-#' \item `new_annotation` - factor representation of numeric vector 
+#' \item \code{color_vector} - string-like vector of colors
+#' \item \code{new_annotation} - factor representation of numeric vector 
 #' (factor with number of levels equal to "granularity")
 #' }
 #' @keywords internal
