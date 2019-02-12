@@ -18,7 +18,7 @@ NULL
 #'   in columns)
 #' @param log_base base of the logarithm for transformation
 #'
-#' @return `data_matrix`-size matrix, with columns log2 transformed
+#' @return \code{data_matrix}-size matrix, with columns log2 transformed
 #' @examples 
 #' log_transformed_matrix <- log_transform(example_proteome_matrix)
 #' 
@@ -43,7 +43,7 @@ log_transform <- function(data_matrix, log_base = 2){
 #' @param data_matrix log transformed data matrix (features in rows and samples
 #'   in columns)
 #'
-#' @return `data_matrix`-size matrix, with columns quantile-normalized
+#' @return \code{data_matrix}-size matrix, with columns quantile-normalized
 #' @examples 
 #' quantile_normalized_matrix = quantile_normalize(example_proteome_matrix)
 #' 
@@ -94,7 +94,7 @@ normalize_sample_medians <- function(df_long,
 #' @param log_base whether to log transform data matrix 
 #' before normalization (`NULL`, `2` or `10`)
 #'
-#' @return `data_matrix`-size matrix, with columns normalized 
+#' @return \code{data_matrix}-size matrix, with columns normalized 
 #' @export
 #'
 #' @examples
