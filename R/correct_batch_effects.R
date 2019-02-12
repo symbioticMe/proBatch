@@ -8,7 +8,7 @@
 #'  and biological (e.g. Diet) covariates 
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param measure_col if `df_long` is among the parameters, it is the column
+#' @param measure_col if \code{df_long} is among the parameters, it is the column
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
 #' @param batch_col column in \code{sample_annotation} that should be 
@@ -17,7 +17,7 @@
 #' used in the long format representation df_long. In the wide formatted 
 #' representation data_matrix this corresponds to the row names.
 #' 
-#' @return `df_long`-size long format data with batch-effect corrected with
+#' @return \code{df_long}-size long format data with batch-effect corrected with
 #'   per-feature batch median centering in Intensity_normalized column
 #'   
 #' @examples 
@@ -64,7 +64,7 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #'  and biological (e.g. Diet) covariates 
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param measure_col if `df_long` is among the parameters, it is the column
+#' @param measure_col if \code{df_long} is among the parameters, it is the column
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
 #' @param batch_col column in \code{sample_annotation} that should be 
@@ -77,9 +77,9 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @param fit_func function to fit the (non)-linear trend
 #' @param abs_threshold the absolute threshold to filter data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter data for curve fitting 
-#' @param ... other parameters, usually those of the `fit_func`
+#' @param ... other parameters, usually those of the \code{fit_func}
 #'
-#' @return list of two items: 1) `data_matrix`, adjusted with continious fit; 
+#' @return list of two items: 1) \code{data_matrix}, adjusted with continious fit; 
 #' 2) fit_df, used to examine the fitting curves
 #' @examples 
 #' adjust_batch_trend(example_proteome_matrix, 
@@ -178,8 +178,8 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
 #'  used for batch comparison
 #' @param par.prior whether parametrical or non-parametrical prior should be used
 #'
-#' @return `data_matrix`-size data matrix with batch-effect corrected by
-#'   `ComBat`
+#' @return \code{data_matrix}-size data matrix with batch-effect corrected by
+#'   \code{ComBat}
 #'
 #' @examples 
 #' correct_with_ComBat(example_proteome_matrix, example_sample_annotation)
@@ -223,7 +223,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #'  and biological (e.g. Diet) covariates 
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param measure_col if `df_long` is among the parameters, it is the column
+#' @param measure_col if \code{df_long} is among the parameters, it is the column
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
 #' @param batch_col column in \code{sample_annotation} that should be 
@@ -234,14 +234,14 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
 #' @param fitFunc function to use for the fit (currently 
-#' only `loess_regression` available)
+#' only \code{loess_regression} available)
 #' @param discreteFunc function to use for discrete 
-#' batch correction (`MedianCentering` or `ComBat`)
+#' batch correction (\code{MedianCentering} or \code{ComBat})
 #' @param abs_threshold the absolute threshold to filter data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter data for curve fitting 
-#' @param ... other parameters, usually of `normalize_custom_fit`, and `fit_func`
+#' @param ... other parameters, usually of \code{normalize_custom_fit}, and \code{fit_func}
 #'
-#' @return `data_matrix`-size data matrix with batch-effect 
+#' @return \code{data_matrix}-size data matrix with batch-effect 
 #' corrected by fit and discrete functions
 #' 
 #' @examples 

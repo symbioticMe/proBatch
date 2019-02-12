@@ -15,11 +15,11 @@ plot_sample_corr_distribution(data_matrix, sample_annotation,
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+\item{sample_annotation}{data matrix with 1) \code{sample_id_col} (this can be
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
 
-\item{repeated_samples}{if `NULL`, only repeated sample correlation is plotted}
+\item{repeated_samples}{if \code{NULL}, only repeated sample correlation is plotted}
 
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix) are found}
@@ -27,7 +27,7 @@ filenames (colnames of the data matrix) are found}
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
-\item{biospecimen_id_col}{column in `sample_annotation` 
+\item{biospecimen_id_col}{column in \code{sample_annotation} 
 that captures the biological sample, 
 that (possibly) was profiled several times as technical replicates.
 Tip: if such ID is absent, but can be defined from several columns,
