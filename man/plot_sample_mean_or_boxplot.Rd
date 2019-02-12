@@ -53,7 +53,8 @@ level (fragments, transitions, proteins))}
 \item{order_per_facet}{if order is defined ignoring facets (usually
 instrument), re-define order per-batch}
 
-\item{vline_color}{color of vertical line, typically to denote batches}
+\item{vline_color}{color of vertical lines, typically denoting 
+different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
 
 \item{ylimits}{range of y-axis to plot feature-level trends}
 
