@@ -23,10 +23,10 @@ transformed version of the original data}
 and biological (e.g. Diet) covariates}
 
 \item{fitFunc}{function to use for the fit (currently 
-only `loess_regression` available)}
+only \code{loess_regression} available)}
 
 \item{discreteFunc}{function to use for discrete 
-batch correction (`MedianCentering` or `ComBat`)}
+batch correction (\code{MedianCentering} or \code{ComBat})}
 
 \item{batch_col}{column in \code{sample_annotation} that should be 
 used for batch comparison}
@@ -38,7 +38,7 @@ representation data_matrix this corresponds to the row names.}
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
-\item{measure_col}{if `df_long` is among the parameters, it is the column
+\item{measure_col}{if \code{df_long} is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
 
@@ -49,10 +49,10 @@ as covariate to fit the non-linear fit}
 
 \item{pct_threshold}{the percentage threshold to filter data for curve fitting}
 
-\item{...}{other parameters, usually of `normalize_custom_fit`, and `fit_func`}
+\item{...}{other parameters, usually of \code{normalize_custom_fit}, and \code{fit_func}}
 }
 \value{
-`data_matrix`-size data matrix with batch-effect 
+\code{data_matrix}-size data matrix with batch-effect 
 corrected by fit and discrete functions
 }
 \description{
