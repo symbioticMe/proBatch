@@ -29,7 +29,7 @@ names.}
 
 \item{plot_title}{Title of the plot, usually processing step}
 
-\item{theme}{ggplot theme, by default `classic`. Can be easily overriden}
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
 \item{...}{parameters for the \code{ggplot} visualisation}
 }
