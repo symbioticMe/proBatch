@@ -59,7 +59,6 @@
 #' @import viridis
 #' @import RColorBrewer
 #' @import readr
-#' @import tidyverse
 #' @importFrom corrplot corrplot.mixed
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
