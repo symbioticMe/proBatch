@@ -33,10 +33,10 @@ long_to_matrix <- function(df_long,
 #'
 #' @inheritParams proBatch
 #'
-#' @param step normalization step (e.g. `Raw` or `Quantile_normalized` or
-#'   `qNorm_ComBat`). Useful if consecutive steps are compared in plots. Note
+#' @param step normalization step (e.g. \code{Raw} or \code{Quantile_normalized} or
+#'   \code{qNorm_ComBat}). Useful if consecutive steps are compared in plots. Note
 #'   that in plots these are usually ordered alphabetically, so it's worth
-#'   naming with numbers, e.g. `1_raw`, `2_quantile`
+#'   naming with numbers, e.g. \code{1_raw}, \code{2_quantile}
 #'
 #' @return \code{df_long} (\link{proBatch}) like data frame
 #'
