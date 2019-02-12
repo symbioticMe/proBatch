@@ -29,9 +29,4 @@ that are suggested to use for plotting in
 \description{
 Transform square correlation matrix into long data frame of correlations
 }
-\examples{
-.corr_distribution_prot(example_proteome_matrix, 
-example_peptide_annotation, protein_col = 'Gene')
-
-}
 \keyword{internal}
