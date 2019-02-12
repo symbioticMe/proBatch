@@ -139,7 +139,7 @@ devtools::install_github("symbioticMe/proBatch", build_vignettes = TRUE)
 
 ### Loading the libraries
 
-In this vignette, we use functions from `dplyr`, `tibble` and other `tidyverse` package family to transform some data frames
+In this vignette, we use functions from `dplyr`, `tibble` , `ggplot2` and other `tidyverse` package family to transform some data frames
 ```{r load_packages}
 require(dplyr)
 require(tibble)
