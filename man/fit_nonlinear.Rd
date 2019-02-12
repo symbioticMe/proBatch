@@ -24,8 +24,6 @@ explanatory variable}
 
 \item{noFitRequants}{(logical) whether to fit requanted values}
 
-\item{fitFunc}{function to use for the fit (`loess_regression`)}
-
 \item{with_df}{logical, whether to specify span by enp.target 
 using approximately equivalent 
   number of parameters}
