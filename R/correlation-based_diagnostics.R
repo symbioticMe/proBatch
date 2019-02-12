@@ -216,7 +216,6 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 #' 
 #' @keywords internal
 #'
-#' @export
 #'
 get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
                                     sample_id_col = 'FullRunName',
@@ -293,8 +292,6 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' }
 #' 
 #' @keywords internal
-#'
-#' @export
 #'
 .corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
                               biospecimen_id_col, sample_id_col, batch_col) {
@@ -427,7 +424,6 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 #' 
 #' @keywords internal
 #' 
-#' @export
 get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = 'ProteinName',
                                 feature_id_col = 'peptide_group_label'){
     comb_to_keep = data.frame(t(combn(colnames(peptide_cor), 2)))
@@ -447,6 +443,39 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
         data.table::setnames(old = protein_col, new = paste(protein_col, 2, sep = '')) %>%
         mutate(same_protein = (!!sym(paste(protein_col,'1', sep = '')) ==
                                  !!sym(paste(protein_col,'2', sep = ''))))
+    return(corr_distribution)
+}
+
+
+#' Transform square correlation matrix into long data frame of correlations
+#'
+#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
+#'   feature IDs in rownames and file/sample names as colnames. Usually the log
+#'   transformed version of the original data
+#' @param peptide_annotation df with petpides and 
+#' their corresponding proteins
+#' @param protein_col the column name in \code{peptide_annotation} 
+#' with protein names
+#' @param feature_id_col column in \code{peptide_annotation} that 
+#' captures peptide names are found 
+#'
+#' @return dataframe with peptide correlation coefficients 
+#' that are suggested to use for plotting in 
+#' \code{\link{plot_peptide_corr_distribution}} as \code{plot_param}:
+#' 
+#' @keywords internal
+#' 
+#' @examples 
+#' .corr_distribution_prot(example_proteome_matrix, 
+#' example_peptide_annotation, protein_col = 'Gene')
+#' 
+.corr_distribution_prot <- function(data_matrix, peptide_annotation, 
+                                    protein_col, feature_id_col){
+    corr_matrix = cor(t(data_matrix), use = "pairwise.complete.obs")
+    corr_distribution = get_peptide_corr_df(peptide_cor = corr_matrix,
+                                            peptide_annotation = peptide_annotation,
+                                            protein_col = protein_col,
+                                            feature_id_col = feature_id_col)
     return(corr_distribution)
 }
 
@@ -477,23 +506,14 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
                                            feature_id_col = 'peptide_group_label',
                                            plot_title = 'Distribution of peptide correlation',
                                            theme = 'classic'){
-    corr_distribution_prot <- 
-      function(data_matrix, peptide_annotation, protein_col, feature_id_col){
-        corr_matrix = cor(t(data_matrix), use = "pairwise.complete.obs")
-        corr_distribution = get_peptide_corr_df(peptide_cor = corr_matrix,
-                                                peptide_annotation = peptide_annotation,
-                                                protein_col = protein_col,
-                                                feature_id_col = feature_id_col)
-        return(corr_distribution)
-      }
     
     if (!is.list(data_matrix)){
-        corr_distribution = corr_distribution_prot(data_matrix, peptide_annotation,
+        corr_distribution = .corr_distribution_prot(data_matrix, peptide_annotation,
                                                    protein_col, feature_id_col)
     } else {
         corr_distribution = lapply(1:length(data_matrix), function(i) {
             dm = data_matrix[[i]]
-            corr_distribution = corr_distribution_prot(dm, peptide_annotation,
+            corr_distribution = .corr_distribution_prot(dm, peptide_annotation,
                                                        protein_col, feature_id_col)
             corr_distribution$Step = names(data_matrix)[i]
             return(corr_distribution)
