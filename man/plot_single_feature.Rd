@@ -58,7 +58,8 @@ by \code{color_by_value}}
 \item{plot_title}{the string indicating the source of the peptides}
 
 \item{vline_color}{color of vertical lines, typically denoting 
-different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
+different MS batches in ordered runs; should be \code{NULL} for 
+experiments without intrinsic order}
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
