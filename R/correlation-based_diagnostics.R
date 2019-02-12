@@ -465,10 +465,6 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' 
 #' @keywords internal
 #' 
-#' @examples 
-#' .corr_distribution_prot(example_proteome_matrix, 
-#' example_peptide_annotation, protein_col = 'Gene')
-#' 
 .corr_distribution_prot <- function(data_matrix, peptide_annotation, 
                                     protein_col, feature_id_col){
     corr_matrix = cor(t(data_matrix), use = "pairwise.complete.obs")
