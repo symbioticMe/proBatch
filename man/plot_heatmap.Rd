@@ -20,11 +20,11 @@ function, it is assumed that this is the log transformed version of the
 original data}
 
 \item{sample_annotation}{data matrix with \enumerate{
-\item  `sample_id_col` (this can be repeated as row names)
+\item  \code{sample_id_col} (this can be repeated as row names)
   \item  biological and
   \item  technical covariates (batches etc)
 }; each column of sample annotation will get it's own row. 
-If `cluster_cols = T` this will indicate,
+If \code{cluster_cols = T} this will indicate,
 whether sample proximity is driven by one of 
 biolical or technical factors}
 
@@ -49,12 +49,12 @@ should be clustered}
 should be clustered}
 
 \item{annotation_color_list}{list specifying colors 
-for columns (samples). Best created by `sample_annotation_to_colors`}
+for columns (samples). Best created by \code{sample_annotation_to_colors}}
 
 \item{heatmap_color}{vector of colors used in heatmap (typicall a gradient)}
 
 \item{color_for_missing}{special color to make missing values. 
-Usually black or white, depending on `heatmap_color`}
+Usually black or white, depending on \code{heatmap_color}}
 
 \item{filename}{filepath where to save the image}
 
