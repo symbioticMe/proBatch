@@ -12,7 +12,7 @@ quantile_normalize(data_matrix)
 in columns)}
 }
 \value{
-`data_matrix`-size matrix, with columns quantile-normalized
+\code{data_matrix}-size matrix, with columns quantile-normalized
 }
 \description{
 Quantile normalization of the data, ensuring that the row and column names
