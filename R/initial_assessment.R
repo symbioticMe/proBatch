@@ -1,38 +1,38 @@
 #' Plot per-sample mean or boxplot (showing median and quantiles) vs order (if the real
 #' running order available)
 #' @details functions for quick visual assessment of trends associated, overall
-#'   or specific covariate-associated (see `batch_col` and `facet_col`)
+#'   or specific covariate-associated (see \code{batch_col} and \code{facet_col})
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, 
 #' with feature IDs in rownames and file/sample names as colnames. in most function,
 #' @param df_long data frame where each row is a single feature in a single
-#'   sample, thus it has minimally, `sample_id_col`, `feature_id_col` and
-#'   `measure_col`, but usually also `m_score` (in OpenSWATH output result
+#'   sample, thus it has minimally, \code{sample_id_col}, \code{feature_id_col} and
+#'   \code{measure_col}, but usually also \code{m_score} (in OpenSWATH output result
 #'   file)
-#' @param sample_annotation data matrix with 1) `sample_id_col` (this can be
+#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
 #'   repeated as row names) 2) biological and 3) technical covariates (batches
 #'   etc)
 #' @param sample_id_col name of the column in sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param measure_col if `df_long` is among the parameters, it is the column
+#' @param measure_col if \code{df_long} is among the parameters, it is the column
 #'   with expression/abundance/intensity, otherwise, it is used internally for
 #'   consistency
-#' @param batch_col column in `sample_annotation` that should be used for
+#' @param batch_col column in \code{sample_annotation} that should be used for
 #'   batch comparison
 #' @param order_col column where running order is specified.
 #' @param color_by_batch should the each batch be represented with its own
 #'   color?
 #' @param color_scheme named vector, names corresponding to unique batch values
-#'   as specified in `sample_annotation`
+#'   as specified in \code{sample_annotation}
 #' @param facet_col recommended if more than one batch covariate is present.
 #'   Faceting is most suited to examine instruments separately
-#' @param theme ggplot theme, by default `classic`. Can be easily overriden (see
+#' @param theme ggplot theme, by default \code{classic}. Can be easily overriden (see
 #'   examples)
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #' @param order_per_facet if order is defined ignoring facets (usually
 #'   instrument), re-define order per-batch
 #' @param vline_color color of vertical lines, typically denoting 
-#'  different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order
+#'  different MS batches in ordered runs; should be \code{NULL} for experiments without intrinsic order
 #' @param ylimits range of y-axis to plot feature-level trends 
 #' @return ggplot2 class object. Thus, all aesthetics can be overriden
 #'
