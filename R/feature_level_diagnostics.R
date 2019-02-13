@@ -5,7 +5,7 @@
 #' by batch.
 #'
 #' @inheritParams proBatch
-#' @param pep_name name of the peptide for diagnostic profiling
+#' @param feature_name name of the selected feature (e.g. peptide) for diagnostic profiling
 #' @param geom whether to show the feature as points and/or connect by lines
 #' @param color_by_batch (logical) whether to color points by batch
 #' @param facet_col column  in `sample_annotation` with a batch factor to separate 
@@ -34,7 +34,7 @@
 #' @export
 #'
 
-plot_single_feature  <- function(pep_name, df_long, sample_annotation,
+plot_single_feature  <- function(feature_name, df_long, sample_annotation,
                                  order_col = 'order',
                                  sample_id_col = 'FullRunName',
                                  batch_col = 'MS_batch',
@@ -47,13 +47,16 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
                                  plot_title = NULL,
                                  vline_color ='red',
                                  theme = 'classic'){
-  #TODO: suggest faceting by instrument
   
+  #reduce df to measurements of selected features
   plot_df = df_long %>%
-    filter(UQ(sym(feature_id_col)) %in% pep_name)
+    filter(UQ(sym(feature_id_col)) %in% feature_name)
+  
+  #check the consistency of the sample annotation
   if (!all(names(sample_annotation) %in% names(df_long))){
     sample_annotation = sample_annotation %>%
       arrange(!!sym(order_col))
+    #TODO: why do we need to remove the intersecting columns?
     common_cols = intersect(names(sample_annotation), names(plot_df))
     cols_to_remove = setdiff(common_cols, sample_id_col)
     plot_df = plot_df %>%
@@ -62,9 +65,11 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
       merge(sample_annotation, by = sample_id_col)
   }
   
+  #TODO: isn't it redundant with "merge"?
   sample_annotation = sample_annotation %>%
     subset(sample_annotation[[sample_id_col]] %in% plot_df[[sample_id_col]])
   
+  #define the order of the samples
   if(is.null(order_col)){
     warning("order column wasn't specified, putting row 
             number as an order within a batch")
@@ -74,6 +79,7 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
     order_col = 'order'
   }
   
+  #Main plotting function
   gg = ggplot(plot_df,
               aes_string(x = order_col, y = measure_col))
   if (identical(geom, 'line')){
@@ -87,6 +93,8 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
     gg = gg + geom_point() +
       geom_line(color = 'black', alpha = .7, linetype = 'dashed')
   }
+  
+  #add colors
   if(color_by_batch & !is.null(batch_col)){
     gg = gg + aes_string(color = batch_col)
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
@@ -108,17 +116,19 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
         }
     }
   
+  #Add vertical lines for the batch tipping points
   if(!is.null(batch_col)){
     batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
     gg = gg + geom_vline(xintercept = batch.tipping.points,
                          color = vline_color, linetype = 'dashed')
   } 
   
+  #split into facets
   if(!is.null(facet_col)){
     order_vars <- c(facet_col, order_col)
     batch_vars = c(facet_col, batch_col)
-    if (length(pep_name) > 1){
-      gg = gg + facet_grid(reformulate(batch_col, pep_name), scales = 'free_y')
+    if (length(feature_name) > 1){
+      gg = gg + facet_grid(reformulate(batch_col, feature_name), scales = 'free_y')
     } else {
       gg = gg  + facet_wrap(as.formula(paste("~", batch_col)), scales = 'free_y')
     }
@@ -133,16 +143,19 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
       mutate(tipping.poings = tipping.points+.5)
   }
   
-  if (length(pep_name) > 1){
+  #wrap into facets, if several features are displayed
+  #TODO: resolve this conflict for multi-instrument measurement case
+  if (length(feature_name) > 1){
     gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
   }
   if(!is.null(plot_title)){
     gg = gg + ggtitle(plot_title)
   }
   
+  #Add coloring for "inferred" measurements
   if(!is.null(color_by_col)){
     col_data = plot_df %>%
-      filter(UQ(as.name(feature_id_col)) %in% pep_name) %>%
+      filter(UQ(as.name(feature_id_col)) %in% feature_name) %>%
       filter(UQ(as.name(color_by_col)) == color_by_value)
     
     gg = gg + geom_point(data = col_data,
@@ -150,9 +163,17 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
                          color = 'red', size = .3, shape = 8)
   }
   
+  #Add the theme
   if (theme == 'classic'){
     gg = gg + theme_classic()
   }
+  
+  #Rotate the axes
+  
+  #Adjust the vertical axis limits;
+  
+  #Move the position of the legend
+  
   return(gg)
 }
 
