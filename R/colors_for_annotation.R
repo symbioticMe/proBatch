@@ -309,13 +309,61 @@ sample_annotation_to_colors <- function(sample_annotation,
 #' @keywords internal
 #'
 color_list_to_df <- function(color_list, sample_annotation) {
-    list_df = lapply(names(sample_annotation), function(col_name) {
-        col_values = sample_annotation[[col_name]]
-        col_colors = color_list[[col_name]][col_values]
-    })
-    names(list_df) = names(sample_annotation)
-    color_df = as.data.frame(do.call(cbind, list_df))
-    rownames(color_df) = rownames(sample_annotation)
-    return(color_df)
+  list_df = lapply(names(sample_annotation), function(col_name) {
+      col_values = sample_annotation[[col_name]]
+      col_colors = color_list[[col_name]][col_values]
+  })
+  names(list_df) = names(sample_annotation)
+  color_df = as.data.frame(do.call(cbind, list_df))
+  rownames(color_df) = rownames(sample_annotation)
+  return(color_df)
 }
 
+color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, sample_annotation) {
+  if(color_by_batch & !is.null(batch_col)){
+    gg = gg + aes_string(color = batch_col)
+    
+    #Define the color scheme on the fly
+    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
+      n_batches <- length(unique(sample_annotation[[batch_col]]))
+      if (n_batches <= 9){
+        gg = gg + scale_color_brewer(palette = 'Set1')
+      } else {
+        if (n_batches <= 12){
+          gg = gg + scale_color_brewer(palette = 'Set3')
+        } else {
+          warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
+                            consider defining color scheme with sample_annotation_to_colors function', 
+                          n_batches))
+        }
+      }
+    } else {
+      #color vector is provided by color-defining function, e.g. "define_color_scheme"
+      gg = gg + scale_color_manual(values = color_scheme)
+    }
+  }
+  return(gg)
+}
+
+color_fill_boxes_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, df_long) {
+  if(color_by_batch & !is.null(batch_col)){
+    gg = gg + aes_string(fill = batch_col)
+    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
+      n_batches <- length(unique(df_long[[batch_col]]))
+      if(n_batches < 9){
+        gg = gg + scale_fill_brewer(palette = 'Set1')
+        
+      } else {
+        if (n_batches <= 12){
+          gg = gg + scale_fill_brewer(palette = 'Set3')
+        } else {
+          warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
+                          consider defining color scheme with sample_annotation_to_colors function', n_batches))
+        }
+        }
+      } else{
+        gg = gg + scale_fill_manual(values = color_scheme)
+    }
+  }
+  return(gg)
+}
