@@ -50,10 +50,10 @@
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              sample_id_col = 'FullRunName',
                              batch_col = "MS_batch",
-                             order_col = 'order',
-                             facet_col = NULL,
                              color_by_batch = FALSE, color_scheme = 'brewer',
+                             order_col = 'order',
                              vline_color = 'grey',
+                             facet_col = NULL,
                              plot_title = NULL,
                              theme = 'classic',
                              ylimits = NULL){
@@ -163,13 +163,12 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' 
 plot_boxplot <- function(df_long, sample_annotation = NULL,
                          sample_id_col = 'FullRunName',
-                         batch_col = 'MS_batch',
-                         order_col = 'order',
                          measure_col = 'Intensity',
-                         facet_col = NULL,
+                         batch_col = 'MS_batch',
                          color_by_batch = TRUE, color_scheme = 'brewer',
-                         theme = 'classic',
-                         plot_title = NULL, order_per_facet = FALSE){
+                         order_col = 'order',
+                         facet_col = NULL,
+                         plot_title = NULL, theme = 'classic'){
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
   if(!setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]]))){
