@@ -49,13 +49,13 @@
 #' 
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              sample_id_col = 'FullRunName',
-                             order_col = 'order',
                              batch_col = "MS_batch",
+                             order_col = 'order',
                              facet_col = NULL,
                              color_by_batch = FALSE, color_scheme = 'brewer',
-                             theme = 'classic',
-                             plot_title = NULL,
                              vline_color = 'grey',
+                             plot_title = NULL,
+                             theme = 'classic',
                              ylimits = NULL){
   
   #Create a data frame with sample averages
@@ -163,9 +163,9 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' 
 plot_boxplot <- function(df_long, sample_annotation = NULL,
                          sample_id_col = 'FullRunName',
-                         measure_col = 'Intensity',
-                         order_col = 'order',
                          batch_col = 'MS_batch',
+                         order_col = 'order',
+                         measure_col = 'Intensity',
                          facet_col = NULL,
                          color_by_batch = TRUE, color_scheme = 'brewer',
                          theme = 'classic',
