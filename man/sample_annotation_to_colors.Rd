@@ -12,15 +12,15 @@ sample_annotation_to_colors(sample_annotation,
   granularity = 10)
 }
 \arguments{
-\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
 \item{columns_for_plotting}{only consider these 
 columns from sample_annotation}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{factor_columns}{columns of sample_annotation to be 
 treated as factors. Note that 
