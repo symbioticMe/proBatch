@@ -36,15 +36,15 @@
 
 plot_single_feature  <- function(feature_name, df_long, sample_annotation,
                                  sample_id_col = 'FullRunName',
-                                 batch_col = 'MS_batch',
-                                 order_col = 'order',
                                  measure_col = 'Intensity',
                                  feature_id_col = 'peptide_group_label',
-                                 facet_col = NULL,
                                  geom = c('point', 'line'),
-                                 color_by_batch = FALSE, color_scheme = 'brewer',
                                  color_by_col = NULL, color_by_value = NULL,
+                                 batch_col = 'MS_batch',
+                                 color_by_batch = FALSE, color_scheme = 'brewer',
+                                 order_col = 'order',
                                  vline_color ='red',
+                                 facet_col = NULL,
                                  plot_title = NULL,
                                  theme = 'classic'){
   
@@ -204,19 +204,22 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
 #'
 #' @export
 #'
-plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinName',
+plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL,
+                                         protein_col = 'ProteinName',
                                          df_long, sample_annotation,
-                                         peptide_annotation = NULL,
                                          sample_id_col = 'FullRunName',
-                                         order_col = 'order',
-                                         batch_col = 'MS_batch',
                                          measure_col = 'Intensity',
                                          feature_id_col = 'peptide_group_label',
-                                         color_by_batch = FALSE, color_scheme = 'brewer',
-                                         facet_by_batch = FALSE,
+                                         geom = c('point', 'line'),
                                          color_by_col = NULL, color_by_value = NULL,
+                                         batch_col = 'MS_batch',
+                                         color_by_batch = FALSE, color_scheme = 'brewer',
+                                         order_col = 'order',
+                                         vline_color ='red',
+                                         facet_col = FALSE,
                                          plot_title = sprintf('Peptides of %s protein', 
-                                                              protein_name),...){
+                                                              protein_name),
+                                         theme = 'classic', ...){
   
   if(!setequal(unique(sample_annotation[[sample_id_col]]), 
               unique(df_long[[sample_id_col]]))){
@@ -276,19 +279,21 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
 #' 
 #' @export
 #'
-plot_spike_in <- function(df_long, sample_annotation,
-                          peptide_annotation = NULL,
+plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                           protein_col = 'ProteinName',
-                          order_col = 'order',
-                          spike_ins = 'BOVIN',
+                          df_long, sample_annotation,
                           sample_id_col = 'FullRunName',
-                          batch_col = 'MS_batch',
                           measure_col = 'Intensity',
                           feature_id_col = 'peptide_group_label',
-                          color_by_batch = FALSE, color_scheme = 'brewer',
-                          facet_by_batch = FALSE,
+                          geom = c('point', 'line'),
                           color_by_col = NULL, color_by_value = NULL,
-                          plot_title = 'Spike-in BOVINE protein peptides', ...){
+                          batch_col = 'MS_batch',
+                          color_by_batch = FALSE, color_scheme = 'brewer',
+                          order_col = 'order',
+                          vline_color = 'red',
+                          facet_col = NULL,
+                          plot_title = 'Spike-in BOVINE protein peptides', 
+                          theme = theme, ...){
   
   if(!setequal(unique(sample_annotation[[sample_id_col]]), 
               unique(df_long[[sample_id_col]]))){
@@ -304,16 +309,18 @@ plot_spike_in <- function(df_long, sample_annotation,
     pull(feature_id_col) %>% as.character() %>% unique()
   gg = plot_single_feature(spike_in_peptides, df_long = df_long,
                            sample_annotation = sample_annotation,
-                           order_col = order_col,
                            sample_id_col = sample_id_col,
-                           batch_col = batch_col, measure_col = measure_col,
+                           measure_col = measure_col,
                            feature_id_col = feature_id_col,
+                           batch_col = batch_col, 
                            color_by_batch = color_by_batch, 
                            color_scheme = color_scheme,
                            facet_col = facet_col,
                            color_by_col = color_by_col, 
                            color_by_value = color_by_value,
-                           plot_title = plot_title, ...)
+                           order_col = order_col,
+                           plot_title = plot_title, 
+                           theme = theme, ...)
   return(gg)
   }
 
@@ -341,19 +348,22 @@ plot_spike_in <- function(df_long, sample_annotation,
 #'
 #' @export
 #'
-plot_iRT <- function(df_long, sample_annotation,
+plot_iRT <- function(irt_pattern = 'iRT',
                      peptide_annotation = NULL,
                      protein_col = 'ProteinName',
-                     order_col = 'order',
-                     irt_pattern = 'iRT',
+                     df_long, sample_annotation,
                      sample_id_col = 'FullRunName',
-                     batch_col = 'MS_batch',
                      measure_col = 'Intensity',
                      feature_id_col = 'peptide_group_label',
-                     color_by_batch = FALSE, color_scheme = 'brewer',
-                     facet_col = NULL,
+                     geom = c('point', 'line'),
                      color_by_col = NULL, color_by_value = NULL,
-                     plot_title = 'iRT peptide profile', ...){
+                     batch_col = 'MS_batch',
+                     color_by_batch = FALSE, color_scheme = 'brewer',
+                     order_col = 'order',
+                     vline_color = 'red',
+                     facet_col = NULL,
+                     plot_title = 'iRT peptide profile', 
+                     theme = 'classic', ...){
   
   if(!setequal(unique(sample_annotation[[sample_id_col]]), 
               unique(df_long[[sample_id_col]]))){
@@ -368,17 +378,18 @@ plot_iRT <- function(df_long, sample_annotation,
     filter(grepl(irt_pattern, !!sym(protein_col))) %>%
     pull(feature_id_col)  %>% unique()
   gg = plot_single_feature(iRT_peptides, df_long, sample_annotation,
-                           order_col = order_col,
                            sample_id_col = sample_id_col,
-                           batch_col = batch_col,
                            measure_col = measure_col,
                            feature_id_col = feature_id_col,
-                           color_by_batch = color_by_batch, 
-                           color_scheme = color_scheme,
+                           geom = geom,
+                           color_by_col = color_by_col, color_by_value = color_by_value,
+                           batch_col = batch_col,
+                           color_by_batch = color_by_batch, color_scheme = color_scheme,
+                           order_col = order_col, 
+                           vline_color = vline_color,
                            facet_col = facet_col,
-                           color_by_col = color_by_col, 
-                           color_by_value = color_by_value,
-                           plot_title = plot_title, ...)
+                           plot_title = plot_title, 
+                           theme = theme, ...)
   return(gg)
   }
 
@@ -412,20 +423,19 @@ plot_iRT <- function(df_long, sample_annotation,
 #' @export
 #'
 
-plot_with_fitting_curve <- function(pep_name, df_long,
-                                    sample_annotation,
-                                    fit_df,
-                                    fit_value_var = 'fit', 
+plot_with_fitting_curve <- function(pep_name, 
+                                    fit_df, fit_value_var = 'fit', 
+                                    df_long, sample_annotation,
                                     sample_id_col = 'FullRunName',
                                     measure_col = 'Intensity',
                                     feature_id_col = 'peptide_group_label',
+                                    geom = c('point', 'line'),
+                                    color_by_col = NULL, color_by_value = NULL, 
                                     batch_col = 'MS_batch',
                                     color_by_batch = FALSE, color_scheme = 'brewer', 
                                     order_col = 'order',
                                     vline_color = 'grey',
                                     facet_col = NULL,
-                                    geom = c('point', 'line'),
-                                    color_by_col = NULL, color_by_value = NULL, 
                                     plot_title = sprintf("Fitting curve of %s peptide", 
                                                          pep_name),
                                     theme = 'classic', ...){
@@ -434,17 +444,19 @@ plot_with_fitting_curve <- function(pep_name, df_long,
     warning("Visualisation of individual features can be suboptimal,
             consider exploring no more than 5 features at a time")
   }
+  #Plotting single features as usually (only batch coloring, if specified, is on fitting-curve layer)
   gg = plot_single_feature(pep_name, df_long = df_long,
                            sample_annotation = sample_annotation,
                            sample_id_col = sample_id_col,
-                           batch_col = batch_col,
-                           order_col = order_col,
                            measure_col = measure_col,
                            feature_id_col = feature_id_col,
-                           facet_col = facet_col,
-                           color_by_col = color_by_col, 
-                           color_by_value = color_by_value,
+                           geom = geom,
+                           color_by_col = color_by_col, color_by_value = color_by_value,
+                           batch_col = batch_col,
+                           color_by_batch = FALSE, color_scheme = NULL,
+                           order_col = order_col,
                            vline_color = vline_color, 
+                           facet_col = facet_col,
                            plot_title = plot_title, 
                            theme = theme, ...)
   
@@ -461,6 +473,7 @@ plot_with_fitting_curve <- function(pep_name, df_long,
                         aes_string(y = fit_value_var, x = order_col,
                                    group = batch_col, 
                                    color = batch_col), size = 1.25)
+    #TODO: add coloring scheme as in other functions here, too
     if(color_by_batch & length(color_scheme) == length(unique(fit_df[[batch_col]]))){
       gg = gg + scale_color_manual(values = color_scheme)
     }
