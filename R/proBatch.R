@@ -24,7 +24,7 @@
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
 #'   feature IDs in rownames and file/sample names as colnames. Usually the log
 #'   transformed version of the original data
-#' @param sample_annotation data matrix with: \enumerate{ \item \code{sample_id_col}
+#' @param sample_annotation data frame with: \enumerate{ \item \code{sample_id_col}
 #'   (this can be repeated as row names) \item biological covariates \item
 #'   technical covariates (batches etc) }
 #' @param sample_id_col name of the column in sample_annotation file, where the
