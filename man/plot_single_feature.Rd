@@ -5,12 +5,12 @@
 \title{Plot peptide measurements}
 \usage{
 plot_single_feature(feature_name, df_long, sample_annotation,
-  order_col = "order", sample_id_col = "FullRunName",
-  batch_col = "MS_batch", measure_col = "Intensity",
+  sample_id_col = "FullRunName", measure_col = "Intensity",
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
-  color_by_batch = FALSE, color_scheme = "brewer", facet_col = NULL,
-  color_by_col = NULL, color_by_value = NULL, plot_title = NULL,
-  vline_color = "red", theme = "classic")
+  color_by_col = NULL, color_by_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  plot_title = NULL, theme = "classic")
 }
 \arguments{
 \item{feature_name}{name of the selected feature (e.g. peptide) for diagnostic profiling}
@@ -20,22 +20,16 @@ sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
-\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
-used for certain diagnostics and normalisations.}
-
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
-
-\item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
-internally for consistency}
+internally for consistency.}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
@@ -44,24 +38,32 @@ names.}
 
 \item{geom}{whether to show the feature as points and/or connect by lines}
 
-\item{color_by_batch}{(logical) whether to color points by batch}
+\item{color_by_col}{column to color point by certain value denoted 
+by \code{color_by_value}. Design with inferred/requant values in openSWATH output data, 
+which means argument value has to be set to `m_score`.}
 
-\item{color_scheme}{color scheme for \code{ggplot} representation}
+\item{color_by_value}{value in \code{color_by_col} to color. For OpenSWATH data,
+this argument value has to be set to `2` (this is an `m_score` value for requants).}
+
+\item{batch_col}{column in \code{sample_annotation} that should be used for
+batch comparison}
+
+\item{color_by_batch}{(logical) whether to color points and connecting lines by batch}
+
+\item{color_scheme}{color scheme for \code{ggplot} representation of batches}
+
+\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
+used for certain diagnostics and normalisations.}
+
+\item{vline_color}{color of vertical lines, typically separating 
+different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order.}
 
 \item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
 plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
 MS experiments (where each instrument has its own order-associated effects) 
 or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
 
-\item{color_by_col}{column to color by certain value denoted 
-by \code{color_by_value}}
-
-\item{color_by_value}{value in \code{color_by_col} to color}
-
 \item{plot_title}{the string indicating the source of the peptides}
-
-\item{vline_color}{color of vertical lines, typically denoting 
-different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}

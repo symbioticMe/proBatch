@@ -13,7 +13,7 @@ matrix_to_long(data_matrix, sample_annotation = NULL,
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
-\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
@@ -24,10 +24,10 @@ names.}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
-internally for consistency}
+internally for consistency.}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{step}{normalization step (e.g. `Raw` or `Quantile_normalized` or
 `qNorm_ComBat`). Useful if consecutive steps are compared in plots. Note
