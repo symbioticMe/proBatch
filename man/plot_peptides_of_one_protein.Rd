@@ -52,8 +52,6 @@ names.}
 
 \item{color_scheme}{color scheme for \code{ggplot} representation}
 
-\item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
-
 \item{color_by_col}{column to color by certain value denoted 
 by \code{color_by_value}}
 
