@@ -44,7 +44,7 @@
 #' plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
 #' MS experiments (where each instrument has its own order-associated effects) 
 #' or simultaneous examination of two batch factors (e.g. preparation day and measurement day)
-#' @param plot_title Title of the plot (usually, processing step + representation
+#' @param plot_title title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #' @param theme ggplot theme, by default `classic`. Can be easily overriden 
 #'
