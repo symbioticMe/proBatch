@@ -4,45 +4,39 @@
 \alias{plot_with_fitting_curve}
 \title{Plot peptide measurements across multi-step analysis}
 \usage{
-plot_with_fitting_curve(pep_name, df_long, sample_annotation, fit_df,
-  fit_value_var = "fit", order_col = "order",
-  sample_id_col = "FullRunName", batch_col = "MS_batch",
+plot_with_fitting_curve(pep_name, fit_df, fit_value_var = "fit", df_long,
+  sample_annotation, sample_id_col = "FullRunName",
   measure_col = "Intensity", feature_id_col = "peptide_group_label",
-  geom = c("point", "line"), color_by_batch = FALSE,
-  color_scheme = "brewer", facet_by_batch = FALSE,
+  geom = c("point", "line"), color_by_col = NULL,
+  color_by_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "grey", facet_col = NULL,
   plot_title = sprintf("Fitting curve of \%s peptide", pep_name),
-  color_by_col = NULL, color_by_value = NULL, theme = "classic",
-  vline_color = "grey", ...)
+  theme = "classic", ...)
 }
 \arguments{
 \item{pep_name}{name of the peptide for diagnostic profiling}
-
-\item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
-\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file)}
-
-\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }}
 
 \item{fit_df}{data frame typically output generated from nonlinear curve 
 fitting by \code{normalize_custom_fit}}
 
 \item{fit_value_var}{column denoting intensity values, typically fitted to curve}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
-used for certain diagnostics and normalisations.}
+\item{df_long}{data frame where each row is a single feature in a single
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+file)}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
 
-\item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
-internally for consistency}
+internally for consistency.}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
@@ -51,22 +45,35 @@ names.}
 
 \item{geom}{for the intensity \code{measure_col} profile}
 
-\item{color_by_batch}{(logical) whether to color points by batch}
+\item{color_by_col}{column to color point by certain value denoted 
+by \code{color_by_value}. Design with inferred/requant values in openSWATH output data, 
+which means argument value has to be set to `m_score`.}
 
-\item{color_scheme}{color scheme for \code{ggplot} representation}
+\item{color_by_value}{value in \code{color_by_col} to color. For OpenSWATH data,
+this argument value has to be set to `2` (this is an `m_score` value for requants).}
+
+\item{batch_col}{column in \code{sample_annotation} that should be used for
+batch comparison}
+
+\item{color_by_batch}{(logical) whether to color points and connecting lines by batch}
+
+\item{color_scheme}{color scheme for \code{ggplot} representation of batches}
+
+\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
+used for certain diagnostics and normalisations.}
+
+\item{vline_color}{color of vertical lines, typically separating 
+different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order.}
+
+\item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
+plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
+MS experiments (where each instrument has its own order-associated effects) 
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
 
 \item{plot_title}{the string indicating the source of the peptides}
 
-\item{color_by_col}{column to color by certain value denoted 
-by \code{color_by_value}}
-
-\item{color_by_value}{value in \code{color_by_col} to color}
-
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
-
-\item{vline_color}{color of vertical lines, typically denoting 
-different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
 
 \item{...}{additional arguments to \code{\link{plot_single_feature}} function}
 }
