@@ -55,8 +55,6 @@ names.}
 
 \item{color_scheme}{color scheme for \code{ggplot} representation}
 
-\item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
-
 \item{plot_title}{the string indicating the source of the peptides}
 
 \item{color_by_col}{column to color by certain value denoted 
@@ -68,7 +66,7 @@ by \code{color_by_value}}
 implemented)}
 
 \item{vline_color}{color of vertical lines, typically denoting 
-different batches}
+different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
 
 \item{...}{additional arguments to \code{\link{plot_single_feature}} function}
 }

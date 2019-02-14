@@ -4,16 +4,16 @@
 \alias{plot_single_feature}
 \title{Plot peptide measurements}
 \usage{
-plot_single_feature(pep_name, df_long, sample_annotation,
+plot_single_feature(feature_name, df_long, sample_annotation,
   order_col = "order", sample_id_col = "FullRunName",
   batch_col = "MS_batch", measure_col = "Intensity",
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
-  color_by_batch = FALSE, color_scheme = "brewer",
-  facet_by_batch = FALSE, color_by_col = NULL, color_by_value = NULL,
-  plot_title = NULL, vline_color = "red", theme = "classic")
+  color_by_batch = FALSE, color_scheme = "brewer", facet_col = NULL,
+  color_by_col = NULL, color_by_value = NULL, plot_title = NULL,
+  vline_color = "red", theme = "classic")
 }
 \arguments{
-\item{pep_name}{name of the peptide for diagnostic profiling}
+\item{feature_name}{name of the selected feature (e.g. peptide) for diagnostic profiling}
 
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
@@ -48,7 +48,10 @@ names.}
 
 \item{color_scheme}{color scheme for \code{ggplot} representation}
 
-\item{facet_by_batch}{(logical) whether to plot each batch in its own facet}
+\item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
+plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
+MS experiments (where each instrument has its own order-associated effects) 
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
 
 \item{color_by_col}{column to color by certain value denoted 
 by \code{color_by_value}}
@@ -58,7 +61,7 @@ by \code{color_by_value}}
 \item{plot_title}{the string indicating the source of the peptides}
 
 \item{vline_color}{color of vertical lines, typically denoting 
-different batches}
+different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
