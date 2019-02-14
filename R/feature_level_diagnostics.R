@@ -96,7 +96,18 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
       geom_line(color = 'black', alpha = .7, linetype = 'dashed')
   }
   
-  #add colors
+  #Add coloring for "inferred" measurements
+  if(!is.null(color_by_col)){
+    col_data = plot_df %>%
+      filter(UQ(as.name(feature_id_col)) %in% feature_name) %>%
+      filter(UQ(as.name(color_by_col)) == color_by_value)
+    
+    gg = gg + geom_point(data = col_data,
+                         aes_string(x = order_col, y = measure_col),
+                         color = 'red', size = .3, shape = 8)
+  }
+  
+  #add colors to batches
   if(color_by_batch & !is.null(batch_col)){
     gg = gg + aes_string(color = batch_col)
     if(length(color_scheme) == 1 & color_scheme == 'brewer'){
@@ -118,26 +129,23 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
         }
     }
     
-    #Add vertical lines for the batch tipping points
-    if(!is.null(batch_col)){
-      batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
-      gg = gg + geom_vline(xintercept = batch.tipping.points,
-                           color = vline_color, linetype = 'dashed')
-    }   
-    tipping.points = df_ave %>%
-      arrange(!!!syms(order_vars))%>%
-      group_by(!!!syms(batch_vars)) %>%
-      summarise(batch_size = n()) %>%
-      group_by(!!sym(facet_col)) %>%
-      mutate(tipping.points = cumsum(batch_size))%>%
-      mutate(tipping.poings = tipping.points+.5)
-  }
+  #Add vertical lines for the batch tipping points
+  if(!is.null(batch_col)){
+    batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
+    gg = gg + geom_vline(xintercept = batch.tipping.points,
+                         color = vline_color, linetype = 'dashed')
+  }   
+  tipping.points = df_ave %>%
+    arrange(!!!syms(order_vars))%>%
+    group_by(!!!syms(batch_vars)) %>%
+    summarise(batch_size = n()) %>%
+    group_by(!!sym(facet_col)) %>%
+    mutate(tipping.points = cumsum(batch_size))%>%
+    mutate(tipping.poings = tipping.points+.5)
   
   #wrap into facets, if several features are displayed
-#split into facets
+  #split into facets
   if(!is.null(facet_col)){
-    order_vars <- c(facet_col, order_col)
-    batch_vars = c(facet_col, batch_col)
     if (length(feature_name) > 1){
       gg = gg + facet_grid(reformulate(batch_col, feature_name), scales = 'free_y')
     } else {
@@ -147,20 +155,9 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
     if (length(feature_name) > 1){
       gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
     }
-  
-  #Add coloring for "inferred" measurements
-  if(!is.null(color_by_col)){
-    col_data = plot_df %>%
-      filter(UQ(as.name(feature_id_col)) %in% feature_name) %>%
-      filter(UQ(as.name(color_by_col)) == color_by_value)
-    
-    gg = gg + geom_point(data = col_data,
-                         aes_string(x = order_col, y = measure_col),
-                         color = 'red', size = .3, shape = 8)
   }
   
   #Add plot title
-    
   if(!is.null(plot_title)){
     gg = gg + ggtitle(plot_title)
   }
