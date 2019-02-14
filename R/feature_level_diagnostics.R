@@ -90,6 +90,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
   if (identical(geom, 'point')){
     gg = gg + geom_point()
   }
+  
   if (identical(geom, c('point', 'line'))){
     gg = gg + geom_point() +
       geom_line(color = 'black', alpha = .7, linetype = 'dashed')
@@ -116,25 +117,13 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
           gg = gg + scale_color_manual(values = color_scheme)
         }
     }
-  
-  #Add vertical lines for the batch tipping points
-  if(!is.null(batch_col)){
-    batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
-    gg = gg + geom_vline(xintercept = batch.tipping.points,
-                         color = vline_color, linetype = 'dashed')
-  } 
-  
-  #split into facets
-  if(!is.null(facet_col)){
-    order_vars <- c(facet_col, order_col)
-    batch_vars = c(facet_col, batch_col)
-    if (length(feature_name) > 1){
-      gg = gg + facet_grid(reformulate(batch_col, feature_name), scales = 'free_y')
-    } else {
-      gg = gg  + facet_wrap(as.formula(paste("~", batch_col)), scales = 'free_y')
-    }
     
-
+    #Add vertical lines for the batch tipping points
+    if(!is.null(batch_col)){
+      batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
+      gg = gg + geom_vline(xintercept = batch.tipping.points,
+                           color = vline_color, linetype = 'dashed')
+    }   
     tipping.points = df_ave %>%
       arrange(!!!syms(order_vars))%>%
       group_by(!!!syms(batch_vars)) %>%
@@ -145,13 +134,19 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
   }
   
   #wrap into facets, if several features are displayed
-  #TODO: resolve this conflict for multi-instrument measurement case
-  if (length(feature_name) > 1){
-    gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
-  }
-  if(!is.null(plot_title)){
-    gg = gg + ggtitle(plot_title)
-  }
+#split into facets
+  if(!is.null(facet_col)){
+    order_vars <- c(facet_col, order_col)
+    batch_vars = c(facet_col, batch_col)
+    if (length(feature_name) > 1){
+      gg = gg + facet_grid(reformulate(batch_col, feature_name), scales = 'free_y')
+    } else {
+      gg = gg  + facet_wrap(as.formula(paste("~", batch_col)), scales = 'free_y')
+    }
+    #TODO: resolve this conflict for multi-instrument measurement case
+    if (length(feature_name) > 1){
+      gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
+    }
   
   #Add coloring for "inferred" measurements
   if(!is.null(color_by_col)){
@@ -164,6 +159,12 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
                          color = 'red', size = .3, shape = 8)
   }
   
+  #Add plot title
+    
+  if(!is.null(plot_title)){
+    gg = gg + ggtitle(plot_title)
+  }
+    
   #Add the theme
   if (theme == 'classic'){
     gg = gg + theme_classic()
