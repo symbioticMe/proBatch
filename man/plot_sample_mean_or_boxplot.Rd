@@ -11,7 +11,7 @@ plot_sample_mean(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", order_col = "order",
   batch_col = "MS_batch", facet_col = NULL, color_by_batch = FALSE,
   color_scheme = "brewer", theme = "classic", plot_title = NULL,
-  order_per_facet = FALSE, vline_color = "grey", ylimits = NULL)
+  vline_color = "grey", ylimits = NULL)
 
 plot_boxplot(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
@@ -33,10 +33,12 @@ filenames (colnames of the data matrix are found)}
 \item{order_col}{column where running order is specified.}
 
 \item{batch_col}{column in `sample_annotation` that should be used for
-batch comparison}
+batch comparison. Can be `NULL` if only boxplot/mean comparison, without coloring by batches, is required.}
 
-\item{facet_col}{recommended if more than one batch covariate is present.
-Faceting is most suited to examine instruments separately}
+\item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
+plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
+MS experiments (where each instrument has its own order-associated effects) 
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
 
 \item{color_by_batch}{should the each batch be represented with its own
 color?}
@@ -50,10 +52,8 @@ examples)}
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
-\item{order_per_facet}{if order is defined ignoring facets (usually
-instrument), re-define order per-batch}
-
-\item{vline_color}{color of vertical line, typically to denote batches}
+\item{vline_color}{color of vertical lines, typically denoting 
+different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
 
 \item{ylimits}{range of y-axis to plot feature-level trends}
 
@@ -65,6 +65,9 @@ file)}
 \item{measure_col}{if `df_long` is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
+
+\item{order_per_facet}{if order is defined ignoring facets (usually
+instrument), re-define order per-batch}
 }
 \value{
 ggplot2 class object. Thus, all aesthetics can be overriden
