@@ -8,16 +8,16 @@
 running order available)}
 \usage{
 plot_sample_mean(data_matrix, sample_annotation = NULL,
-  sample_id_col = "FullRunName", order_col = "order",
-  batch_col = "MS_batch", facet_col = NULL, color_by_batch = FALSE,
-  color_scheme = "brewer", theme = "classic", plot_title = NULL,
-  vline_color = "grey", ylimits = NULL)
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "grey", facet_col = NULL,
+  plot_title = NULL, theme = "classic", ylimits = NULL)
 
 plot_boxplot(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", batch_col = "MS_batch", facet_col = NULL,
-  color_by_batch = TRUE, color_scheme = "brewer", theme = "classic",
-  plot_title = NULL, order_per_facet = FALSE)
+  batch_col = "MS_batch", color_by_batch = TRUE,
+  color_scheme = "brewer", order_col = "order", facet_col = NULL,
+  plot_title = NULL, theme = "classic")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, 
@@ -30,15 +30,8 @@ etc)}
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
-\item{order_col}{column where running order is specified.}
-
 \item{batch_col}{column in `sample_annotation` that should be used for
 batch comparison. Can be `NULL` if only boxplot/mean comparison, without coloring by batches, is required.}
-
-\item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
-plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
-MS experiments (where each instrument has its own order-associated effects) 
-or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
 
 \item{color_by_batch}{should the each batch be represented with its own
 color?}
@@ -46,14 +39,21 @@ color?}
 \item{color_scheme}{named vector, names corresponding to unique batch values
 as specified in `sample_annotation`}
 
-\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
-examples)}
+\item{order_col}{column where running order is specified.}
+
+\item{vline_color}{color of vertical lines, typically denoting 
+different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
+
+\item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
+plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
+MS experiments (where each instrument has its own order-associated effects) 
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
-\item{vline_color}{color of vertical lines, typically denoting 
-different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
+\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
+examples)}
 
 \item{ylimits}{range of y-axis to plot feature-level trends}
 
