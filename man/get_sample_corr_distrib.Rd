@@ -12,12 +12,12 @@ get_sample_corr_distrib(cor_proteome, sample_annotation,
 \arguments{
 \item{cor_proteome}{sample correlation matrix (square)}
 
-\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{biospecimen_id_col}{column in `sample_annotation` 
 that defines a unique bio ID, which is usually a 
