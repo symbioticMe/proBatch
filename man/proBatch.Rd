@@ -16,12 +16,21 @@ file)}
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
-\item{sample_annotation}{data matrix with: \enumerate{ \item \code{sample_id_col}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
+
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
+column with expression/abundance/intensity; otherwise, it is used
+internally for consistency.}
+
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
@@ -29,16 +38,12 @@ batch comparison}
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for certain diagnostics and normalisations.}
 
-\item{measure_col}{if \code{df_long} is among the parameters, it is the
-column with expression/abundance/intensity; otherwise, it is used
-internally for consistency}
+\item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
+plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
+MS experiments (where each instrument has its own order-associated effects) 
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
 
-\item{feature_id_col}{name of the column with feature/gene/peptide/protein
-ID used in the long format representation \code{df_long}. In the wide
-formatted representation \code{data_matrix} this corresponds to the row
-names.}
-
-\item{plot_title}{Title of the plot (usually, processing step + representation
+\item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
 \item{theme}{ggplot theme, by default `classic`. Can be easily overriden}
