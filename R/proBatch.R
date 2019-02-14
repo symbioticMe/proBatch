@@ -27,19 +27,23 @@
 #' @param sample_annotation data frame with: \enumerate{ \item \code{sample_id_col}
 #'   (this can be repeated as row names) \item biological covariates \item
 #'   technical covariates (batches etc) }
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param batch_col column in \code{sample_annotation} that should be used for
-#'   batch comparison
-#' @param order_col column in \code{sample_annotation} that determines sample order. It is
-#'    used for certain diagnostics and normalisations.
+#' @param sample_id_col name of the column in \code{sample_annotation} table, where the
+#'   filenames (colnames of the data matrix are found).
 #' @param measure_col if \code{df_long} is among the parameters, it is the
 #'   column with expression/abundance/intensity; otherwise, it is used
-#'   internally for consistency
+#'   internally for consistency.
 #' @param feature_id_col name of the column with feature/gene/peptide/protein
 #'   ID used in the long format representation \code{df_long}. In the wide
 #'   formatted representation \code{data_matrix} this corresponds to the row
 #'   names.
+#' @param batch_col column in \code{sample_annotation} that should be used for
+#'   batch comparison
+#' @param order_col column in \code{sample_annotation} that determines sample order. It is
+#'    used for certain diagnostics and normalisations.
+#' @param facet_col column  in `sample_annotation` with a batch factor to separate 
+#' plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
+#' MS experiments (where each instrument has its own order-associated effects) 
+#' or simultaneous examination of two batch factors (e.g. preparation day and measurement day)
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #' @param theme ggplot theme, by default `classic`. Can be easily overriden 
