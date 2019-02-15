@@ -1,5 +1,5 @@
-#' Plot per-sample mean or boxplot (showing median and quantiles) vs order (if the real
-#' running order available)
+#' Plot per-sample mean or boxplots (showing median and quantiles). In ordered samples,
+#' e.g. consecutive MS runs, order-associated effects are visualised.
 #' @details functions for quick visual assessment of trends associated, overall
 #'   or specific covariate-associated (see `batch_col` and `facet_col`)
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, 
