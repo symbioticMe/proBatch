@@ -14,7 +14,7 @@ in columns)}
 \item{log_base}{base of the logarithm for transformation}
 }
 \value{
-`data_matrix`-size matrix, with columns log2 transformed
+\code{data_matrix}-size matrix, with columns log2 transformed
 }
 \description{
 Log transformation of the data, ensuring that the row and column names

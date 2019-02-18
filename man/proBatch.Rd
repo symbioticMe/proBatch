@@ -46,7 +46,7 @@ or simultaneous examination of two batch factors (e.g. preparation day and measu
 \item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
-\item{theme}{ggplot theme, by default `classic`. Can be easily overriden}
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 }
 \description{
 The proBatch package contains functions for analyzing and correcting batch effects 
@@ -60,7 +60,7 @@ It addresses the following needs: \itemize{ \item prepare the data for analysis
 }
 \details{
 To learn more about proBatch, start with the vignettes:
-`browseVignettes(package = "proBatch")`
+\code{browseVignettes(package = "proBatch")}
 }
 \section{Section}{
 
