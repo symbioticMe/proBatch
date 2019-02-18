@@ -14,12 +14,11 @@ feature IDs in rownames and file/sample names as colnames. in most
 function, it is assumed that this is the log transformed version of the
 original data}
 
-\item{color_df}{data frame of colors, as created by
-`sample_annotation_to_colors`}
+\item{color_df}{data frame of colors, as created by \code{sample_annotation_to_colors}}
 
 \item{distance}{distance metric used for clustering}
 
-\item{agglomeration}{agglomeration methods as used by `hclust`}
+\item{agglomeration}{agglomeration methods as used by \code{hclust}}
 
 \item{label_samples}{if \code{TRUE} sample IDs (column names of 
 \code{data_matrix}) will be printed}
@@ -30,7 +29,7 @@ original data}
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
-\item{...}{other parameters of `plotDendroAndColors` from `WGCNA` package}
+\item{...}{other parameters of \code{plotDendroAndColors} from \code{WGCNA} package}
 }
 \value{
 No return
