@@ -19,7 +19,8 @@
 #' MS experiments (where each instrument has its own order-associated effects) 
 #' or simultaneous examination of two batch factors (e.g. preparation day and measurement day)
 #' @param vline_color color of vertical lines, typically separating 
-#'  different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order.
+#'  different MS batches in ordered runs; 
+#'  should be `NULL` for experiments without intrinsic order.
 #' @param plot_title the string indicating the source of the peptides
 #' @param theme plot theme (default is 'classical'; other options not
 #'   implemented)
