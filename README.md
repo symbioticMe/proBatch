@@ -44,7 +44,7 @@ NOTE: You might need to also install the following linux packages:
 Optionally also install:
 
 ```
-install.packages("roxygen2")
+install.packages(c("devtools", "roxygen2")
 ```
 
 
