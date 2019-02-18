@@ -17,7 +17,7 @@ feature IDs in rownames and file/sample names as colnames. in most
 function, it is assumed that this is the log transformed version of the
 original data}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+\item{sample_annotation}{data matrix with 1) \code{sample_id_col} (this can be
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
 
@@ -29,10 +29,10 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{technical_covariates}{vector `sample_annotation` column names that are
+\item{technical_covariates}{vector \code{sample_annotation} column names that are
 technical covariates}
 
-\item{biological_covariates}{vector `sample_annotation` column names, that
+\item{biological_covariates}{vector \code{sample_annotation} column names, that
 are biologically meaningful covariates}
 
 \item{fill_the_missing}{numeric value that the missing values are
@@ -48,7 +48,7 @@ needs to explain (the rest will be lumped together)}
 following categories: c('residual', 'biological', 'biol:techn',
 'technical')}
 
-\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden (see
 examples)}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
