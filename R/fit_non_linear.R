@@ -22,8 +22,7 @@
 #' @param ... additional paramters to be passed to the fitting function
 #'
 #' @return vector of fitted response values
-#'
-#' @export
+#' 
 #' @keywords internal
 #' 
 fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x',
