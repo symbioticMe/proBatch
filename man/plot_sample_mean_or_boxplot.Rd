@@ -4,8 +4,8 @@
 \alias{plot_sample_mean_or_boxplot}
 \alias{plot_sample_mean}
 \alias{plot_boxplot}
-\title{Plot per-sample mean or boxplot (showing median and quantiles) vs order (if the real
-running order available)}
+\title{Plot per-sample mean or boxplots (showing median and quantiles). In ordered samples,
+e.g. consecutive MS runs, order-associated effects are visualised.}
 \usage{
 plot_sample_mean(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
@@ -73,8 +73,8 @@ instrument), re-define order per-batch}
 ggplot2 class object. Thus, all aesthetics can be overriden
 }
 \description{
-Plot per-sample mean or boxplot (showing median and quantiles) vs order (if the real
-running order available)
+Plot per-sample mean or boxplots (showing median and quantiles). In ordered samples,
+e.g. consecutive MS runs, order-associated effects are visualised.
 }
 \details{
 functions for quick visual assessment of trends associated, overall
