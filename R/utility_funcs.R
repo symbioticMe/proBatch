@@ -1,4 +1,4 @@
-check_sample_consitency <- function(sample_annotation, sample_id_col, df_long) {
+check_sample_consistency <- function(sample_annotation, sample_id_col, df_long) {
   if (!is.null(sample_annotation)){
     if (!(sample_id_col %in% names(sample_annotation))){
       warning('Sample ID column is not defined in sample annotation, sample annotation 
@@ -13,6 +13,7 @@ check_sample_consitency <- function(sample_annotation, sample_id_col, df_long) {
   } else {
     warning('Sample annotation is not provided, only the basic sample boxplots will be plotted')
   }
+  return(df_long)
 }
 
 define_sample_order <- function(order_col, sample_annotation, facet_col, batch_col, 
