@@ -7,9 +7,9 @@
 \format{A data frame with 535 rows and 10 variables:
 \describe{
   \item{peptide_group_label}{peptide group label ID, identical to 
-  `peptide_group_label` in `example_proteome`}
+  \code{peptide_group_label} in \code{example_proteome}}
   \item{Gene}{HUGO gene ID}
-  \item{ProteinName}{protein group name as specified in `example_proteome`}
+  \item{ProteinName}{protein group name as specified in \code{example_proteome}}
   }}
 \usage{
 example_peptide_annotation
