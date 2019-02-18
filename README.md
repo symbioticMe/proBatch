@@ -30,7 +30,7 @@ Install the dependencies:
 ```
 bioc_deps <- c("GO.db", "impute", "preprocessCore", "pvca","sva" )
 cran_deps <- c("corrplot", "data.table", "ggplot2", "ggfortify","lazyeval", "pheatmap", "reshape2", "rlang", 
-               "tibble", "dplyr", "tidyr" "wesanderson","WGCNA") 
+               "tibble", "dplyr", "tidyr", "wesanderson","WGCNA") 
                
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
