@@ -23,46 +23,46 @@ plot_boxplot(df_long, sample_annotation = NULL,
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, 
 with feature IDs in rownames and file/sample names as colnames. in most function,}
 
-\item{sample_annotation}{data matrix with 1) `sample_id_col` (this can be
+\item{sample_annotation}{data matrix with 1) \code{sample_id_col} (this can be
 repeated as row names) 2) biological and 3) technical covariates (batches
 etc)}
 
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
-\item{batch_col}{column in `sample_annotation` that should be used for
+\item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison. Can be `NULL` if only boxplot/mean comparison, without coloring by batches, is required.}
 
 \item{color_by_batch}{should the each batch be represented with its own
 color?}
 
 \item{color_scheme}{named vector, names corresponding to unique batch values
-as specified in `sample_annotation`}
+as specified in \code{sample_annotation}}
 
 \item{order_col}{column where running order is specified.}
 
 \item{vline_color}{color of vertical lines, typically denoting 
-different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order}
+different MS batches in ordered runs; should be \code{NULL} for experiments without intrinsic order}
 
-\item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
-plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
+\item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
+plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
 MS experiments (where each instrument has its own order-associated effects) 
 or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
-\item{theme}{ggplot theme, by default `classic`. Can be easily overriden (see
+\item{theme}{ggplot theme, by default  \code{classic}. Can be easily overriden (see
 examples)}
 
 \item{ylimits}{range of y-axis to plot feature-level trends}
 
 \item{df_long}{data frame where each row is a single feature in a single
-sample, thus it has minimally, `sample_id_col`, `feature_id_col` and
-`measure_col`, but usually also `m_score` (in OpenSWATH output result
+sample, thus it has minimally, \code{sample_id_col}, \code{feature_id_col} and
+\code{measure_col}, but usually also \code{m_score} (in OpenSWATH output result
 file)}
 
-\item{measure_col}{if `df_long` is among the parameters, it is the column
+\item{measure_col}{if \code{df_long} is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
 
@@ -78,7 +78,7 @@ e.g. consecutive MS runs, order-associated effects are visualised.
 }
 \details{
 functions for quick visual assessment of trends associated, overall
-  or specific covariate-associated (see `batch_col` and `facet_col`)
+  or specific covariate-associated (see \code{batch_col} and \code{facet_col})
 }
 \examples{
 plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
