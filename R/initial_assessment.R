@@ -63,7 +63,6 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   names(sample_average) = colnames(data_matrix)
   
   df_ave = data.frame(Average_Intensity = sample_average,
-                      order_temp_col = 1:length(sample_average),
                       sample_id_col = colnames(data_matrix))
   
   #Assign a column for sample_id
@@ -74,7 +73,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
-  check_sample_consistency(sample_annotation, sample_id_col, df_ave)
+  df_ave = check_sample_consistency(sample_annotation, sample_id_col, df_ave)
   
   #Ensure that batch-coloring-related arguments are defined properly
   if(!is.null(batch_col)){
