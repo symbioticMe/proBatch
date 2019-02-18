@@ -11,7 +11,7 @@
 #' @param dateTimeFormat POSIX format of the date and time. 
 #'   See \code{\link{as.POSIXct}} from base R for details
 #'
-#' @return sample annotation file with column names as 'new_time_column' with
+#' @return sample annotation file with a new column \code{new_time_column} with
 #'   POSIX-formatted date
 #'
 #' @family date
@@ -57,7 +57,7 @@ dates_to_posix <- function(sample_annotation,
 #'  based on time columns
 #' @param instrument_col column, denoting different 
 #' instrument used for measurements
-#' @return sample annotation file with column names as 'new_time_column' with
+#' @return sample annotation file with a new column \code{new_time_column} with
 #'   POSIX-formatted date & \code{new_order_col} used 
 #'   in some diagnostic plots (e.g.
 #'   \code{\link{plot_iRT}}, \code{\link{plot_sample_mean}})
