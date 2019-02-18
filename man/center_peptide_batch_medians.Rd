@@ -27,12 +27,12 @@ used for batch comparison}
 used in the long format representation df_long. In the wide formatted 
 representation data_matrix this corresponds to the row names.}
 
-\item{measure_col}{if `df_long` is among the parameters, it is the column
+\item{measure_col}{if \code{df_long} is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
 }
 \value{
-`df_long`-size long format data with batch-effect corrected with
+\code{df_long}-size long format data with batch-effect corrected with
   per-feature batch median centering in Intensity_normalized column
 }
 \description{
