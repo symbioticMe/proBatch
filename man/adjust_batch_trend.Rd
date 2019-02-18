@@ -28,7 +28,7 @@ representation data_matrix this corresponds to the row names.}
 \item{sample_id_col}{name of the column in sample_annotation file, where the
 filenames (colnames of the data matrix are found)}
 
-\item{measure_col}{if `df_long` is among the parameters, it is the column
+\item{measure_col}{if \code{df_long} is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
 
@@ -41,10 +41,10 @@ as covariate to fit the non-linear fit}
 
 \item{pct_threshold}{the percentage threshold to filter data for curve fitting}
 
-\item{...}{other parameters, usually those of the `fit_func`}
+\item{...}{other parameters, usually those of the \code{fit_func}}
 }
 \value{
-list of two items: 1) `data_matrix`, adjusted with continious fit; 
+list of two items: 1) \code{data_matrix}, adjusted with continious fit; 
 2) fit_df, used to examine the fitting curves
 }
 \description{
