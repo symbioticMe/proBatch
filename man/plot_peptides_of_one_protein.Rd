@@ -63,7 +63,8 @@ batch comparison}
 used for certain diagnostics and normalisations.}
 
 \item{vline_color}{color of vertical lines, typically separating 
-different MS batches in ordered runs; should be `NULL` for experiments without intrinsic order.}
+different MS batches in ordered runs; 
+should be `NULL` for experiments without intrinsic order.}
 
 \item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
 plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
