@@ -34,8 +34,13 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
       }
     } else {
       if (!(order_col %in% names(df_long))){
-        warning('sample annotation is not defined, 
-                taking order of files in the data matrix instead')
+        if(!is.null(facet_col)){
+          warning(sprintf('column  %s for order is not found in data frame, 
+                          taking order of files in the data matrix instead, specific for each instrument', order_col))
+        } else {
+          warning(sprintf('column %s is not defined in data frame, 
+                taking order of files in the data matrix instead', order_col))
+        }
       } else {
         return(list(order_col = order_col,
                     df_long = df_long))
@@ -62,11 +67,9 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
       } else {
         warning('order column is identical to sample ID column, 
                 assuming order of samples in the annnotation corresponds to the sample running order')
-        
         df_long[[order_col]] = match(df_long[[sample_id_col]],
                                      sample_annotation[[sample_id_col]])
       }
-      
     } else {
       warning('order column is identical to sample ID column, and sample annotation is not defined,
                 assuming order of samples in the intensity table corresponds to the sample running order')
@@ -75,7 +78,6 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
                                    unique(df_long[[sample_id_col]]))
     }
   }
-    
   
   if (is.null(order_col) | !(order_col %in% names(df_long))){
     order_col = sample_id_col
