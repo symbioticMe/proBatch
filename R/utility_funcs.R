@@ -102,9 +102,10 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
               df_long = df_long))
 }
 
-add_vertical_batch_borders <- function(order_col, batch_col, vline_color, facet_col, 
+add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vline_color, facet_col, 
                                        df_long, gg) {
-  if(!is.null(order_col) & !is.null(batch_col) & !is.null(vline_color)){
+  if(!is.null(order_col) & (order_col != sample_id_col) & !is.character(order_col) &
+     !is.null(batch_col) & !is.null(vline_color)){
     #define the batch tipping points (positions of vertical lines)
     if (!is.null(facet_col)){
       order_vars <- c(facet_col, order_col)
