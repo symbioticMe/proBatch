@@ -57,25 +57,27 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
     }
   }
   
-  if (order_col == sample_id_col){
-    if (!is.null(sample_annotation)){
-      order_col = 'sample_order'
-      if(color_by_batch & (batch_col %in% names(sample_annotation))){
-        warning("order column is identical to sample ID column and coloring by batch is required,
+  if (!is.null(order_col)){
+    if (order_col == sample_id_col){
+      if (!is.null(sample_annotation)){
+        order_col = 'sample_order'
+        if(color_by_batch & (batch_col %in% names(sample_annotation))){
+          warning("order column is identical to sample ID column and coloring by batch is required,
                 ordering the samples by batch rather than by sample order in annotation")
-        df_long[[order_col]] = reorder(as.character(df_long[[sample_id_col]]), df_long[[batch_col]])
-      } else {
-        warning('order column is identical to sample ID column, 
+          df_long[[order_col]] = reorder(as.character(df_long[[sample_id_col]]), df_long[[batch_col]])
+        } else {
+          warning('order column is identical to sample ID column, 
                 assuming order of samples in the annnotation corresponds to the sample running order')
-        df_long[[order_col]] = match(df_long[[sample_id_col]],
-                                     sample_annotation[[sample_id_col]])
-      }
-    } else {
-      warning('order column is identical to sample ID column, and sample annotation is not defined,
+          df_long[[order_col]] = match(df_long[[sample_id_col]],
+                                       sample_annotation[[sample_id_col]])
+        }
+      } else {
+        warning('order column is identical to sample ID column, and sample annotation is not defined,
                 assuming order of samples in the intensity table corresponds to the sample running order')
-      order_col = 'sample_order'
-      df_long[[order_col]] = match(df_long[[sample_id_col]],
-                                   unique(df_long[[sample_id_col]]))
+        order_col = 'sample_order'
+        df_long[[order_col]] = match(df_long[[sample_id_col]],
+                                     unique(df_long[[sample_id_col]]))
+      }
     }
   }
   
