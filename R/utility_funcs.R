@@ -22,11 +22,11 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
     if (!is.null(sample_annotation)){
       if (!(order_col %in% names(sample_annotation))){
         if(!is.null(facet_col)){
-          warning("order column not found in sample annotation, assuming that order in 
-                sample annotation corresponds to sample running order, specific for each instrument")
+          warning(sprintf('column  %s is not found in sample annotation, assuming that order in 
+                sample annotation corresponds to sample running order, specific for each instrument', order_col))
         } else {
-          warning('order column not found in sample annotation, 
-                assuming the order of sample IDs corresponds to running order')
+          warning(sprintf('column %s is not defined in sample annotation, 
+                assuming the order of sample IDs corresponds to running order', order_col))
         }
       } else {
         return(list(order_col = order_col,
