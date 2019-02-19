@@ -60,10 +60,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   
   #Create a data frame with sample averages
   sample_average = colMeans(data_matrix, na.rm = TRUE)
-  names(sample_average) = colnames(data_matrix)
+  #names(sample_average) = colnames(data_matrix)
   
   df_ave = data.frame(Mean_Intensity = sample_average,
-                      sample_id_col = colnames(data_matrix))
+                      sample_id_col = colnames(data_matrix), 
+                      stringsAsFactors = FALSE)
   
   #Assign a column for sample_id
   if(is.null(sample_annotation) | !(sample_id_col %in% names(sample_annotation))
@@ -133,8 +134,10 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   
   #Rotate x axis tick labels if the filenames, not numeric order, is displayed
   if (!is.numeric(df_ave[[order_col]])){
-    df_ave[[order_col]] = factor(df_ave[[order_col]],
-                                 levels = df_ave[[order_col]])
+    if(is.character(df_ave[[order_col]])){
+      df_ave[[order_col]] = factor(df_ave[[order_col]],
+                                   levels = unique(df_ave[[order_col]]))
+    }
     gg = gg +
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
   }
@@ -231,8 +234,10 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   
   #Rotate x axis tick labels if the filenames, not numeric order, is displayed
   if (!is.numeric(df_long[[order_col]])){
-    df_long[[order_col]] = factor(df_long[[order_col]],
-                                  levels = df_long[[order_col]])
+    if(is.character(df_long[[order_col]])){
+      df_long[[order_col]] = factor(df_long[[order_col]],
+                                    levels = unique(df_long[[order_col]]))
+    }
     gg = gg +
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
   }
