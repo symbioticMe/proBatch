@@ -192,9 +192,11 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   }
   
   #For order definition and subsequent faceting, facet column has to be in the data frame
-  if(!is.null(facet_col) & !(facet_col %in% names(df_long))){
+  if(!is.null(facet_col)){
+    if(!(facet_col %in% names(df_long))){
     stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
                  check sample annotation data frame', facet_col))
+    }
   }
   
   #Defining sample order for plotting
