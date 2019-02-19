@@ -59,7 +59,7 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
     }
   }
   
-  if (!is.null(order_col) || (!is.null(order_col) && order_col == sample_id_col)){
+  if (!is.null(order_col) && order_col == sample_id_col){
     if (!is.null(sample_annotation)){
       order_col = 'sample_order'
       if(color_by_batch && (!is.null(batch_col) && (batch_col %in% names(sample_annotation)))){
