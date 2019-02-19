@@ -17,7 +17,7 @@ plot_boxplot(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
   batch_col = "MS_batch", color_by_batch = TRUE,
   color_scheme = "brewer", order_col = "order", facet_col = NULL,
-  plot_title = NULL, theme = "classic")
+  plot_title = NULL, theme = "classic", ylimits = NULL)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, 
