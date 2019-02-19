@@ -19,18 +19,23 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long) 
 define_sample_order <- function(order_col, sample_annotation, facet_col, batch_col, 
                                 df_long, sample_id_col, color_by_batch) {
   if (!is.null(order_col)){
-    if (!is.null(sample_annotation) & !(order_col %in% names(sample_annotation))){
-      if(!is.null(facet_col)){
-        warning("order column not found in sample annotation, assuming that order in 
+    if (!is.null(sample_annotation)){
+      if (!(order_col %in% names(sample_annotation))){
+        if(!is.null(facet_col)){
+          warning("order column not found in sample annotation, assuming that order in 
                 sample annotation corresponds to sample running order, specific for each instrument")
-      } else {
-        warning('order column not found in sample annotation, 
+        } else {
+          warning('order column not found in sample annotation, 
                 assuming the order of sample IDs corresponds to running order')
+        }
+      } else {
+        warning(sprintf('column %s is not defined in sample annotation, 
+                taking order of files in the data matrix instead', order_col))
       }
     } else {
       warning('sample annotation is not defined, 
                 taking order of files in the data matrix instead')
-    }
+    } 
   } else {
     if (!is.null(batch_col)){
       warning("Order column is NULL, assuming order is not introducing unwanted 
