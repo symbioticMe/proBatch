@@ -29,12 +29,17 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
                 assuming the order of sample IDs corresponds to running order')
         }
       } else {
-        warning(sprintf('column %s is not defined in sample annotation, 
-                taking order of files in the data matrix instead', order_col))
+        return(list(order_col = order_col,
+                    df_long = df_long))
       }
     } else {
-      warning('sample annotation is not defined, 
+      if (!(order_col %in% names(df_long))){
+        warning('sample annotation is not defined, 
                 taking order of files in the data matrix instead')
+      } else {
+        return(list(order_col = order_col,
+                    df_long = df_long))
+      }
     } 
   } else {
     if (!is.null(batch_col)){
