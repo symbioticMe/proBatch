@@ -140,7 +140,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   }
   
   #Move the legend to the upper part of the plot to save the horizontal space
-  if (max(df_ave[[order_col]]) > 30){
+  if (length(unique(df_ave[[order_col]])) > 30){
     gg = gg + theme(legend.position="top")
   }
   
