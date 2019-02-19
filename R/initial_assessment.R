@@ -169,59 +169,40 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                          color_by_batch = TRUE, color_scheme = 'brewer',
                          order_col = 'order',
                          facet_col = NULL,
-                         plot_title = NULL, theme = 'classic'){
+                         plot_title = NULL, theme = 'classic',
+                         ylimits = NULL){
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
-  if(!setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]]))){
-    warning('Sample IDs in sample annotation not consistent with samples in input data.')}
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long)
   
   #Ensure that batch-coloring-related arguments are defined properly
-  if (!all(c(batch_col, sample_id_col) %in% names(df_long))){
-    if (!is.null(sample_annotation)){
-      df_long = df_long %>% merge(sample_annotation,
-                                  by = sample_id_col)
-      if(is.numeric(df_long[[batch_col]])){
-        df_long[,batch_col] <- as.factor(df_long[, batch_col])
-      }
-    } else {
-      if (color_by_batch){
-        stop('batches cannot be colored as the batch column or sample ID column
-              is not defined, check sample_annotation and data matrix')
-      }
+  if(!is.null(batch_col)){
+    if(!(batch_col %in% names(df_long))){
+      stop('batches cannot be colored as the batch column or sample ID column
+             is not defined, check sample_annotation and data matrix')
+    }
+    #For proper plotting, batch column has to be a factor
+    df_long[, batch_col] <- as.factor(df_long[, batch_col])
+  } else {
+    if (color_by_batch){
+      warning('batches cannot be colored as the batch column is defined as NULL, continuing without colors')
+      color_by_batch = FALSE
     }
   }
   
   #For order definition and subsequent faceting, facet column has to be in the data frame
   if(!is.null(facet_col)){
-    if(!(facet_col %in% names(df_long))){
-    stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
+    if ( !(facet_col %in% names(df_long))){
+      stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
                  check sample annotation data frame', facet_col))
     }
   }
   
   #Defining sample order for plotting
-  if (is.null(order_col)){
-    warning('order column not defined, taking order of files in the data matrix instead')
-    order_col = 'file_order'
-    df_long[[order_col]] = match(df_long[[sample_id_col]],
-                                 unique(df_long[[sample_id_col]]))
-  } else if (!(order_col %in% names(sample_annotation)) &
-             !(order_col %in% names(df_long))){
-    warning('order column not found in sample annotation, taking order of files in the data matrix instead')
-    order_col = 'order_temp_col'
-    df_long[[order_col]] = match(df_long[[sample_id_col]],
-                                 unique(df_long[[sample_id_col]]))
-    order_per_facet = TRUE
-  }
-  
-  if (order_per_facet){
-    if (!is.null(facet_col)){
-      warning('defining order within each facet')
-      df_long = df_long %>%
-        group_by_at(vars(one_of(facet_col))) %>%
-        mutate(order = rank(UQ(sym(order_col))))
-    }
-  }
+  sample_order = define_sample_order(order_col, sample_annotation, facet_col, batch_col, df_long, 
+                                     sample_id_col, color_by_batch)
+  order_col = sample_order$order_col
+  df_long = sample_order$df_long
   
   #Main plotting of intensity distribution boxplots
   gg = ggplot(df_long, aes_string(x = order_col, y = measure_col,
@@ -229,7 +210,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     geom_boxplot(outlier.size = .15)
   
   #Define the color scheme, add colors
-  color_fill_boxes_by_batch(color_by_batch, batch_col, gg, color_scheme, df_long)
+  gg = color_fill_boxes_by_batch(color_by_batch, batch_col, gg, color_scheme, df_long)
   
   #Plot each "facet factor" in it's own subplot
   if(!is.null(facet_col)){
@@ -257,7 +238,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   }
   
   #Move the legend to the upper part of the plot to save the horizontal space
-  if (max(df_long[[order_col]]) > 30){
+  if (length(unique(df_long[[order_col]])) > 30){
     gg = gg + theme(legend.position="top")
   }
   
