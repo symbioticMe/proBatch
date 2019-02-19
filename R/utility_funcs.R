@@ -72,7 +72,7 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
   }
   
   return(list(order_col = order_col,
-              df_ave = df_long))
+              df_long = df_long))
 }
 
 add_vertical_batch_borders <- function(order_col, batch_col, vline_color, facet_col, 
