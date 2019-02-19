@@ -8,8 +8,8 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long) 
       warning('Sample IDs in sample annotation not consistent with samples in input data, 
               will merge, using intersecting Sample IDs only')
     }
-    df_long = df_long %>% merge(sample_annotation,
-                                by = sample_id_col)
+    df_long = df_long %>% inner_join(sample_annotation,
+                                     by = sample_id_col)
   } else {
     warning('Sample annotation is not provided, only the basic sample boxplots will be plotted')
   }
@@ -49,7 +49,7 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
       }
     } 
   } else {
-    if (!is.null(batch_col)){
+    if (!is.null(batch_col) && (batch_col %in% names(df_long))){
       warning("Order column is NULL, assuming order is not introducing unwanted 
             association between the samples, plotting samples in order of batch factor")
       df_long[[batch_col]] = as.factor(df_long[[batch_col]])
