@@ -62,7 +62,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   sample_average = colMeans(data_matrix, na.rm = TRUE)
   names(sample_average) = colnames(data_matrix)
   
-  df_ave = data.frame(Average_Intensity = sample_average,
+  df_ave = data.frame(Mean_Intensity = sample_average,
                       sample_id_col = colnames(data_matrix))
   
   #Assign a column for sample_id
