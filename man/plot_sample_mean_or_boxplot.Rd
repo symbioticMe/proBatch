@@ -55,7 +55,7 @@ level (fragments, transitions, proteins))}
 \item{theme}{ggplot theme, by default  \code{classic}. Can be easily overriden (see
 examples)}
 
-\item{ylimits}{range of y-axis to plot feature-level trends}
+\item{ylimits}{range of y-axis to compare two plots side by side, if required.}
 
 \item{df_long}{data frame where each row is a single feature in a single
 sample, thus it has minimally, \code{sample_id_col}, \code{feature_id_col} and
