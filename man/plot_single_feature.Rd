@@ -10,7 +10,7 @@ plot_single_feature(feature_name, df_long, sample_annotation,
   color_by_col = NULL, color_by_value = NULL, batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
-  plot_title = NULL, theme = "classic")
+  plot_title = NULL, theme = "classic", ylimits = NULL)
 }
 \arguments{
 \item{feature_name}{name of the selected feature (e.g. peptide) for diagnostic profiling}
@@ -68,6 +68,8 @@ or simultaneous examination of two batch factors (e.g. preparation day and measu
 
 \item{theme}{plot theme (default is 'classical'; other options not
 implemented)}
+
+\item{ylimits}{range of y-axis to plot feature-level trends}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
