@@ -24,6 +24,7 @@
 #' @param plot_title the string indicating the source of the peptides
 #' @param theme plot theme (default is 'classical'; other options not
 #'   implemented)
+#' @param ylimits range of y-axis to plot feature-level trends 
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{pep_name} and (optionally) by \code{batch_col}
@@ -49,38 +50,21 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
                                  vline_color ='red',
                                  facet_col = NULL,
                                  plot_title = NULL,
-                                 theme = 'classic'){
+                                 theme = 'classic',
+                                 ylimits = NULL){
   
   #reduce df to measurements of selected features
   plot_df = df_long %>%
     filter(UQ(sym(feature_id_col)) %in% feature_name)
   
-  #check the consistency of the sample annotation
-  if (!all(names(sample_annotation) %in% names(df_long))){
-    sample_annotation = sample_annotation %>%
-      arrange(!!sym(order_col))
-    #TODO: why do we need to remove the intersecting columns?
-    common_cols = intersect(names(sample_annotation), names(plot_df))
-    cols_to_remove = setdiff(common_cols, sample_id_col)
-    plot_df = plot_df %>%
-      select(-one_of(cols_to_remove))
-    plot_df = plot_df %>%
-      merge(sample_annotation, by = sample_id_col)
-  }
+  #Check the consistency of sample annotation sample IDs and measurement table sample IDs
+  plot_df = check_sample_consistency(sample_annotation, sample_id_col, plot_df)
   
-  #TODO: isn't it redundant with "merge"?
-  sample_annotation = sample_annotation %>%
-    subset(sample_annotation[[sample_id_col]] %in% plot_df[[sample_id_col]])
-  
-  #define the order of the samples
-  if(is.null(order_col)){
-    warning("order column wasn't specified, putting row 
-            number as an order within a batch")
-    plot_df = plot_df %>%
-      group_by_at(vars(one_of(batch_col))) %>%
-      mutate(order = row_number())
-    order_col = 'order'
-  }
+  #Defining sample order for plotting
+  sample_order = define_sample_order(order_col, sample_annotation, facet_col, batch_col, plot_df, 
+                                     sample_id_col, color_by_batch)
+  order_col = sample_order$order_col
+  plot_df = sample_order$df_long
   
   #Main plotting function
   gg = ggplot(plot_df,
@@ -91,58 +75,28 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
   if (identical(geom, 'point')){
     gg = gg + geom_point()
   }
-  
   if (identical(geom, c('point', 'line'))){
     gg = gg + geom_point() +
       geom_line(color = 'black', alpha = .7, linetype = 'dashed')
   }
   
-  #Add coloring for "inferred" measurements
+  #Add coloring for "inferred" measurements / requant values, marked in `color_by_col` with `color_by_value` (e.g. `m_score` and `2`)
   if(!is.null(color_by_col)){
     col_data = plot_df %>%
-      filter(UQ(as.name(feature_id_col)) %in% feature_name) %>%
       filter(UQ(as.name(color_by_col)) == color_by_value)
-    
     gg = gg + geom_point(data = col_data,
                          aes_string(x = order_col, y = measure_col),
                          color = 'red', size = .3, shape = 8)
   }
   
-  #add colors to batches
-  if(color_by_batch & !is.null(batch_col)){
-    gg = gg + aes_string(color = batch_col)
-    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
-      n_batches <- length(unique(sample_annotation[[batch_col]]))
-      if (n_batches <= 9){
-        gg = gg + scale_color_brewer(palette = 'Set1')
-      } else {
-        if (n_batches <= 12){
-          gg = gg + scale_color_brewer(palette = 'Set3')
-        } else {
-          warning(sprintf('brewer palettes have maximally 12 colors, you specified %s 
-                          batches,consider defining color scheme with 
-                          sample_annotation_to_colors function', n_batches))
-        }
-        }
-      
-        } else{
-          gg = gg + scale_color_manual(values = color_scheme)
-        }
-    }
+  #add colors
+  gg = color_points_by_batch(color_by_batch, batch_col, gg, color_scheme, sample_annotation)
+  if(!is.null(color_by_col) && !is.null(color_by_batch)){
+    warning('coloring both inferred values and batches may lead to confusing visualisation, consider plotting separately')
+  }
     
-  #Add vertical lines for the batch tipping points
-  if(!is.null(batch_col)){
-    batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
-    gg = gg + geom_vline(xintercept = batch.tipping.points,
-                         color = vline_color, linetype = 'dashed')
-  }   
-  tipping.points = df_ave %>%
-    arrange(!!!syms(order_vars))%>%
-    group_by(!!!syms(batch_vars)) %>%
-    summarise(batch_size = n()) %>%
-    group_by(!!sym(facet_col)) %>%
-    mutate(tipping.points = cumsum(batch_size))%>%
-    mutate(tipping.poings = tipping.points+.5)
+  #add vertical lines, if required (for order-related effects)
+  gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, facet_col, plot_df, gg)
   
   #wrap into facets, if several features are displayed
   #split into facets
@@ -152,7 +106,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
     } else {
       gg = gg  + facet_wrap(as.formula(paste("~", batch_col)), scales = 'free_y')
     }
-    #TODO: resolve this conflict for multi-instrument measurement case
+  } else {
     if (length(feature_name) > 1){
       gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
     }
@@ -168,11 +122,26 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
     gg = gg + theme_classic()
   }
   
-  #Rotate the axes
+  #Change the limits of vertical axes
+  if(!is.null(ylimits)){
+    gg = gg +
+      ylim(ylimits)
+  }
   
-  #Adjust the vertical axis limits;
+  #Rotate x axis tick labels if the filenames, not numeric order, is displayed
+  if (!is.numeric(plot_df[[order_col]])){
+    if(is.character(plot_df[[order_col]])){
+      plot_df[[order_col]] = factor(plot_df[[order_col]],
+                                   levels = unique(plot_df[[order_col]]))
+    }
+    gg = gg +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+  }
   
-  #Move the position of the legend
+  #Move the legend to the upper part of the plot to save the horizontal space
+  if (length(unique(plot_df[[order_col]])) > 30){
+    gg = gg + theme(legend.position="top")
+  }
   
   return(gg)
 }
