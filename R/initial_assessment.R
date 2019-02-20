@@ -35,7 +35,8 @@
 #'   instrument), re-define order per-batch
 #' @param vline_color color of vertical lines, typically denoting 
 #'  different MS batches in ordered runs; should be \code{NULL} for experiments without intrinsic order
-#' @param ylimits range of y-axis to plot feature-level trends 
+#' @param ylimits range of y-axis to compare two plots side by side, if required.
+#' 
 #' @return ggplot2 class object. Thus, all aesthetics can be overriden
 #'
 #' @seealso \code{\link[ggplot2]{ggplot}}
