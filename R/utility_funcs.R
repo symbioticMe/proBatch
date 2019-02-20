@@ -7,6 +7,8 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long) 
     if(!setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]]))){
       warning('Sample IDs in sample annotation not consistent with samples in input data, 
               will merge, using intersecting Sample IDs only')
+      #TODO: expand the warnings for more specific cases: 1) sample annotation has samples not represented in data matrix; 2) dm has samples not in annotation;
+      #TODO: Break the merge if 1) sample annotation has duplicated samples; 2) dm has duplicated samples
     }
     df_long = df_long %>% 
       inner_join(sample_annotation, by = sample_id_col) %>%
