@@ -121,15 +121,21 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                          dir = 'v', scales = "free_x")
   }
   
+  #Add the title
+  if(!is.null(plot_title)) {
+    gg = gg + ggtitle(plot_title)+
+      theme(plot.title = element_text(face = 'bold',hjust = .5))
+  }
+  
   #Change the theme
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
   
-  #Add the title
-  if(!is.null(plot_title)) {
-    gg = gg + ggtitle(plot_title)+
-    theme(plot.title = element_text(face = 'bold',hjust = .5))
+  #Change the limits of vertical axes
+  if(!is.null(ylimits)){
+    gg = gg +
+      ylim(ylimits)
   }
   
   #Rotate x axis tick labels if the filenames, not numeric order, is displayed
@@ -145,12 +151,6 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   #Move the legend to the upper part of the plot to save the horizontal space
   if (length(unique(df_ave[[order_col]])) > 30){
     gg = gg + theme(legend.position="top")
-  }
-  
-  #Change the limits of vertical axes
-  if(!is.null(ylimits)){
-    gg = gg +
-      ylim(ylimits)
   }
   
   return(gg)
@@ -221,15 +221,22 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                          dir = 'v', scales = "free_x")
   }
   
+
+  #Add the title
+  if (!is.null(plot_title)){
+    gg = gg + ggtitle(plot_title)+
+      theme(plot.title = element_text(hjust = .5, face = 'bold', size = 16))
+  }
+  
   #Change the plot theme
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
   
-  #Add the title
-  if (!is.null(plot_title)){
-    gg = gg + ggtitle(plot_title)+
-      theme(plot.title = element_text(hjust = .5, face = 'bold', size = 16))
+  #Change the limits of vertical axes
+  if(!is.null(ylimits)){
+    gg = gg +
+      ylim(ylimits)
   }
   
   #Rotate x axis tick labels if the filenames, not numeric order, is displayed
@@ -245,12 +252,6 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   #Move the legend to the upper part of the plot to save the horizontal space
   if (length(unique(df_long[[order_col]])) > 30){
     gg = gg + theme(legend.position="top")
-  }
-  
-  #Change the limits of vertical axes
-  if(!is.null(ylimits)){
-    gg = gg +
-      ylim(ylimits)
   }
   
   return(gg)
