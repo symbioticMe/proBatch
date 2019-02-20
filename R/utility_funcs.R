@@ -69,8 +69,8 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
         warning("order column is identical to sample ID column and coloring by batch is required,
                 ordering the samples by batch rather than by sample order in annotation")
         df_long = df_long %>% arrange(!! rlang::sym(c(batch_col))) %>%
-          mutate(UQ(rlang::sym(order_col)) :=  factor(UQ(rlang::sym(order_col)),
-                                                      levels = unique(UQ(rlang::sym(order_col)))))
+          mutate(UQ(rlang::sym(order_col)) :=  factor(UQ(rlang::sym(sample_id_col)),
+                                                      levels = unique(UQ(rlang::sym(sample_id_col)))))
         #df_long[[order_col]] = reorder(as.character(df_long[[sample_id_col]]), df_long[[batch_col]])
       } else {
         warning('order column is identical to sample ID column, 
