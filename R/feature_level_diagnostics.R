@@ -118,7 +118,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
   }
     
   #Add the theme
-  if (theme == 'classic'){
+  if (!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
   }
   
