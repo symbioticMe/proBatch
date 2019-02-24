@@ -23,7 +23,7 @@ transformed version of the original data}
 and biological (e.g. Diet) covariates}
 
 \item{fitFunc}{function to use for the fit (currently 
-only \code{loess_regression} available)}
+only \code{loess_regression} available); if order-associated fix is not required, should be `NULL`}
 
 \item{discreteFunc}{function to use for discrete 
 batch correction (\code{MedianCentering} or \code{ComBat})}
