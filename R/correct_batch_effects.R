@@ -234,7 +234,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' @param sample_order_col column, determining the order of sample MS run, used
 #'   as covariate to fit the non-linear fit
 #' @param fitFunc function to use for the fit (currently 
-#' only \code{loess_regression} available)
+#' only \code{loess_regression} available); if order-associated fix is not required, should be `NULL`
 #' @param discreteFunc function to use for discrete 
 #' batch correction (\code{MedianCentering} or \code{ComBat})
 #' @param abs_threshold the absolute threshold to filter data for curve fitting 
@@ -266,20 +266,25 @@ correct_batch_effects <- function(data_matrix, sample_annotation,
     discreteFunc <- match.arg(discreteFunc)
   
     sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-    fit_list = adjust_batch_trend(data_matrix, 
-                                  sample_annotation = sample_annotation,
-                                  batch_col = batch_col,
-                                  feature_id_col = feature_id_col,
-                                  sample_id_col = sample_id_col,
-                                  measure_col = measure_col,
-                                  sample_order_col = sample_order_col,
-                                  fit_func = fit_nonlinear,
-                                  fitFunc = fitFunc, 
-                                  abs_threshold = abs_threshold, 
-                                  pct_threshold = pct_threshold, ...)
-    fit_matrix = fit_list$data_matrix
-    fit_long = matrix_to_long(fit_matrix, feature_id_col = feature_id_col,
-                              measure_col = measure_col, sample_id_col = sample_id_col)
+    
+    if(!is.null(fitFunc)){
+      fit_list = adjust_batch_trend(data_matrix, 
+                                    sample_annotation = sample_annotation,
+                                    batch_col = batch_col,
+                                    feature_id_col = feature_id_col,
+                                    sample_id_col = sample_id_col,
+                                    measure_col = measure_col,
+                                    sample_order_col = sample_order_col,
+                                    fit_func = fit_nonlinear,
+                                    fitFunc = fitFunc, 
+                                    abs_threshold = abs_threshold, 
+                                    pct_threshold = pct_threshold, ...)
+      fit_matrix = fit_list$data_matrix
+      fit_long = matrix_to_long(fit_matrix, feature_id_col = feature_id_col,
+                                measure_col = measure_col, sample_id_col = sample_id_col)
+      df_long = fit_long
+    }
+    
     
     if(discreteFunc == 'MedianCentering'){
         median_long = center_peptide_batch_medians(df_long = fit_long, 
