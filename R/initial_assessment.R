@@ -129,7 +129,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   }
   
   #Change the theme
-  if(theme == 'classic'){
+  if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
   }
   
@@ -230,7 +230,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   }
   
   #Change the plot theme
-  if(theme == 'classic'){
+  if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
   }
   
