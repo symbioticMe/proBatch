@@ -185,7 +185,7 @@ merge_rare_levels <- function(column) {
 #' Generate colors for sample annotation
 #'
 #' Convert the sample annotation data frame to list of colors
-#' the list is named as columns included to use in potting functions
+#' the list is named as columns included to use in plotting functions
 #'
 #' @inheritParams proBatch
 #' @param columns_for_plotting only consider these 
@@ -206,7 +206,7 @@ merge_rare_levels <- function(column) {
 #' @param numeric_palette_type palette to be used for 
 #' numeric values coloring
 #'
-#' @return list of colors
+#' @return list of three items: 1) list of colors; 2) data frame of colors; 3) updated sample annotation (e.g. with rare factor levels merged into "other")
 #' 
 #' @examples 
 #' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
@@ -288,6 +288,8 @@ sample_annotation_to_colors <- function(sample_annotation,
         list_of_col_for_numeric = map_of_colors_to_num_vec$color_list
         numeric_factor_df = map_of_colors_to_num_vec$new_sample_annotation
         sample_annotation = cbind(factor_df, numeric_factor_df)
+    } else {
+      sample_annotation = factor_df
     }
     
     list_of_colors = c(list_of_col_for_factors, list_of_col_for_numeric)
