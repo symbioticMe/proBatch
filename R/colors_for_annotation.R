@@ -24,7 +24,9 @@ map_factors_to_colors <- function(annotation_df_factors) {
             ann_colors_covariate,
             lapply(annotation_df_factors, levels))
     change_other_to_grey <- function(x) { 
-      x['other'] <- 'grey'
+      if ('other' %in% names(x)){
+        x['other'] <- 'grey'
+      }
       return(x)
     }
     ann_colors_covariate = lapply(ann_colors_covariate, change_other_to_grey)
