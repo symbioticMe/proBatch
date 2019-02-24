@@ -44,11 +44,11 @@ numeric values coloring}
 vector (equally spaced between minimum and maximum)}
 }
 \value{
-list of colors
+list of three items: 1) list of colors; 2) data frame of colors; 3) updated sample annotation (e.g. with rare factor levels merged into "other")
 }
 \description{
 Convert the sample annotation data frame to list of colors
-the list is named as columns included to use in potting functions
+the list is named as columns included to use in plotting functions
 }
 \examples{
 color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
