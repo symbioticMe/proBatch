@@ -287,7 +287,7 @@ correct_batch_effects <- function(data_matrix, sample_annotation,
     
     
     if(discreteFunc == 'MedianCentering'){
-        median_long = center_peptide_batch_medians(df_long = fit_long, 
+        median_long = center_peptide_batch_medians(df_long = df_long, 
                                                    sample_annotation = sample_annotation,
                                                    sample_id_col = sample_id_col,
                                                    batch_col = batch_col,
@@ -299,7 +299,7 @@ correct_batch_effects <- function(data_matrix, sample_annotation,
     }
     
     if(discreteFunc == 'ComBat'){
-        fit_matrix = long_to_matrix(fit_long, feature_id_col = feature_id_col,
+        fit_matrix = long_to_matrix(df_long, feature_id_col = feature_id_col,
                                     measure_col = measure_col, sample_id_col = sample_id_col)
         normalized_matrix = correct_with_ComBat(fit_matrix, 
                                                 sample_annotation = sample_annotation,
