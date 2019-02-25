@@ -141,6 +141,9 @@ generate_colors_for_numeric <- function(num_col,
         num_vec = cut(num_col, breaks = interval_char)
     }
     
+    #TODO: add the creation of num_vec for POSIX vectorsc
+    
+    
     color_to_plot = colorRampPalette(color_for_column)(
       nlevels(num_vec))[1:nlevels(num_vec)]
     names(color_to_plot) = levels(num_vec)
