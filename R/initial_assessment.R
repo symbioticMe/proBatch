@@ -36,6 +36,7 @@
 #' @param vline_color color of vertical lines, typically denoting 
 #'  different MS batches in ordered runs; should be \code{NULL} for experiments without intrinsic order
 #' @param ylimits range of y-axis to compare two plots side by side, if required.
+#' @param outliers keep (default) or remove the boxplot outliers
 #' 
 #' @return ggplot2 class object. Thus, all aesthetics can be overriden
 #'
@@ -174,7 +175,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                          order_col = 'order',
                          facet_col = NULL,
                          plot_title = NULL, theme = 'classic',
-                         ylimits = NULL){
+                         ylimits = NULL, outliers = TRUE){
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long)
@@ -210,8 +211,13 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   
   #Main plotting of intensity distribution boxplots
   gg = ggplot(df_long, aes_string(x = order_col, y = measure_col,
-                                  group = order_col))+
-    geom_boxplot(outlier.size = .15)
+                                  group = order_col))
+  if (outliers){
+    gg = gg + geom_boxplot(outlier.size = .15)
+  } else {
+    gg = gg + geom_boxplot(outlier.shape = NA)
+  }
+    
   
   #Define the color scheme, add colors
   gg = color_fill_boxes_by_batch(color_by_batch, batch_col, gg, color_scheme, df_long)
