@@ -17,7 +17,8 @@ plot_boxplot(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
   batch_col = "MS_batch", color_by_batch = TRUE,
   color_scheme = "brewer", order_col = "order", facet_col = NULL,
-  plot_title = NULL, theme = "classic", ylimits = NULL)
+  plot_title = NULL, theme = "classic", ylimits = NULL,
+  outliers = TRUE)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, 
@@ -65,6 +66,8 @@ file)}
 \item{measure_col}{if \code{df_long} is among the parameters, it is the column
 with expression/abundance/intensity, otherwise, it is used internally for
 consistency}
+
+\item{outliers}{keep (default) or remove the boxplot outliers}
 
 \item{order_per_facet}{if order is defined ignoring facets (usually
 instrument), re-define order per-batch}
