@@ -81,10 +81,10 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #'
 #' @return list of two items: 1) \code{data_matrix}, adjusted with continious fit; 
 #' 2) fit_df, used to examine the fitting curves
-#' @examples 
-#' adjust_batch_trend(example_proteome_matrix, 
+#' 
+#' @examples \dontrun{adjust_batch_trend(example_proteome_matrix, 
 #' example_sample_annotation, span = 0.7, 
-#' abs_threshold = 5, pct_threshold = 0.20)
+#' abs_threshold = 5, pct_threshold = 0.20)}
 #' 
 #' @export
 #'
