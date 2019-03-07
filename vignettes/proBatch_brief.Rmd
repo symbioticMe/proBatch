@@ -13,6 +13,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{proBatch in brief}
   %\VignetteEncoding{UTF-8}
+  %\usepackage[utf8]{inputenc}
 abstract: |
   This vignette describes how to apply the `proBatch` package to diagnose and correct for batch effects. The package is applicable to any "omic" data, although some functions are specific for mass spectrometry-based proteomics. We illustrate the application with SWATH-MS data.
   
