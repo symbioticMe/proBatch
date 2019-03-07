@@ -47,7 +47,7 @@ test_that("correct_with_ComBat", {
   peptide_matrix <- as.matrix(example_proteome_matrix[rows,])
   combat <- correct_with_ComBat(peptide_matrix, example_sample_annotation)
   
-  expect_equal(rownames(combat$data_matrix)[1],"10062_NVGVSFYADKPEVTQEQK_3")
+  expect_equal(rownames(combat)[1],"10062_NVGVSFYADKPEVTQEQK_3")
   expect_equal(combat[1,1],768661.4)
   
   batch_1 <- example_sample_annotation$FullRunName[which(example_sample_annotation$MS_batch == "Batch_1")] 
