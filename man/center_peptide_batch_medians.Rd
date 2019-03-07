@@ -33,13 +33,13 @@ consistency}
 }
 \value{
 \code{df_long}-size long format data with batch-effect corrected with
-  per-feature batch median centering in Intensity_normalized column
+  per-feature batch median centering in \code{Intensity_normalized} column
 }
 \description{
 Median centering of the peptides (per batch median)
 }
 \examples{
-median_centered_proteome <- center_peptide_batch_medians(
+median_centered_proteome <- center_peptide_batchmedians(
 example_proteome, example_sample_annotation)
 
 }
