@@ -38,6 +38,7 @@ Imports:
     scales,
     viridis,
     sva,
+    testthat,
     tidyr,
     tibble,
     wesanderson,
