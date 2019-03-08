@@ -63,7 +63,7 @@ test_that("pvca_plot", {
   expect_equivalent(pvca$plot$data$label[4], factor("MS_batch"))
   
   expect_equal(pvca$plot$data$category, c("biological", "technical", "biological",
-              "technical",  "biol:techn", "biol:techn", "residual"  , "residual"))
+              "technical",  "biol:techn", "biol:techn", "residual"))
 })
 
 
