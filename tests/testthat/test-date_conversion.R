@@ -35,8 +35,7 @@ test_that("date_to_sample_order", {
   
   expect_equal(droplevels(new_annotation_worder$RunDate[1]), as.factor("Oct_05"))
   expect_equal(droplevels(new_annotation_worder$RunTime[1]), as.factor("18:35:00"))
-  expect_equal(new_annotation_worder$DateTime[2], as.POSIXlt( "2018-10-05 20:12:00 CEST"))
   expect_equal(new_annotation_worder$new_order[1], 1)
-  
-  
+  expect_equal(new_annotation_worder$new_order[2], 2)
+
 })
