@@ -21,7 +21,8 @@ test_that("boxplot_plots", {
   data(example_sample_annotation, package="proBatch")
   
   proteome <- example_proteome[1:20, ]
-  boxplot <- plot_boxplot(proteome, example_sample_annotation, batch_col = "MS_batch")
+  expect_warning(boxplot <- plot_boxplot(proteome, example_sample_annotation, 
+                                         batch_col = "MS_batch"))
   
   expect_equal(boxplot$labels$fill, "MS_batch")
   expect_equal(boxplot$label$group, "order")
