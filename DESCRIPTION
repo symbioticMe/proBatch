@@ -38,12 +38,14 @@ Imports:
     scales,
     viridis,
     sva,
-    testthat,
     tidyr,
     tibble,
     wesanderson,
     WGCNA
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    devtools,
+    roxygen2,
+    testthat
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
