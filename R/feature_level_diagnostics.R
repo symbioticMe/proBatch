@@ -262,7 +262,7 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                           vline_color = 'red',
                           facet_col = NULL,
                           plot_title = 'Spike-in BOVINE protein peptides', 
-                          theme = theme, ...){
+                          theme = 'classic', ...){
   
   if(!setequal(unique(sample_annotation[[sample_id_col]]), 
               unique(df_long[[sample_id_col]]))){
