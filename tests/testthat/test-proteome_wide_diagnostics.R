@@ -27,10 +27,10 @@ test_that("heatmap_plot", {
   
   matrix <- example_proteome_matrix[1:20, ]
   
-  heatmap <- plot_heatmap(matrix, example_sample_annotation, 
+  expect_warning(heatmap <- plot_heatmap(matrix, example_sample_annotation, 
                       sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
                       cluster_cols = TRUE, annotation_color_list = sample_color_scheme$list_of_colors,
-                      show_rownames = TRUE, show_colnames = FALSE)
+                      show_rownames = TRUE, show_colnames = FALSE))
   
   expect_equal(heatmap$tree_row$method, "complete")
   expect_equal(heatmap$tree_row$dist.method , "euclidean")
