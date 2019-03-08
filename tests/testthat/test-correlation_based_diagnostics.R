@@ -40,11 +40,11 @@ test_that("sample_corr_heatmaps", {
   specified_samples = example_sample_annotation$FullRunName[
     which(example_sample_annotation$order %in% 110:115)] 
   
-  sample_heatmap <- plot_sample_corr_heatmap(example_proteome_matrix, 
+  expect_warning(sample_heatmap <- plot_sample_corr_heatmap(example_proteome_matrix, 
                            samples_to_plot = specified_samples, 
                            flavor = 'pheatmap',  cluster_rows= TRUE, cluster_cols=TRUE,
                            annotation_names_col = TRUE, annotation_legend = FALSE, 
-                           show_colnames = FALSE)
+                           show_colnames = FALSE))
   
   expect_equivalent(sample_heatmap$tree_row$method, "complete")
   expect_equivalent(sample_heatmap$tree_row$dist.method, "euclidean")
