@@ -66,7 +66,3 @@ test_that("correct_with_ComBat", {
   expect_gt(t_test_combat$p.value, 0.05)
     
 })
-
-
-                                
-                            
