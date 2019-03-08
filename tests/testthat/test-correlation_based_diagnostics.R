@@ -98,6 +98,3 @@ test_that("peptide_distribution_plots", {
   expect_equivalent(peptide_dist$plot_env$feature_id_col, "peptide_group_label")
   
 })
-            
-        
-                
