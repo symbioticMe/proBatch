@@ -62,8 +62,9 @@ test_that("pvca_plot", {
   expect_equivalent(pvca$plot$data$label[3], factor("Sex:Strain"))
   expect_equivalent(pvca$plot$data$label[4], factor("MS_batch"))
   
-  expect_equal(pvca$plot$data$category, c("biological", "technical", "biological",
-              "technical",  "biol:techn", "biol:techn", "residual"))
+  expect_equal(pvca$plot$data$category[1], "biological")
+  expect_equal(pvca$plot$data$category[2], "technical")
+  
 })
 
 
