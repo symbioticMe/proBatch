@@ -6,7 +6,8 @@ test_that("map_factors_to_colors", {
 
   factor_columns = c('MS_batch', "Strain")
   sample_annt <- example_sample_annotation[,factor_columns]
-  sample_color_annt <- map_factors_to_colors(sample_annt)
+  
+  expect_warning(sample_color_annt <- map_factors_to_colors(sample_annt))
   
   expect_equal(names(sample_color_annt$MS_batch[1]), "Batch_1")
   expect_equal(sample_color_annt$MS_batch[[1]], "turquoise")
@@ -37,11 +38,11 @@ test_that("map_numbers_to_colors", {
 test_that("sample_annotation_to_colors", {
   data(example_sample_annotation, package="proBatch")
   
-  color_scheme <- sample_annotation_to_colors(example_sample_annotation, 
+  expect_warning(color_scheme <- sample_annotation_to_colors(example_sample_annotation, 
                                                factor_columns = c('MS_batch','EarTag', "Strain", 
                                                                   "Diet", "digestion_batch", "Sex"),
                                                not_factor_columns = 'DateTime',
-                                               numeric_columns = c('order'))
+                                               numeric_columns = c('order')))
   
   expect_equal(names(color_scheme), c("list_of_colors", "color_df", "sample_annotation"))
   expect_equal(names(color_scheme$list_of_colors), c("MS_batch", "EarTag", "Strain", "Diet",  "digestion_batch", "Sex",            
