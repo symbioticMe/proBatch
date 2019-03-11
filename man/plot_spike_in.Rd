@@ -11,7 +11,8 @@ plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   color_by_col = NULL, color_by_value = NULL, batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
-  plot_title = "Spike-in BOVINE protein peptides", theme = theme, ...)
+  plot_title = "Spike-in BOVINE protein peptides", theme = "classic",
+  ...)
 }
 \arguments{
 \item{spike_ins}{substring used to identify spike-in proteins in the column
