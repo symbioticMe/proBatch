@@ -114,14 +114,17 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
 }
 
 add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vline_color, facet_col, 
-                                       df_long, gg) {
-  if(!is.null(order_col) & (order_col != sample_id_col) & !(is.character(df_long$order_col) || is.factor(df_long$order_col))&
+                                       sample_annotation, gg) {
+  if(!is.null(order_col) & (order_col != sample_id_col) & !(is.character(sample_annotation$order_col) || is.factor(sample_annotation$order_col))&
      !is.null(batch_col) & !is.null(vline_color)){
     #define the batch tipping points (positions of vertical lines)
     if (!is.null(facet_col)){
+      sample_annotation = sample_annotation %>%
+        select(one_of(c(order_col, sample_id_col, batch_col, facet_col))) %>%
+        distinct()
       order_vars <- c(facet_col, order_col)
       batch_vars = c(facet_col, batch_col)
-      batch.tipping.points = df_long %>%
+      batch.tipping.points = sample_annotation %>%
         arrange(!!!syms(order_vars))%>%
         group_by(!!!syms(batch_vars)) %>%
         summarise(batch_size = n()) %>%
@@ -129,7 +132,10 @@ add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vlin
         mutate(tipping.points = cumsum(batch_size))%>%
         mutate(tipping.points = tipping.points+.5)
     } else {
-      batch.tipping.points = df_long %>%
+      sample_annotation = sample_annotation %>%
+        select(one_of(c(order_col, sample_id_col, batch_col))) %>%
+        distinct()
+      batch.tipping.points = sample_annotation %>%
         arrange(!!sym(order_col))%>%
         group_by(!!sym(batch_col)) %>%
         summarise(batch_size = n()) %>%
