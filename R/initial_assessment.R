@@ -115,7 +115,14 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   gg = color_points_by_batch(color_by_batch, batch_col, gg, color_scheme, sample_annotation)
   
   #add vertical lines, if required (for order-related effects)
-  gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, facet_col, df_ave, gg)
+  if (!is.null(sample_annotation)){
+    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                    facet_col, sample_annotation, gg)
+  } else {
+    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                    facet_col, df_ave, gg)
+  }
+  
   
   #Plot each "facet factor" in it's own subplot
   if(!is.null(facet_col)){
