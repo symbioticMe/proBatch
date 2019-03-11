@@ -94,10 +94,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
   if(!is.null(color_by_col) && !is.null(color_by_batch)){
     warning('coloring both inferred values and batches may lead to confusing visualisation, consider plotting separately')
   }
-    
-  #add vertical lines, if required (for order-related effects)
-  gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, facet_col, plot_df, gg)
-  
+   
   #wrap into facets, if several features are displayed
   #split into facets
   if(!is.null(facet_col)){
@@ -111,6 +108,17 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
       gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
     }
   }
+   
+  #add vertical lines, if required (for order-related effects)
+  if (!is.null(sample_annotation)){
+    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                    facet_col, sample_annotation, gg)
+  } else {
+    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                    facet_col, df_long, gg)
+  }
+  
+
   
   #Add plot title
   if(!is.null(plot_title)){
