@@ -43,7 +43,7 @@ peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2")
 
 data_matrix_sub = example_proteome_matrix[peptides,]
 corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
-plot_corr_matrix(corr_matrix,  flavor = "corrplot")
+corr_matrix_plot <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
 }
 \seealso{
 \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}

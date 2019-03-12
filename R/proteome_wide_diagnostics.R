@@ -25,7 +25,8 @@
 #' 
 #' color_annotation <- color_scheme$color_df
 #' 
-#' plot_hierarchical_clustering(example_proteome_matrix, color_annotation,  
+#' hiarchical_clustering_plot <- plot_hierarchical_clustering(
+#' example_proteome_matrix, color_annotation,  
 #' distance = "euclidean", agglomeration = 'complete',
 #' label_samples = FALSE)
 #' 
@@ -107,7 +108,7 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' not_factor_columns = 'DateTime',
 #' numeric_columns = c('order'))
 #' 
-#' plot_heatmap(example_proteome_matrix, 
+#' heatmap_plot <- plot_heatmap(example_proteome_matrix, 
 #' example_sample_annotation, 
 #' sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
 #' cluster_cols = TRUE, 
@@ -228,7 +229,8 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
 #'
-#' @examples \dontrun{plot_PVCA(example_proteome_matrix, example_sample_annotation, 
+#' @examples \dontrun{
+#' pvca_plot <- plot_PVCA(example_proteome_matrix, example_sample_annotation, 
 #' technical_covariates = c('MS_batch', 'digestion_batch'),
 #' biological_covariates = c("Diet", "Sex", "Strain"))}
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
@@ -382,7 +384,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #' @export
 #'
 #' @examples 
-#' plot_PCA(example_proteome_matrix, example_sample_annotation, 
+#' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 #' color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
 #' 
 #' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, 
