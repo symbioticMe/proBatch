@@ -32,7 +32,7 @@
 #' 
 #' data_matrix_sub = example_proteome_matrix[peptides,]
 #' corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
-#' plot_corr_matrix(corr_matrix,  flavor = "corrplot")
+#' corr_matrix_plot <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
 plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'), 
                              filename = NULL, width = NA, height = NA, 
                              unit = c('cm','in','mm'),
@@ -97,7 +97,7 @@ plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'),
 #'
 #' @export
 #' @examples 
-#' plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
+#' protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
 #'                peptide_annotation = example_peptide_annotation, 
 #'                protein_col = 'Gene', flavor = "pheatmap")
 #'
@@ -155,7 +155,7 @@ plot_protein_corrplot <- function(data_matrix,
 #' specified_samples = example_sample_annotation$FullRunName[
 #' which(example_sample_annotation$order %in% 110:115)] 
 #' 
-#' plot_sample_corr_heatmap(example_proteome_matrix, 
+#' sample_corr_heatmap <- plot_sample_corr_heatmap(example_proteome_matrix, 
 #' samples_to_plot = specified_samples, 
 #'  flavor = 'pheatmap', 
 #'  cluster_rows= FALSE, cluster_cols=FALSE,
@@ -346,7 +346,8 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' @export
 #'
 #' @examples 
-#' plot_sample_corr_distribution(example_proteome_matrix,
+#' sample_corr_distribution_plot <- plot_sample_corr_distribution(
+#' example_proteome_matrix,
 #' example_sample_annotation, batch_col = 'MS_batch', 
 #' biospecimen_id_col = "EarTag", 
 #' plot_param = 'batch_replicate')
@@ -492,7 +493,8 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' plot for each \code{plot_param}
 #' 
 #' @examples 
-#' plot_peptide_corr_distribution(example_proteome_matrix, 
+#' peptide_corr_distribution <- plot_peptide_corr_distribution(
+#' example_proteome_matrix, 
 #' example_peptide_annotation, protein_col = 'Gene')
 #' 
 #' @export
