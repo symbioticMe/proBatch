@@ -82,9 +82,9 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @return list of two items: 1) \code{data_matrix}, adjusted with continious fit; 
 #' 2) fit_df, used to examine the fitting curves
 #' 
-#' @examples \dontrun{adjust_batch_trend(example_proteome_matrix, 
+#' @examples trend_corrected_matrix <- adjust_batch_trend(example_proteome_matrix, 
 #' example_sample_annotation, span = 0.7, 
-#' abs_threshold = 5, pct_threshold = 0.20)}
+#' abs_threshold = 5, pct_threshold = 0.20)
 #' 
 #' @export
 #'
@@ -182,7 +182,8 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
 #'   \code{ComBat}
 #'
 #' @examples 
-#' correct_with_ComBat(example_proteome_matrix, example_sample_annotation)
+#' combat_corrected_matrix <- correct_with_ComBat(
+#' example_proteome_matrix, example_sample_annotation)
 #' 
 #' @export
 #'
@@ -245,7 +246,8 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' corrected by fit and discrete functions
 #' 
 #' @examples 
-#' correct_batch_effects(example_proteome_matrix, example_sample_annotation, 
+#' batch_corrected_matrix <- correct_batch_effects(
+#' example_proteome_matrix, example_sample_annotation, 
 #' discreteFunc = 'MedianCentering', 
 #' batch_col = 'MS_batch',  
 #' span = 0.7,

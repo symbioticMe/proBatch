@@ -79,10 +79,10 @@ functions for quick visual assessment of trends associated, overall
   or specific covariate-associated (see \code{batch_col} and \code{facet_col})
 }
 \examples{
-plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 order_col = 'order', batch_col = "MS_batch")
 
-plot_boxplot(example_proteome, example_sample_annotation, 
+boxplot <- plot_boxplot(example_proteome, example_sample_annotation, 
 batch_col = "MS_batch")
 
 }
