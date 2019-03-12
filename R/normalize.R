@@ -45,7 +45,7 @@ log_transform <- function(data_matrix, log_base = 2){
 #'
 #' @return \code{data_matrix}-size matrix, with columns quantile-normalized
 #' @examples 
-#' quantile_normalized_matrix = quantile_normalize(example_proteome_matrix)
+#' quantile_normalized_matrix <- quantile_normalize(example_proteome_matrix)
 #' 
 #' @export
 #'
@@ -67,7 +67,7 @@ quantile_normalize <- function(data_matrix){
 #'   consistency
 #' @return `df_long`-size matrix, with intensity scaled to global median
 #' @examples 
-#' median_normalized_matrix = normalize_sample_medians(example_proteome)
+#' median_normalized_matrix <- normalize_sample_medians(example_proteome)
 #' 
 #' @export
 #'
@@ -98,7 +98,7 @@ normalize_sample_medians <- function(df_long,
 #' @export
 #'
 #' @examples
-#' quantile_normalized_matrix = normalize_data(example_proteome_matrix, 
+#' quantile_normalized_matrix <- normalize_data(example_proteome_matrix, 
 #' normalizeFunc = "quantile", log_base = 2)
 #' 
 normalize_data <- function(data_matrix, normalizeFunc = c("quantile", "medianCentering"), 
