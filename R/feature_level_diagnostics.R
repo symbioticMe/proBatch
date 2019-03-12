@@ -307,6 +307,11 @@ plot_spike_in <- function(df_long, sample_annotation,
 #'
 #' @family feature-level diagnostic functions
 #'
+#' @examples 
+#' irt_plot <- plot_iRT(example_proteome, 
+#' example_sample_annotation, 
+#' protein_col = 'Gene', irt_pattern = "BOVINE_A1ag")
+#' 
 #' @export
 #'
 plot_iRT <- function(df_long, sample_annotation,
