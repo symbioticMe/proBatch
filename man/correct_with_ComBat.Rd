@@ -38,6 +38,7 @@ batch effects. The input data are assumed to be cleaned and normalized before
 batch effect removal.
 }
 \examples{
-correct_with_ComBat(example_proteome_matrix, example_sample_annotation)
+combat_corrected_matrix <- correct_with_ComBat(
+example_proteome_matrix, example_sample_annotation)
 
 }
