@@ -53,7 +53,8 @@ Useful to visualize within batch vs within replicate
 vs non-related sample correlation
 }
 \examples{
-plot_sample_corr_distribution(example_proteome_matrix,
+sample_corr_distribution_plot <- plot_sample_corr_distribution(
+example_proteome_matrix,
 example_sample_annotation, batch_col = 'MS_batch', 
 biospecimen_id_col = "EarTag", 
 plot_param = 'batch_replicate')
