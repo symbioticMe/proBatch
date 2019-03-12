@@ -75,6 +75,12 @@ Creates a iRT facetted ggplot2 plot of the value in
 \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 be facetted by batch.
 }
+\examples{
+irt_plot <- plot_iRT(example_proteome, 
+example_sample_annotation, 
+protein_col = 'Gene', irt_pattern = "BOVINE_A1ag")
+
+}
 \seealso{
 Other feature-level diagnostic functions: \code{\link{plot_peptides_of_one_protein}},
   \code{\link{plot_single_feature}},
