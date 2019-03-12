@@ -61,7 +61,8 @@ continuous sigal drift within batch and
 discrete difference across batches.
 }
 \examples{
-correct_batch_effects(example_proteome_matrix, example_sample_annotation, 
+batch_corrected_matrix <- correct_batch_effects(
+example_proteome_matrix, example_sample_annotation, 
 discreteFunc = 'MedianCentering', 
 batch_col = 'MS_batch',  
 span = 0.7,
