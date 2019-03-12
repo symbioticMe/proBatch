@@ -49,7 +49,7 @@ Plot correlation of selected samples
 specified_samples = example_sample_annotation$FullRunName[
 which(example_sample_annotation$order \%in\% 110:115)] 
 
-plot_sample_corr_heatmap(example_proteome_matrix, 
+sample_corr_heatmap <- plot_sample_corr_heatmap(example_proteome_matrix, 
 samples_to_plot = specified_samples, 
  flavor = 'pheatmap', 
  cluster_rows= FALSE, cluster_cols=FALSE,
