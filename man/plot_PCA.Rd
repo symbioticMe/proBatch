@@ -47,7 +47,7 @@ ggplot scatterplot colored by factor levels of column specified in
 plot PCA plot
 }
 \examples{
-plot_PCA(example_proteome_matrix, example_sample_annotation, 
+pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
 
 }

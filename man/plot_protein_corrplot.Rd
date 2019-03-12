@@ -54,7 +54,7 @@ only pdf and png format is supported}
 Plots correlation plot of peptides from a single protein
 }
 \examples{
-plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
+protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
                peptide_annotation = example_peptide_annotation, 
                protein_col = 'Gene', flavor = "pheatmap")
 

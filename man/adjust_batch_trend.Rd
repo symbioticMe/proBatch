@@ -51,9 +51,9 @@ list of two items: 1) \code{data_matrix}, adjusted with continious fit;
 adjust batch signal trend with the custom (continuous) fit
 }
 \examples{
-\dontrun{adjust_batch_trend(example_proteome_matrix, 
+trend_corrected_matrix <- adjust_batch_trend(example_proteome_matrix, 
 example_sample_annotation, span = 0.7, 
-abs_threshold = 5, pct_threshold = 0.20)}
+abs_threshold = 5, pct_threshold = 0.20)
 
 }
 \seealso{
