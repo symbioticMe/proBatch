@@ -23,7 +23,8 @@
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{pep_name} and (optionally) by \code{batch_col}
 #' @examples 
-#' plot_single_feature(pep_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+#' single_feature_plot <- plot_single_feature(
+#' pep_name = "46213_NVGVSFYADKPEVTQEQK_2", 
 #' df_long = example_proteome, example_sample_annotation, 
 #' color_by_col = NULL)
 #'
@@ -160,7 +161,8 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
 #' @examples 
-#' plot_peptides_of_one_protein (protein_name = "Haao",  
+#' peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
+#' protein_name = "Haao",  
 #' protein_col = "Gene", df_long = example_proteome, 
 #' example_sample_annotation, 
 #' order_col = 'order', sample_id_col = 'FullRunName', 
@@ -236,7 +238,7 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
 #' @family feature-level diagnostic functions
 #' 
 #' @examples 
-#' plot_spike_in(example_proteome, example_sample_annotation, 
+#' spike_in_plot <- plot_spike_in(example_proteome, example_sample_annotation, 
 #' protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
 #' plot_title = "Spike-in BOVINE protein peptides")
 #' 
@@ -371,7 +373,8 @@ plot_iRT <- function(df_long, sample_annotation,
 #' loess_fit_70 <- adjust_batch_trend(example_proteome_matrix, 
 #' example_sample_annotation, span = 0.7)
 #' 
-#' plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
+#' fitting_curve_plot <- plot_with_fitting_curve(
+#' pep_name = "10231_QDVDVWLWQQEGSSK_2", 
 #' df_long = example_proteome, example_sample_annotation, 
 #' fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70% span")
 #'
