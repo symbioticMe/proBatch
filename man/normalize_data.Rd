@@ -24,7 +24,7 @@ before normalization (`NULL`, `2` or `10`)}
 Normalization brings the samples to the same scale
 }
 \examples{
-quantile_normalized_matrix = normalize_data(example_proteome_matrix, 
+quantile_normalized_matrix <- normalize_data(example_proteome_matrix, 
 normalizeFunc = "quantile", log_base = 2)
 
 }
