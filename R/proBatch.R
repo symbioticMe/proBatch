@@ -65,10 +65,16 @@
 #' @importFrom data.table :=
 #' @importFrom data.table IDateTime
 #' @importFrom purrr map2
+#' @importFrom grDevices colorRampPalette
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices pdf
+#' @importFrom utils combn data
+#' @importFrom stats as.formula complete.cases dist hclust loess median 
+#' @importFrom stats model.matrix prcomp predict reformulate setNames weights
 #' 
 #' @docType package
 #' @name proBatch
-if(getRversion() >= "2.15.1")  utils::globalVariables(c(".", 
+if(getRversion() >= "2.15.1")  utils::globalVariables(c(".", "data",
     "batch_size", "batch_the_same", "batch_total", "category", "dateTime", 
     "fit", "label", "mean_fit", "median_batch", "median_global", 
     "median_run", "optimise_bw", "optimise_df", "peptide_col_name", 
