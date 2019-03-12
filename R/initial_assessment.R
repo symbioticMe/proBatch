@@ -42,7 +42,7 @@
 #' @export
 #'
 #' @examples 
-#' plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+#' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 #' order_col = 'order', batch_col = "MS_batch")
 #' 
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
@@ -152,7 +152,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' @export
 #'
 #' @examples
-#' plot_boxplot(example_proteome, example_sample_annotation, 
+#' boxplot <- plot_boxplot(example_proteome, example_sample_annotation, 
 #' batch_col = "MS_batch")
 #' 
 plot_boxplot <- function(df_long, sample_annotation = NULL,
