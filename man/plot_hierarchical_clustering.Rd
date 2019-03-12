@@ -45,7 +45,8 @@ numeric_columns = c('order'))
 
 color_annotation <- color_scheme$color_df
 
-plot_hierarchical_clustering(example_proteome_matrix, color_annotation,  
+hiarchical_clustering_plot <- plot_hierarchical_clustering(
+example_proteome_matrix, color_annotation,  
 distance = "euclidean", agglomeration = 'complete',
 label_samples = FALSE)
 
