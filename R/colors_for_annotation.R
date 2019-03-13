@@ -14,7 +14,7 @@ map_factors_to_colors <- function(annotation_df_factors) {
     colors = WGCNA::standardColors(n_colors_total)
     start_indxs = c(1, 1 + cumsum(nlev_covariate[-length(nlev_covariate)]))
     end_indx = cumsum(nlev_covariate)
-    ann_colors_covariate = lapply(1:length(nlev_covariate),
+    ann_colors_covariate = lapply(seq_len(length(nlev_covariate)),
                                   function(i)
                                       colors[start_indxs[i]:end_indx[i]])
 
@@ -51,7 +51,7 @@ map_numbers_to_colors <-
         if (length(granularity) == 1) {
           granularity <- rep(granularity, ncol(annotation_df_numbers))}
         
-        ann_col_covariate <- lapply(1:ncol(annotation_df_numbers),
+        ann_col_covariate <- lapply(seq_len(ncol(annotation_df_numbers)),
                                     function(i)
                                       generate_colors_for_numeric(
                                         annotation_df_numbers[, i],
@@ -105,7 +105,7 @@ generate_colors_for_numeric <- function(num_col,
     
     color_for_column = switch(
         palette_type,
-        brewer = scales::brewer_pal(type = "div", i)(5)[1:5],
+        brewer = scales::brewer_pal(type = "div", i)(5)[seq_len(5)],
         viridis = viridis::viridis_pal(option = LETTERS[5 - i])(5)
     )
     
@@ -135,7 +135,7 @@ generate_colors_for_numeric <- function(num_col,
     }
     
     color_to_plot = colorRampPalette(color_for_column)(
-      nlevels(num_vec))[1:nlevels(num_vec)]
+      nlevels(num_vec))[seq_len(nlevels(num_vec))]
     names(color_to_plot) = levels(num_vec)
     
     if (!is.null(non_numeric_values)) {
