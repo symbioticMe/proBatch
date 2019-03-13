@@ -247,7 +247,7 @@ associated with sample running order. We will illustrate, how such biases can be
 3. Replicate structure: samples from two animals were injected in the MS instrument every 10-15 samples. Additionally,
 several samples were repeated back-to-back in the end and in the beginning of two consecutive batches. This replication scheme allows to evaluate the coefficient of variation and is highly beneficial for assessment of sample correlation.
 
-The example SWATH data and annotation files can be loaded from the package with the function `data()`. 	
+The example SWATH data and annotation files can be loaded from the package with the function `data()`.
 ```{r load_data, fig.show='hold'}
 library(proBatch)
 data("example_proteome", "example_sample_annotation", "example_peptide_annotation", 
@@ -709,7 +709,7 @@ plot_single_feature (pep_name = "10231_QDVDVWLWQQEGSSK_2", combat_df,
 ComBat fixed the discrete batch effects and also made the distributions
 between batches similar to one another.
 
-###	Correct batch effects: universal function 
+### Correct batch effects: universal function
 We provide a convenient all-in-one function for batch correction. The
 function `correct_batch_effects()` corrects MS signal drift and discrete
 shift in a single function call. Simply specify which discrete
