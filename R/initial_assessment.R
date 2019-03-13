@@ -85,7 +85,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
         group_by_at(vars(one_of(facet_col))) %>%
         mutate(order = rank(UQ(sym(order_col))))
     }
-    }
+  }
   gg = ggplot(df_ave, aes_string(x = order_col, y = 'Average_Intensity'))+
     geom_point()
   if(!is.null(ylimits)){
@@ -106,11 +106,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
           warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
                           consider defining color scheme with sample_annotation_to_colors function', n_batches))
         }
-        }
-      
-      } else{
-        gg = gg + scale_color_manual(values = color_scheme)
       }
+      
+    } else{
+      gg = gg + scale_color_manual(values = color_scheme)
+    }
   }
   if(!is.null(batch_col)){
     if (!is.null(facet_col)){
@@ -144,7 +144,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   
   
   return(gg)
-  }
+}
 
 
 #' @name plot_sample_mean_or_boxplot
@@ -180,8 +180,8 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
         stop('batches cannot be colored if the batch column cannot be defined,
              check sample_annotation and data matrix')
       }
-      }
     }
+  }
   if (is.null(order_col)){
     warning('order column not defined, taking order of files in the data matrix instead')
     order_col = 'order_temp_col'
@@ -234,9 +234,9 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
           warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
                           consider defining color scheme with sample_annotation_to_colors function', n_batches))
         }
-        }
-      } else{
-        gg = gg + scale_fill_manual(values = color_scheme)
+      }
+    } else{
+      gg = gg + scale_fill_manual(values = color_scheme)
     }
   }
   if(!is.null(facet_col)){
@@ -246,7 +246,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     }
     gg = gg + facet_wrap(as.formula(paste("~", facet_col)),
                          dir = 'v', scales = "free_x")
-    }
+  }
   if(theme == 'classic'){
     gg = gg + theme_classic()
   }
@@ -258,4 +258,4 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     gg = gg + theme(legend.position="top")
   }
   return(gg)
-  }
+}
