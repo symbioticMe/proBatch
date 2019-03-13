@@ -222,12 +222,12 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
                                     biospecimen_id_col = 'EarTag',
                                     batch_col = 'batch'){
     comb_to_keep = data.frame(t(combn(colnames(cor_proteome), 2)))
-    names(comb_to_keep) = paste(sample_id_col, 1:2, sep = '_')
+    names(comb_to_keep) = paste(sample_id_col, seq_len(2), sep = '_')
 
     spec_cols = c(biospecimen_id_col, batch_col)
 
     corr_distribution = melt(cor_proteome,
-                             varnames = paste(sample_id_col,1:2, sep = '_'),
+                             varnames = paste(sample_id_col,seq_len(2), sep = '_'),
                              value.name = 'correlation') %>%
         merge(comb_to_keep) %>%
         merge(sample_annotation %>% select(one_of(c(sample_id_col, spec_cols))),
@@ -374,7 +374,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                               sample_id_col = sample_id_col, 
                                               batch_col = batch_col)
     } else {
-        corr_distribution = lapply(1:length(data_matrix), function(i) {
+        corr_distribution = lapply(seq_len(length(data_matrix)), function(i) {
             dm = data_matrix[[i]]
             corr_distribution = .corr_distribution(data_matrix = dm, 
                                                   repeated_samples = repeated_samples, 
@@ -428,10 +428,10 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = 'ProteinName',
                                 feature_id_col = 'peptide_group_label'){
     comb_to_keep = data.frame(t(combn(colnames(peptide_cor), 2)))
-    names(comb_to_keep) = paste(feature_id_col, 1:2, sep = '_')
+    names(comb_to_keep) = paste(feature_id_col, seq_len(2), sep = '_')
 
     corr_distribution = melt(peptide_cor,
-                             varnames = paste(feature_id_col,1:2, sep = '_'),
+                             varnames = paste(feature_id_col,seq_len(2), sep = '_'),
                              value.name = 'correlation') %>%
         merge(comb_to_keep) %>%
         merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
@@ -509,7 +509,7 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
         corr_distribution = .corr_distribution_prot(data_matrix, peptide_annotation,
                                                    protein_col, feature_id_col)
     } else {
-        corr_distribution = lapply(1:length(data_matrix), function(i) {
+        corr_distribution = lapply(seq_len(length(data_matrix)), function(i) {
             dm = data_matrix[[i]]
             corr_distribution = .corr_distribution_prot(dm, peptide_annotation,
                                                        protein_col, feature_id_col)
