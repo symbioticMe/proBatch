@@ -75,10 +75,10 @@
 #' @docType package
 #' @name proBatch
 if(getRversion() >= "2.15.1")  utils::globalVariables(c(".", "data",
-    "batch_size", "batch_the_same", "batch_total", "category", "dateTime", 
-    "fit", "label", "mean_fit", "median_batch", "median_global", 
-    "median_run", "optimise_bw", "optimise_df", "peptide_col_name", 
-    "sample_annotatation_col", "Step", "tipping.poings", "Var1", "Var2"))
+  "batch_size", "batch_the_same", "batch_total", "category", "dateTime", 
+  "fit", "label", "mean_fit", "median_batch", "median_global", 
+  "median_run", "optimise_bw", "optimise_df", "peptide_col_name", 
+  "sample_annotatation_col", "Step", "tipping.poings", "Var1", "Var2"))
 NULL
 
 

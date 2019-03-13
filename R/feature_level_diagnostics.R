@@ -100,12 +100,12 @@ plot_single_feature  <- function(pep_name, df_long, sample_annotation,
                           batches,consider defining color scheme with 
                           sample_annotation_to_colors function', n_batches))
         }
-        }
+      }
       
-        } else{
-          gg = gg + scale_color_manual(values = color_scheme)
-        }
+    } else{
+      gg = gg + scale_color_manual(values = color_scheme)
     }
+  }
   
   if(!is.null(batch_col)){
     batch.tipping.points = cumsum(table(sample_annotation[[batch_col]]))+.5
@@ -187,7 +187,7 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
                                                               protein_name),...){
   
   if(!setequal(unique(sample_annotation[[sample_id_col]]), 
-              unique(df_long[[sample_id_col]]))){
+               unique(df_long[[sample_id_col]]))){
     warning('Sample IDs in sample annotation not consistent 
             with samples in input data.')}
   
@@ -214,7 +214,7 @@ plot_peptides_of_one_protein <- function(protein_name, protein_col = 'ProteinNam
                            color_by_value = color_by_value,
                            plot_title = plot_title, ...)
   return(gg)
-  }
+}
 
 #' Plot spike-in measurements
 #'
@@ -259,7 +259,7 @@ plot_spike_in <- function(df_long, sample_annotation,
                           plot_title = 'Spike-in BOVINE protein peptides', ...){
   
   if(!setequal(unique(sample_annotation[[sample_id_col]]), 
-              unique(df_long[[sample_id_col]]))){
+               unique(df_long[[sample_id_col]]))){
     warning('Sample IDs in sample annotation not 
             consistent with samples in input data.')}
   
@@ -283,7 +283,7 @@ plot_spike_in <- function(df_long, sample_annotation,
                            color_by_value = color_by_value,
                            plot_title = plot_title, ...)
   return(gg)
-  }
+}
 
 
 #' Plot iRT measurements
@@ -329,7 +329,7 @@ plot_iRT <- function(df_long, sample_annotation,
                      plot_title = 'iRT peptide profile', ...){
   
   if(!setequal(unique(sample_annotation[[sample_id_col]]), 
-              unique(df_long[[sample_id_col]]))){
+               unique(df_long[[sample_id_col]]))){
     warning('Sample IDs in sample annotation not consistent 
             with samples in input data.')}
   
@@ -353,7 +353,7 @@ plot_iRT <- function(df_long, sample_annotation,
                            color_by_value = color_by_value,
                            plot_title = plot_title, ...)
   return(gg)
-  }
+}
 
 
 #' Plot peptide measurements across multi-step analysis
