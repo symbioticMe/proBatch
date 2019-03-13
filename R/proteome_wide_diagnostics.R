@@ -229,10 +229,12 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
 #'
-#' @examples \dontrun{
-#' pvca_plot <- plot_PVCA(example_proteome_matrix, example_sample_annotation, 
+#' @examples 
+#' matrix <- example_proteome_matrix[1:50, ]
+#' pvca_plot <- plot_PVCA(matrix, example_sample_annotation, 
 #' technical_covariates = c('MS_batch', 'digestion_batch'),
-#' biological_covariates = c("Diet", "Sex", "Strain"))}
+#' biological_covariates = c("Diet", "Sex", "Strain"))
+#' 
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
 plot_PVCA <- function(data_matrix, sample_annotation,
                       sample_id_col = 'FullRunName',
