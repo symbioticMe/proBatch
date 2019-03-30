@@ -220,7 +220,8 @@ merge_rare_levels <- function(column) {
 #' not_factor_columns = 'DateTime',
 #' numeric_columns = c('order'))
 #' @export
-#'
+#' 
+#' @name sample_annotation_to_colors
 sample_annotation_to_colors <- function(sample_annotation,
                                         columns_for_plotting = NULL,
                                         sample_id_col = 'FullRunName',
