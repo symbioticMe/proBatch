@@ -43,7 +43,8 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{geom}{whether to show the feature as points and/or connect by lines}
+\item{geom}{whether to show the feature as points and/or connect by lines (accepted 
+values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})}
 
 \item{color_by_col}{column to color point by certain value denoted 
 by \code{color_by_value}. Design with inferred/requant values in openSWATH output data, 
@@ -55,12 +56,14 @@ this argument value has to be set to `2` (this is an `m_score` value for requant
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
-\item{color_by_batch}{(logical) whether to color points and connecting lines by batch}
-
-\item{color_scheme}{color scheme for \code{ggplot} representation of batches}
+\item{color_by_batch}{(logical) whether to color points and connecting lines 
+by batch factor as defined by \code{batch_col}.}
 
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
-used for certain diagnostics and normalisations.}
+used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
+feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
+if sample order is irrelevant (e.g. in genomic experiments). For more details,
+order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
 
 \item{vline_color}{color of vertical lines, typically separating 
 different MS batches in ordered runs; 
@@ -90,8 +93,8 @@ Creates a iRT facetted ggplot2 plot of the value in
 be facetted by batch.
 }
 \seealso{
-Other feature-level diagnostic functions: \code{\link{plot_peptides_of_one_protein}},
-  \code{\link{plot_single_feature}},
+Other feature-level diagnostic functions: \code{\link{feature_level_diagnostics}},
+  \code{\link{plot_peptides_of_one_protein}},
   \code{\link{plot_spike_in}},
   \code{\link{plot_with_fitting_curve}}
 }
