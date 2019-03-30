@@ -1,19 +1,21 @@
 #' Plot peptide measurements
 #'
 #' Creates a peptide facetted ggplot2 plot of the value in \code{measure_col}
-#' vs \code{order_col}. Additionally, the resulting plot can also be facetted
-#' by batch.
+#' vs \code{order_col} (if `NULL`, x-axis is simply a sample name order). 
+#' Additionally, the resulting plot can also be facetted by a batch factor, 
+#' e.g. an MS instrument.
 #'
 #' @inheritParams proBatch
 #' @param feature_name name of the selected feature (e.g. peptide) for diagnostic profiling
-#' @param geom whether to show the feature as points and/or connect by lines
+#' @param geom whether to show the feature as points and/or connect by lines (accepted 
+#' values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})
 #' @param color_by_col column to color point by certain value denoted 
 #' by \code{color_by_value}. Design with inferred/requant values in openSWATH output data, 
 #' which means argument value has to be set to `m_score`.
 #' @param color_by_value value in \code{color_by_col} to color. For OpenSWATH data,
 #' this argument value has to be set to `2` (this is an `m_score` value for requants).
-#' @param color_by_batch (logical) whether to color points and connecting lines by batch
-#' @param color_scheme color scheme for \code{ggplot} representation of batches
+#' @param color_by_batch (logical) whether to color points and connecting lines 
+#' by batch factor as defined by \code{batch_col}.
 #' @param facet_col column  in `sample_annotation` with a batch factor to separate 
 #' plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
 #' MS experiments (where each instrument has its own order-associated effects) 
@@ -32,11 +34,16 @@
 #' plot_single_feature(pep_name = "46213_NVGVSFYADKPEVTQEQK_2", 
 #' df_long = example_proteome, example_sample_annotation, 
 #' color_by_col = NULL)
+#' 
+#' #to examine features that have missing values specific per batch, this can be used:
+#' plot_single_feature(pep_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+#' df_long = example_proteome, example_sample_annotation, 
+#' color_by_col = 'm_score', color_by_value = 2)
 #'
 #' @family feature-level diagnostic functions
 #'
 #' @export
-#'
+#' @name feature_level_diagnostics
 
 plot_single_feature  <- function(feature_name, df_long, sample_annotation,
                                  sample_id_col = 'FullRunName',
@@ -99,13 +106,16 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
   #split into facets
   if(!is.null(facet_col)){
     if (length(feature_name) > 1){
-      gg = gg + facet_grid(reformulate(batch_col, feature_name), scales = 'free_y')
+      gg = gg + facet_grid(reformulate(facet_col, feature_id_col), 
+                           scales = 'free')
     } else {
-      gg = gg  + facet_wrap(as.formula(paste("~", batch_col)), scales = 'free_y')
+      gg = gg  + facet_wrap(as.formula(paste("~", facet_col)), 
+                            scales = 'free_x')
     }
   } else {
     if (length(feature_name) > 1){
-      gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), scales = 'free_y')
+      gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), 
+                           scales = 'free_y')
     }
   }
    
@@ -161,7 +171,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation,
 #' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
-#' @inheritParams plot_single_feature
+#' @inheritParams feature_level_diagnostics
 #' @param peptide_annotation long format data frame with peptide ID and their corresponding 
 #' protein and/or gene annotations (analogous to )
 #' @param protein_name name of the protein as defined in \code{ProteinName}
@@ -235,7 +245,7 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
 #' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
-#' @inheritParams plot_single_feature
+#' @inheritParams feature_level_diagnostics
 #' @param spike_ins substring used to identify spike-in proteins in the column
 #'   'ProteinName'
 #' @param peptide_annotation long format data with peptide ID and their corresponding 
@@ -309,7 +319,7 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
 #' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
 #' be facetted by batch.
 #'
-#' @inheritParams plot_single_feature
+#' @inheritParams feature_level_diagnostics
 #' @param irt_pattern substring used to identify irts proteins in the column
 #'   'ProteinName'
 #' @param peptide_annotation long format data with peptide ID and their corresponding 
@@ -376,12 +386,11 @@ plot_iRT <- function(irt_pattern = 'iRT',
 #' Plot Intensity of a few representative peptides for each step of the analysis
 #' including the fitting curve
 #'
-#' @inheritParams plot_single_feature
+#' @inheritParams feature_level_diagnostics
 #' @param pep_name name of the peptide for diagnostic profiling
 #' @param fit_df data frame typically output generated from nonlinear curve 
 #'   fitting by \code{normalize_custom_fit}
 #' @param fit_value_var column denoting intensity values, typically fitted to curve
-#' @param geom for the intensity \code{measure_col} profile
 #' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return \code{ggplot}-class plot with minimally two facets (before and after
