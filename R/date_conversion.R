@@ -72,6 +72,7 @@ dates_to_posix <- function(sample_annotation,
 #' 
 #' @export
 #'
+#' @name date_to_sample_order
 date_to_sample_order <- function(sample_annotation,
                                  time_column = c('RunDate','RunTime'),
                                  new_time_column = 'DateTime',
