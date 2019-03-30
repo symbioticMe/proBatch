@@ -21,56 +21,57 @@ plot_boxplot(df_long, sample_annotation = NULL,
   outliers = TRUE)
 }
 \arguments{
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix, 
-with feature IDs in rownames and file/sample names as colnames. in most function,}
+\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
+feature IDs in rownames and file/sample names as colnames. Usually the log
+transformed version of the original data}
 
-\item{sample_annotation}{data matrix with 1) \code{sample_id_col} (this can be
-repeated as row names) 2) biological and 3) technical covariates (batches
-etc)}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison. Can be `NULL` if only boxplot/mean comparison, without coloring by batches, is required.}
+batch comparison}
 
 \item{color_by_batch}{should the each batch be represented with its own
 color?}
 
-\item{color_scheme}{named vector, names corresponding to unique batch values
-as specified in \code{sample_annotation}}
+\item{color_scheme}{named vector, names corresponding to unique batch values of 
+\code{batch_col} in \code{sample_annotation}. Best created with \link{sample_annotation_to_colors}}
 
-\item{order_col}{column where running order is specified.}
+\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
+used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
+feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
+if sample order is irrelevant (e.g. in genomic experiments). For more details,
+order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
 
 \item{vline_color}{color of vertical lines, typically denoting 
 different MS batches in ordered runs; should be \code{NULL} for experiments without intrinsic order}
 
 \item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
 plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
-MS experiments (where each instrument has its own order-associated effects) 
+MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
 or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
 
-\item{plot_title}{Title of the plot (usually, processing step + representation
+\item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
-\item{theme}{ggplot theme, by default  \code{classic}. Can be easily overriden (see
-examples)}
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
 \item{ylimits}{range of y-axis to compare two plots side by side, if required.}
 
 \item{df_long}{data frame where each row is a single feature in a single
-sample, thus it has minimally, \code{sample_id_col}, \code{feature_id_col} and
-\code{measure_col}, but usually also \code{m_score} (in OpenSWATH output result
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
 
-\item{measure_col}{if \code{df_long} is among the parameters, it is the column
-with expression/abundance/intensity, otherwise, it is used internally for
-consistency}
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
+column with expression/abundance/intensity; otherwise, it is used
+internally for consistency.}
 
 \item{outliers}{keep (default) or remove the boxplot outliers}
-
-\item{order_per_facet}{if order is defined ignoring facets (usually
-instrument), re-define order per-batch}
 }
 \value{
 ggplot2 class object. Thus, all aesthetics can be overriden
@@ -84,13 +85,14 @@ functions for quick visual assessment of trends associated, overall
   or specific covariate-associated (see \code{batch_col} and \code{facet_col})
 }
 \examples{
+library(ggplot2)
 plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
-order_col = 'order', batch_col = "MS_batch")
+order_col = 'order', batch_col = "MS_batch") + theme_bw()
 
 plot_boxplot(example_proteome, example_sample_annotation, 
 batch_col = "MS_batch")
 
 }
 \seealso{
-\code{\link[ggplot2]{ggplot}}
+\code{\link[ggplot2]{ggplot}}, \link{date_to_sample_order}
 }
