@@ -39,10 +39,13 @@
 #' @param batch_col column in \code{sample_annotation} that should be used for
 #'   batch comparison
 #' @param order_col column in \code{sample_annotation} that determines sample order. It is
-#'    used for certain diagnostics and normalisations.
-#' @param facet_col column  in `sample_annotation` with a batch factor to separate 
-#' plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
-#' MS experiments (where each instrument has its own order-associated effects) 
+#'    used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
+#'    feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
+#'    if sample order is irrelevant (e.g. in genomic experiments). For more details,
+#'    order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}
+#' @param facet_col column  in \code{sample_annotation} with a batch factor to separate 
+#' plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
+#' MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
 #' or simultaneous examination of two batch factors (e.g. preparation day and measurement day)
 #' @param plot_title title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
