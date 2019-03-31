@@ -27,15 +27,15 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{plot_title}{Title of the plot, usually processing step}
+\item{plot_title}{title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
 \item{...}{parameters for the \code{ggplot} visualisation}
 }
 \value{
-\code{ggplot} type object with violin 
-plot for each \code{plot_param}
+\code{ggplot} type object with violin plot
 }
 \description{
 Plot distribution of peptide correlations within one 
