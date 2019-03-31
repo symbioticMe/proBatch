@@ -486,8 +486,9 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' 
 #' @export
 #' 
-calculate_peptide_corr_distr <- function(data_matrix, peptide_annotation, 
-                                    protein_col, feature_id_col){
+calculate_peptide_corr_distr <- function(data_matrix, peptide_annotation,
+                                         protein_col = 'ProteinName',
+                                         feature_id_col = 'peptide_group_label'){
     corr_matrix = cor(t(data_matrix), use = "pairwise.complete.obs")
     corr_distribution = get_peptide_corr_df(peptide_cor = corr_matrix,
                                             peptide_annotation = peptide_annotation,
@@ -554,9 +555,16 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
 plot_peptide_corr_distribution.corrDF <- function(corr_distribution, 
                                                   plot_title = 'Correlation of peptides', 
                                                   theme = 'classic') {
+  median_same_prot = corr_distribution %>%
+    filter(same_protein == 'same protein') %>%
+    summarize(median = median(correlation, na.rm = T)) %>%
+    pull(median)
   p <- ggplot(corr_distribution, aes_string(x = 'same_protein', y = 'correlation'))+
-    geom_violin(scale = 'width')+
-    geom_boxplot(width = .1) 
+    geom_violin(scale = 'width') +
+    geom_hline(yintercept = 0, linetype = 'dashed', color = 'darkgrey') +
+    geom_hline(yintercept = median_same_prot, linetype = 'dotted', color = 'tomato1') +
+    geom_boxplot(width = .1) +
+    xlab(NULL)
   
   if(!is.null(plot_title)){
     p = p +
