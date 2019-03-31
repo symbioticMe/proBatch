@@ -184,8 +184,8 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 }
 
 
-#' Calculates correlation distribution for all pairs 
-#' of the replicated samples
+#' Transform square correlation matrix into long data.frame of correlations
+#' of the replicated samples, samples from same batch and unrelated samples
 #'
 #' @inheritParams proBatch
 #' @param cor_proteome sample correlation matrix (square)
@@ -280,7 +280,7 @@ get_sample_corr_df <- function(cor_proteome, sample_annotation,
 #' 
 #' @export
 #'
-calculate_corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
+calculate_sample_corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
                               biospecimen_id_col, sample_id_col, batch_col) {
   if (!is.null(repeated_samples)){
     print('calculating correlation of repeated samples only')
@@ -354,7 +354,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                 consistent with samples in input data.')}
     
     if (!is.list(data_matrix)){
-        corr_distribution = calculate_corr_distribution(data_matrix = data_matrix, 
+        corr_distribution = calculate_sample_corr_distribution(data_matrix = data_matrix, 
                                               repeated_samples = repeated_samples, 
                                               sample_annotation = sample_annotation,
                                               biospecimen_id_col = biospecimen_id_col, 
@@ -363,7 +363,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
     } else {
         corr_distribution = lapply(1:length(data_matrix), function(i) {
             dm = data_matrix[[i]]
-            corr_distribution = calculate_corr_distribution(data_matrix = dm, 
+            corr_distribution = calculate_sample_corr_distribution(data_matrix = dm, 
                                                   repeated_samples = repeated_samples, 
                                                   sample_annotation = sample_annotation,
                                                   biospecimen_id_col = biospecimen_id_col, 
@@ -397,6 +397,7 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
   p <- ggplot(corr_distribution, aes_string(x = plot_param, y = 'correlation'))+
     geom_violin(scale = 'width')+
     geom_boxplot(width = .1) 
+  
   if (!is.null(plot_title)){
     p = p + ggtitle(plot_title)
   }
@@ -436,11 +437,11 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
 #' @param feature_id_col column in \code{peptide_annotation} that 
 #' captures peptide names are found 
 #'
-#' @return dataframe with peptide correlation coefficients 
-#' that are suggested to use for plotting in 
-#' \code{\link{plot_peptide_corr_distribution}} as \code{plot_param}:
+#' @return dataframe with correlation coefficients for each peptide pair and label
+#' \code{same_protein} or \code{different_proteins} in column \code{same_protein}. 
+#' Intended for use in \code{\link{plot_peptide_corr_distribution}}.
 #' 
-#' @keywords internal
+#' @export
 #' 
 get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = 'ProteinName',
                                 feature_id_col = 'peptide_group_label'){
@@ -450,17 +451,19 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
     corr_distribution = melt(peptide_cor,
                              varnames = paste(feature_id_col,1:2, sep = '_'),
                              value.name = 'correlation') %>%
-        merge(comb_to_keep) %>%
-        merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
+      merge(comb_to_keep) %>%
+      merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
               by.x = paste(feature_id_col,'1', sep = '_'),
               by.y = feature_id_col, all.x = TRUE) %>%
-        data.table::setnames(old = protein_col, new = paste(protein_col, 1, sep = '')) %>%
-        merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
+      data.table::setnames(old = protein_col, new = paste(protein_col, 1, sep = '')) %>%
+      merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
               by.x = paste(feature_id_col,'2', sep = '_'),
               by.y = feature_id_col, all.x = TRUE) %>%
-        data.table::setnames(old = protein_col, new = paste(protein_col, 2, sep = '')) %>%
-        mutate(same_protein = (!!sym(paste(protein_col,'1', sep = '')) ==
-                                 !!sym(paste(protein_col,'2', sep = ''))))
+      data.table::setnames(old = protein_col, new = paste(protein_col, 2, sep = '')) %>%
+      mutate(same_protein = (!!sym(paste(protein_col,'1', sep = '')) ==
+                               !!sym(paste(protein_col,'2', sep = '')))) %>%
+      mutate(same_protein = ifelse(same_protein, 'same protein', 'different proteins'))
+      
     return(corr_distribution)
 }
 
@@ -481,9 +484,9 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' that are suggested to use for plotting in 
 #' \code{\link{plot_peptide_corr_distribution}} as \code{plot_param}:
 #' 
-#' @keywords internal
+#' @export
 #' 
-.corr_distribution_prot <- function(data_matrix, peptide_annotation, 
+calculate_peptide_corr_distr <- function(data_matrix, peptide_annotation, 
                                     protein_col, feature_id_col){
     corr_matrix = cor(t(data_matrix), use = "pairwise.complete.obs")
     corr_distribution = get_peptide_corr_df(peptide_cor = corr_matrix,
@@ -500,14 +503,12 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' 
 #' @param protein_col the column name in \code{peptide_annotation} 
 #' with protein names
-#' @param plot_title Title of the plot, usually processing step 
 #' @param peptide_annotation long format data with peptide ID
 #' and their corresponding 
 #' protein annotations
 #' @param ... parameters for the \code{ggplot} visualisation
 #'
-#' @return \code{ggplot} type object with violin 
-#' plot for each \code{plot_param}
+#' @return \code{ggplot} type object with violin plot
 #' 
 #' @examples 
 #' plot_peptide_corr_distribution(example_proteome_matrix, 
@@ -522,12 +523,12 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
                                            theme = 'classic'){
     
     if (!is.list(data_matrix)){
-        corr_distribution = .corr_distribution_prot(data_matrix, peptide_annotation,
+        corr_distribution = calculate_peptide_corr_distr(data_matrix, peptide_annotation,
                                                    protein_col, feature_id_col)
     } else {
         corr_distribution = lapply(1:length(data_matrix), function(i) {
             dm = data_matrix[[i]]
-            corr_distribution = .corr_distribution_prot(dm, peptide_annotation,
+            corr_distribution = calculate_peptide_corr_distr(dm, peptide_annotation,
                                                        protein_col, feature_id_col)
             corr_distribution$Step = names(data_matrix)[i]
             return(corr_distribution)
@@ -535,20 +536,45 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
         corr_distribution = do.call(rbind, corr_distribution)%>%
             mutate(Step = factor(Step, levels = names(data_matrix)))
     }
-    p <- ggplot(corr_distribution, aes_string(x = 'same_protein', y = 'correlation'))+
-        geom_violin()+
-        geom_boxplot(width = .1)+
-        ggtitle(plot_title)+
-        theme_classic()
-
-    if(is.list(data_matrix)){
-        if(length(data_matrix) <= 4){
-            p = p + theme_bw() + facet_grid(.~Step)
-        }
-        else {
-            p = p + theme_bw()+facet_grid(Step ~ .)
-        }
-    }
-    p = p + theme(plot.title = element_text(hjust = .5, face = 'bold'))
+    p = plot_peptide_corr_distribution.corrDF(corr_distribution, plot_title, data_matrix, theme)
     return(p)
+}
+
+#' Plot distribution of peptide correlation within and between proteins, 
+#' starting from peptide correlation data frame
+#'
+#' @inheritParams proBatch
+#' @param corr_distribution 
+#'
+#' @return \code{ggplot} type object with violin plot
+#' 
+#' @export
+#'
+#' @examples
+plot_peptide_corr_distribution.corrDF <- function(corr_distribution, 
+                                                  plot_title = 'Correlation of peptides', 
+                                                  theme = 'classic') {
+  p <- ggplot(corr_distribution, aes_string(x = 'same_protein', y = 'correlation'))+
+    geom_violin(scale = 'width')+
+    geom_boxplot(width = .1) 
+  
+  if(!is.null(plot_title)){
+    p = p +
+      ggtitle(plot_title)
+  }
+  
+  if(('Step' %in% names(corr_distribution)) & length(unique(corr_distribution$Step)) > 1){
+    if(length(unique(corr_distribution$Step)) <= 4){
+      p = p  + facet_grid(.~Step)
+    }
+    else {
+      p = p +facet_grid(Step ~ .)
+    }
+  }
+  
+  if (theme == 'classic'){
+    p = p + theme_classic()
+  }
+  p = p + theme(plot.title = element_text(hjust = .5, face = 'bold'))
+  return(p)
 }
