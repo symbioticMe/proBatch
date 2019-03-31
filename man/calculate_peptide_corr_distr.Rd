@@ -4,8 +4,8 @@
 \alias{calculate_peptide_corr_distr}
 \title{Transform square correlation matrix into long data frame of correlations}
 \usage{
-calculate_peptide_corr_distr(data_matrix, peptide_annotation, protein_col,
-  feature_id_col)
+calculate_peptide_corr_distr(data_matrix, peptide_annotation,
+  protein_col = "ProteinName", feature_id_col = "peptide_group_label")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
