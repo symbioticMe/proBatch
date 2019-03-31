@@ -20,11 +20,10 @@ with protein names}
 captures peptide names are found}
 }
 \value{
-dataframe with peptide correlation coefficients 
-that are suggested to use for plotting in 
-\code{\link{plot_peptide_corr_distribution}} as \code{plot_param}:
+dataframe with correlation coefficients for each peptide pair and label
+\code{same_protein} or \code{different_proteins} in column \code{same_protein}. 
+Intended for use in \code{\link{plot_peptide_corr_distribution}}.
 }
 \description{
 Transform square correlation matrix into long data frame of correlations
 }
-\keyword{internal}

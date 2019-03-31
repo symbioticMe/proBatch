@@ -2,8 +2,8 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{get_sample_corr_df}
 \alias{get_sample_corr_df}
-\title{Calculates correlation distribution for all pairs 
-of the replicated samples}
+\title{Transform square correlation matrix into long data.frame of correlations
+of the replicated samples, samples from same batch and unrelated samples}
 \usage{
 get_sample_corr_df(cor_proteome, sample_annotation,
   sample_id_col = "FullRunName", biospecimen_id_col = "EarTag",
@@ -47,6 +47,6 @@ created the same as \code{sample_id_1}
 }
 }
 \description{
-Calculates correlation distribution for all pairs 
-of the replicated samples
+Transform square correlation matrix into long data.frame of correlations
+of the replicated samples, samples from same batch and unrelated samples
 }
