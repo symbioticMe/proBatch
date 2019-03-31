@@ -194,8 +194,6 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 #' combination of conditions or groups.
 #'  Tip: if such ID is absent, but can be defined from several columns,
 #'  create new \code{biospecimen_id} column
-#' @param batch_col column in \code{sample_annotation} that should be used for
-#'   batch comparison
 #'
 #' @return dataframe with the following columns, that 
 #' are suggested to use for plotting in 
@@ -214,10 +212,9 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 #' created the same as \code{sample_id_1}
 #' }
 #' 
-#' @keywords internal
-#'
-#'
-get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
+#' @export
+#' 
+get_sample_corr_df <- function(cor_proteome, sample_annotation,
                                     sample_id_col = 'FullRunName',
                                     biospecimen_id_col = 'EarTag',
                                     batch_col = 'batch'){
@@ -257,22 +254,12 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' of the replicated samples 
 #'
 #' @inheritParams proBatch
-#' @param data_matrix  features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. Usually the log
-#'   transformed version of the original data
 #' @param repeated_samples if \code{NULL}, only repeated sample correlation is plotted
-#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
 #' @param biospecimen_id_col column in \code{sample_annotation} 
 #' that defines a unique bio ID, which is usually a 
 #' combination of conditions or groups.
 #'  Tip: if such ID is absent, but can be defined from several columns,
 #'  create new \code{biospecimen_id} column
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix) are found
-#' @param batch_col column in \code{sample_annotation} that should be used for
-#'   batch comparison
 #'
 #' @return dataframe with the following columns, that 
 #' are suggested to use for plotting in 
@@ -291,9 +278,9 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
 #' created the same as \code{sample_id_1}
 #' }
 #' 
-#' @keywords internal
+#' @export
 #'
-.corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
+calculate_corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
                               biospecimen_id_col, sample_id_col, batch_col) {
   if (!is.null(repeated_samples)){
     print('calculating correlation of repeated samples only')
@@ -301,11 +288,11 @@ get_sample_corr_distrib <- function(cor_proteome, sample_annotation,
   } else {
     corr_matrix = cor(data_matrix, use = 'complete.obs')
   }
-  corr_distribution = get_sample_corr_distrib(cor_proteome = corr_matrix,
-                                              sample_annotation = sample_annotation,
-                                              sample_id_col = sample_id_col,
-                                              biospecimen_id_col = biospecimen_id_col,
-                                              batch_col = batch_col)
+  corr_distribution = get_sample_corr_df(cor_proteome = corr_matrix,
+                                         sample_annotation = sample_annotation,
+                                         sample_id_col = sample_id_col,
+                                         biospecimen_id_col = biospecimen_id_col,
+                                         batch_col = batch_col)
   return(corr_distribution)
 }
 
@@ -357,8 +344,9 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                           sample_id_col = 'FullRunName',
                                           batch_col = 'MS_batch',
                                           biospecimen_id_col = 'EarTag',
-                                          plot_title = 'Correlation distribution',
-                                          plot_param = 'batch_replicate'){
+                                          plot_title = 'Sample correlation distribution',
+                                          plot_param = 'batch_replicate',
+                                          theme = 'classic'){
     
     if(!setequal(unique(sample_annotation[[sample_id_col]]), 
                 unique(colnames(data_matrix)))){
@@ -366,7 +354,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                 consistent with samples in input data.')}
     
     if (!is.list(data_matrix)){
-        corr_distribution = .corr_distribution(data_matrix = data_matrix, 
+        corr_distribution = calculate_corr_distribution(data_matrix = data_matrix, 
                                               repeated_samples = repeated_samples, 
                                               sample_annotation = sample_annotation,
                                               biospecimen_id_col = biospecimen_id_col, 
@@ -375,7 +363,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
     } else {
         corr_distribution = lapply(1:length(data_matrix), function(i) {
             dm = data_matrix[[i]]
-            corr_distribution = .corr_distribution(data_matrix = dm, 
+            corr_distribution = calculate_corr_distribution(data_matrix = dm, 
                                                   repeated_samples = repeated_samples, 
                                                   sample_annotation = sample_annotation,
                                                   biospecimen_id_col = biospecimen_id_col, 
@@ -385,26 +373,56 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
         })
         corr_distribution = do.call(rbind, corr_distribution)
     }
-    p <- ggplot(corr_distribution, aes_string(x = plot_param, y = 'correlation'))+
-        geom_violin()+
-        geom_boxplot(width = .1)+
-        ggtitle(plot_title)+
-        theme_classic()
-    if (plot_param =='batches'){
-        p = p + theme(axis.text.x = element_text(angle = 90))
-    }
-    if(is.list(data_matrix)){
-        if(length(data_matrix) <= 4){
-            p = p + theme_bw() + facet_grid(.~Step)
-        }
-        else {
-            p = p + theme_bw()+facet_grid(Step ~ .)
-        }
-    }
-    p = p + theme(plot.title = element_text(hjust = .5, face = 'bold'))
+    p <- plot_sample_corr_distribution.corrDF(corr_distribution = corr_distribution,
+                                              plot_title = plot_title, plot_param = plot_param, 
+                                              theme = theme)
     return(p)
 }
 
+#' Plot correlation distribution, starting from the correlation matrix
+#'
+#' @inheritParams proBatch
+#' @param corr_distribution data frame with correlation distribution
+#' @param plot_param one of the columns, as returned by \code{get_sample_corr_df}
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_sample_corr_distribution.corrDF <- function(corr_distribution,
+                                                 plot_title = 'Sample correlation distribution',
+                                                 plot_param = 'batch_replicate',
+                                                 theme = 'classic'){
+  
+  p <- ggplot(corr_distribution, aes_string(x = plot_param, y = 'correlation'))+
+    geom_violin(scale = 'width')+
+    geom_boxplot(width = .1) 
+  if (!is.null(plot_title)){
+    p = p + ggtitle(plot_title)
+  }
+  
+  if(('Step' %in% names(corr_distribution)) & length(unique(corr_distribution$Step)) > 1){
+    if(length(unique(corr_distribution$Step)) <= 4){
+      p = p  + facet_grid(.~Step)
+    }
+    else {
+      p = p +facet_grid(Step ~ .)
+    }
+  }
+  if (theme == 'classic'){
+    p = p + theme_classic()
+  }
+  
+  if (plot_param =='batches'){
+    p = p + theme(axis.text.x = element_text(angle = 90))
+  }
+  if (plot_param == 'batch_replicate'){
+    p = p + theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+  }
+  
+  p = p + theme(plot.title = element_text(hjust = .5, face = 'bold'))
+  return(p)
+}
 
 
 
