@@ -7,8 +7,8 @@
 plot_sample_corr_distribution(data_matrix, sample_annotation,
   repeated_samples = NULL, sample_id_col = "FullRunName",
   batch_col = "MS_batch", biospecimen_id_col = "EarTag",
-  plot_title = "Correlation distribution",
-  plot_param = "batch_replicate")
+  plot_title = "Sample correlation distribution",
+  plot_param = "batch_replicate", theme = "classic")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
