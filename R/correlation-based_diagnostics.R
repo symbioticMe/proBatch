@@ -284,9 +284,9 @@ calculate_sample_corr_distribution <- function(data_matrix, repeated_samples, sa
                               biospecimen_id_col, sample_id_col, batch_col) {
   if (!is.null(repeated_samples)){
     print('calculating correlation of repeated samples only')
-    corr_matrix = cor(data_matrix[,repeated_samples], use = 'complete.obs')
+    corr_matrix = cor(data_matrix[,repeated_samples], use = "pairwise.complete.obs")
   } else {
-    corr_matrix = cor(data_matrix, use = 'complete.obs')
+    corr_matrix = cor(data_matrix, use = "pairwise.complete.obs")
   }
   corr_distribution = get_sample_corr_df(cor_proteome = corr_matrix,
                                          sample_annotation = sample_annotation,
