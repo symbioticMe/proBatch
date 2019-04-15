@@ -4,12 +4,12 @@
 \alias{fit_nonlinear}
 \title{Fit a non-linear trend}
 \usage{
-fit_nonlinear(dataDF, batch.size, response.var = "y", expl.var = "x",
+fit_nonlinear(df_long, batch.size, response.var = "y", expl.var = "x",
   noFitRequants = FALSE, fitFunc = "loess_regression",
   with_df = FALSE, abs_threshold = 5, pct_threshold = 0.2, ...)
 }
 \arguments{
-\item{dataDF}{data frame containing response variable e.g. 
+\item{df_long}{data frame containing response variable e.g. 
 samples in order and explanatory 
   variable e.g. measurement}
 
@@ -19,7 +19,7 @@ compute for percentage threshold}
 \item{response.var}{the name of the column in dataDF with 
 the response variable}
 
-\item{expl.var}{the name of the column in dataDF with the 
+\item{expl.var}{the name of the column in \code{df_long} with the 
 explanatory variable}
 
 \item{noFitRequants}{(logical) whether to fit requanted values}
