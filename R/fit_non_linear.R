@@ -1,14 +1,14 @@
 
 #' Fit a non-linear trend
 #'
-#' @param dataDF data frame containing response variable e.g. 
+#' @param df_long data frame containing response variable e.g. 
 #' samples in order and explanatory 
 #'   variable e.g. measurement
 #' @param batch.size the total number of samples in the batch to 
 #' compute for percentage threshold 
 #' @param response.var the name of the column in dataDF with 
 #' the response variable
-#' @param expl.var the name of the column in dataDF with the 
+#' @param expl.var the name of the column in \code{df_long} with the 
 #' explanatory variable
 #' @param noFitRequants (logical) whether to fit requanted values
 #' @param fitFunc function to use for the fit (\code[loess_regression})
@@ -25,20 +25,20 @@
 #' 
 #' @keywords internal
 #' 
-fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x',
+fit_nonlinear <- function(df_long, batch.size, response.var = 'y', expl.var = 'x',
                           noFitRequants = FALSE, fitFunc = 'loess_regression',
                           with_df = FALSE, 
                           abs_threshold = 5, pct_threshold = 0.20, ...){
 
-    dataDF <- dataDF[sort.list(dataDF[[expl.var]]),]
-    x_to_fit = dataDF[[expl.var]]
-    y = dataDF[[response.var]]
+    df_long <- df_long[sort.list(df_long[[expl.var]]),]
+    x_to_fit = df_long[[expl.var]]
+    y = df_long[[response.var]]
     pct_threshold = batch.size*pct_threshold
     if(fitFunc == "loess_regression"){
         if(length(x_to_fit) >= abs_threshold & length(x_to_fit) >= pct_threshold){
             x_all = x_to_fit
             if(noFitRequants){
-                x_all[dataDF$requant] = NA
+                x_all[df_long$requant] = NA
             }
             if(!with_df){
                 fit_res = switch(fitFunc,
@@ -46,9 +46,9 @@ fit_nonlinear <- function(dataDF, batch.size, response.var = 'y', expl.var = 'x'
                                    x_all, y, x_to_fit,...)
                                  )
             } else {
-                bw = optimise_bw(dataDF, response.var = response.var, 
+                bw = optimise_bw(df_long, response.var = response.var, 
                                  expl.var = expl.var)
-                df = optimise_df(dataDF, bw, response.var = response.var, 
+                df = optimise_df(df_long, bw, response.var = response.var, 
                                  expl.var = expl.var)
                 fit_res = switch(fitFunc,
                                  loess_regression = loess_regression_opt(
