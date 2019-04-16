@@ -337,7 +337,7 @@ color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, s
     gg = gg + aes_string(color = batch_col)
     
     #Define the color scheme on the fly
-    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
+    if(length(color_scheme) == 1 && color_scheme == 'brewer'){
       n_batches <- length(unique(sample_annotation[[batch_col]]))
       if (n_batches <= 9){
         gg = gg + scale_color_brewer(palette = 'Set1')
