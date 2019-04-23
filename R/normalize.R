@@ -30,12 +30,11 @@ NULL
 log_transform_df <- function(df_long, log_base = 2, offset = 1,
                              measure_col = 'Intensity'){
   if(!is.null(log_base)){
-    
     df_long = df_long %>%
       mutate(UQ(paste('old', measure_col, sep = '_')) := UQ(sym(measure_col))) %>%
       mutate(UQ(sym(measure_col)) := log(UQ(sym(measure_col)) + offset, base = log_base))
   } else {
-    warning("Log base is NULL, returning the original data matrix")
+    warning("Log base is NULL, returning the original data frea")
   }
   return(df_long)
 }
