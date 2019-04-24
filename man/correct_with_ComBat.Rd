@@ -4,23 +4,35 @@
 \alias{correct_with_ComBat}
 \title{Adjusts for discrete batch effects using ComBat}
 \usage{
-correct_with_ComBat(data_matrix, sample_annotation,
+correct_with_ComBat(df_long, sample_annotation = NULL,
+  feature_id_col = "FullPeptideName", measure_col = "Intensity",
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   par.prior = TRUE)
 }
 \arguments{
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. Usually the log
-transformed version of the original data}
+\item{df_long}{data frame where each row is a single feature in a single
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+file)}
 
-\item{sample_annotation}{data frame with sample ID, technical (e.g. MS batches) 
-and biological (e.g. Diet) covariates}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
 
-\item{batch_col}{column in \code{sample_annotation} that should be 
-used for batch comparison}
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
+column with expression/abundance/intensity; otherwise, it is used
+internally for consistency.}
+
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
+
+\item{batch_col}{column in \code{sample_annotation} that should be used for
+batch comparison}
 
 \item{par.prior}{whether parametrical or non-parametrical prior should be used}
 }
@@ -34,8 +46,10 @@ for batch effects in datasets where the batch covariate is known, using
 methodology described in Johnson et al. 2007. It uses either parametric or
 non-parametric empirical Bayes frameworks for adjusting data for batch
 effects. Users are returned an expression matrix that has been corrected for
-batch effects. The input data are assumed to be cleaned and normalized before
-batch effect removal.
+batch effects. The input data are assumed to be free of missing values
+ and normalized before batch effect removal. Please note that missing values 
+ are common in proteomics, which is why in some cases corrections like 
+ \code{center_peptide_batch_medians} are more appropriate.
 }
 \examples{
 correct_with_ComBat(example_proteome_matrix, example_sample_annotation)
