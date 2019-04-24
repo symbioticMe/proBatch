@@ -1,20 +1,18 @@
 
 #' Fit a non-linear trend (currently optimized for LOESS)
 #'
-#' @param df_peptide data frame containing response variable e.g. 
+#' @inheritParams proBatch
+#' @param df_feature_batch data frame containing response variable e.g. 
 #' samples in order and explanatory 
-#'   variable e.g. measurement
-#' @param batch.size the total number of samples in the batch to 
+#'   variable e.g. measurement for a specific feature (peptide) in a specific batch
+#' @param batch_size the total number of samples in the batch to 
 #' compute for percentage threshold 
-#' @param response.var the name of the column in \code{df_peptide} (or, generally, in \code{df_long}) with 
-#' the response variable, usually \code{measure_col}
-#' @param expl.var the name of the column in \code{df_peptide} with the 
-#' explanatory variable, in most cases order
-#' @param noFitRequants (logical) whether to fit requanted values
-#' @param fitFunc function to use for the fit (\code[loess_regression})
-#' @param optimize_span logical, whether to specify span or optimize it
-#' @param qual_col column, indicating whether the "quality" variable is specified
-#' @param qual_value 
+#' @param feature_id the name of the feature, required for warnings
+#' @param batch_id  the name of the batch, required for warnings
+#' @param fit_func function to use for the fit, e.g. \code{loess_regression}
+#' @param optimize_span logical, whether to specify span or optimize it 
+#' (specific entirely for LOESS regression)
+#' @param no_fit_imputed (logical) whether to fit requanted values
 #' @param abs_threshold the absolute threshold to filter 
 #' data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter 
@@ -23,23 +21,22 @@
 #'
 #' @return vector of fitted response values
 #' 
-#' @keywords internal
-#' 
-fit_nonlinear <- function(df_peptide, batch.size = NULL, response.var = 'y', expl.var = 'x',
-                          feature.id = NULL, batch.id = NULL,
-                          fitFunc = 'loess_regression',
+fit_nonlinear <- function(df_feature_batch, batch_size = NULL, 
+                          measure_col = 'Intensity', order_col = 'order',
+                          feature_id = NULL, batch_id = NULL,
+                          fit_func = 'loess_regression',
                           optimize_span = FALSE, 
-                          noFitRequants = FALSE, qual_col = 'm_score', qual_value = 2,
+                          no_fit_imputed = FALSE, qual_col = 'm_score', qual_value = 2,
                           abs_threshold = 5, pct_threshold = 0.20, ...){
 
-    df_peptide <- df_peptide[sort.list(df_peptide[[expl.var]]),]
-    x_all = df_peptide[[expl.var]]
-    y = df_peptide[[response.var]]
+    df_feature_batch <- df_feature_batch[sort.list(df_feature_batch[[order_col]]),]
+    x_all = df_feature_batch[[order_col]]
+    y = df_feature_batch[[measure_col]]
     
-    if(noFitRequants){
-      if(!is.null(qual_col) && (qual_col %in% names(df_peptide))){
+    if(no_fit_imputed){
+      if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
         warning('imputed value column is in the data, fitting curve only to measured, non-imputed values')
-        imputed_values <- df_peptide[[qual_col]] == qual_value
+        imputed_values <- df_feature_batch[[qual_col]] == qual_value
         x_to_fit = x_all[!imputed_values]
         y = y[!imputed_values]
       } else {
@@ -47,25 +44,25 @@ fit_nonlinear <- function(df_peptide, batch.size = NULL, response.var = 'y', exp
       }
       
     } else {
-      if(!is.null(qual_col) && (qual_col %in% names(df_peptide))){
+      if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
         warning('requant column is in the data, are you sure you want to fit non-linear curve to these values, too?')
       }
       x_to_fit = x_all
-    } 
+    }
     
     #checking if there is a reasonable number of values to fit any sensible curve
-    if (is.null(batch.size)){
+    if (is.null(batch_size)){
       warning("Batch size is not specified, assuming number of entries for this 
               batch and feature is the total batch size. Maybe erroneous,
               if missing values are not NAs, but removed from data frame completely")
-      batch.size = nrow(df_peptide)
+      batch_size = nrow(df_feature_batch)
     }
     
-    pct_threshold = batch.size*pct_threshold
+    pct_threshold = batch_size*pct_threshold
     if(length(x_to_fit) >= abs_threshold & length(x_to_fit) >= pct_threshold){
       #fitting the curve
       #TODO: re-write in the functional programming paradigm (e.g. arguments - function, x_all, y, x_to_fit)
-      if(fitFunc == 'loess_regression'){
+      if(fit_func == 'loess_regression'){
         if(!optimize_span){
           fit_res = loess_regression(x_all, y, x_to_fit,...)
         } else {
@@ -76,7 +73,7 @@ fit_nonlinear <- function(df_peptide, batch.size = NULL, response.var = 'y', exp
       }
     }else{
       warning(sprintf("Curve fitting didn't have enough points to fit for the feature %s
-                      in the batch %s, leaving the original value", feature.id, batch.id))
+                      in the batch %s, leaving the original value", feature_id, batch_id))
       fit_res = y
     }
   return(fit_res)
