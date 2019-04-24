@@ -2,7 +2,7 @@
 % Please edit documentation in R/correct_batch_effects.R
 \name{center_peptide_batch_medians}
 \alias{center_peptide_batch_medians}
-\title{Median centering of the peptides (per batch median)}
+\title{Median centering of the features (per batch median)}
 \usage{
 center_peptide_batch_medians(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
@@ -10,36 +10,41 @@ center_peptide_batch_medians(df_long, sample_annotation = NULL,
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a 
-\code{feature_id_col} and a \code{measure_col}, but 
-usually also an \code{m_score} (in OpenSWATH output result file)}
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+file)}
 
-\item{sample_annotation}{data frame with sample ID, technical (e.g. MS batches) 
-and biological (e.g. Diet) covariates}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
-\item{batch_col}{column in \code{sample_annotation} that should be 
-used for batch comparison}
+\item{batch_col}{column in \code{sample_annotation} that should be used for
+batch comparison}
 
-\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
-used in the long format representation df_long. In the wide formatted 
-representation data_matrix this corresponds to the row names.}
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
 
-\item{measure_col}{if \code{df_long} is among the parameters, it is the column
-with expression/abundance/intensity, otherwise, it is used internally for
-consistency}
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
+column with expression/abundance/intensity; otherwise, it is used
+internally for consistency.}
 }
 \value{
 \code{df_long}-size long format data with batch-effect corrected with
   per-feature batch median centering in \code{Intensity_normalized} column
 }
 \description{
-Median centering of the peptides (per batch median)
+Median centering of the features (per batch median)
 }
 \examples{
 median_centered_proteome <- center_peptide_batchmedians(
 example_proteome, example_sample_annotation)
 
+}
+\seealso{
+\code{\link{correct_batch_effects}}
 }
