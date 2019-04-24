@@ -9,23 +9,9 @@
 #' @param feature_name name of the selected feature (e.g. peptide) for diagnostic profiling
 #' @param geom whether to show the feature as points and/or connect by lines (accepted 
 #' values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})
-#' @param color_by_col column to color point by certain value denoted 
-#' by \code{color_by_value}. Design with inferred/requant values in openSWATH output data, 
-#' which means argument value has to be set to `m_score`.
-#' @param qual_col value in \code{color_by_col} to color. For OpenSWATH data,
-#' this argument value has to be set to `2` (this is an `m_score` value for requants).
-#' @param color_by_batch (logical) whether to color points and connecting lines 
-#' by batch factor as defined by \code{batch_col}.
-#' @param facet_col column  in `sample_annotation` with a batch factor to separate 
-#' plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
-#' MS experiments (where each instrument has its own order-associated effects) 
-#' or simultaneous examination of two batch factors (e.g. preparation day and measurement day)
 #' @param vline_color color of vertical lines, typically separating 
 #'  different MS batches in ordered runs; 
 #'  should be `NULL` for experiments without intrinsic order.
-#' @param plot_title the string indicating the source of the peptides
-#' @param theme plot theme (default is 'classical'; other options not
-#'   implemented)
 #' @param ylimits range of y-axis to plot feature-level trends 
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
