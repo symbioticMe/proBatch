@@ -3,8 +3,6 @@
 #' @details functions for quick visual assessment of trends associated, overall
 #'   or specific covariate-associated (see \code{batch_col} and \code{facet_col})
 #' @inheritParams proBatch
-#' @param color_by_batch should the each batch be represented with its own
-#'   color?
 #' @param color_scheme named vector, names corresponding to unique batch values of 
 #'  \code{batch_col} in \code{sample_annotation}. Best created with \link{sample_annotation_to_colors}
 #' @param vline_color color of vertical lines, typically denoting 
