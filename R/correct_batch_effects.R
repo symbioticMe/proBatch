@@ -89,7 +89,7 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @export
 #'
 #' @seealso \code{\link{fit_nonlinear}}
-adjust_batch_trend <- function(data_matrix, sample_annotation,
+adjust_batch_trend <- function(df_long, sample_annotation,
                                batch_col = 'MS_batch',
                                feature_id_col = 'peptide_group_label',
                                sample_id_col = 'FullRunName',
@@ -98,8 +98,9 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
                                fit_func = fit_nonlinear, 
                                abs_threshold = 5, pct_threshold = 0.20, ...){
   
+  #TODO: substitute with "check for sample consistency"
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-  sampleNames <- colnames(data_matrix)
+  sampleNames <- unique(df_long[[sample_id_col]])
   s_a <- sample_annotation[[sample_id_col]]
   all <- union(sampleNames, s_a)
   non_matched <- all[!all %in% intersect(sampleNames, s_a)]
@@ -112,12 +113,6 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
     arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
     droplevels()
   
-  data_matrix = as.data.frame(data_matrix)
-  data_matrix[[feature_id_col]] = rownames(data_matrix)
-  
-  df_long = data_matrix %>%
-    melt(id.vars = feature_id_col)
-  names(df_long) = c(feature_id_col, sample_id_col, measure_col)
   batch_table <- as.data.frame(table(sample_annotation[[batch_col]], 
                                      dnn = list(batch_col)), 
                                responseName = "batch_total")
@@ -132,17 +127,19 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
     nest() %>%
     mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
                       expl.var = sample_order_col, 
+                      feature.id = data[[feature_id_col]][1], batch.id = data[[batch_col]][1],
                       abs_threshold = abs_threshold, 
-                      pct_threshold = pct_threshold, ...)) %>%
+                      pct_threshold = pct_threshold,  ...)) %>%
     unnest() %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
-    mutate(mean_fit = mean(fit)) %>%
+    mutate(mean_fit = mean(fit), na.rm = T) %>%
     mutate(diff = mean_fit - fit) %>%
+    mutate(diff.na = ifelse(is.na(diff), 0, diff)) %>%
     mutate_(Intensity_normalized = interp(~`+`(x, y),
-                                          x = as.name('diff'),
+                                          x = as.name('diff.na'),
                                           y = as.name(measure_col)))
   
-  fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
+  fit_df = df_normalized %>% dplyr::select(one_of(c('fit', 'diff', 'diff.na', feature_id_col,
                                                     sample_id_col, batch_col)))
   
   casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
@@ -186,11 +183,17 @@ adjust_batch_trend <- function(data_matrix, sample_annotation,
 #' 
 #' @export
 #'
-correct_with_ComBat <- function(data_matrix, sample_annotation, 
+correct_with_ComBat <- function(df_long, sample_annotation, 
+                                feature_id_col = 'FullPeptideName',
+                                measure_col = 'Intensity',
                                 sample_id_col = 'FullRunName',
                                 batch_col = 'MS_batch', 
                                 par.prior = TRUE){
-    
+  
+  data_matrix = long_to_matrix(df_long, feature_id_col = feature_id_col,
+                              measure_col = measure_col, sample_id_col = sample_id_col)  
+  
+  #TODO: substitute with "check for sample consistency"
     sampleNames = colnames(data_matrix)
     s_a <- sample_annotation[[sample_id_col]]
     all <- union(sampleNames, s_a)
@@ -253,7 +256,7 @@ correct_with_ComBat <- function(data_matrix, sample_annotation,
 #' 
 #' @export
 #'                                                 
-correct_batch_effects <- function(data_matrix, sample_annotation, 
+correct_batch_effects <- function(df_long, sample_annotation, 
                                   fitFunc = 'loess_regression', 
                                   discreteFunc = c("MedianCentering", "ComBat"), 
                                   batch_col = 'MS_batch',  
@@ -268,7 +271,7 @@ correct_batch_effects <- function(data_matrix, sample_annotation,
     sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
     
     if(!is.null(fitFunc)){
-      fit_list = adjust_batch_trend(data_matrix, 
+      fit_list = adjust_batch_trend(df_long, 
                                     sample_annotation = sample_annotation,
                                     batch_col = batch_col,
                                     feature_id_col = feature_id_col,
@@ -299,9 +302,7 @@ correct_batch_effects <- function(data_matrix, sample_annotation,
     }
     
     if(discreteFunc == 'ComBat'){
-        fit_matrix = long_to_matrix(df_long, feature_id_col = feature_id_col,
-                                    measure_col = measure_col, sample_id_col = sample_id_col)
-        normalized_matrix = correct_with_ComBat(fit_matrix, 
+        normalized_matrix = correct_with_ComBat(df_long = df_long, 
                                                 sample_annotation = sample_annotation,
                                                 batch_col = batch_col, par.prior = TRUE)
     }
