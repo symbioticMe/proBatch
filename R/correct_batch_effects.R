@@ -68,7 +68,7 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
                                feature_id_col = 'peptide_group_label',
                                sample_id_col = 'FullRunName',
                                measure_col = 'Intensity',
-                               sample_order_col = 'order',
+                               order_col = 'order',
                                fit_func = fit_nonlinear, 
                                abs_threshold = 5, pct_threshold = 0.20, ...){
   
@@ -100,8 +100,8 @@ warning("Sample ID in data matrix and sample annotation don't match.
     group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>%  
     nest() %>%
     mutate(fit = map2(data, batch_total, fit_nonlinear, 
-                      response.var = measure_col, expl.var = sample_order_col, 
-                      feature.id = data[[feature_id_col]][1], batch.id = data[[batch_col]][1],
+                      measure_col = measure_col, order_col = order_col, 
+                      feature_id = data[[feature_id_col]][1], batch_id = data[[batch_col]][1],
                       fit_func = fit_func,
                       abs_threshold = abs_threshold, 
                       pct_threshold = pct_threshold,  ...)) %>%
@@ -218,7 +218,7 @@ correct_batch_effects <- function(df_long, sample_annotation,
                                   feature_id_col = 'peptide_group_label', 
                                   sample_id_col = 'FullRunName',
                                   measure_col = 'Intensity',  
-                                  sample_order_col = 'order', 
+                                  order_col = 'order', 
                                   abs_threshold = 5, pct_threshold = 0.20, ...){
  
   discrete_func <- match.arg(discrete_func)
