@@ -79,10 +79,23 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
   return(fit_res)
 }
 
-loess_regression <- function(x_all, y, x_to_fit, ...){
+loess_regression <- function(x_all, y, x_to_fit, feature_id, batch_id, ...){
+  out <- tryCatch({
     fit = loess(y ~ x_to_fit, surface = 'direct', ...)
     pred <- predict(fit, newdata = x_all)
-    return(pred)
+    pred
+  },
+    warning=function(cond) {
+      message(sprintf("Feature %s in batch %s caused a warning:", feature_id, batch_id))
+      message("Here's the original warning message:")
+      message(cond)
+      # Choose a return value in case of warning
+      message(sprintf('class of prediction is %s'), class(pred))
+      message(sprintf('length of prediction is %s'), length(pred))
+      y
+    }
+  )
+  return(out)
 }
 
 loess_regression_opt <- function(x_to_fit, y, x_all, ...) {
