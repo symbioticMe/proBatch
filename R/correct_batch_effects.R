@@ -96,7 +96,7 @@ warning("Sample ID in data matrix and sample annotation don't match.
   df_normalized = df_long %>%
     filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
     merge(sample_annotation, by = sample_id_col) %>%
-    arrange_(feature_id_col, sample_order_col) %>%
+    arrange_(feature_id_col, order_col) %>%
     group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>%  
     nest() %>%
     mutate(fit = map2(data, batch_total, fit_nonlinear, 
