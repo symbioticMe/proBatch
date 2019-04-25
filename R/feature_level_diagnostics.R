@@ -76,7 +76,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   #Add coloring for "inferred" measurements / requant values, marked in `color_by_col` with `color_by_value` (e.g. `m_score` and `2`)
   if(!is.null(qual_col)){
     col_data = plot_df %>%
-      filter(UQ(as.name(qual_col)) == color_by_qual_value)
+      filter(UQ(as.name(qual_col)) == qual_value)
     gg = gg + geom_point(data = col_data,
                          aes_string(x = order_col, y = measure_col),
                          color = 'red', size = 1.5, shape = 8)
@@ -214,7 +214,7 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
                            color_scheme = color_scheme,
                            facet_col = facet_col,
                            qual_col = qual_col, 
-                           color_by_qual_value = color_by_qual_value,
+                           qual_value = qual_value,
                            plot_title = plot_title, ...)
   return(gg)
   }
@@ -292,7 +292,7 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                            color_scheme = color_scheme,
                            facet_col = facet_col,
                            qual_col = qual_col,
-                           color_by_qual_value = color_by_qual_value,
+                           qual_value = qual_value,
                            order_col = order_col,
                            plot_title = plot_title, 
                            theme = theme, ...)
@@ -359,7 +359,7 @@ plot_iRT <- function(irt_pattern = 'iRT',
                            measure_col = measure_col,
                            feature_id_col = feature_id_col,
                            geom = geom,
-                           qual_col = qual_col, color_by_qual_value =color_by_qual_value,
+                           qual_col = qual_col, qual_value = qual_value,
                            batch_col = batch_col,
                            color_by_batch = color_by_batch, color_scheme = color_scheme,
                            order_col = order_col, 
@@ -426,7 +426,7 @@ plot_with_fitting_curve <- function(feature_name,
                            measure_col = measure_col,
                            feature_id_col = feature_id_col,
                            geom = geom,
-                           qual_col = qual_col, color_by_qual_value =  color_by_qual_value,
+                           qual_col = qual_col, qual_value =  qual_value,
                            batch_col = batch_col,
                            color_by_batch = FALSE, color_scheme = NULL,
                            order_col = order_col,
