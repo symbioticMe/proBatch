@@ -8,11 +8,11 @@ plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
-  qual_col = NULL, color_by_qual_value = NULL,
-  batch_col = "MS_batch", color_by_batch = FALSE,
-  color_scheme = "brewer", order_col = "order", vline_color = "red",
-  facet_col = NULL, plot_title = "Spike-in BOVINE protein peptides",
-  theme = "classic", ...)
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  plot_title = "Spike-in BOVINE protein peptides", theme = "classic",
+  ...)
 }
 \arguments{
 \item{spike_ins}{substring used to identify spike-in proteins in the column
@@ -51,7 +51,7 @@ values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})}
 by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 
-\item{color_by_qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
+\item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
 this argument value has to be set to \code{2} (this is an \code{m_score} value for requants).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
