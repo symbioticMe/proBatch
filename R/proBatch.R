@@ -51,7 +51,7 @@
 #' @param qual_col column to color point by certain value denoted 
 #' by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
 #' which means argument value has to be set to \code{m_score}.
-#' @param color_by_qual_value value in \code{qual_col} to color. For OpenSWATH data,
+#' @param qual_value value in \code{qual_col} to color. For OpenSWATH data,
 #' this argument value has to be set to \code{2} (this is an \code{m_score} value for requants).
 #' @param plot_title title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
