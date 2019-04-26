@@ -21,6 +21,8 @@
 #'
 #' @return vector of fitted response values
 #' 
+#' @export
+#' 
 fit_nonlinear <- function(df_feature_batch, batch_size = NULL, 
                           measure_col = 'Intensity', order_col = 'order',
                           feature_id = NULL, batch_id = NULL,
