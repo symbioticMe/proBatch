@@ -69,7 +69,7 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
                                sample_id_col = 'FullRunName',
                                measure_col = 'Intensity',
                                order_col = 'order',
-                               fit_func = fit_nonlinear, 
+                               fit_func = 'loess_regression', 
                                abs_threshold = 5, pct_threshold = 0.20, ...){
   
   #TODO: substitute with "check for sample consistency"
