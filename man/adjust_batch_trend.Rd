@@ -7,8 +7,8 @@
 adjust_batch_trend(df_long, sample_annotation = NULL,
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", fit_func = fit_nonlinear, abs_threshold = 5,
-  pct_threshold = 0.2, ...)
+  order_col = "order", fit_func = "loess_regression",
+  abs_threshold = 5, pct_threshold = 0.2, ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
