@@ -118,7 +118,7 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
                                           y = as.name(measure_col)))
   
   fit_df = df_normalized %>% dplyr::select(one_of(c('fit', 'diff', 'diff.na', feature_id_col,
-                                                    sample_id_col)))
+                                                    sample_id_col, measure_col)))
   
   casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
                                       sep =  " ~ "))
