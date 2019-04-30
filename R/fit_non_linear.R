@@ -21,6 +21,13 @@
 #'
 #' @return vector of fitted response values
 #' 
+#' @example 
+#' df_selected = example_proteome %>% 
+#' merge(example_sample_annotation, by = 'FullRunName') %>%
+#' filter(peptide_group_label == example_proteome$peptide_group_label[1] &&
+#' MS_batch == 'Batch_1')
+#' fit_values = fit_nonlinear(df_selected)
+#' 
 #' @export
 #' 
 fit_nonlinear <- function(df_feature_batch, batch_size = NULL, 
@@ -30,7 +37,7 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
                           optimize_span = FALSE, 
                           no_fit_imputed = FALSE, qual_col = 'm_score', qual_value = 2,
                           abs_threshold = 5, pct_threshold = 0.20, ...){
-
+    message(sprintf("fitting curve for %s in batch %s\n", feature_id, batch_id))
     df_feature_batch <- df_feature_batch[sort.list(df_feature_batch[[order_col]]),]
     x_all = df_feature_batch[[order_col]]
     y = df_feature_batch[[measure_col]]
@@ -66,9 +73,11 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
       #TODO: re-write in the functional programming paradigm (e.g. arguments - function, x_all, y, x_to_fit)
       if(fit_func == 'loess_regression'){
         if(!optimize_span){
-          fit_res = loess_regression(x_all, y, x_to_fit,...)
+          fit_res = loess_regression(x_to_fit, y, x_all, 
+                                     feature_id = feature_id, batch_id = batch_id, ...)
         } else {
-          fit_res = loess_regression_opt(x_to_fit, y, x_all, ...)
+          fit_res = loess_regression_opt(x_to_fit, y, x_all, 
+                                         feature_id = feature_id, batch_id = batch_id, ...)
         }
       } else{
         stop("Only loess regression fitting is available for current version")
@@ -81,7 +90,8 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
   return(fit_res)
 }
 
-loess_regression <- function(x_all, y, x_to_fit, feature_id, batch_id, ...){
+loess_regression <- function(x_to_fit, y, x_all,   
+                             feature_id = NULL, batch_id = NULL, ...){
   out <- tryCatch({
     fit = loess(y ~ x_to_fit, surface = 'direct', ...)
     pred <- predict(fit, newdata = x_all)
@@ -100,7 +110,8 @@ loess_regression <- function(x_all, y, x_to_fit, feature_id, batch_id, ...){
   return(out)
 }
 
-loess_regression_opt <- function(x_to_fit, y, x_all, ...) {
+loess_regression_opt <- function(x_to_fit, y, x_all, 
+                                 feature_id = NULL, batch_id = NULL, ...) {
   bw = optimise_bw(x_to_fit, y, ...)
   degr_freedom = optimise_df(x_to_fit, bw)
   fit = loess(y ~ x_all, enp.target = degr_freedom, surface = 'direct', ...)
