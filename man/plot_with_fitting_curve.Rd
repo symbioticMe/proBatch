@@ -72,7 +72,8 @@ should be `NULL` for experiments without intrinsic order.}
 \item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
 plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
 MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
-or simultaneous examination of two batch factors (e.g. preparation day and measurement day).}
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+For single-instrument case should be set to `NULL`}
 
 \item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
