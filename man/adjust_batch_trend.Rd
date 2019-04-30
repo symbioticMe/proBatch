@@ -62,8 +62,10 @@ example_sample_annotation, span = 0.7,
 abs_threshold = 5, pct_threshold = 0.20)
 fit_df = adjusted_data$fit_df
 adjusted_data_matrix = adjusted_data$data_matrix
-adjusted_df = data_to_long(adjusted_data_matrix)
-plot_with_fitting_curve(adjusted_df, fit_df)
+adjusted_df = matrix_to_long(adjusted_data_matrix)
+plot_with_fitting_curve(unique(adjusted_df$peptide_group_label)[1:2], 
+df_long = adjusted_df, fit_df = fit_df, 
+sample_annotation = example_sample_annotation)
 
 }
 \seealso{
