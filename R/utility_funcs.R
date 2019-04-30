@@ -141,11 +141,15 @@ add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vlin
         distinct()
       order_vars <- c(facet_col, order_col)
       batch_vars = c(facet_col, batch_col)
+      min_order_values = sample_annotation %>%
+        group_by(!!sym(facet_col)) %>%
+        summarise(min_order_value = min(!!sym(order_col))-1)
       batch.tipping.points = sample_annotation %>%
         arrange(!!!syms(order_vars))%>%
         group_by(!!!syms(batch_vars)) %>%
-        summarise(batch_size = n(),
-                  min_order_value = min(!!sym(order_col)) - 1) %>%
+        summarise(batch_size = n()) %>%
+        ungroup() %>%
+        merge(min_order_values, by = facet_col) %>%
         group_by(!!sym(facet_col)) %>%
         mutate(tipping.points = cumsum(batch_size))%>%
         mutate(tipping.points = tipping.points+.5 + min_order_value)
@@ -153,13 +157,15 @@ add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vlin
       sample_annotation = sample_annotation %>%
         select(one_of(c(order_col, sample_id_col, batch_col))) %>%
         distinct()
+      min_order_val = min(sample_annotation[[order_col]]) - 1
       batch.tipping.points = sample_annotation %>%
         arrange(!!sym(order_col))%>%
         group_by(!!sym(batch_col)) %>%
-        summarise(batch_size = n(),
-                  min_order_value = min(!!sym(order_col)) - 1) %>%
+        summarise(batch_size = n()) %>%
+        ungroup() %>%
+        mutate() %>% #enables adequate plotting for batches, where order doesn't start from one
         mutate(tipping.points = cumsum(batch_size))%>%
-        mutate(tipping.points = tipping.points+.5 + min_order_value)
+        mutate(tipping.points = tipping.points+.5 + min_order_val)
     }
     gg = gg + geom_vline(data = batch.tipping.points,
                          aes(xintercept = tipping.points),
