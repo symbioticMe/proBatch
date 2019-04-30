@@ -46,6 +46,10 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
                                  theme = 'classic',
                                  ylimits = NULL){
   
+  #to ensure proper line connection for consecutive points:
+  #to ensure that missing measurements are NAs (to make them disconnected)
+  df_long = df_long %>% complete(!!!syms(c(feature_id_col, sample_id_col)))
+  
   #reduce df to measurements of selected features
   plot_df = df_long %>%
     filter(UQ(sym(feature_id_col)) %in% feature_name)
@@ -53,24 +57,29 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
   plot_df = check_sample_consistency(sample_annotation, sample_id_col, plot_df)
   
+
+  
   #Defining sample order for plotting
   sample_order = define_sample_order(order_col, sample_annotation, facet_col, batch_col, plot_df, 
                                      sample_id_col, color_by_batch)
   order_col = sample_order$order_col
   plot_df = sample_order$df_long
   
+  
+  
   #Main plotting function
   gg = ggplot(plot_df,
               aes_string(x = order_col, y = measure_col))
   if (identical(geom, 'line')){
-    gg = gg + geom_line(color = 'darkgrey', size = .3)
+    gg = gg + geom_line(color = 'darkgrey', size = .3, aes_string(group = batch_col))
   }
   if (identical(geom, 'point')){
     gg = gg + geom_point()
   }
   if (identical(geom, c('point', 'line'))){
     gg = gg + geom_point() +
-      geom_line(color = 'black', alpha = .7, linetype = 'dashed')
+      geom_line(color = 'black', alpha = .7, linetype = 'dashed', 
+                aes_string(group = batch_col))
   }
   
   #Add coloring for "inferred" measurements / requant values, marked in `color_by_col` with `color_by_value` (e.g. `m_score` and `2`)
@@ -189,7 +198,7 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
                                          color_by_batch = FALSE, color_scheme = 'brewer',
                                          order_col = 'order',
                                          vline_color ='red',
-                                         facet_col = FALSE,
+                                         facet_col = NULL,
                                          plot_title = sprintf('Peptides of %s protein', 
                                                               protein_name),
                                          theme = 'classic', ...){
