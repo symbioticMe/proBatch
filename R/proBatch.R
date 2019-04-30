@@ -46,6 +46,7 @@
 #' plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
 #' MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
 #' or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+#' For single-instrument case should be set to `NULL`
 #' @param color_by_batch (logical) whether to color points and connecting lines 
 #' by batch factor as defined by \code{batch_col}.
 #' @param qual_col column to color point by certain value denoted 
