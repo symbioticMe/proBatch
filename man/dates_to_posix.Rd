@@ -31,7 +31,7 @@ convert date/time column of sample_annotation to POSIX format required to
 keep number-like behaviour
 }
 \examples{
-dates_to_posix(example_sample_annotation, 
+date_to_posix <- dates_to_posix(example_sample_annotation, 
 time_column = c('RunDate','RunTime'),
 new_time_column = 'DateTime', 
 dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"))
