@@ -4,58 +4,70 @@
 \alias{adjust_batch_trend}
 \title{adjust batch signal trend with the custom (continuous) fit}
 \usage{
-adjust_batch_trend(data_matrix, sample_annotation,
+adjust_batch_trend(df_long, sample_annotation = NULL,
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  sample_order_col = "order", fit_func = fit_nonlinear,
+  order_col = "order", fit_func = "loess_regression",
   abs_threshold = 5, pct_threshold = 0.2, ...)
 }
 \arguments{
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. Usually the log
-transformed version of the original data}
+\item{df_long}{data frame where each row is a single feature in a single
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+file)}
 
-\item{sample_annotation}{data frame with sample ID, technical (e.g. MS batches) 
-and biological (e.g. Diet) covariates}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
 
-\item{batch_col}{column in \code{sample_annotation} that should be 
-used for batch comparison}
+\item{batch_col}{column in \code{sample_annotation} that should be used for
+batch comparison}
 
-\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
-used in the long format representation df_long. In the wide formatted 
-representation data_matrix this corresponds to the row names.}
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
-\item{measure_col}{if \code{df_long} is among the parameters, it is the column
-with expression/abundance/intensity, otherwise, it is used internally for
-consistency}
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
+column with expression/abundance/intensity; otherwise, it is used
+internally for consistency.}
 
-\item{sample_order_col}{column, determining the order of sample MS run, used
-as covariate to fit the non-linear fit}
+\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
+used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
+feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
+if sample order is irrelevant (e.g. in genomic experiments). For more details,
+order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
 
 \item{fit_func}{function to fit the (non)-linear trend}
 
-\item{abs_threshold}{the absolute threshold to filter data for curve fitting}
+\item{abs_threshold}{the absolute threshold (number of samples in a batch) to filter data for curve fitting}
 
-\item{pct_threshold}{the percentage threshold to filter data for curve fitting}
+\item{pct_threshold}{the percentage threshold (fraction of samples in a batch)  to filter data for curve fitting}
 
 \item{...}{other parameters, usually those of the \code{fit_func}}
 }
 \value{
 list of two items: 1) \code{data_matrix}, adjusted with continious fit; 
-2) fit_df, used to examine the fitting curves
+2) \code{fit_df}, used to examine the fitting curves, e.g. with \code{plot_with_fitting_curve}
 }
 \description{
 adjust batch signal trend with the custom (continuous) fit
 }
 \examples{
-adjust_batch_trend(example_proteome_matrix, 
+adjusted_data = adjust_batch_trend(example_proteome, 
 example_sample_annotation, span = 0.7, 
 abs_threshold = 5, pct_threshold = 0.20)
+fit_df = adjusted_data$fit_df
+adjusted_data_matrix = adjusted_data$data_matrix
+adjusted_df = matrix_to_long(adjusted_data_matrix)
+plot_with_fitting_curve(unique(adjusted_df$peptide_group_label)[1:2], 
+df_long = adjusted_df, fit_df = fit_df, 
+sample_annotation = example_sample_annotation)
 
 }
 \seealso{
-\code{\link{fit_nonlinear}}
+\code{\link{fit_nonlinear}}, \code{\link{plot_with_fitting_curve}}
 }
