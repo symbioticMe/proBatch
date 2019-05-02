@@ -385,7 +385,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 #' @param corr_distribution data frame with correlation distribution
 #' @param plot_param one of the columns, as returned by \code{get_sample_corr_df}
 #'
-#' @return
+#' @return \code{ggplot} type object with violin plot
 #' @export
 #'
 #' @examples
