@@ -29,6 +29,7 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
+<<<<<<< HEAD
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
@@ -36,6 +37,15 @@ internally for consistency.}
 \value{
 \code{df_long}-size long format data with batch-effect corrected with
   per-feature batch median centering in \code{Intensity_normalized} column
+=======
+\item{measure_col}{if \code{df_long} is among the parameters, it is the column
+with expression/abundance/intensity, otherwise, it is used internally for
+consistency}
+}
+\value{
+\code{df_long}-size long format data with batch-effect corrected with
+  per-feature batch median centering in Intensity_normalized column
+>>>>>>> master
 }
 \description{
 Median centering of the features (per batch median)
