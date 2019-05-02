@@ -15,9 +15,15 @@ transformed version of the original data}
 
 \item{repeated_samples}{if \code{NULL}, only repeated sample correlation is plotted}
 
+<<<<<<< HEAD:man/calculate_sample_corr_distribution.Rd
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
+=======
+\item{sample_annotation}{data matrix with 1) \code{sample_id_col} (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
+>>>>>>> master:man/dot-corr_distribution.Rd
 
 \item{biospecimen_id_col}{column in \code{sample_annotation} 
 that defines a unique bio ID, which is usually a 

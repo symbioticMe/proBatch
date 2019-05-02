@@ -31,7 +31,11 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 
 \item{feature_id}{the name of the feature, required for warnings}
 
+<<<<<<< HEAD
 \item{batch_id}{the name of the batch, required for warnings}
+=======
+\item{fitFunc}{function to use for the fit (\code{loess_regression})}
+>>>>>>> master
 
 \item{fit_func}{function to use for the fit, e.g. \code{loess_regression}}
 
