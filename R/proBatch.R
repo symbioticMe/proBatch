@@ -16,7 +16,6 @@
 #' @section Section:
 #' Common arguments to the functions.
 #' 
-#'
 #' @param df_long data frame where each row is a single feature in a single
 #'   sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 #'   \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
@@ -46,7 +45,15 @@
 #' @param facet_col column  in \code{sample_annotation} with a batch factor to separate 
 #' plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
 #' MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
-#' or simultaneous examination of two batch factors (e.g. preparation day and measurement day)
+#' or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+#' For single-instrument case should be set to `NULL`
+#' @param color_by_batch (logical) whether to color points and connecting lines 
+#' by batch factor as defined by \code{batch_col}.
+#' @param qual_col column to color point by certain value denoted 
+#' by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
+#' which means argument value has to be set to \code{m_score}.
+#' @param qual_value value in \code{qual_col} to color. For OpenSWATH data,
+#' this argument value has to be set to \code{2} (this is an \code{m_score} value for requants).
 #' @param plot_title title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
 #' @param theme ggplot theme, by default \code{classic}. Can be easily overriden 

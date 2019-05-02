@@ -14,11 +14,27 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long) 
       inner_join(sample_annotation, by = sample_id_col) %>%
       as.data.frame()
   } else {
-    warning('Sample annotation is not provided, only the basic sample boxplots will be plotted')
+    warning('Sample annotation is not provided, only the basic plot will be visualized')
   }
   return(df_long)
 }
 
+#' Defining sample order internally 
+#'
+#' @inheritParams proBatch
+#'
+#' @return   list of two items: \code{order_col} new name and new \code{df_long}
+#' @export
+#'
+#' @examples 
+#' sample_order = define_sample_order(order_col, sample_annotation, 
+#' facet_col, batch_col, df_long, sample_id_col, color_by_batch)
+#' new_order_col = sample_order$order_col
+#' df_long = sample_order$df_long
+#' 
+#' @seealso \link{plot_sample_mean_or_boxplot}, \link{feature_level_diagnostics}
+#' 
+#' @name define_sample_order
 define_sample_order <- function(order_col, sample_annotation, facet_col, batch_col, 
                                 df_long, sample_id_col, color_by_batch) {
   if (!is.null(order_col)){
@@ -115,7 +131,8 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
 
 add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vline_color, facet_col, 
                                        sample_annotation, gg) {
-  if(!is.null(order_col) & (order_col != sample_id_col) & !(is.character(sample_annotation$order_col) || is.factor(sample_annotation$order_col))&
+  if(!is.null(order_col) & (order_col != sample_id_col) & 
+     !(is.character(sample_annotation[[order_col]]) || is.factor(sample_annotation[[order_col]]))&
      !is.null(batch_col) & !is.null(vline_color)){
     #define the batch tipping points (positions of vertical lines)
     if (!is.null(facet_col)){
@@ -124,23 +141,31 @@ add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vlin
         distinct()
       order_vars <- c(facet_col, order_col)
       batch_vars = c(facet_col, batch_col)
+      min_order_values = sample_annotation %>%
+        group_by(!!sym(facet_col)) %>%
+        summarise(min_order_value = min(!!sym(order_col))-1)
       batch.tipping.points = sample_annotation %>%
         arrange(!!!syms(order_vars))%>%
         group_by(!!!syms(batch_vars)) %>%
         summarise(batch_size = n()) %>%
+        ungroup() %>%
+        merge(min_order_values, by = facet_col) %>%
         group_by(!!sym(facet_col)) %>%
         mutate(tipping.points = cumsum(batch_size))%>%
-        mutate(tipping.points = tipping.points+.5)
+        mutate(tipping.points = tipping.points+.5 + min_order_value)
     } else {
       sample_annotation = sample_annotation %>%
         select(one_of(c(order_col, sample_id_col, batch_col))) %>%
         distinct()
+      min_order_val = min(sample_annotation[[order_col]]) - 1
       batch.tipping.points = sample_annotation %>%
         arrange(!!sym(order_col))%>%
         group_by(!!sym(batch_col)) %>%
         summarise(batch_size = n()) %>%
+        ungroup() %>%
+        mutate() %>% #enables adequate plotting for batches, where order doesn't start from one
         mutate(tipping.points = cumsum(batch_size))%>%
-        mutate(tipping.points = tipping.points+.5)
+        mutate(tipping.points = tipping.points+.5 + min_order_val)
     }
     gg = gg + geom_vline(data = batch.tipping.points,
                          aes(xintercept = tipping.points),
