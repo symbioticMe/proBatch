@@ -46,7 +46,6 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
                                  theme = 'classic',
                                  ylimits = NULL){
   
-  #to ensure proper line connection for consecutive points:
   #to ensure that missing measurements are NAs (to make them disconnected)
   df_long = df_long %>% complete(!!!syms(c(feature_id_col, sample_id_col)))
   
@@ -348,11 +347,6 @@ plot_iRT <- function(irt_pattern = 'iRT',
                      facet_col = NULL,
                      plot_title = 'iRT peptide profile', 
                      theme = 'classic', ...){
-  
-  if(!setequal(unique(sample_annotation[[sample_id_col]]), 
-              unique(df_long[[sample_id_col]]))){
-    warning('Sample IDs in sample annotation not consistent 
-            with samples in input data.')}
   
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
