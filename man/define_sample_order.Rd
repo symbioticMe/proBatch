@@ -8,22 +8,48 @@ define_sample_order(order_col, sample_annotation, facet_col, batch_col,
   df_long, sample_id_col, color_by_batch)
 }
 \arguments{
-\item{order_col}{}
+\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
+used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
+feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
+if sample order is irrelevant (e.g. in genomic experiments). For more details,
+order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
 
-\item{sample_annotation}{}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
 
-\item{facet_col}{}
+\item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
+plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
+MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+For single-instrument case should be set to `NULL`}
 
-\item{batch_col}{}
+\item{batch_col}{column in \code{sample_annotation} that should be used for
+batch comparison}
 
-\item{df_long}{}
+\item{df_long}{data frame where each row is a single feature in a single
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+file)}
 
-\item{sample_id_col}{}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
-\item{color_by_batch}{}
+\item{color_by_batch}{(logical) whether to color points and connecting lines 
+by batch factor as defined by \code{batch_col}.}
+}
+\value{
+list of two items: \code{order_col} new name and new \code{df_long}
 }
 \description{
 Defining sample order internally
+}
+\examples{
+sample_order = define_sample_order(order_col, sample_annotation, 
+facet_col, batch_col, df_long, sample_id_col, color_by_batch)
+new_order_col = sample_order$order_col
+df_long = sample_order$df_long
+
 }
 \seealso{
 \link{plot_sample_mean_or_boxplot}, \link{feature_level_diagnostics}
