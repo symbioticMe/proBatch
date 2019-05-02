@@ -21,7 +21,7 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
   if(!setequal(unique(sample_annotation[[sample_id_col]]), 
                unique(df_long[[sample_id_col]]))){
     warning('Sample IDs in sample annotation not 
-            consistent with samples in input data.')}
+                consistent with samples in input data.')}
   
   if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
       !is.null(sample_annotation)){
@@ -38,7 +38,7 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
     mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
   
   return(df_normalized)
-  }
+}
 
 
 #' adjust batch signal trend with the custom (continuous) fit
@@ -49,18 +49,18 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @param pct_threshold the percentage threshold (fraction of samples in a batch)  to filter data for curve fitting 
 #' @param ... other parameters, usually those of the \code{fit_func}
 #'
-#' @return list of two items: 1) \code{data_matrix}, adjusted with continious fit; 
-#' 2) \code{fit_df}, used to examine the fitting curves, e.g. with \code{plot_with_fitting_curve}
+#' @return list of two items: 1) `data_matrix`, adjusted with continious fit; 
+#' 2) fit_df, used to examine the fitting curves
 #' @examples 
-#' adjusted_data = adjust_batch_trend(example_proteome, 
+#' adjusted_data <- adjust_batch_trend(example_proteome, 
 #' example_sample_annotation, span = 0.7, 
 #' abs_threshold = 5, pct_threshold = 0.20)
-#' fit_df = adjusted_data$fit_df
-#' adjusted_data_matrix = adjusted_data$data_matrix
-#' adjusted_df = matrix_to_long(adjusted_data_matrix)
-#' plot_with_fitting_curve(unique(adjusted_df$peptide_group_label)[1:2], 
-#' df_long = adjusted_df, fit_df = fit_df, 
-#' sample_annotation = example_sample_annotation)
+#' fit_df <- adjusted_data$fit_df
+#' adjusted_data_matrix <- adjusted_data$data_matrix
+#' adjusted_df <- matrix_to_long(adjusted_data_matrix)
+#' plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label)[1:2], 
+#' df_long <- adjusted_df, fit_df = fit_df, 
+#' sample_annotation <- example_sample_annotation)
 #' 
 #' @export
 #'
@@ -151,7 +151,8 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
 #'   \code{ComBat}
 #'
 #' @examples 
-#' correct_with_ComBat(example_proteome_matrix, example_sample_annotation)
+#' combat_corrected_matrix <- correct_with_ComBat(
+#' example_proteome_matrix, example_sample_annotation)
 #' 
 #' @export
 #'
@@ -171,8 +172,8 @@ correct_with_ComBat <- function(df_long, sample_annotation = NULL,
   all <- union(sampleNames, s_a)
   non_matched <- all[!all %in% intersect(sampleNames, s_a)]
   if(length(non_matched)!=0){warning("Sample ID in data matrix and 
-                                     sample annotation don't match. 
-                                     Non-matching elements are removed for analysis")}
+                                       sample annotation don't match. 
+                                       Non-matching elements are removed for analysis")}
   
   sample_annotation = sample_annotation %>%
     filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
@@ -184,7 +185,7 @@ correct_with_ComBat <- function(df_long, sample_annotation = NULL,
   corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
                                    mod = modCombat, par.prior = par.prior)
   return(corrected_proteome)
-  }
+}
 
 
 #' Batch correction method allows correction of 
@@ -203,7 +204,7 @@ correct_with_ComBat <- function(df_long, sample_annotation = NULL,
 #' corrected by fit and discrete functions
 #' 
 #' @examples 
-#' correct_batch_effects(example_proteome_matrix, example_sample_annotation, 
+#' batch_corrected_matrix <- correct_batch_effects(example_proteome_matrix, example_sample_annotation, 
 #' continuos_func = 'loess_regression',
 #' discreteFunc = 'MedianCentering', 
 #' batch_col = 'MS_batch',  
