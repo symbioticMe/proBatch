@@ -15,9 +15,8 @@ plot_heatmap(data_matrix, sample_annotation = NULL,
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. in most
-function, it is assumed that this is the log transformed version of the
-original data}
+feature IDs in rownames and file/sample names as colnames. Usually the log
+transformed version of the original data}
 
 \item{sample_annotation}{data matrix with \enumerate{
 \item  \code{sample_id_col} (this can be repeated as row names)
