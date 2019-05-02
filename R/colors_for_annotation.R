@@ -337,7 +337,7 @@ color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, s
     gg = gg + aes_string(color = batch_col)
     
     #Define the color scheme on the fly
-    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
+    if(length(color_scheme) == 1 && color_scheme == 'brewer'){
       n_batches <- length(unique(sample_annotation[[batch_col]]))
       if (n_batches <= 9){
         gg = gg + scale_color_brewer(palette = 'Set1')
@@ -361,7 +361,7 @@ color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, s
 color_fill_boxes_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, df_long) {
   if(color_by_batch & !is.null(batch_col)){
     gg = gg + aes_string(fill = batch_col)
-    if(length(color_scheme) == 1 & color_scheme == 'brewer'){
+    if(length(color_scheme) == 1 && color_scheme == 'brewer'){
       n_batches <- length(unique(df_long[[batch_col]]))
       if(n_batches < 9){
         gg = gg + scale_fill_brewer(palette = 'Set1')
