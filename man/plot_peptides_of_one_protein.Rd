@@ -93,7 +93,8 @@ Creates a spike-in facetted ggplot2 plot of the value in
 be facetted by batch.
 }
 \examples{
-plot_peptides_of_one_protein (protein_name = "Haao",  
+peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
+protein_name = "Haao",  
 protein_col = "Gene", df_long = example_proteome, 
 example_sample_annotation, 
 order_col = 'order', sample_id_col = 'FullRunName', 
