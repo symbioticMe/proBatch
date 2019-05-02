@@ -5,10 +5,10 @@
 \title{Plot spike-in measurements}
 \usage{
 plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
-  protein_col = "ProteinName", df_long, sample_annotation,
+  protein_col = "ProteinName", df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
   feature_id_col = "peptide_group_label", geom = c("point", "line"),
-  color_by_col = NULL, color_by_value = NULL, batch_col = "MS_batch",
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
   plot_title = "Spike-in BOVINE protein peptides", theme = "classic",
@@ -47,12 +47,12 @@ names.}
 \item{geom}{whether to show the feature as points and/or connect by lines (accepted 
 values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})}
 
-\item{color_by_col}{column to color point by certain value denoted 
-by \code{color_by_value}. Design with inferred/requant values in openSWATH output data, 
-which means argument value has to be set to `m_score`.}
+\item{qual_col}{column to color point by certain value denoted 
+by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
+which means argument value has to be set to \code{m_score}.}
 
-\item{color_by_value}{value in \code{color_by_col} to color. For OpenSWATH data,
-this argument value has to be set to `2` (this is an `m_score` value for requants).}
+\item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
+this argument value has to be set to \code{2} (this is an \code{m_score} value for requants).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
@@ -70,15 +70,16 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 different MS batches in ordered runs; 
 should be `NULL` for experiments without intrinsic order.}
 
-\item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
-plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
-MS experiments (where each instrument has its own order-associated effects) 
-or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
+\item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
+plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
+MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+For single-instrument case should be set to `NULL`}
 
-\item{plot_title}{the string indicating the source of the peptides}
+\item{plot_title}{title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
 
-\item{theme}{plot theme (default is 'classical'; other options not
-implemented)}
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
 \item{...}{additional arguments to \code{\link{plot_single_feature}} function}
 }

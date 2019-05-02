@@ -4,18 +4,18 @@
 \alias{plot_with_fitting_curve}
 \title{Plot peptide measurements across multi-step analysis}
 \usage{
-plot_with_fitting_curve(pep_name, fit_df, fit_value_var = "fit", df_long,
-  sample_annotation, sample_id_col = "FullRunName",
+plot_with_fitting_curve(feature_name, fit_df, fit_value_var = "fit",
+  df_long, sample_annotation = NULL, sample_id_col = "FullRunName",
   measure_col = "Intensity", feature_id_col = "peptide_group_label",
-  geom = c("point", "line"), color_by_col = NULL,
-  color_by_value = NULL, batch_col = "MS_batch",
-  color_by_batch = FALSE, color_scheme = "brewer",
-  order_col = "order", vline_color = "grey", facet_col = NULL,
-  plot_title = sprintf("Fitting curve of \%s peptide", pep_name),
-  theme = "classic", ...)
+  geom = c("point", "line"), qual_col = NULL, qual_value = NULL,
+  batch_col = "MS_batch", color_by_batch = FALSE,
+  color_scheme = "brewer", order_col = "order", vline_color = "grey",
+  facet_col = NULL,
+  plot_title = sprintf("Fitting curve of \%s peptide", feature_name),
+  theme = "classic")
 }
 \arguments{
-\item{pep_name}{name of the peptide for diagnostic profiling}
+\item{feature_name}{name of the selected feature (e.g. peptide) for diagnostic profiling}
 
 \item{fit_df}{data frame typically output generated from nonlinear curve 
 fitting by \code{normalize_custom_fit}}
@@ -46,12 +46,12 @@ names.}
 \item{geom}{whether to show the feature as points and/or connect by lines (accepted 
 values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})}
 
-\item{color_by_col}{column to color point by certain value denoted 
-by \code{color_by_value}. Design with inferred/requant values in openSWATH output data, 
-which means argument value has to be set to `m_score`.}
+\item{qual_col}{column to color point by certain value denoted 
+by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
+which means argument value has to be set to \code{m_score}.}
 
-\item{color_by_value}{value in \code{color_by_col} to color. For OpenSWATH data,
-this argument value has to be set to `2` (this is an `m_score` value for requants).}
+\item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
+this argument value has to be set to \code{2} (this is an \code{m_score} value for requants).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
@@ -69,32 +69,33 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 different MS batches in ordered runs; 
 should be `NULL` for experiments without intrinsic order.}
 
-\item{facet_col}{column  in `sample_annotation` with a batch factor to separate 
-plots into facets; usually 2nd to `batch_col`. Most meaningful for multi-instrument 
-MS experiments (where each instrument has its own order-associated effects) 
-or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
+\item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
+plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
+MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+For single-instrument case should be set to `NULL`}
 
-\item{plot_title}{the string indicating the source of the peptides}
+\item{plot_title}{title of the plot (usually, processing step + representation
+level (fragments, transitions, proteins))}
 
-\item{theme}{plot theme (default is 'classical'; other options not
-implemented)}
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
 \item{...}{additional arguments to \code{\link{plot_single_feature}} function}
 }
 \value{
 \code{ggplot}-class plot with minimally two facets (before and after
   non-linear fit) with \code{measure_col} (Intensity) vs \code{order_col}
-  (injection order) for selected peptides (specified in \code{pep_name})
+  (injection order) for selected peptides (specified in \code{feature_name})
 }
 \description{
 Plot Intensity of a few representative peptides for each step of the analysis
 including the fitting curve
 }
 \examples{
-loess_fit_70 <- adjust_batch_trend(example_proteome_matrix, 
+loess_fit_70 <- adjust_batch_trend(example_proteome, 
 example_sample_annotation, span = 0.7)
 
-plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
+plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
 df_long = example_proteome, example_sample_annotation, 
 fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span")
 
