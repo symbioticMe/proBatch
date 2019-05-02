@@ -95,7 +95,7 @@ Creates a spike-in facetted ggplot2 plot of the value in
 be facetted by batch.
 }
 \examples{
-plot_spike_in(example_proteome, example_sample_annotation, 
+spike_in_plot <- plot_spike_in(example_proteome, example_sample_annotation, 
 protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
 plot_title = "Spike-in BOVINE protein peptides")
 
