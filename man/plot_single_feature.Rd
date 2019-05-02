@@ -74,7 +74,8 @@ vs \code{order_col}. Additionally, the resulting plot can also be facetted
 by batch.
 }
 \examples{
-plot_single_feature(pep_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+single_feature_plot <- plot_single_feature(
+pep_name = "46213_NVGVSFYADKPEVTQEQK_2", 
 df_long = example_proteome, example_sample_annotation, 
 color_by_col = NULL)
 
