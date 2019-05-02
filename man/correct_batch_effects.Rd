@@ -22,10 +22,18 @@ file)}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
 
+<<<<<<< HEAD
 \item{continuous_func}{function to use for the fit (currently 
 only \code{loess_regression} available); if order-associated fix is not required, should be `NULL`}
 
 \item{discrete_func}{function to use for adjustment of discrete batch effects (\code{MedianCentering} or \code{ComBat})}
+=======
+\item{fitFunc}{function to use for the fit (currently 
+only \code{loess_regression} available)}
+
+\item{discreteFunc}{function to use for discrete 
+batch correction (\code{MedianCentering} or \code{ComBat})}
+>>>>>>> master
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
@@ -38,9 +46,15 @@ names.}
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
+<<<<<<< HEAD
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
+=======
+\item{measure_col}{if \code{df_long} is among the parameters, it is the column
+with expression/abundance/intensity, otherwise, it is used internally for
+consistency}
+>>>>>>> master
 
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
@@ -64,8 +78,13 @@ continuous signal drift within batch (if required) and adjustment for
 discrete difference across batches.
 }
 \examples{
+<<<<<<< HEAD
 correct_batch_effects(example_proteome_matrix, example_sample_annotation, 
 continuos_func = 'loess_regression',
+=======
+batch_corrected_matrix <- correct_batch_effects(
+example_proteome_matrix, example_sample_annotation, 
+>>>>>>> master
 discreteFunc = 'MedianCentering', 
 batch_col = 'MS_batch',  
 span = 0.7,
