@@ -61,32 +61,35 @@
 #' @import dplyr
 #' @import ggfortify
 #' @import ggplot2
-#' @import pheatmap
 #' @import reshape2
 #' @import tibble
 #' @import lazyeval
-#' @import WGCNA
 #' @import viridis
 #' @import RColorBrewer
-#' @import readr
 #' @importFrom corrplot corrplot.mixed
+#' @importFrom grDevices colorRampPalette
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices pdf
 #' @importFrom magrittr %>%
-#' @importFrom purrr map
-#' @importFrom rlang UQ sym syms
+#' @importFrom pheatmap pheatmap
+#' @importFrom purrr pmap
+#' @importFrom rlang :=
+#' @importFrom rlang !!
+#' @importFrom rlang !!!
+#' @importFrom rlang sym syms
 #' @importFrom tidyr complete nest unnest
-#' @importFrom data.table setDT
-#' @importFrom data.table transpose
-#' @importFrom data.table :=
-#' @importFrom data.table IDateTime
-#' @importFrom purrr map2
+#' @importFrom utils combn
+#' @importFrom stats as.formula complete.cases dist hclust loess median 
+#' @importFrom stats model.matrix prcomp predict reformulate setNames
+#' @importFrom WGCNA plotDendroAndColors
 #' 
 #' @docType package
 #' @name proBatch
-if(getRversion() >= "2.15.1")  utils::globalVariables(c(".", 
-    "batch_size", "batch_the_same", "batch_total", "category", "dateTime", 
-    "fit", "label", "mean_fit", "median_batch", "median_global", 
-    "median_run", "optimise_bw", "optimise_df", "peptide_col_name", 
-    "sample_annotatation_col", "Step", "tipping.poings", "Var1", "Var2"))
+if(getRversion() >= "2.15.1")  utils::globalVariables(c(".", "data",
+  "batch_size", "batch_the_same", "batch_total", "category", "dateTime", 
+  "fit", "label", "mean_fit", "median_batch", "median_global", 
+  "median_run", "optimise_bw", "optimise_df", "peptide_col_name", 
+  "sample_annotatation_col", "Step", "tipping.poings", "Var1", "Var2"))
 NULL
 
 

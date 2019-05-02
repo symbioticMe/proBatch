@@ -18,9 +18,8 @@
 #' @export
 #'
 #' @examples 
-#' library(ggplot2)
-#' plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
-#' order_col = 'order', batch_col = "MS_batch") + theme_bw()
+#' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+#' order_col = 'order', batch_col = "MS_batch")
 #' 
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              sample_id_col = 'FullRunName',
@@ -37,15 +36,9 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   sample_average = colMeans(data_matrix, na.rm = TRUE)
   #names(sample_average) = colnames(data_matrix)
   
-  df_ave = data.frame(Mean_Intensity = sample_average,
-                      sample_id_col = colnames(data_matrix), 
-                      stringsAsFactors = FALSE)
-  
-  #Assign a column for sample_id
-  if(is.null(sample_annotation) | !(sample_id_col %in% names(sample_annotation))
-     | is.null(sample_id_col)){
-    sample_id_col = 'data_matrix_colnames'
-  }
+  df_ave = data.frame(Average_Intensity = sample_average,
+                      order_temp_col = 1:length(sample_average),
+                      sample_id_col = colnames(data_matrix))
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
@@ -144,7 +137,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' @export
 #'
 #' @examples
-#' plot_boxplot(example_proteome, example_sample_annotation, 
+#' boxplot <- plot_boxplot(example_proteome, example_sample_annotation, 
 #' batch_col = "MS_batch")
 #' 
 plot_boxplot <- function(df_long, sample_annotation = NULL,
