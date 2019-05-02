@@ -10,6 +10,34 @@
 #' @name normalize
 NULL
 
+#' Log transformation of the data, ensuring that the row and column names
+#' are retained
+#'
+#' @param df_long raw data matrix (features in rows and samples
+#'   in columns)
+#' @param log_base base of the logarithm for transformation
+#' @param offset small positive number to prevent 0 conversion to \code{-Inf}
+#'
+#' @return \code{df_long}-size data frame, with \code{measure_col} log transformed;
+#' with old value in column in another column "old_intensity" if "intensity" 
+#' was the value of \code{measure_col}
+#' 
+#' @examples 
+#' log_transformed_matrix <- log_transform(example_proteome_matrix)
+#' 
+#' @export
+#'
+log_transform_df <- function(df_long, log_base = 2, offset = 1,
+                             measure_col = 'Intensity'){
+  if(!is.null(log_base)){
+    df_long = df_long %>%
+      mutate(UQ(paste('old', measure_col, sep = '_')) := UQ(sym(measure_col))) %>%
+      mutate(UQ(sym(measure_col)) := log(UQ(sym(measure_col)) + offset, base = log_base))
+  } else {
+    warning("Log base is NULL, returning the original data frea")
+  }
+  return(df_long)
+}
 
 #' Log transformation of the data, ensuring that the row and column names
 #' are retained
@@ -17,6 +45,7 @@ NULL
 #' @param data_matrix raw data matrix (features in rows and samples
 #'   in columns)
 #' @param log_base base of the logarithm for transformation
+#' @param offset small positive number to prevent 0 conversion to \code{-Inf}
 #'
 #' @return \code{data_matrix}-size matrix, with columns log2 transformed
 #' @examples 
@@ -24,17 +53,13 @@ NULL
 #' 
 #' @export
 #'
-log_transform <- function(data_matrix, log_base = 2){
+log_transform <- function(data_matrix, log_base = 2, offset = 1){
   if(!is.null(log_base)){
-    if(log_base == 2){
-      data_matrix_log = log2(data_matrix + 1)
-    }else if(log_base ==10){
-      data_matrix_log = log10(data_matrix + 1)
-    }else {
-      stop("Only log_base = 2 or log_base = 10 is applicable")
-    }
+    data_matrix = log(data_matrix + offset, base = log_base)
+  } else {
+    warning("Log base is NULL, returning the original data matrix")
   }
-    return(data_matrix_log)
+    return(data_matrix)
 }
 
 #' Quantile normalization of the data, ensuring that the row and column names
