@@ -25,13 +25,24 @@ plot_boxplot(df_long, sample_annotation = NULL,
 feature IDs in rownames and file/sample names as colnames. Usually the log
 transformed version of the original data}
 
+<<<<<<< HEAD
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }}
+=======
+\item{sample_annotation}{data matrix with 1) \code{sample_id_col} (this can be
+repeated as row names) 2) biological and 3) technical covariates (batches
+etc)}
+>>>>>>> master
 
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
+<<<<<<< HEAD
+=======
+\item{order_col}{column where running order is specified.}
+
+>>>>>>> master
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
@@ -41,6 +52,7 @@ by batch factor as defined by \code{batch_col}.}
 \item{color_scheme}{named vector, names corresponding to unique batch values of 
 \code{batch_col} in \code{sample_annotation}. Best created with \link{sample_annotation_to_colors}}
 
+<<<<<<< HEAD
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
 feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
@@ -49,6 +61,13 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 
 \item{vline_color}{color of vertical lines, typically denoting 
 different MS batches in ordered runs; should be \code{NULL} for experiments without intrinsic order}
+=======
+\item{color_scheme}{named vector, names corresponding to unique batch values
+as specified in \code{sample_annotation}}
+
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden (see
+examples)}
+>>>>>>> master
 
 \item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
 plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
@@ -59,11 +78,17 @@ For single-instrument case should be set to `NULL`}
 \item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
+<<<<<<< HEAD
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
+=======
+\item{vline_color}{color of vertical lines, typically denoting 
+different MS batches in ordered runs; should be \code{NULL} for experiments without intrinsic order}
+>>>>>>> master
 
 \item{ylimits}{range of y-axis to compare two plots side by side, if required.}
 
 \item{df_long}{data frame where each row is a single feature in a single
+<<<<<<< HEAD
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file)}
@@ -73,6 +98,15 @@ column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
 \item{outliers}{keep (default) or remove the boxplot outliers}
+=======
+sample, thus it has minimally, \code{sample_id_col}, \code{feature_id_col} and
+\code{measure_col}, but usually also \code{m_score} (in OpenSWATH output result
+file)}
+
+\item{measure_col}{if \code{df_long} is among the parameters, it is the column
+with expression/abundance/intensity, otherwise, it is used internally for
+consistency}
+>>>>>>> master
 }
 \value{
 ggplot2 class object. Thus, all aesthetics can be overriden
@@ -86,11 +120,16 @@ functions for quick visual assessment of trends associated, overall
   or specific covariate-associated (see \code{batch_col} and \code{facet_col})
 }
 \examples{
+<<<<<<< HEAD
 library(ggplot2)
 plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 order_col = 'order', batch_col = "MS_batch") + theme_bw()
+=======
+mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+order_col = 'order', batch_col = "MS_batch")
+>>>>>>> master
 
-plot_boxplot(example_proteome, example_sample_annotation, 
+boxplot <- plot_boxplot(example_proteome, example_sample_annotation, 
 batch_col = "MS_batch")
 
 }
