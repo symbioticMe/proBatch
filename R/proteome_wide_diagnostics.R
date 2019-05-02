@@ -61,10 +61,7 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 
 #' Plot the heatmap of samples
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. in most
-#'   function, it is assumed that this is the log transformed version of the
-#'   original data
+#' @inheritParams proBatch
 #' @param sample_annotation data matrix with \enumerate{
 #' \item  \code{sample_id_col} (this can be repeated as row names)
 #'   \item  biological and
