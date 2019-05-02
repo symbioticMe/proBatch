@@ -52,6 +52,7 @@ batch effects. The input data are assumed to be free of missing values
  \code{center_peptide_batch_medians} are more appropriate.
 }
 \examples{
-correct_with_ComBat(example_proteome_matrix, example_sample_annotation)
+combat_corrected_matrix <- correct_with_ComBat(
+example_proteome_matrix, example_sample_annotation)
 
 }
