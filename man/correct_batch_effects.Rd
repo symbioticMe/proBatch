@@ -3,47 +3,50 @@
 \name{correct_batch_effects}
 \alias{correct_batch_effects}
 \title{Batch correction method allows correction of 
-continuous sigal drift within batch and 
+continuous signal drift within batch (if required) and adjustment for
 discrete difference across batches.}
 \usage{
-correct_batch_effects(data_matrix, sample_annotation,
-  fitFunc = "loess_regression", discreteFunc = c("MedianCentering",
-  "ComBat"), batch_col = "MS_batch",
-  feature_id_col = "peptide_group_label",
+correct_batch_effects(df_long, sample_annotation, continuous_func = NULL,
+  discrete_func = c("MedianCentering", "ComBat"),
+  batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  sample_order_col = "order", abs_threshold = 5, pct_threshold = 0.2,
-  ...)
+  order_col = "order", abs_threshold = 5, pct_threshold = 0.2, ...)
 }
 \arguments{
-\item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. Usually the log
-transformed version of the original data}
+\item{df_long}{data frame where each row is a single feature in a single
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+file)}
 
-\item{sample_annotation}{data frame with sample ID, technical (e.g. MS batches) 
-and biological (e.g. Diet) covariates}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }}
 
-\item{fitFunc}{function to use for the fit (currently 
+\item{continuous_func}{function to use for the fit (currently 
 only \code{loess_regression} available); if order-associated fix is not required, should be `NULL`}
 
-\item{discreteFunc}{function to use for discrete 
-batch correction (\code{MedianCentering} or \code{ComBat})}
+\item{discrete_func}{function to use for adjustment of discrete batch effects (\code{MedianCentering} or \code{ComBat})}
 
-\item{batch_col}{column in \code{sample_annotation} that should be 
-used for batch comparison}
+\item{batch_col}{column in \code{sample_annotation} that should be used for
+batch comparison}
 
-\item{feature_id_col}{name of the column with feature/gene/peptide/protein ID 
-used in the long format representation df_long. In the wide formatted 
-representation data_matrix this corresponds to the row names.}
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
-\item{measure_col}{if \code{df_long} is among the parameters, it is the column
-with expression/abundance/intensity, otherwise, it is used internally for
-consistency}
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
+column with expression/abundance/intensity; otherwise, it is used
+internally for consistency.}
 
-\item{sample_order_col}{column, determining the order of sample MS run, used
-as covariate to fit the non-linear fit}
+\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
+used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
+feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
+if sample order is irrelevant (e.g. in genomic experiments). For more details,
+order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
 
 \item{abs_threshold}{the absolute threshold to filter data for curve fitting}
 
@@ -57,14 +60,19 @@ corrected by fit and discrete functions
 }
 \description{
 Batch correction method allows correction of 
-continuous sigal drift within batch and 
+continuous signal drift within batch (if required) and adjustment for
 discrete difference across batches.
 }
 \examples{
 correct_batch_effects(example_proteome_matrix, example_sample_annotation, 
+continuos_func = 'loess_regression',
 discreteFunc = 'MedianCentering', 
 batch_col = 'MS_batch',  
 span = 0.7,
 abs_threshold = 5, pct_threshold = 0.20)
 
+}
+\seealso{
+\code{\link{fit_nonlinear}}, \code{\link{center_peptide_batch_medians}},
+\code{\link{correct_with_ComBat}}, \code{\link{adjust_batch_trend}}
 }
