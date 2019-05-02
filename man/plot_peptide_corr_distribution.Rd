@@ -42,7 +42,8 @@ Plot distribution of peptide correlations within one
 protein and between proteins
 }
 \examples{
-plot_peptide_corr_distribution(example_proteome_matrix, 
+peptide_corr_distribution <- plot_peptide_corr_distribution(
+example_proteome_matrix, 
 example_peptide_annotation, protein_col = 'Gene')
 
 }
