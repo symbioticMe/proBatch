@@ -350,7 +350,7 @@ plot_iRT <- function(irt_pattern = 'iRT',
   
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
-      merge(peptide_annotation, by = protein_col)
+      merge(peptide_annotation, by = feature_id_col)
   }
   iRT_peptides = df_long %>%
     filter(grepl(irt_pattern, !!sym(protein_col))) %>%
