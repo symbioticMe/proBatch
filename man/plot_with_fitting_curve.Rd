@@ -78,7 +78,13 @@ For single-instrument case should be set to `NULL`}
 \item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
+<<<<<<< HEAD
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
+=======
+\item{vline_color}{color of vertical lines, typically denoting 
+different MS batches in ordered runs; should be \code{NULL} for 
+experiments without intrinsic order}
+>>>>>>> master
 
 \item{...}{additional arguments to \code{\link{plot_single_feature}} function}
 }
@@ -95,7 +101,12 @@ including the fitting curve
 loess_fit_70 <- adjust_batch_trend(example_proteome, 
 example_sample_annotation, span = 0.7)
 
+<<<<<<< HEAD
 plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
+=======
+fitting_curve_plot <- plot_with_fitting_curve(
+pep_name = "10231_QDVDVWLWQQEGSSK_2", 
+>>>>>>> master
 df_long = example_proteome, example_sample_annotation, 
 fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span")
 
