@@ -1,5 +1,5 @@
 Meta
-doc
+#doc
 *.Rproj
 *.Rapp*
 .Rproj.user
@@ -9,5 +9,5 @@ doc
 *.Rapp.history
 #inst/doc
 #vignettes/
-/.Rd2pdf*
+#/.Rd2pdf*
 #NAMESPACE
