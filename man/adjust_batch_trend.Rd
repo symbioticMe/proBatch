@@ -31,9 +31,15 @@ names.}
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
+<<<<<<< HEAD
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
+=======
+\item{measure_col}{if \code{df_long} is among the parameters, it is the column
+with expression/abundance/intensity, otherwise, it is used internally for
+consistency}
+>>>>>>> master
 
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
@@ -51,13 +57,21 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 }
 \value{
 list of two items: 1) \code{data_matrix}, adjusted with continious fit; 
+<<<<<<< HEAD
 2) \code{fit_df}, used to examine the fitting curves, e.g. with \code{plot_with_fitting_curve}
+=======
+2) fit_df, used to examine the fitting curves
+>>>>>>> master
 }
 \description{
 adjust batch signal trend with the custom (continuous) fit
 }
 \examples{
+<<<<<<< HEAD
 adjusted_data = adjust_batch_trend(example_proteome, 
+=======
+trend_corrected_matrix <- adjust_batch_trend(example_proteome_matrix, 
+>>>>>>> master
 example_sample_annotation, span = 0.7, 
 abs_threshold = 5, pct_threshold = 0.20)
 fit_df = adjusted_data$fit_df
