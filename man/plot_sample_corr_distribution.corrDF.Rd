@@ -18,6 +18,9 @@ level (fragments, transitions, proteins))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 }
+\value{
+\code{ggplot} type object with violin plot
+}
 \description{
 Plot correlation distribution, starting from the correlation matrix
 }

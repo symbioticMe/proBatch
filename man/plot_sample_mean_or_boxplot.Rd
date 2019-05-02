@@ -35,8 +35,8 @@ filenames (colnames of the data matrix are found).}
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
 
-\item{color_by_batch}{should the each batch be represented with its own
-color?}
+\item{color_by_batch}{(logical) whether to color points and connecting lines 
+by batch factor as defined by \code{batch_col}.}
 
 \item{color_scheme}{named vector, names corresponding to unique batch values of 
 \code{batch_col} in \code{sample_annotation}. Best created with \link{sample_annotation_to_colors}}
@@ -53,7 +53,8 @@ different MS batches in ordered runs; should be \code{NULL} for experiments with
 \item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
 plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
 MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
-or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+For single-instrument case should be set to `NULL`}
 
 \item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
