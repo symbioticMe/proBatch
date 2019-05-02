@@ -75,7 +75,7 @@ factor_columns = c('MS_batch','EarTag', "Strain",
 not_factor_columns = 'DateTime',
 numeric_columns = c('order'))
 
-plot_heatmap(example_proteome_matrix, 
+heatmap_plot <- plot_heatmap(example_proteome_matrix, 
 example_sample_annotation, 
 sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
 cluster_cols = TRUE, 
