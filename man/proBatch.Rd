@@ -44,7 +44,18 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 \item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
 plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
 MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
-or simultaneous examination of two batch factors (e.g. preparation day and measurement day)}
+or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+For single-instrument case should be set to `NULL`}
+
+\item{color_by_batch}{(logical) whether to color points and connecting lines 
+by batch factor as defined by \code{batch_col}.}
+
+\item{qual_col}{column to color point by certain value denoted 
+by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
+which means argument value has to be set to \code{m_score}.}
+
+\item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
+this argument value has to be set to \code{2} (this is an \code{m_score} value for requants).}
 
 \item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
