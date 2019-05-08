@@ -21,7 +21,7 @@
 #'
 #' @return vector of fitted response values
 #' 
-#' @example 
+#' @examples 
 #' df_selected = example_proteome %>% 
 #' merge(example_sample_annotation, by = 'FullRunName') %>%
 #' filter(peptide_group_label == example_proteome$peptide_group_label[1] &&
