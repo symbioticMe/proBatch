@@ -31,8 +31,8 @@ log_transform_df <- function(df_long, log_base = 2, offset = 1,
                              measure_col = 'Intensity'){
   if(!is.null(log_base)){
     df_long = df_long %>%
-      mutate(UQ(paste('old', measure_col, sep = '_')) := UQ(sym(measure_col))) %>%
-      mutate(UQ(sym(measure_col)) := log(UQ(sym(measure_col)) + offset, base = log_base))
+      mutate(!!(paste('old', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
+      mutate(!!(sym(measure_col)) := log(!!(sym(measure_col)) + offset, base = log_base))
   } else {
     warning("Log base is NULL, returning the original data frea")
   }
@@ -105,12 +105,12 @@ normalize_sample_medians <- function(df_long,
                                      measure_col = 'Intensity'){
   df_normalized = df_long  %>%
     group_by_at(vars(one_of(sample_id_col))) %>%
-    mutate(median_run = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+    mutate(median_run = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
     ungroup()
   df_normalized = df_normalized %>%
-    mutate(median_global = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+    mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
     mutate(diff = median_global - median_run) %>%
-    mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
+    mutate(Intensity_normalized = !!(sym(measure_col))+diff)
   return(df_normalized)
 }
 
