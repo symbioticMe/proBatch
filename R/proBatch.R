@@ -67,14 +67,18 @@
 #' @importFrom corrplot corrplot.mixed
 #' @importFrom grDevices colorRampPalette
 #' @importFrom grDevices png pdf dev.off
+#' @importFrom lubridate is.POSIXct
 #' @importFrom magrittr %>%
 #' @importFrom pheatmap pheatmap
+#' @importFrom preprocessCore normalize.quantiles
+#' @importFrom pvca pvcaBatchAssess
 #' @importFrom purrr pmap
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom rlang :=
 #' @importFrom rlang !!
 #' @importFrom rlang !!!
 #' @importFrom rlang sym syms
+#' @importFrom sva ComBat
 #' @importFrom tidyr complete nest unnest
 #' @importFrom utils combn 
 #' @importFrom scales brewer_pal
