@@ -1,6 +1,8 @@
 #' Visualise correlation matrix
 #'
-#' Plot correlation of selected  samples or peptides
+#' Plot correlation of selected  samples or peptides 
+#' @description recommended for heatmap-type visualisation of  correlation matrix with
+#'  <100 items. With >50 samples and ~10 replicate pairs distribution plots may be more informative.
 #'
 #' @inheritParams proBatch
 #' @param corr_matrix square correlation matrix
@@ -13,8 +15,8 @@
 #' @param width option  determining the output image width
 #' @param height option  determining the output image width
 #' @param unit units: 'cm', 'in' or 'mm'
-#' @param plot_title Title of the plot (usually, processing step + 
-#' representation level (fragments, transitions, proteins))
+#' @param plot_title Title of the correlation plot (e.g., processing step + 
+#' representation level (fragments, transitions, proteins) or Protein Name)
 #' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 #' \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
 #'   help to corresponding functions
@@ -22,17 +24,16 @@
 #' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 #' 
 #' @export
-#' 
-#' @keywords internal
 #'
-#' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
+#' @seealso \code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}},
+#' \code{\link{plot_sample_corr_distribution}}, \code{\link{plot_peptide_corr_distribution}}
 #' 
 #' @examples 
 #' peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2")
-#' 
 #' data_matrix_sub = example_proteome_matrix[peptides,]
 #' corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
 #' corr_matrix_plot <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
+#' 
 plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'), 
                              filename = NULL, width = NA, height = NA, 
                              unit = c('cm','in','mm'),
@@ -77,10 +78,6 @@ plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'),
 #'
 #' @inheritParams proBatch
 #' @param protein_name the name of the protein
-#' @param peptide_annotation df with peptides and 
-#' their corresponding proteins
-#' @param protein_col the column name in \code{peptide_annotation} 
-#' with protein names
 #' @param flavor either corrplot from 'corrplot' 
 #' package or heatmap, as in 'pheatmap'
 #' @param filename path where the results are saved. 
@@ -90,7 +87,7 @@ plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'),
 #' @param width option  determining the output image width
 #' @param height option  determining the output image width
 #' @param unit units: 'cm', 'in' or 'mm'
-#' @param plot_title The title of the plot
+#' @param plot_title The title of the plot, e.g. protein name and the processing step
 #' @param ... parameters for the corrplot visualisation
 #'
 #' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
@@ -186,6 +183,8 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 
 #' Transform square correlation matrix into long data.frame of correlations
 #' of the replicated samples, samples from same batch and unrelated samples
+#' @description useful to infer summary statistics (medians etc.) of correlation 
+#' within/between replicates and batches.
 #'
 #' @inheritParams proBatch
 #' @param cor_proteome sample correlation matrix (square)
@@ -502,13 +501,6 @@ calculate_peptide_corr_distr <- function(data_matrix, peptide_annotation,
 #' protein and between proteins
 #'
 #' @inheritParams proBatch
-#' 
-#' @param protein_col the column name in \code{peptide_annotation} 
-#' with protein names
-#' @param peptide_annotation long format data with peptide ID
-#' and their corresponding 
-#' protein annotations
-#' @param ... parameters for the \code{ggplot} visualisation
 #'
 #' @return \code{ggplot} type object with violin plot
 #' 
