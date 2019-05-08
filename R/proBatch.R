@@ -60,14 +60,11 @@
 #'
 #' @import dplyr
 #' @import ggfortify
+#' @import ggplot2
 #' @import reshape2
 #' @import tibble
 #' @import lazyeval
 #' @importFrom corrplot corrplot.mixed
-#' @importFrom ggplot2 ggplot aes_string
-#' @importFrom ggplot2 geom_point geom_line geom_boxplot geom_violin geom_hline geom_vline geom_bar
-#' @importFrom ggplot2 ggtitle ylim xlab ylab facet_grid theme theme_classic element_text guide_legend guides
-#' @importFrom ggplot2 scale_color_brewer scale_fill_brewer scale_color_manual scale_fill_manual
 #' @importFrom grDevices colorRampPalette
 #' @importFrom grDevices png pdf dev.off
 #' @importFrom magrittr %>%
