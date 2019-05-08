@@ -79,7 +79,7 @@ log_transform <- function(data_matrix, log_base = 2, offset = 1){
 #' @export
 #'
 quantile_normalize <- function(data_matrix){
-  q_norm_proteome = preprocessCore::normalize.quantiles(data_matrix)
+  q_norm_proteome = normalize.quantiles(data_matrix)
   colnames(q_norm_proteome) = colnames(data_matrix)
   rownames(q_norm_proteome) = rownames(data_matrix)
   return(q_norm_proteome)
