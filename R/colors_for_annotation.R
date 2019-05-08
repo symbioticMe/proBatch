@@ -131,7 +131,7 @@ generate_colors_for_numeric <- function(num_col,
   
   if (is.numeric(num_col)) {
     num_vec = cut(num_col, breaks = granularity)
-  } else if (lubridate::is.POSIXct(num_col)) {
+  } else if (is.POSIXct(num_col)) {
     interval = (max(num_col, na.rm = TRUE) - 
                   min(num_col, na.rm = TRUE)) / granularity
     if (any(is.na(num_col))) {
