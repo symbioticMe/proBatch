@@ -51,7 +51,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   
   #reduce df to measurements of selected features
   plot_df = df_long %>%
-    filter(UQ(sym(feature_id_col)) %in% feature_name)
+    filter(!!(sym(feature_id_col)) %in% feature_name)
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
   plot_df = check_sample_consistency(sample_annotation, sample_id_col, plot_df)
@@ -84,7 +84,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   #Add coloring for "inferred" measurements / requant values, marked in `color_by_col` with `color_by_value` (e.g. `m_score` and `2`)
   if(!is.null(qual_col)){
     col_data = plot_df %>%
-      filter(UQ(as.name(qual_col)) == qual_value)
+      filter(!!(as.name(qual_col)) == qual_value)
     gg = gg + geom_point(data = col_data,
                          aes_string(x = order_col, y = measure_col),
                          color = 'red', size = 1.5, shape = 8)
@@ -445,7 +445,7 @@ plot_with_fitting_curve <- function(feature_name,
                            theme = theme)
   
   fit_df = fit_df %>%
-    filter(UQ(sym(feature_id_col)) %in% feature_name)
+    filter(!!(sym(feature_id_col)) %in% feature_name)
   
   if (!is.null(sample_annotation)){
     fit_df = fit_df %>%
