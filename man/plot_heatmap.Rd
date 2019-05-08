@@ -9,8 +9,8 @@ plot_heatmap(data_matrix, sample_annotation = NULL,
   sample_annotation_row = NULL, fill_the_missing = TRUE,
   cluster_rows = TRUE, cluster_cols = FALSE,
   annotation_color_list = NA,
-  heatmap_color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7,
-  name = "RdYlBu")))(100), color_for_missing = "black", filename = NA,
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
+  "RdYlBu")))(100), color_for_missing = "black", filename = NA,
   plot_title = NA, ...)
 }
 \arguments{
