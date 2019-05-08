@@ -539,7 +539,8 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
         corr_distribution = do.call(rbind, corr_distribution)%>%
             mutate(Step = factor(Step, levels = names(data_matrix)))
     }
-    p = plot_peptide_corr_distribution.corrDF(corr_distribution, plot_title, data_matrix, theme)
+    p = plot_peptide_corr_distribution.corrDF(corr_distribution = corr_distribution,
+                                              theme =  theme, plot_title = plot_title)
     return(p)
 }
 
