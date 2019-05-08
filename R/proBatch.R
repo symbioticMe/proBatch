@@ -81,6 +81,7 @@
 #' @importFrom stats as.formula complete.cases dist hclust loess median 
 #' @importFrom stats model.matrix prcomp predict reformulate setNames
 #' @importFrom viridis viridis_pal
+#' @importFrom wesanderson wes_palettes
 #' @importFrom WGCNA plotDendroAndColors standardColors
 #' 
 #' @docType package
