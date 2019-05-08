@@ -85,8 +85,8 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
         warning("order column is identical to sample ID column and coloring by batch is required,
                 ordering the samples by batch rather than by sample order in annotation")
         df_long = df_long %>% arrange(!!sym(c(batch_col))) %>%
-          mutate(UQ(sym(order_col)) :=  factor(UQ(sym(sample_id_col)),
-                                                      levels = unique(UQ(sym(sample_id_col)))))
+          mutate(!!(sym(order_col)) :=  factor(!!(sym(sample_id_col)),
+                                                      levels = unique(!!(sym(sample_id_col)))))
         #df_long[[order_col]] = reorder(as.character(df_long[[sample_id_col]]), df_long[[batch_col]])
       } else {
         warning('order column is identical to sample ID column, 
@@ -109,8 +109,8 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
       warning("order column is not defined and coloring by batch is required,
                 ordering the samples by batch")
       df_long = df_long %>% arrange(!!sym(c(batch_col))) %>%
-        mutate(UQ(sym(order_col)) :=  factor(UQ(sym(order_col)),
-                                                    levels = unique(UQ(sym(order_col)))))
+        mutate(!!(sym(order_col)) :=  factor(!!(sym(order_col)),
+                                                    levels = unique(!!(sym(order_col)))))
       #df_long[[order_col]] = reorder(as.character(df_long[[order_col]]), df_long[[batch_col]])
     } else {
       df_long[[order_col]] = factor(df_long[[order_col]], levels = unique(df_long[[order_col]]))
@@ -121,7 +121,7 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
   if(!is.null(facet_col) && is.numeric(df_long[[order_col]])){
     df_long = df_long %>% 
       group_by_at(vars(one_of(facet_col))) %>% 
-      mutate(order_per_instrument = dense_rank(UQ(sym(order_col))))
+      mutate(order_per_instrument = dense_rank(!!(sym(order_col))))
     order_col = 'order_per_instrument'
   }
   
