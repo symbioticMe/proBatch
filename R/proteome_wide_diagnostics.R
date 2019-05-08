@@ -173,7 +173,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
   
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
   expr_set = Biobase::ExpressionSet(data_matrix[,rownames(sample_annotation)], covrts.annodf)
-  pvcaAssess = pvca::pvcaBatchAssess (expr_set, factors_for_PVCA, threshold = threshold_pca)
+  pvcaAssess = pvcaBatchAssess(expr_set, factors_for_PVCA, threshold = threshold_pca)
   pvcaAssess_df = data.frame(weights = as.vector(pvcaAssess$dat),
                              label = pvcaAssess$label,
                              stringsAsFactors = FALSE)
@@ -252,7 +252,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   sample_names = sample_annotation[[sample_id_col]]
   sample_annotation = sample_annotation %>% 
     select(one_of(factors_for_PVCA)) %>%
-    mutate_if(lubridate::is.POSIXct, as.numeric)
+    mutate_if(is.POSIXct, as.numeric)
   sample_annotation = as.data.frame(sample_annotation)
   rownames(sample_annotation) = sample_names
   

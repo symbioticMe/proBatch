@@ -101,7 +101,7 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
     merge(sample_annotation, by = sample_id_col) %>%
     arrange_(feature_id_col, order_col) %>% #TODO: substitute with arrange(!!!syms(feature_id_col, order_col))
     group_nest(!!!syms(c(feature_id_col, batch_col, "batch_total"))) %>%  
-    mutate(fit = purrr::pmap(list(df_feature_batch = data,  batch_size = batch_total, 
+    mutate(fit = pmap(list(df_feature_batch = data,  batch_size = batch_total, 
                                   feature_id = !!sym(feature_id_col)), batch_id = !!sym(batch_col),
                              fit_nonlinear, 
                              measure_col = measure_col,order_col = order_col, 
@@ -182,7 +182,7 @@ correct_with_ComBat <- function(df_long, sample_annotation = NULL,
   
   batches = sample_annotation[[batch_col]]
   modCombat = model.matrix(~1, data = sample_annotation)
-  corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
+  corrected_proteome = ComBat(dat = data_matrix, batch = batches,
                                    mod = modCombat, par.prior = par.prior)
   return(corrected_proteome)
 }
