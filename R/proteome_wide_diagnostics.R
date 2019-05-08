@@ -328,7 +328,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
     gg = gg +theme_classic()
   }
   if(is.null(colors_for_bars)){
-    colors_for_bars = c('grey', wesanderson::wes_palettes$Rushmore[3:5])
+    colors_for_bars = c('grey', wes_palettes$Rushmore[3:5])
     names(colors_for_bars) = c('residual', 'biological', 
                                'biol:techn', 'technical')
     
