@@ -11,7 +11,7 @@ map_factors_to_colors <- function(annotation_df_factors) {
                 values for better visualisation\n')
   }
 
-  colors = WGCNA::standardColors(n_colors_total)
+  colors = standardColors(n_colors_total)
   start_indxs = c(1, 1 + cumsum(nlev_covariate[-length(nlev_covariate)]))
   end_indx = cumsum(nlev_covariate)
   ann_colors_covariate = lapply(1:length(nlev_covariate),
@@ -112,8 +112,8 @@ generate_colors_for_numeric <- function(num_col,
   
   color_for_column = switch(
     palette_type,
-    brewer = scales::brewer_pal(type = "div", i)(5)[seq_len(5)],
-    viridis = viridis::viridis_pal(option = LETTERS[5 - i])(5)
+    brewer = brewer_pal(type = "div", i)(5)[seq_len(5)],
+    viridis = viridis_pal(option = LETTERS[5 - i])(5)
   )
   
   non_numeric_values = NULL
@@ -125,7 +125,7 @@ generate_colors_for_numeric <- function(num_col,
     num_col = as.numeric(num_col_temp)
     non_numeric_values = unique(num_col_temp[is.na(num_col)])
     n_non_numeric = length(non_numeric_values)
-    factor_colors = scales::brewer_pal(palette = 'Set1')(n_non_numeric)
+    factor_colors = brewer_pal(palette = 'Set1')(n_non_numeric)
     names(factor_colors) = non_numeric_values
   }
   
