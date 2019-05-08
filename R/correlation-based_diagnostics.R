@@ -395,35 +395,35 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
                                                  plot_param = 'batch_replicate',
                                                  theme = 'classic'){
   
-  p <- ggplot(corr_distribution, aes_string(x = plot_param, y = 'correlation'))+
+  gg <- ggplot(corr_distribution, aes_string(x = plot_param, y = 'correlation'))+
     geom_violin(scale = 'width')+
     geom_boxplot(width = .1) 
   
   if (!is.null(plot_title)){
-    p = p + ggtitle(plot_title)
+    gg = gg + ggtitle(plot_title)
   }
   
   if(('Step' %in% names(corr_distribution)) & length(unique(corr_distribution$Step)) > 1){
     if(length(unique(corr_distribution$Step)) <= 4){
-      p = p  + facet_grid(.~Step)
+      gg = gg  + facet_grid(.~Step)
     }
     else {
-      p = p +facet_grid(Step ~ .)
+      gg = gg +facet_grid(Step ~ .)
     }
   }
   if (theme == 'classic'){
-    p = p + theme_classic()
+    gg = gg + theme_classic()
   }
   
   if (plot_param =='batches'){
-    p = p + theme(axis.text.x = element_text(angle = 90))
+    gg = gg + theme(axis.text.x = element_text(angle = 90))
   }
   if (plot_param == 'batch_replicate'){
-    p = p + theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+    gg = gg + theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
   }
   
-  p = p + theme(plot.title = element_text(hjust = .5, face = 'bold'))
-  return(p)
+  gg = gg + theme(plot.title = element_text(hjust = .5, face = 'bold'))
+  return(gg)
 }
 
 
@@ -561,7 +561,7 @@ plot_peptide_corr_distribution.corrDF <- function(corr_distribution,
     filter(same_protein == 'same protein') %>%
     summarize(median = median(correlation, na.rm = T)) %>%
     pull(median)
-  p <- ggplot(corr_distribution, aes_string(x = 'same_protein', y = 'correlation'))+
+  gg <- ggplot(corr_distribution, aes_string(x = 'same_protein', y = 'correlation'))+
     geom_violin(scale = 'width') +
     geom_hline(yintercept = 0, linetype = 'dashed', color = 'darkgrey') +
     geom_hline(yintercept = median_same_prot, linetype = 'dotted', color = 'tomato1') +
@@ -569,22 +569,22 @@ plot_peptide_corr_distribution.corrDF <- function(corr_distribution,
     xlab(NULL)
   
   if(!is.null(plot_title)){
-    p = p +
+    gg = gg +
       ggtitle(plot_title)
   }
   
   if(('Step' %in% names(corr_distribution)) & length(unique(corr_distribution$Step)) > 1){
     if(length(unique(corr_distribution$Step)) <= 4){
-      p = p  + facet_grid(.~Step)
+      gg = gg  + facet_grid(.~Step)
     }
     else {
-      p = p +facet_grid(Step ~ .)
+      gg = gg +facet_grid(Step ~ .)
     }
   }
   
   if (theme == 'classic'){
-    p = p + theme_classic()
+    gg = gg + theme_classic()
   }
-  p = p + theme(plot.title = element_text(hjust = .5, face = 'bold'))
-  return(p)
+  gg = gg + theme(plot.title = element_text(hjust = .5, face = 'bold'))
+  return(gg)
 }
