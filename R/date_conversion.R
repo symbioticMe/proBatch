@@ -83,11 +83,11 @@ date_to_sample_order <- function(sample_annotation,
                                      time_column = time_column,
                                      new_time_column = new_time_column,
                                      dateTimeFormat = dateTimeFormat)
-  sample_annotation = sample_annotation %>% arrange(UQ(sym(new_time_column)))
+  sample_annotation = sample_annotation %>% arrange(!!(sym(new_time_column)))
   if (!is.null(instrument_col)){
     sample_annotation = sample_annotation %>%
       group_by_at(vars(one_of(instrument_col))) %>%
-      mutate(UQ(sym(new_order_col)) := rank(!!sym(new_time_column))) %>%
+      mutate(!!(sym(new_order_col)) := rank(!!sym(new_time_column))) %>%
       ungroup()
   } else {
     sample_annotation[[new_order_col]] = rank(sample_annotation[[new_time_column]])
