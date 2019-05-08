@@ -60,28 +60,31 @@
 #'
 #' @import dplyr
 #' @import ggfortify
-#' @import ggplot2
 #' @import reshape2
 #' @import tibble
 #' @import lazyeval
-#' @import viridis
-#' @import RColorBrewer
 #' @importFrom corrplot corrplot.mixed
+#' @importFrom ggplot2 ggplot aes_string
+#' @importFrom ggplot2 geom_point geom_line geom_boxplot geom_violin geom_hline geom_vline geom_bar
+#' @importFrom ggplot2 ggtitle ylim xlab ylab facet_grid theme theme_classic element_text guide_legend guides
+#' @importFrom ggplot2 scale_color_brewer scale_fill_brewer scale_color_manual scale_fill_manual
 #' @importFrom grDevices colorRampPalette
-#' @importFrom grDevices dev.off
-#' @importFrom grDevices pdf
+#' @importFrom grDevices png pdf dev.off
 #' @importFrom magrittr %>%
 #' @importFrom pheatmap pheatmap
 #' @importFrom purrr pmap
+#' @importFrom RColorBrewer brewer.pal
 #' @importFrom rlang :=
 #' @importFrom rlang !!
 #' @importFrom rlang !!!
 #' @importFrom rlang sym syms
 #' @importFrom tidyr complete nest unnest
-#' @importFrom utils combn
+#' @importFrom utils combn 
+#' @importFrom scales brewer_pal
 #' @importFrom stats as.formula complete.cases dist hclust loess median 
 #' @importFrom stats model.matrix prcomp predict reformulate setNames
-#' @importFrom WGCNA plotDendroAndColors
+#' @importFrom viridis viridis_pal
+#' @importFrom WGCNA plotDendroAndColors standardColors
 #' 
 #' @docType package
 #' @name proBatch
