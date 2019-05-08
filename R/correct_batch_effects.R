@@ -29,13 +29,13 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
   }
   df_normalized = df_long %>%
     group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
-    mutate(median_batch = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+    mutate(median_batch = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
     ungroup() %>%
     group_by_at(vars(one_of(feature_id_col))) %>%
-    mutate(median_global = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+    mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
     ungroup() %>%
     mutate(diff = median_global - median_batch) %>%
-    mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
+    mutate(Intensity_normalized = !!(sym(measure_col))+diff)
   
   return(df_normalized)
 }
@@ -86,8 +86,8 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
   }
   
   sample_annotation = sample_annotation %>%
-    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
-    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
+    filter(!!(as.name(sample_id_col)) %in% sampleNames) %>%
+    arrange(match(!!(as.name(sample_id_col)), sampleNames)) %>%
     droplevels()
   
   sample_annotation = sample_annotation %>%
@@ -176,8 +176,8 @@ correct_with_ComBat <- function(df_long, sample_annotation = NULL,
                                        Non-matching elements are removed for analysis")}
   
   sample_annotation = sample_annotation %>%
-    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
-    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
+    filter(!!(as.name(sample_id_col)) %in% sampleNames) %>%
+    arrange(match(!!(as.name(sample_id_col)), sampleNames)) %>%
     droplevels()
   
   batches = sample_annotation[[batch_col]]
