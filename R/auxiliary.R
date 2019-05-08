@@ -1,4 +1,4 @@
-#' Long to wide conversion
+#' Long to wide data format conversion
 #'
 #' Convert from a long data frame representation to a wide matrix representation
 #'
