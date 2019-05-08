@@ -25,7 +25,7 @@
 #'   transformed version of the original data
 #' @param sample_annotation data frame with: \enumerate{ \item \code{sample_id_col}
 #'   (this can be repeated as row names) \item biological covariates \item
-#'   technical covariates (batches etc) }
+#'   technical covariates (batches etc) }. See \link{"example_sample_annotation"} for example with the detailed description
 #' @param sample_id_col name of the column in \code{sample_annotation} table, where the
 #'   filenames (colnames of the data matrix are found).
 #' @param measure_col if \code{df_long} is among the parameters, it is the
@@ -49,6 +49,9 @@
 #' For single-instrument case should be set to `NULL`
 #' @param color_by_batch (logical) whether to color points and connecting lines 
 #' by batch factor as defined by \code{batch_col}.
+#' @param peptide_annotation long format data frame with peptide ID and their corresponding 
+#' protein and/or gene annotations
+#' @param protein_col column where protein names are specified
 #' @param qual_col column to color point by certain value denoted 
 #' by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
 #' which means argument value has to be set to \code{m_score}.
