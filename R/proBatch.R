@@ -55,7 +55,7 @@
 #' See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})
 #' @param protein_col column where protein names are specified
 #' @param qual_col column to color point by certain value denoted 
-#' by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
+#' by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
 #' which means argument value has to be set to \code{m_score}.
 #' @param qual_value value in \code{qual_col} to color. For OpenSWATH data,
 #' this argument value has to be set to \code{2} (this is an \code{m_score} value for requants).
