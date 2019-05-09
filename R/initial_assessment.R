@@ -10,7 +10,7 @@
 #' @param ylimits range of y-axis to compare two plots side by side, if required.
 #' @param outliers keep (default) or remove the boxplot outliers
 #' 
-#' @return ggplot2 class object. Thus, all aesthetics can be overriden
+#' @return ggplot2 class object. Thus, all aesthetics can be overridden
 #'
 #' @seealso \code{\link[ggplot2]{ggplot}}, \link{date_to_sample_order}
 #' @name plot_sample_mean_or_boxplot
