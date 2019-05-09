@@ -12,8 +12,8 @@ plot_sample_corr_heatmap(data_matrix, samples_to_plot = NULL,
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. Usually the log
-transformed version of the original data}
+feature IDs in rownames and file/sample names as colnames. 
+See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
 
 \item{samples_to_plot}{string vector of samples in 
 \code{data_matrix} to be used in the plot}
