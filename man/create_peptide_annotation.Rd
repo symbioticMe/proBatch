@@ -9,7 +9,7 @@ for selection of illustrative proteins}
 \usage{
 create_peptide_annotation(df_long,
   feature_id_col = "peptide_group_label",
-  annotation_col = c("ProteinName"))
+  protein_col = c("ProteinName"))
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -22,7 +22,7 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{annotation_col}{one or more columns contatining protein ID}
+\item{protein_col}{column where protein names are specified}
 }
 \value{
 data frame containing petpide annotations
@@ -36,7 +36,7 @@ for selection of illustrative proteins
 \examples{
 generated_peptide_annotation <- create_peptide_annotation(
 example_proteome, feature_id_col = "peptide_group_label",
-annotation_col = c("ProteinName" ))
+protein_col = c("ProteinName" ))
 
 }
 \seealso{
