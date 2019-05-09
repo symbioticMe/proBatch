@@ -1,7 +1,7 @@
 #' Convert data/time to POSIXct
 #'
 #' convert date/time column of sample_annotation to POSIX format required to
-#' keep number-like behaviour
+#' keep number-like behavior
 #'
 #' @inheritParams proBatch
 #' @param time_column name of the column(s) where run date & time are specified.
