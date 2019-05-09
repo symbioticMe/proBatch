@@ -7,9 +7,9 @@
 merge_rare_levels(column)
 }
 \value{
-column with rare occurences replaced by other
+column with rare occurrences replaced by other
 }
 \description{
-Replaces levels with a maximal occurence of 1 with other
+Replaces levels with a maximal occurrence of 1 with \code{other}
 }
 \keyword{internal}

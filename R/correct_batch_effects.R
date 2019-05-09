@@ -49,7 +49,7 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @param pct_threshold the percentage threshold (fraction of samples in a batch)  to filter data for curve fitting 
 #' @param ... other parameters, usually those of the \code{fit_func}
 #'
-#' @return list of two items: 1) `data_matrix`, adjusted with continious fit; 
+#' @return list of two items: 1) `data_matrix`, adjusted with continuous fit; 
 #' 2) fit_df, used to examine the fitting curves
 #' @examples 
 #' adjusted_data <- adjust_batch_trend(example_proteome, 
