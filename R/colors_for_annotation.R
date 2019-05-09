@@ -89,8 +89,8 @@ map_numbers_to_colors <-
 #' @param palette_type 'brewer' or 'viridis'
 #' @param i if \code{palette_type} is 'brewer' the palette argument to
 #'   \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument
-#'   to virids_pal ()
-#' @param granularity the breaks to use when generating colors for num_col
+#'   to \code{viridis_pal}
+#' @param granularity the breaks to use when generating colors for \code{num_col}
 #'
 #' @return list, containing the following items:
 #' \enumerate{
@@ -167,11 +167,11 @@ check_rare_levels <- function(column) {
 
 #' Replaces rare levels with other
 #'
-#' Replaces levels with a maximal occurence of 1 with other
+#' Replaces levels with a maximal occurrence of 1 with \code{other}
 #'
 #' @keywords internal
 #'
-#' @return column with rare occurences replaced by other
+#' @return column with rare occurrences replaced by other
 merge_rare_levels <- function(column) {
   is_factor_col = is.factor(column)
   tb_col = table(column)
@@ -192,17 +192,17 @@ merge_rare_levels <- function(column) {
 #' @inheritParams proBatch
 #' @param columns_for_plotting only consider these 
 #' columns from sample_annotation
-#' @param factor_columns columns of sample_annotation to be 
+#' @param factor_columns columns of \code{sample_annotation} to be 
 #' treated as factors. Note that 
-#' factor and character columns are treated as factors by default.
+#' factor and character columns are treated as factors by default in R.
 #' @param not_factor_columns don't treat these columns as factors. 
-#' This can be used to override the default behaviour of 
+#' This can be used to override the default behavior of 
 #' considering factors and 
 #' character columns as factors.
 #' @param numeric_columns columns of sample_annotation to be 
 #' treated as continuous numeric values. 
-#' @param rare_categories_to_other if True rare categories 
-#' will be merged as 'other'
+#' @param rare_categories_to_other if \code{True} rare categories 
+#' will be merged into the value \code{"other"}
 #' @param granularity number of colors to map to the number 
 #' vector (equally spaced between minimum and maximum)
 #' @param numeric_palette_type palette to be used for 
