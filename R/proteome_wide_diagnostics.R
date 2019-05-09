@@ -70,7 +70,7 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' }; each column of sample annotation will get it's own row. 
 #' If \code{cluster_cols = T} this will indicate,
 #' whether sample proximity is driven by one of 
-#' biolical or technical factors
+#' biological or technical factors
 #' @param sample_id_col name of the column in 
 #' sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
@@ -218,7 +218,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #'   needs to explain (the rest will be lumped together)
 #' @param fill_the_missing numeric value that the missing values are
 #'   substituted with
-#' @param theme ggplot theme, by default \code{classic}. Can be easily overriden (see
+#' @param theme ggplot theme, by default \code{classic}. Can be easily overridden (see
 #'   examples)
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
