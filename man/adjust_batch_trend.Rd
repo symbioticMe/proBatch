@@ -51,7 +51,7 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 \item{...}{other parameters, usually those of the \code{fit_func}}
 }
 \value{
-list of two items: 1) `data_matrix`, adjusted with continious fit; 
+list of two items: 1) `data_matrix`, adjusted with continuous fit; 
 2) fit_df, used to examine the fitting curves
 }
 \description{
