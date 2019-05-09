@@ -14,7 +14,8 @@ get_sample_corr_df(cor_proteome, sample_annotation,
 
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }}
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
@@ -47,6 +48,6 @@ created the same as \code{sample_id_1}
 }
 }
 \description{
-Transform square correlation matrix into long data.frame of correlations
-of the replicated samples, samples from same batch and unrelated samples
+useful to infer summary statistics (medians etc.) of correlation 
+within/between replicates and batches.
 }
