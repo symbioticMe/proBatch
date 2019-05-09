@@ -18,6 +18,6 @@
 sample_color_scheme
 }
 \description{
-This is an color scheme generated from example sample annotation
+This is an color scheme generated from example sample annotation by \code{sample_annotation_to_colors}
 }
 \keyword{datasets}
