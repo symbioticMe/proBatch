@@ -76,7 +76,7 @@ internally for consistency.}
 \item{outliers}{keep (default) or remove the boxplot outliers}
 }
 \value{
-ggplot2 class object. Thus, all aesthetics can be overriden
+ggplot2 class object. Thus, all aesthetics can be overridden
 }
 \description{
 Plot per-sample mean or boxplots (showing median and quantiles). In ordered samples,
