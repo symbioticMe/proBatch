@@ -48,7 +48,7 @@ needs to explain (the rest will be lumped together)}
 following categories: c('residual', 'biological', 'biol:techn',
 'technical')}
 
-\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden (see
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overridden (see
 examples)}
 
 \item{plot_title}{Title of the plot (usually, processing step + representation
