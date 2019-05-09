@@ -23,20 +23,20 @@ columns from sample_annotation}
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
-\item{factor_columns}{columns of sample_annotation to be 
+\item{factor_columns}{columns of \code{sample_annotation} to be 
 treated as factors. Note that 
-factor and character columns are treated as factors by default.}
+factor and character columns are treated as factors by default in R.}
 
 \item{not_factor_columns}{don't treat these columns as factors. 
-This can be used to override the default behaviour of 
+This can be used to override the default behavior of 
 considering factors and 
 character columns as factors.}
 
 \item{numeric_columns}{columns of sample_annotation to be 
 treated as continuous numeric values.}
 
-\item{rare_categories_to_other}{if True rare categories 
-will be merged as 'other'}
+\item{rare_categories_to_other}{if \code{True} rare categories 
+will be merged into the value \code{"other"}}
 
 \item{numeric_palette_type}{palette to be used for 
 numeric values coloring}
