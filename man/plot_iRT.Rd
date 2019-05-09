@@ -14,13 +14,8 @@ plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
   plot_title = "iRT peptide profile", theme = "classic", ...)
 }
 \arguments{
-\item{irt_pattern}{substring used to identify irts proteins in the column
+\item{irt_pattern}{substring used to identify iRT proteins in the column
 'ProteinName'}
-
-\item{peptide_annotation}{long format data with peptide ID and their corresponding 
-protein annotations}
-
-\item{protein_col}{column where protein names are specified}
 
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
@@ -48,7 +43,7 @@ names.}
 values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
+by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
@@ -89,10 +84,10 @@ ggplot2 type plot of \code{measure_col} vs \code{order_col},
   and (optionally) by \code{batch_col}
 }
 \description{
-Creates a iRT facetted ggplot2 plot of the value in
+Creates a iRT faceted ggplot2 plot of the value in
 \code{measure_col} vs \code{order_col} using
 \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
-be facetted by batch.
+be faceted by batch.
 }
 \examples{
 irt_plot <- plot_iRT(example_proteome, 

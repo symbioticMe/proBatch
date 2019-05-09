@@ -38,10 +38,10 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 \item{optimize_span}{logical, whether to specify span or optimize it 
 (specific entirely for LOESS regression)}
 
-\item{no_fit_imputed}{(logical) whether to fit requanted values}
+\item{no_fit_imputed}{(logical) whether to fit the imputed (requant) values}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
+by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
@@ -53,7 +53,7 @@ data for curve fitting}
 \item{pct_threshold}{the percentage threshold to filter 
 data for curve fitting}
 
-\item{...}{additional paramters to be passed to the fitting function}
+\item{...}{additional parameters to be passed to the fitting function}
 }
 \value{
 vector of fitted response values

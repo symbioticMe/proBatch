@@ -5,7 +5,7 @@ Version: 0.99.26
 Author: Jelena Cuklina <chuklina.jelena@gmail.com>, Chloe H. Lee <chloe.h.lee94@gmail.com>, Patrick Pedrioli <pedrioli@gmail.com>
 Maintainer: Chloe H. Lee <chloe.h.lee94@gmail.com> & Jelena Cuklina <chuklina.jelena@gmail.com>
 Description: The proBatch package facilitates batch effects analysis and correction in 
-  high-thoughput experiments. It was developed primarily for mass-spectrometry proteomics (DIA/SWATH), 
+  high-throughput experiments. It was developed primarily for mass-spectrometry proteomics (DIA/SWATH), 
   but could also be applicable to most omic data with minor adaptations. The package contains functions 
   for diagnostics (proteome/genome-wide and feature-level), correction (normalization and batch effects 
   correction) and quality control. Non-linear fitting based approaches were also included to deal with 
@@ -17,7 +17,6 @@ BugReports: https://github.com/symbioticMe/proBatch/issues
 Depends: R (>= 3.4)
 Encoding: UTF-8
 LazyData: true
-
 Imports:
     Biobase,
     corrplot,
@@ -45,10 +44,13 @@ Imports:
     viridis,
     wesanderson,
     WGCNA
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown,
     devtools,
     roxygen2,
-    testthat
+    testthat,
+    spelling
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
+Language: en-US
