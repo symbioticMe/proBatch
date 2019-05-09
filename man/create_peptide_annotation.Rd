@@ -15,7 +15,7 @@ create_peptide_annotation(df_long,
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file)}
+file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
