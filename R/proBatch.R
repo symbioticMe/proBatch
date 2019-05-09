@@ -19,13 +19,14 @@
 #' @param df_long data frame where each row is a single feature in a single
 #'   sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 #'   \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-#'   file)
+#'   file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})
 #' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. Usually the log
-#'   transformed version of the original data
+#'   feature IDs in rownames and file/sample names as colnames. 
+#'   See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})
 #' @param sample_annotation data frame with: \enumerate{ \item \code{sample_id_col}
 #'   (this can be repeated as row names) \item biological covariates \item
-#'   technical covariates (batches etc) }. See \link{"example_sample_annotation"} for example with the detailed description
+#'   technical covariates (batches etc) }. 
+#'   See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})
 #' @param sample_id_col name of the column in \code{sample_annotation} table, where the
 #'   filenames (colnames of the data matrix are found).
 #' @param measure_col if \code{df_long} is among the parameters, it is the
@@ -50,7 +51,8 @@
 #' @param color_by_batch (logical) whether to color points and connecting lines 
 #' by batch factor as defined by \code{batch_col}.
 #' @param peptide_annotation long format data frame with peptide ID and their corresponding 
-#' protein and/or gene annotations
+#' protein and/or gene annotations. 
+#' See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})
 #' @param protein_col column where protein names are specified
 #' @param qual_col column to color point by certain value denoted 
 #' by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
