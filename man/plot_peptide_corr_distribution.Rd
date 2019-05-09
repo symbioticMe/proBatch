@@ -12,15 +12,14 @@ plot_peptide_corr_distribution(data_matrix, peptide_annotation,
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. Usually the log
-transformed version of the original data}
+feature IDs in rownames and file/sample names as colnames. 
+See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
 
-\item{peptide_annotation}{long format data with peptide ID
-and their corresponding 
-protein annotations}
+\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
+protein and/or gene annotations. 
+See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
 
-\item{protein_col}{the column name in \code{peptide_annotation} 
-with protein names}
+\item{protein_col}{column where protein names are specified}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
@@ -31,8 +30,6 @@ names.}
 level (fragments, transitions, proteins))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
-
-\item{...}{parameters for the \code{ggplot} visualisation}
 }
 \value{
 \code{ggplot} type object with violin plot
