@@ -43,7 +43,7 @@ names.}
 values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
+by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
@@ -83,10 +83,10 @@ ggplot2 type plot of \code{measure_col} vs \code{order_col},
   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
 }
 \description{
-Creates a spike-in facetted ggplot2 plot of the value in
+Creates a spike-in faceted ggplot2 plot of the value in
 \code{measure_col} vs \code{order_col} using
 \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
-be facetted by batch.
+be faceted by batch.
 }
 \examples{
 peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
