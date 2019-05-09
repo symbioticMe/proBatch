@@ -235,9 +235,6 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
 #' @inheritParams feature_level_diagnostics
 #' @param spike_ins substring used to identify spike-in proteins in the column
 #'   'ProteinName'
-#' @param peptide_annotation long format data with peptide ID and their corresponding 
-#' protein annotations
-#' @param protein_col column where protein names are specified
 #' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
@@ -314,11 +311,8 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
 #' be facetted by batch.
 #'
 #' @inheritParams feature_level_diagnostics
-#' @param irt_pattern substring used to identify irts proteins in the column
+#' @param irt_pattern substring used to identify iRT proteins in the column
 #'   'ProteinName'
-#' @param peptide_annotation long format data with peptide ID and their corresponding 
-#' protein annotations
-#' @param protein_col column where protein names are specified
 #' @param ... additional arguments to \code{\link{plot_single_feature}} function
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
