@@ -14,7 +14,8 @@ sample_annotation_to_colors(sample_annotation,
 \arguments{
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }}
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
 \item{columns_for_plotting}{only consider these 
 columns from sample_annotation}
