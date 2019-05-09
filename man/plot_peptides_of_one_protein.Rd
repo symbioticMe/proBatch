@@ -17,19 +17,15 @@ plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
 \arguments{
 \item{protein_name}{name of the protein as defined in \code{ProteinName}}
 
-\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
-protein and/or gene annotations (analogous to )}
-
-\item{protein_col}{column where protein names are specified}
-
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file)}
+file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
 
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }}
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}

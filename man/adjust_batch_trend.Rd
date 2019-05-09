@@ -14,11 +14,12 @@ adjust_batch_trend(df_long, sample_annotation = NULL,
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file)}
+file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
 
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }}
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
