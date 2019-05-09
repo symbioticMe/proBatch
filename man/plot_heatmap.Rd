@@ -25,7 +25,7 @@ See "example_proteome_matrix" for more details (to call the description, use \co
 }; each column of sample annotation will get it's own row. 
 If \code{cluster_cols = T} this will indicate,
 whether sample proximity is driven by one of 
-biolical or technical factors}
+biological or technical factors}
 
 \item{sample_id_col}{name of the column in 
 sample_annotation file, where the
