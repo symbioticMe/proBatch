@@ -29,7 +29,7 @@ sample annotation file with a new column \code{new_time_column} with
 }
 \description{
 convert date/time column of sample_annotation to POSIX format required to
-keep number-like behaviour
+keep number-like behavior
 }
 \examples{
 date_to_posix <- dates_to_posix(example_sample_annotation, 
