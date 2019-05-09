@@ -22,12 +22,13 @@ plot_boxplot(df_long, sample_annotation = NULL,
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. Usually the log
-transformed version of the original data}
+feature IDs in rownames and file/sample names as colnames. 
+See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
 
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }}
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
@@ -66,7 +67,7 @@ level (fragments, transitions, proteins))}
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file)}
+file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
