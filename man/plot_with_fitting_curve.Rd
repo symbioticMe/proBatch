@@ -48,7 +48,7 @@ names.}
 values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in openSWATH output data, 
+by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
