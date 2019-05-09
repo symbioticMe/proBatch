@@ -17,6 +17,7 @@ BugReports: https://github.com/symbioticMe/proBatch/issues
 Depends: R (>= 3.4)
 Encoding: UTF-8
 LazyData: true
+
 Imports:
     Biobase,
     corrplot,
@@ -33,16 +34,15 @@ Imports:
     purrr,
     pvca,
     RColorBrewer,
-    readr, 
     reshape2, 
     rlang,
     scales,
-    viridis,
     stats,
     sva,
     tidyr,
     tibble,
     utils,
+    viridis,
     wesanderson,
     WGCNA
 Suggests: knitr,
