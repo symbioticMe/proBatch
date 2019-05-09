@@ -118,6 +118,7 @@ numerous dependencies. If some of these dependencies are not installed, you will
 need to do that before running `proBatch`.
 ```{r dependencies, eval = FALSE}
 bioc_deps <- c("GO.db", "impute", "preprocessCore", "pvca","sva" )
+#TODO: check if "BioBase" needs to be added to bioc_deps
 cran_deps <- c("corrplot", "data.table", "ggplot2", "ggfortify","lazyeval", "pheatmap", "reshape2", "rlang", 
                "tibble", "dplyr", "tidyr" "wesanderson","WGCNA") 
 
@@ -167,7 +168,7 @@ features (for proteomics, peptides/fragments) and columns represent samples.
 In the long format, referred in this vignette as `df_long`, each row is a measurement 
 of a specific feature (peptide, fragment) in the specific sample. At least
 three columns are required: feature ID column, measurement (intensity) column and sample ID column.
-For batch correction, we also assume, that the imputed values, e.g. requants in SWATH,
+For batch correction, we also assume, that the imputed values, e.g. requant values from OpenSWATH output,
 are flagged in quality column, such as m_score, so that they can be filtered out (see below).
 
 In this vignette, the essential columns have the following names:
@@ -245,7 +246,7 @@ an unpublished manuscript).
 This dataset has a few features, that make it a good illustrative example:
 1. This is a large dataset of 371 samples, that was affected by multiple technical factors, described above in the `sample_annotation` subsection. Specifically, 7 MS batches drive the similarity of the samples.
 2. The technical factors bias the data in at least two ways: discrete shifts (affecting
-different peptides in a batch-specific way), and continous shifts from MS drift
+different peptides in a batch-specific way), and continuous shifts from MS drift
 associated with sample running order. We will illustrate, how such biases can be corrected.
 3. Replicate structure: samples from two animals were injected in the MS instrument every 10-15 samples. Additionally,
 several samples were repeated back-to-back in the end and in the beginning of two consecutive batches. This replication scheme allows to evaluate the coefficient of variation and is highly beneficial for assessment of sample correlation.
@@ -335,7 +336,7 @@ log_transformed_matrix <- log_transform(example_matrix)
 #### Defining the color scheme
 For color annotation, you first assign colors to biological and
 technical covariates with `sample_annotation_to_colors()`. Using this function
-columns are assigned to factoric, non-factoric or numeric types to specify
+columns are assigned to factor, non-factor or numeric types to specify
 colors into qualitative or sequential color scales.
 
 ```{r, fig.show='hold'}
@@ -576,7 +577,7 @@ for SWATH data, can alter the correction of the batches.].
 ### Peptide-level diagnostics and spike-ins
 Feature-level diagnostics are very informative for batch effect
 correction. To assess the bias in the data, one can choose a feature
-(peptide, protein, gene), the quantitative behaviour of which is
+(peptide, protein, gene), the quantitative behavior of which is
 known. In our package, `plot_peptides_of_one_protein()` allows
 plotting peptides of interest e.g. from biologically well understood
 protein. If spike-in proteins or peptides have been added to the
@@ -885,7 +886,7 @@ citation('proBatch')
 
 [3] Y. Liu, A. Buil, B. C. Collins et al. «Quantitative variability of 342 plasma proteins in a human twin population». Molecular Systems Biology 11:2 (2015), pp. 786–786.
 
-[4] H. L. Rost, G. Rosenberger, P. Navarro et al. «OpenSWATH enables automated, targeted analysis of data-independent acquisition MS data.» Nature biotechnology 32:3 (2014), pp. 219–23.
+[4] H. L. Röst, G. Rosenberger, P. Navarro et al. «OpenSWATH enables automated, targeted analysis of data-independent acquisition MS data.» Nature biotechnology 32:3 (2014), pp. 219–23.
 
 [5] P. G. Pedrioli, «Trans-Proteomic Pipeline: A Pipeline for Proteomic Analysis.»  Methods in Molecular Biology Proteome Bioinformatics, May 2009, pp. 213–238.
 
