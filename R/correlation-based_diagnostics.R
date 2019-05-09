@@ -429,13 +429,8 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
 
 #' Transform square correlation matrix into long data frame of correlations
 #'
+#' @inheritParams proBatch
 #' @param peptide_cor peptide correlation matrix (square)
-#' @param peptide_annotation df with petpides and 
-#' their corresponding proteins
-#' @param protein_col the column name in \code{peptide_annotation} 
-#' with protein names
-#' @param feature_id_col column in \code{peptide_annotation} that 
-#' captures peptide names are found 
 #'
 #' @return dataframe with correlation coefficients for each peptide pair and label
 #' \code{same_protein} or \code{different_proteins} in column \code{same_protein}. 
@@ -470,15 +465,7 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 
 #' Transform square correlation matrix into long data frame of correlations
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. Usually the log
-#'   transformed version of the original data
-#' @param peptide_annotation df with petpides and 
-#' their corresponding proteins
-#' @param protein_col the column name in \code{peptide_annotation} 
-#' with protein names
-#' @param feature_id_col column in \code{peptide_annotation} that 
-#' captures peptide names are found 
+#' @inheritParams proBatch
 #'
 #' @return dataframe with peptide correlation coefficients 
 #' that are suggested to use for plotting in 
