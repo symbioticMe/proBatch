@@ -1,8 +1,8 @@
 #' Plot peptide measurements
 #'
-#' Creates a peptide facetted ggplot2 plot of the value in \code{measure_col}
+#' Creates a peptide faceted ggplot2 plot of the value in \code{measure_col}
 #' vs \code{order_col} (if `NULL`, x-axis is simply a sample name order). 
-#' Additionally, the resulting plot can also be facetted by a batch factor, 
+#' Additionally, the resulting plot can also be faceted by a batch factor, 
 #' e.g. an MS instrument.
 #'
 #' @inheritParams proBatch
@@ -160,10 +160,10 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
 
 #' Plot peptides of one protein
 #'
-#' Creates a spike-in facetted ggplot2 plot of the value in
+#' Creates a spike-in faceted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
 #' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
-#' be facetted by batch.
+#' be faceted by batch.
 #'
 #' @inheritParams feature_level_diagnostics
 #' @param protein_name name of the protein as defined in \code{ProteinName}
@@ -227,10 +227,10 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
 
 #' Plot spike-in measurements
 #'
-#' Creates a spike-in facetted ggplot2 plot of the value in
+#' Creates a spike-in faceted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
 #' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
-#' be facetted by batch.
+#' be faceted by batch.
 #'
 #' @inheritParams feature_level_diagnostics
 #' @param spike_ins substring used to identify spike-in proteins in the column
@@ -305,10 +305,10 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
 
 #' Plot iRT measurements
 #'
-#' Creates a iRT facetted ggplot2 plot of the value in
+#' Creates a iRT faceted ggplot2 plot of the value in
 #' \code{measure_col} vs \code{order_col} using
 #' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
-#' be facetted by batch.
+#' be faceted by batch.
 #'
 #' @inheritParams feature_level_diagnostics
 #' @param irt_pattern substring used to identify iRT proteins in the column
