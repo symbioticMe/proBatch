@@ -25,8 +25,8 @@ pdf and png format is supported}
 
 \item{unit}{units: 'cm', 'in' or 'mm'}
 
-\item{plot_title}{Title of the plot (usually, processing step + 
-representation level (fragments, transitions, proteins))}
+\item{plot_title}{Title of the correlation plot (e.g., processing step + 
+representation level (fragments, transitions, proteins) or Protein Name)}
 
 \item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
@@ -36,16 +36,20 @@ representation level (fragments, transitions, proteins))}
 \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 }
 \description{
+recommended for heatmap-type visualisation of  correlation matrix with
+ <100 items. With >50 samples and ~10 replicate pairs distribution plots may be more informative.
+}
+\details{
 Plot correlation of selected  samples or peptides
 }
 \examples{
 peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2")
-
 data_matrix_sub = example_proteome_matrix[peptides,]
 corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
 corr_matrix_plot <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
+
 }
 \seealso{
-\code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
+\code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}},
+\code{\link{plot_sample_corr_distribution}}, \code{\link{plot_peptide_corr_distribution}}
 }
-\keyword{internal}
