@@ -41,7 +41,7 @@ test_that("sample_annotation_to_colors", {
   expect_warning(color_scheme <- sample_annotation_to_colors(example_sample_annotation, 
                                                factor_columns = c('MS_batch','EarTag', "Strain", 
                                                                   "Diet", "digestion_batch", "Sex"),
-                                               not_factor_columns = 'DateTime',
+                                               date_columns = 'DateTime',
                                                numeric_columns = c('order')))
   
   expect_equal(names(color_scheme), c("list_of_colors", "color_df", "sample_annotation"))
