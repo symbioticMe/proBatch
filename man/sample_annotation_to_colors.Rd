@@ -5,9 +5,9 @@
 \title{Generate colors for sample annotation}
 \usage{
 sample_annotation_to_colors(sample_annotation,
-  columns_for_plotting = NULL, sample_id_col = "FullRunName",
-  factor_columns = c("MS_batch", "EarTag", "Strain", "Diet", "Sex"),
-  not_factor_columns = "DateTime", numeric_columns = "order",
+  sample_id_col = "FullRunName", factor_columns = c("MS_batch",
+  "EarTag", "digestion_batch", "Strain", "Diet", "Sex"),
+  date_columns = "DateTime", numeric_columns = "order",
   rare_categories_to_other = TRUE, numeric_palette_type = "brewer",
   granularity = 10)
 }
@@ -17,22 +17,18 @@ sample_annotation_to_colors(sample_annotation,
 technical covariates (batches etc) }. 
 See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
-\item{columns_for_plotting}{only consider these 
-columns from sample_annotation}
-
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
 \item{factor_columns}{columns of \code{sample_annotation} to be 
-treated as factors. Note that 
-factor and character columns are treated as factors by default in R.}
+treated as factors. Sometimes categorical variables are depicted as integers 
+(e.g. in column "Batch", values are 1, 2 and 3), specification here allows to
+map them correctly to qualitative palettes.}
 
-\item{not_factor_columns}{don't treat these columns as factors. 
-This can be used to override the default behavior of 
-considering factors and 
-character columns as factors.}
+\item{date_columns}{columns of `POSIXct` class. These columns are mapped to 
+continuous palettes, as numeric columns, however, they require special treatment.}
 
-\item{numeric_columns}{columns of sample_annotation to be 
+\item{numeric_columns}{columns of \code{sample_annotation} to be 
 treated as continuous numeric values.}
 
 \item{rare_categories_to_other}{if \code{True} rare categories 
