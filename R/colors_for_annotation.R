@@ -190,16 +190,13 @@ merge_rare_levels <- function(column) {
 #' the list is named as columns included to use in plotting functions
 #'
 #' @inheritParams proBatch
-#' @param columns_for_plotting only consider these 
-#' columns from sample_annotation
 #' @param factor_columns columns of \code{sample_annotation} to be 
-#' treated as factors. Note that 
-#' factor and character columns are treated as factors by default in R.
-#' @param not_factor_columns don't treat these columns as factors. 
-#' This can be used to override the default behavior of 
-#' considering factors and 
-#' character columns as factors.
-#' @param numeric_columns columns of sample_annotation to be 
+#' treated as factors. Sometimes categorical variables are depicted as integers 
+#' (e.g. in column "Batch", values are 1, 2 and 3), specification here allows to
+#' map them correctly to qualitative palettes.
+#' @param date_columns columns of `POSIXct` class. These columns are mapped to 
+#' continuous palettes, as numeric columns, however, they require special treatment.
+#' @param numeric_columns columns of \code{sample_annotation} to be 
 #' treated as continuous numeric values. 
 #' @param rare_categories_to_other if \code{True} rare categories 
 #' will be merged into the value \code{"other"}
@@ -220,30 +217,36 @@ merge_rare_levels <- function(column) {
 #' 
 #' @name sample_annotation_to_colors
 sample_annotation_to_colors <- function(sample_annotation,
-                                        columns_for_plotting = NULL,
                                         sample_id_col = 'FullRunName',
-                                        factor_columns = c('MS_batch','EarTag', 
+                                        factor_columns = c('MS_batch','EarTag', 'digestion_batch',
                                                            "Strain", "Diet", "Sex"),
-                                        not_factor_columns = 'DateTime',
+                                        date_columns = 'DateTime',
                                         numeric_columns = 'order',
                                         rare_categories_to_other = TRUE,
                                         numeric_palette_type = 'brewer',
                                         granularity = 10) {
   
   sample_annotation = as.data.frame(sample_annotation)
+  message('converting columns to corresponding classes (factor, POSIXct date, numeric)')
   sample_annotation <- sample_annotation %>%
     mutate_at(vars(factor_columns), as.factor) %>%
-    mutate_at(vars(numeric_columns), as.numeric)
+    mutate_at(vars(numeric_columns), as.numeric) %>%
+    mutate_at(vars(date_columns), as.POSIXct, date_columns)
   
-  rownames_ann = as.character(sample_annotation[[sample_id_col]])
-  if (!is.null(columns_for_plotting)) {
-    sample_annotation = sample_annotation %>%
-      select(one_of(setdiff(
-        columns_for_plotting, sample_id_col
-      )))
+  columns_for_color_mapping = union(factor_columns, union(numeric_columns, date_columns))
+  undefined_cols <- setdiff(names(sample_annotation), c(columns_for_color_mapping, sample_id_col))
+  if (length(undefined_cols) > 0){
+    warning(paste(c('The following columns will not be mapped to colors:',
+                    undefined_cols, 'if these have to be mapped, please assign 
+                    them to factor, date or numeric'), collapse = ' '))
   }
   
-  factor_or_not <- intersect(factor_columns, not_factor_columns)
+  sample_annotation = sample_annotation %>%
+    select(one_of(c(columns_for_color_mapping, sample_id_col)))
+  
+  rownames_ann = as.character(sample_annotation[[sample_id_col]])
+  
+  factor_or_not <- intersect(factor_columns, date_columns)
   if (length(factor_or_not) > 1) {
     stop(sprintf(
       'Columns %s are defined as both factors and not factors',
@@ -259,8 +262,15 @@ sample_annotation_to_colors <- function(sample_annotation,
   } else {
     factor_columns = factor_like_columns
   }
-  if (!is.null(not_factor_columns) || !is.null(numeric_columns)) {
-    factor_columns = setdiff(factor_columns, c(not_factor_columns, numeric_columns))
+  if (!is.null(date_columns) || !is.null(numeric_columns)) {
+    factor_columns = setdiff(factor_columns, c(date_columns, numeric_columns))
+    column_intersection <- intersect(factor_columns, union(date_columns, numeric_columns))
+    if (length(column_intersection) > 0) {
+      warning(paste(c('The following columns are repeatedly listed among factors 
+                      and numeric-like variables:', column_intersection, 
+                      '; they will be excluded from factors and mapped to continuous palettes'), 
+                    collapse = ' '))
+    }
   }
   
   list_of_col_for_factors = list()
