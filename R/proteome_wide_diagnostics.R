@@ -430,13 +430,13 @@ plot_PCA <- function(data_matrix, sample_annotation,
   }
   pr_comp_res <- prcomp(t(data_matrix))
   gg = autoplot(pr_comp_res, data = sample_annotation,
-                colour = color_by,
                 x = PC_to_plot[1], y = PC_to_plot[2])
+  gg = gg + aes(color = factor(!!sym(color_by)))
   if (theme == 'classic'){
     gg = gg + theme_classic()
   }
   if(!is.null(colors_for_factor)){
-    gg = gg + aes_string(color = color_by) + scale_color_manual(values = colors_for_factor)
+    gg = gg + scale_color_manual(values = colors_for_factor)
   }
   if(!is.null(plot_title)){
     gg = gg + ggtitle(plot_title)
