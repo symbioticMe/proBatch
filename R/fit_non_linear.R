@@ -54,7 +54,7 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
       
     } else {
       if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
-        warning('requant column is in the data, are you sure you want to fit non-linear curve to these values, too?')
+        warning('imputed value (requant) column is in the data, are you sure you want to fit non-linear curve to these values, too?')
       }
       x_to_fit = x_all
     }

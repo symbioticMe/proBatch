@@ -81,7 +81,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
                 aes_string(group = batch_col))
   }
   
-  #Add coloring for "inferred" measurements / requant values, marked in `color_by_col` with `color_by_value` (e.g. `m_score` and `2`)
+  #Add coloring for "inferred" measurements / imputed (requant) values, marked in `color_by_col` with `color_by_value` (e.g. `m_score` and `2`)
   if(!is.null(qual_col)){
     col_data = plot_df %>%
       filter(!!(as.name(qual_col)) == qual_value)
