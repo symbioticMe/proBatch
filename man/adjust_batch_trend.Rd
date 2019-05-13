@@ -58,15 +58,16 @@ list of two items: 1) `data_matrix`, adjusted with continuous fit;
 adjust batch signal trend with the custom (continuous) fit
 }
 \examples{
-adjusted_data <- adjust_batch_trend(example_proteome, 
+adjusted_data <- adjust_batch_trend(example_proteome \%>\% 
+filter(peptide_group_label \%in\% unique(example_proteome$peptide_group_label)[1:3]), 
 example_sample_annotation, span = 0.7, 
 abs_threshold = 5, pct_threshold = 0.20)
 fit_df <- adjusted_data$fit_df
 adjusted_data_matrix <- adjusted_data$data_matrix
 adjusted_df <- matrix_to_long(adjusted_data_matrix)
-plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label)[1:2], 
-df_long <- adjusted_df, fit_df = fit_df, 
-sample_annotation <- example_sample_annotation)
+plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label), 
+df_long = adjusted_df, fit_df = fit_df, 
+sample_annotation = example_sample_annotation)
 
 }
 \seealso{
