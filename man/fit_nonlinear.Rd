@@ -54,6 +54,9 @@ data for curve fitting}
 data for curve fitting}
 
 \item{...}{additional parameters to be passed to the fitting function}
+
+\item{verbose}{logical: if \code{TRUE} messages for every peptide will be printed 
+(useful for debugging, otherwise makes the execution too slow)}
 }
 \value{
 vector of fitted response values
@@ -64,7 +67,7 @@ Fit a non-linear trend (currently optimized for LOESS)
 \examples{
 df_selected = example_proteome \%>\% 
 merge(example_sample_annotation, by = 'FullRunName') \%>\%
-filter(peptide_group_label == example_proteome$peptide_group_label[1] &&
+filter(peptide_group_label == example_proteome$peptide_group_label[1] &
 MS_batch == 'Batch_1')
 fit_values = fit_nonlinear(df_selected)
 
