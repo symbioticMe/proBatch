@@ -202,9 +202,8 @@ In our example data, these columns are:
 
 1. `sample_id_col = 'FullRunName'`
 2. technical covariates:
-    + `SacrificeDate` - date when tissues were extracted
-    + `ProteinPrepDate` - date when samples were prepared
-    + `RunDate` (and `RunTime`, if available) - will be used to determine run order
+    + `digestion_batch` - date when samples were prepared
+    + `RunDate` (and `RunTime`, if available) - will be used to determine run order;
     + `MS_batch` - number of MS batches (in this case, sets of runs between machine cleaning)
 3. biological covariates:
     + `Strain`
@@ -212,15 +211,19 @@ In our example data, these columns are:
     + `Sex`
 4. `biospecimen_id_col = "EarTag"`
 
+For the analysis, we also need `order_col`. This column is inferred from `RunDate` and `RunTime`,
+creating a joined `DateTime` column. Although both `order` (the default name of `order_col`) 
+and `DateTime` columns can be created with the package function `date_to_sample_order` 
+(see Utility functions below), here they are provided already in the examples 
+to allow user to skip this function, if `order` is defined already or not 
+relevant/unknown for the specific dataset.
+
 Thus, technical and biological factors are:
 ```{r tech_bio_cols}
-technical_covariates = c('MS_batch', 'digestion_batch', 'RunDate', 'RunTime')
-biological_covariates = c('Strain', 'Diet', 'Sex', 'Age_Days')
+technical_covariates = c('MS_batch', 'digestion_batch', 'DateTime')
+biological_covariates = c('Strain', 'Diet', 'Sex')
 biospecimen_id_col = "EarTag"
 ```
-
-In the example dataset, you will also find `order` column, which is, however, best
-inferred from the run date/time with the corresponding function (see Utility functions below).
 
 **3) Feature (peptide) annotation**
 
@@ -298,7 +301,7 @@ parameters.
 ```{r pep_annotation, fig.show='hold'}
 generated_peptide_annotation <- create_peptide_annotation(example_proteome, 
                                         feature_id_col = 'peptide_group_label',
-                                        annotation_col = c('ProteinName', 'Gene'))
+                                        protein_col = c('ProteinName', 'Gene'))
 ```
 
 In practice, the generation of peptide annotation from proteomic data
@@ -323,27 +326,30 @@ frame formats. Our package provides the helper functions
 `long_to_matrix()` and `matrix_to_long()` to conveniently convert
 datasets back and forth.
 ```{r long_to_matrix}
-example_matrix <- long_to_matrix(example_proteome)
+example_matrix <- long_to_matrix(example_proteome, 
+                                 feature_id_col = 'peptide_group_label',
+                                 measure_col = 'Intensity', 
+                                 sample_id_col = 'FullRunName')
 ```
 
 #### Transforming the data to log scale
 Additionally, if the data are expected to be log-transformed, one can:
 ```{r}
-log_transformed_matrix <- log_transform(example_matrix)
+log_transformed_matrix <- log_transform(example_matrix, log_base = 2, offset = 1)
 ```
 
 
 #### Defining the color scheme
 For color annotation, you first assign colors to biological and
 technical covariates with `sample_annotation_to_colors()`. Using this function
-columns are assigned to factor, non-factor or numeric types to specify
-colors into qualitative or sequential color scales.
+factor columns are mapped to qualitative colors (maximally distinct), while
+date and numeric columns are mapped to sequential (gradient) colors.
 
 ```{r, fig.show='hold'}
 color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
-       factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
-       not_factor_columns = 'DateTime',
-       numeric_columns = c('order'))
+                                             factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
+                                             date_columns = 'DateTime',
+                                             numeric_columns = c('order'))
 color_list = color_scheme$list_of_colors
 ```
 
@@ -368,7 +374,7 @@ The `plot_sample_mean()` function illustrates global average vs. sample running 
 ```{r plot_mean, fig.show='hold', fig.width=5, fig.height=2}
 batch_col = 'MS_batch'
 plot_sample_mean(log_transformed_matrix, example_sample_annotation, order_col = 'order', 
-                 batch_col = batch_col, color_by_batch = TRUE, ylimits = c(12, 16),
+                 batch_col = batch_col, color_by_batch = TRUE, ylimits = c(12, 16.5),
                  color_scheme = color_list[[batch_col]])
 ```
 
@@ -629,7 +635,7 @@ batch-dependent. However, now the batches are discrete and thus can be
 corrected using discrete methods such as median-centering or ComBat.
 
 ```{r loess_fit, fig.show='hold', fig.width=5, fig.height=2.4}
-loess_fit <- adjust_batch_trend(quantile_normalized_matrix, example_sample_annotation)
+loess_fit <- adjust_batch_trend(quantile_normalized_long, example_sample_annotation)
 loess_fit_matrix <- loess_fit$data_matrix
 ```
 
@@ -642,10 +648,10 @@ evaluate several peptides to determine the best smoothing degree for a
 given dataset.
 
 ```{r loess_30, fig.show='hold', fig.width=5, fig.height=2.4}
-loess_fit_30 <- adjust_batch_trend(quantile_normalized_matrix, example_sample_annotation, span = 0.3)
-
 quantile_normalized_long <- matrix_to_long(quantile_normalized_matrix)
-plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
+loess_fit_30 <- adjust_batch_trend(quantile_normalized_long, example_sample_annotation, span = 0.3)
+
+plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
             df_long = quantile_normalized_long, example_sample_annotation, 
             color_by_batch = TRUE, color_scheme = color_list[[batch_col]],
             fit_df = loess_fit_30$fit_df, plot_title = "Span = 30%")
@@ -653,7 +659,7 @@ plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2",
 
 ```{r loess_70, fig.show='hold', fig.width=5, fig.height=2.4}
 loess_fit_70 <- adjust_batch_trend(quantile_normalized_matrix, example_sample_annotation, span = 0.7)
-plot_with_fitting_curve(pep_name = "10231_QDVDVWLWQQEGSSK_2", 
+plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
             df_long = quantile_normalized_long, example_sample_annotation, 
             color_by_batch = TRUE, color_scheme = color_list[[batch_col]],
             fit_df = loess_fit_70$fit_df, plot_title = "Span = 70%")
@@ -684,7 +690,7 @@ Feature-level median centering is the simplest approach for batch effects correc
 However, if the variance is different between batches, other approaches need to be used.
 ```{r median_batch, fig.show='hold', fig.width=3, fig.height=2.4}
 peptide_median_df <- center_peptide_batch_medians(loess_fit_df, example_sample_annotation)
-plot_single_feature(pep_name = "10231_QDVDVWLWQQEGSSK_2", df_long = peptide_median_df, 
+plot_single_feature(feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long = peptide_median_df, 
             example_sample_annotation, color_by_col = NULL, measure_col = 'Intensity_normalized',
             plot_title = "Feature-level Median Centered")
 ```
@@ -704,9 +710,9 @@ comBat_matrix <- correct_with_ComBat(loess_fit_matrix, example_sample_annotation
 To illustrate the correction we use the "10231_QDVDVWLWQQEGSSK_2" spike-in peptide. 
 ```{r combat_result, fig.show='hold',  fig.width=3, fig.height=2.4}
 combat_df <- matrix_to_long(comBat_matrix)
-plot_single_feature (pep_name = "10231_QDVDVWLWQQEGSSK_2", loess_fit_df, 
+plot_single_feature (feature_name = "10231_QDVDVWLWQQEGSSK_2", loess_fit_df, 
           example_sample_annotation, plot_title = "Loess Fitted", color_by_col = NULL)
-plot_single_feature (pep_name = "10231_QDVDVWLWQQEGSSK_2", combat_df, 
+plot_single_feature (feature_name = "10231_QDVDVWLWQQEGSSK_2", combat_df, 
           example_sample_annotation, plot_title = "ComBat corrected", color_by_col = NULL)
 ```
 
@@ -773,7 +779,8 @@ heatmap_colors = colorRampPalette(
 ```{r corr_samples_heatmap, fig.show='hold', fig.height=2.12, fig.width=3.35}
 # Plot the heatmap 
 plot_sample_corr_heatmap(quantile_normalized_matrix, samples_to_plot = replicate_filenames, 
-                         flavor = 'pheatmap', plot_title = 'Quantile Normalized', 
+                         flavor = 'pheatmap', 
+                         plot_title = 'Quantile Normalized correlation matrix of selected replicated samples', 
                          annotation_colors = color_list[factors_to_show], 
                          annotation_col = replicate_annotation,
                          color = heatmap_colors, breaks = breaksList, 
