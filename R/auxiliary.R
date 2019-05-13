@@ -68,9 +68,6 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
     df_long = df_long %>%
       mutate(Step = step)
   }
-  if(!is.null(sample_annotation))
-    df_long = df_long %>%
-    merge(sample_annotation, by = sample_id_col)
   return(df_long)
 }
 
