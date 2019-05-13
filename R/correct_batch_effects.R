@@ -52,15 +52,16 @@ center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
 #' @return list of two items: 1) `data_matrix`, adjusted with continuous fit; 
 #' 2) fit_df, used to examine the fitting curves
 #' @examples 
-#' adjusted_data <- adjust_batch_trend(example_proteome, 
+#' adjusted_data <- adjust_batch_trend(example_proteome %>% 
+#' filter(peptide_group_label %in% unique(example_proteome$peptide_group_label)[1:3]), 
 #' example_sample_annotation, span = 0.7, 
 #' abs_threshold = 5, pct_threshold = 0.20)
 #' fit_df <- adjusted_data$fit_df
 #' adjusted_data_matrix <- adjusted_data$data_matrix
 #' adjusted_df <- matrix_to_long(adjusted_data_matrix)
-#' plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label)[1:2], 
-#' df_long <- adjusted_df, fit_df = fit_df, 
-#' sample_annotation <- example_sample_annotation)
+#' plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label), 
+#' df_long = adjusted_df, fit_df = fit_df, 
+#' sample_annotation = example_sample_annotation)
 #' 
 #' @export
 #'
@@ -99,7 +100,6 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
   df_normalized = df_long %>%
     filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
     merge(sample_annotation, by = sample_id_col) %>%
-    arrange_(feature_id_col, order_col) %>% #TODO: substitute with arrange(!!!syms(feature_id_col, order_col))
     group_nest(!!!syms(c(feature_id_col, batch_col, "batch_total"))) %>%  
     mutate(fit = pmap(list(df_feature_batch = data,  batch_size = batch_total, 
                                   feature_id = !!sym(feature_id_col)), batch_id = !!sym(batch_col),
