@@ -17,6 +17,9 @@
 #' data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter 
 #' data for curve fitting 
+#' @param verbose logical: if \code{TRUE} messages for every peptide will be printed 
+#' (useful for debugging, otherwise makes the execution too slow)
+#' 
 #' @param ... additional parameters to be passed to the fitting function
 #'
 #' @return vector of fitted response values
@@ -24,7 +27,7 @@
 #' @examples 
 #' df_selected = example_proteome %>% 
 #' merge(example_sample_annotation, by = 'FullRunName') %>%
-#' filter(peptide_group_label == example_proteome$peptide_group_label[1] &&
+#' filter(peptide_group_label == example_proteome$peptide_group_label[1] &
 #' MS_batch == 'Batch_1')
 #' fit_values = fit_nonlinear(df_selected)
 #' 
@@ -37,21 +40,20 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
                           optimize_span = FALSE, 
                           no_fit_imputed = FALSE, qual_col = 'm_score', qual_value = 2,
                           abs_threshold = 5, pct_threshold = 0.20, ...){
-    message(sprintf("fitting curve for %s in batch %s\n", feature_id, batch_id))
-    df_feature_batch <- df_feature_batch[sort.list(df_feature_batch[[order_col]]),]
-    x_all = df_feature_batch[[order_col]]
-    y = df_feature_batch[[measure_col]]
+  df_feature_batch <- df_feature_batch[sort.list(df_feature_batch[[order_col]]),]
+  x_all = df_feature_batch[[order_col]]
+  y = df_feature_batch[[measure_col]]
     
-    if(no_fit_imputed){
-      if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
-        warning('imputed value column is in the data, fitting curve only to measured, non-imputed values')
-        imputed_values <- df_feature_batch[[qual_col]] == qual_value
-        x_to_fit = x_all[!imputed_values]
-        y = y[!imputed_values]
-      } else {
-        stop('imputed values are specified not to be used for curve fitting, however, no flag for imputed values is specified')
+  if(no_fit_imputed){
+    if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
+      warning('imputed value column is in the data, fitting curve only to measured, non-imputed values')
+      imputed_values <- df_feature_batch[[qual_col]] == qual_value
+      x_to_fit = x_all[!imputed_values]
+      y = y[!imputed_values]
+    } else {
+      stop('imputed values are specified not to be used for curve fitting, however, 
+           no flag for imputed values is specified')
       }
-      
     } else {
       if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
         warning('imputed value (requant) column is in the data, are you sure you want to fit non-linear curve to these values, too?')
