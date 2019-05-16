@@ -1,5 +1,17 @@
 map_factors_to_colors <- function(annotation_df_factors) {
   #calculate number of colors to create
+  col_class = sapply(annotation_df_factors, class)
+  non_factor_cols = names(annotation_df_factors)[col_class != 'factor']
+  wrong_classes = col_class[col_class != 'factor']
+  if (length(non_factor_cols) > 0){
+    col_string = paste(non_factor_cols, collapse = ', ')
+    col_classes = paste(wrong_classes, collapse = ', ')
+    warning(sprintf('Columns %s are non factors, but %s, they will be converted 
+                    to factors for mapping to colors', col_string, col_classes))
+    annotation_df_factors = annotation_df_factors %>% 
+      mutate_if(negate(is.factor), as.factor)
+  }
+  
   nlev_covariate = mapply(nlevels, annotation_df_factors)
   n_colors_total = sum(nlev_covariate)
   
