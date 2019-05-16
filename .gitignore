@@ -11,3 +11,4 @@ Meta
 #vignettes/
 /.Rd2pdf*
 #NAMESPACE
+doc
