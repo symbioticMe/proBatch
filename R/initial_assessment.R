@@ -37,12 +37,11 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   #names(sample_average) = colnames(data_matrix)
   
   df_ave = data.frame(Mean_Intensity = sample_average,
-                      order_temp_col = 1:length(sample_average),
                       sample_id_col = colnames(data_matrix))
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
-  df_ave = check_sample_consistency(sample_annotation, sample_id_col, df_ave)
+  df_ave = check_sample_consistency(sample_annotation, sample_id_col, df_ave, batch_col, order_col, facet_col)
   
   #Ensure that batch-coloring-related arguments are defined properly
   if(!is.null(batch_col)){
@@ -151,7 +150,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                          ylimits = NULL, outliers = TRUE){
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
-  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, batch_col, order_col, facet_col)
   
   #Ensure that batch-coloring-related arguments are defined properly
   if(!is.null(batch_col)){
