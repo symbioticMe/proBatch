@@ -2,10 +2,26 @@
 % Please edit documentation in R/correct_batch_effects.R
 \name{correct_batch_effects}
 \alias{correct_batch_effects}
-\title{Batch correction method allows correction of 
-continuous signal drift within batch (if required) and adjustment for
-discrete difference across batches.}
+\alias{center_feature_batch_medians}
+\alias{adjust_batch_trend}
+\alias{correct_with_ComBat_df}
+\title{Batch correction of normalized data}
 \usage{
+center_feature_batch_medians(df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
+  feature_id_col = "peptide_group_label", measure_col = "Intensity")
+
+adjust_batch_trend(df_long, sample_annotation = NULL,
+  batch_col = "MS_batch", feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  order_col = "order", fit_func = "loess_regression",
+  abs_threshold = 5, pct_threshold = 0.2, ...)
+
+correct_with_ComBat_df(df_long, sample_annotation = NULL,
+  feature_id_col = "peptide_group_label", measure_col = "Intensity",
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
+  par.prior = TRUE)
+
 correct_batch_effects(df_long, sample_annotation, continuous_func = NULL,
   discrete_func = c("MedianCentering", "ComBat"),
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
@@ -24,10 +40,8 @@ file). See "example_proteome" for more details (to call the description, use \co
 technical covariates (batches etc) }. 
 See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
-\item{continuous_func}{function to use for the fit (currently 
-only \code{loess_regression} available); if order-associated fix is not required, should be `NULL`}
-
-\item{discrete_func}{function to use for adjustment of discrete batch effects (\code{MedianCentering} or \code{ComBat})}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
@@ -37,38 +51,98 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
-
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
-\item{abs_threshold}{the absolute threshold to filter data for curve fitting}
+\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
+used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
+feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
+if sample order is irrelevant (e.g. in genomic experiments). For more details,
+order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
 
-\item{pct_threshold}{the percentage threshold to filter data for curve fitting}
+\item{fit_func}{function to fit the (non)-linear trend}
 
-\item{...}{other parameters, usually of \code{normalize_custom_fit}, and \code{fit_func}}
+\item{abs_threshold}{the absolute threshold (number of samples in a batch) to filter data for curve fitting}
+
+\item{pct_threshold}{the percentage threshold (fraction of samples in a batch)  to filter data for curve fitting}
+
+\item{...}{other parameters, usually of \code{adjust_batch_trend}, and \code{fit_func}}
+
+\item{par.prior}{whether parametrical or non-parametrical prior should be used}
+
+\item{continuous_func}{function to use for the fit (currently 
+only \code{loess_regression} available); if order-associated fix is not required, should be `NULL`}
+
+\item{discrete_func}{function to use for adjustment of discrete batch effects (\code{MedianCentering} or \code{ComBat})}
 }
 \value{
-\code{data_matrix}-size data matrix with batch-effect 
-corrected by fit and discrete functions
+the data in the same format as input (\code{data_matrix} or \code{df_long}).
+For \code{df_long} the data frame stores the original values of \code{measure_col}
+in another column called "old_intensity" if "intensity", and the normalized values
+in \code{measure_col} column.
+
+The function `adjust_batch_trend()` returns list of two items: 
+\enumerate{
+  \item \code{data_matrix}
+  \item \code{fit_df}, used to examine the fitting curves
+}
 }
 \description{
-Batch correction method allows correction of 
+Batch correction of normalized data. Batch correction 
+brings each feature in each batch to the comparable shape.
+Currently the following batch correction functions are implemented:
+\enumerate{
+  \item Per-feature median centering: `center_feature_batch_medians()`. Median centering of the features (per batch median)
+  \item correction with ComBat: `correct_with_ComBat()`. Adjusts for discrete batch effects using ComBat. 
+  Standardized input-output ComBat normalization ComBat allows users to adjust
+for batch effects in datasets where the batch covariate is known, using
+methodology described in Johnson et al. 2007. It uses either parametric or
+non-parametric empirical Bayes frameworks for adjusting data for batch
+effects. Users are returned an expression matrix that has been corrected for
+batch effects. The input data are assumed to be free of missing values
+ and normalized before batch effect removal. Please note that missing values 
+ are common in proteomics, which is why in some cases corrections like 
+ \code{center_peptide_batch_medians} are more appropriate.
+  \item Continuous drift correction: `adjust_batch_trend()`. Adjust batch signal 
+  trend with the custom (continuous) fit. Should be followed by discrete corrections,
+  e.g. `center_feature_batch_medians()` or `correct_with_ComBat()`.
+}
+Alternatively, one can call the correction function with `correct_batch_effects()` wrapper. #' Batch correction method allows correction of 
 continuous signal drift within batch (if required) and adjustment for
 discrete difference across batches.
 }
 \examples{
-batch_corrected_matrix <- correct_batch_effects(example_proteome_matrix, example_sample_annotation, 
+
+#Median centering per feature per batch:
+median_centered_df <- center_feature_batch_medians(
+example_proteome, example_sample_annotation)
+
+#Correct with ComBat: 
+combat_corrected_df <- correct_with_ComBat(example_proteome, example_sample_annotation)
+
+#Adjust the MS signal drift:
+adjusted_data <- adjust_batch_trend(example_proteome \%>\% 
+filter(peptide_group_label \%in\% unique(example_proteome$peptide_group_label)[1:3]), 
+example_sample_annotation, span = 0.7, 
+abs_threshold = 5, pct_threshold = 0.20)
+fit_df <- adjusted_data$fit_df
+adjusted_df <- adjusted_data$corrected_df
+plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label), 
+df_long = adjusted_df, fit_df = fit_df, 
+sample_annotation = example_sample_annotation)
+
+#Correct the data in one go:
+batch_corrected_matrix <- correct_batch_effects(example_proteome, example_sample_annotation, 
 continuos_func = 'loess_regression',
-discreteFunc = 'MedianCentering', 
+discrete_func = 'MedianCentering', 
 batch_col = 'MS_batch',  
 span = 0.7,
 abs_threshold = 5, pct_threshold = 0.20)
 
 }
 \seealso{
-\code{\link{fit_nonlinear}}, \code{\link{center_peptide_batch_medians}},
-\code{\link{correct_with_ComBat}}, \code{\link{adjust_batch_trend}}
+\code{\link{fit_nonlinear}}
+
+\code{\link{fit_nonlinear}}, \code{\link{plot_with_fitting_curve}}
 }
