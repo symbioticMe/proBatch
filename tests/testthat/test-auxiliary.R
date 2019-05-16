@@ -42,7 +42,7 @@ test_that("generated_peptide_annotation", {
 
   peptide_annt <- create_peptide_annotation(example_proteome, 
                                             feature_id_col = "peptide_group_label", 
-                                            annotation_col = c("ProteinName"))
+                                            protein_col = c("ProteinName"))
   
   expect_equal(colnames(peptide_annt), c( "peptide_group_label", "ProteinName" ))
 
