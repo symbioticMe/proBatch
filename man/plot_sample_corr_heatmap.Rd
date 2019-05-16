@@ -5,6 +5,7 @@
 \title{Sample correlation matrix (heatmap)}
 \usage{
 plot_sample_corr_heatmap(data_matrix, samples_to_plot = NULL,
+  sample_annotation = NULL, sample_id_col = "FullRunName",
   flavor = c("pheatmap", "corrplot"), filename = NULL, width = NA,
   height = NA, unit = c("cm", "in", "mm"),
   plot_title = sprintf("Correlation matrix of sample \%s",
@@ -17,6 +18,14 @@ See "example_proteome_matrix" for more details (to call the description, use \co
 
 \item{samples_to_plot}{string vector of samples in 
 \code{data_matrix} to be used in the plot}
+
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{flavor}{either corrplot from 'corrplot' package or 
 heatmap, as in 'pheatmap'}

@@ -10,7 +10,8 @@ correct_batch_effects(df_long, sample_annotation, continuous_func = NULL,
   discrete_func = c("MedianCentering", "ComBat"),
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", abs_threshold = 5, pct_threshold = 0.2, ...)
+  sample_order_col = "order", abs_threshold = 5, pct_threshold = 0.2,
+  ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -42,12 +43,6 @@ filenames (colnames of the data matrix are found).}
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
-
-\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
-used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
-feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
-if sample order is irrelevant (e.g. in genomic experiments). For more details,
-order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
 
 \item{abs_threshold}{the absolute threshold to filter data for curve fitting}
 
