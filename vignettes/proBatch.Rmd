@@ -647,7 +647,7 @@ corrected using discrete methods such as median-centering or ComBat.
 
 ```{r loess_fit, fig.show='hold', fig.width=5, fig.height=2.4}
 loess_fit <- adjust_batch_trend(quantile_normalized_long, example_sample_annotation)
-loess_fit_matrix <- loess_fit$data_matrix
+loess_fit_matrix <- loess_fit$corrected_df
 ```
 
 One important parameter in LOESS fitting is span, which determines the
@@ -681,18 +681,17 @@ many points are missing, a curve cannot be fit accurately. This is
 especially common for small batches. In this case, we suggest to not
 fit the curve to the specific peptide within the specific batch, and
 proceed directly to discrete correction methods. To identify such
-peptides, absolute and relative thresholds (`abs.threshold` and
-`pct.threshold`) on the number of missing values for each peptide can
-be passed as parameters to `normalize_custom_fit()`.
+peptides, absolute and relative thresholds (`abs_threshold` and
+`pct_threshold`) on the number of missing values for each peptide can
+be passed as parameters to `adjust_batch_trend()`.
 
 ### Discrete batch correction: combat or peptide-level median centering 
 Once the data are normalized and corrected for continuous drift, only
 discrete batch effects is left to be corrected.
 
-Currently, both batch correction procedures accept long format of the data:
-```{r loess_to_long}
-loess_fit_df <- matrix_to_long(loess_fit_matrix)
-```
+Currently, two methods of batch correction are implemented:
+* median centering (per feature per batch)
+* ComBat
 
 
 #### Feature-level median centering 
@@ -714,12 +713,11 @@ function `correct_with_ComBat()` can incorporate several covariates
 and make data comparable across batches.
 
 ```{r comBat, fig.show='hold'}
-comBat_matrix <- correct_with_ComBat(loess_fit_df, example_sample_annotation)
+comBat_df <- correct_with_ComBat(loess_fit_df, example_sample_annotation)
 ```
 
 To illustrate the correction we use the "10231_QDVDVWLWQQEGSSK_2" spike-in peptide. 
 ```{r combat_result, fig.show='hold',  fig.width=3, fig.height=2.4}
-combat_df <- matrix_to_long(comBat_matrix)
 plot_single_feature (feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long = loess_fit_df, 
           sample_annotation = example_sample_annotation, plot_title = "Loess Fitted")
 plot_single_feature (feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long =  combat_df, 
@@ -733,15 +731,16 @@ between batches similar to one another.
 We provide a convenient all-in-one function for batch correction. The
 function `correct_batch_effects()` corrects MS signal drift and discrete
 shift in a single function call. Simply specify which discrete
-correction method is preferred at `discreteFunc` either “ComBat” or
+correction method is preferred at `discrete_func` either “ComBat” or
 “MedianCentering” and supplement other arguments such as `span`,
-`abs.threshold` or `pct.threshold` as in `normalize_custom_fit()`.
+`abs_threshold` or `pct_threshold` as in `normalize_custom_fit()`.
 
 ```{r batch_corr_general, fig.show='hold'}
-batch_corrected_matrix <- correct_batch_effects(df_long = quantile_normalized_long,
+batch_corrected_df <- correct_batch_effects(df_long = quantile_normalized_long,
                                                 sample_annotation = example_sample_annotation, 
                                                 discrete_func = 'ComBat', continuous_func = 'loess_regression',
                                                 abs_threshold = 5, pct_threshold = 0.20)
+batch_corrected_matrix = long_to_matrix(batch_corrected_df)
 ```
 
 \pagebreak
