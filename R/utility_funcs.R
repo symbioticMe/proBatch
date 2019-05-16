@@ -1,4 +1,5 @@
-check_sample_consistency <- function(sample_annotation, sample_id_col, df_long) {
+check_sample_consistency <- function(sample_annotation, sample_id_col, df_long,
+                                     batch_col = NULL, order_col = NULL, facet_col = NULL) {
   if (!is.null(sample_annotation)){
     if (!(sample_id_col %in% names(sample_annotation))){
       warning('Sample ID column is not defined in sample annotation, sample annotation 
@@ -10,6 +11,29 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long) 
       #TODO: expand the warnings for more specific cases: 1) sample annotation has samples not represented in data matrix; 2) dm has samples not in annotation;
       #TODO: Break the merge if 1) sample annotation has duplicated samples; 2) dm has duplicated samples
     }
+    
+    annotation_cols = c(batch_col, order_col, facet_col)
+    if (any(annotation_cols %in% names(df_long)) && 
+        any(annotation_cols %in% names(sample_annotation))){
+      annotation_string = paste(annotation_cols, collapse = ' ')
+      if (all(annotation_cols %in% names(df_long)) && all(annotation_cols %in% names(sample_annotation))){
+        warning(sprintf('All annotation columns (%s) are both in data matrix and in sample annotation, 
+                        ignoring sample annotation; if this is not intended behavior, 
+                        remove these columns from df_long and repeat the function execution.',annotation_string))
+        df_long = df_long %>%
+          select(-one_of(annotation_cols))
+      } else {
+        common_cols = intersect(names(sample_annotation), names(df_long))
+        common_col_string = paste(common_cols, collapse = ' ')
+        warning(sprintf('The following columns are represented in both df_long 
+                        and sample_annotation: %s, these columns from sample_annotation 
+                        will be ignoredif this is not intended behavior, 
+                        remove these columns from df_long and repeat the function execution.', common_col_string))
+        df_long = df_long %>%
+          select(-one_of(common_cols))
+      }
+    }
+    
     df_long = df_long %>% 
       inner_join(sample_annotation, by = sample_id_col) %>%
       as.data.frame()
