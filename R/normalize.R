@@ -1,82 +1,43 @@
 #' Data normalization methods
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. Usually the log
-#'   transformed version of the original data
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param measure_col if `df_long` is among the parameters, it is the column
-#'   with expression/abundance/intensity, otherwise, it is used internally for
-#'   consistency
+#' 
+#' @description Normalization of raw (usually log-transformed) data. Normalization brings the samples to the same scale
+#' Currently the following normalization functions are implemented:
+#' #' \enumerate{
+#'   \item Quantile normalization: `quantile_normalize()`. Quantile normalization of the data.
+#'   \item Median normalization: `normalize_sample_medians()`. Normalization by centering sample medians to global median of the data
+#' }
+#' Alternatively, one can call normalization function with `normalize_data()` wrapper.
+#' 
+#' 
+#' @inheritParams proBatch
+#' @param normalize_func global batch normalization method 
+#' (`quantile` or `MedianCentering`)
+#' @param log_base whether to log transform data matrix 
+#' before normalization (`NULL`, `2` or `10`)
+#' 
+#' @return the data in the same format as input (\code{data_matrix} or \code{df_long}).
+#' For \code{df_long} the data frame stores the original values of \code{measure_col}
+#' in another column called "old_intensity" if "intensity", and the normalized values
+#' in \code{measure_col} column.
+#' 
+#' @examples 
+#' 
+#' #Quantile normalization:
+#' quantile_normalized_matrix <- quantile_normalize(example_proteome_matrix)
+#' 
+#' #Median centering:
+#' median_normalized_df <- normalize_sample_medians(example_proteome)
+#' 
+#' #Transform the data in one go:
+#' quantile_normalized_matrix <- normalize_data(example_proteome_matrix, 
+#' normalizeFunc = "quantile", log_base = 2)
+#' 
 #' @name normalize
 NULL
 
-#' Log transformation of the data, ensuring that the row and column names
-#' are retained
-#'
-#' @param df_long raw data matrix (features in rows and samples
-#'   in columns)
-#' @param log_base base of the logarithm for transformation
-#' @param offset small positive number to prevent 0 conversion to \code{-Inf}
-#'
-#' @return \code{df_long}-size data frame, with \code{measure_col} log transformed;
-#' with old value in column in another column "old_intensity" if "intensity" 
-#' was the value of \code{measure_col}
-#' 
-#' @examples 
-#' log_transformed_matrix <- log_transform(example_proteome_matrix)
 #' 
 #' @export
-#'
-log_transform_df <- function(df_long, log_base = 2, offset = 1,
-                             measure_col = 'Intensity'){
-  if(!is.null(log_base)){
-    df_long = df_long %>%
-      mutate(!!(paste('old', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
-      mutate(!!(sym(measure_col)) := log(!!(sym(measure_col)) + offset, base = log_base))
-  } else {
-    warning("Log base is NULL, returning the original data frea")
-  }
-  return(df_long)
-}
-
-#' Log transformation of the data, ensuring that the row and column names
-#' are retained
-#'
-#' @param data_matrix raw data matrix (features in rows and samples
-#'   in columns)
-#' @param log_base base of the logarithm for transformation
-#' @param offset small positive number to prevent 0 conversion to \code{-Inf}
-#'
-#' @return \code{data_matrix}-size matrix, with columns log2 transformed
-#' @examples 
-#' log_transformed_matrix <- log_transform(example_proteome_matrix)
-#' 
-#' @export
-#'
-log_transform <- function(data_matrix, log_base = 2, offset = 1){
-  if(!is.null(log_base)){
-    if(log_base == 2){
-      data_matrix_log = log2(data_matrix + 1)
-    }else if(log_base ==10){
-      data_matrix_log = log10(data_matrix + 1)
-    }else {
-      stop("Only log_base = 2 or log_base = 10 is applicable")
-    }
-  }
-    return(data_matrix_log)
-}
-
-#' Quantile normalization of the data, ensuring that the row and column names
-#' are retained
-#'
-#' @param data_matrix log transformed data matrix (features in rows and samples
-#'   in columns)
-#'
-#' @return \code{data_matrix}-size matrix, with columns quantile-normalized
-#' @examples 
-#' quantile_normalized_matrix <- quantile_normalize(example_proteome_matrix)
-#' 
-#' @export
+#' @rdname normalize
 #'
 quantile_normalize <- function(data_matrix){
   q_norm_proteome = normalize.quantiles(data_matrix)
@@ -85,20 +46,9 @@ quantile_normalize <- function(data_matrix){
   return(q_norm_proteome)
 }
 
-
-#' Normalization by centering sample medians to global median of the data
-#'
-#' @param df_long log transformed long format data matrix (see `df_long`)
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param measure_col if `df_long` is among the parameters, it is the column
-#'   with expression/abundance/intensity, otherwise, it is used internally for
-#'   consistency
-#' @return `df_long`-size matrix, with intensity scaled to global median
-#' @examples 
-#' median_normalized_matrix <- normalize_sample_medians(example_proteome)
 #' 
 #' @export
+#' @rdname normalize
 #'
 normalize_sample_medians <- function(df_long,
                                      sample_id_col = 'FullRunName',
@@ -108,39 +58,29 @@ normalize_sample_medians <- function(df_long,
     mutate(median_run = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
     ungroup()
   df_normalized = df_normalized %>%
-    mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
+    mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE),
+           !!(paste('old', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
     mutate(diff = median_global - median_run) %>%
-    mutate(Intensity_normalized = !!(sym(measure_col))+diff)
+    mutate(!!(sym(measure_col)) := !!(sym(measure_col))+diff)
   return(df_normalized)
 }
 
-#' Normalization brings the samples to the same scale
-#'
-#' @param data_matrix raw data matrix (features in rows and samples
-#'   in columns)
-#' @param normalizeFunc global batch normalization method 
-#' (`quantile` or `MedianCentering`)
-#' @param log_base whether to log transform data matrix 
-#' before normalization (`NULL`, `2` or `10`)
-#'
-#' @return \code{data_matrix}-size matrix, with columns normalized 
-#' @export
-#'
-#' @examples
-#' quantile_normalized_matrix <- normalize_data(example_proteome_matrix, 
-#' normalizeFunc = "quantile", log_base = 2)
 #' 
-normalize_data <- function(data_matrix, normalizeFunc = c("quantile", "medianCentering"), 
+#' @export
+#' @rdname normalize
+#' 
+#' 
+normalize_data <- function(data_matrix, normalize_func = c("quantile", "medianCentering"), 
                            log_base = NULL){
   
-  normalizeFunc <- match.arg(normalizeFunc)    
+  normalize_func <- match.arg(normalize_func)    
   if(!is.null(log_base)){
-    data_matrix = log_transform(data_matrix, log_base = log_base)
+    data_matrix = log_transform_matrix(data_matrix, log_base = log_base)
   }
   
-  if(normalizeFunc == "quantile"){
+  if(normalize_func == "quantile"){
     normalized_matrix = quantile_normalize(data_matrix)
-  } else if(normalizeFunc == "medianCentering"){
+  } else if(normalize_func == "medianCentering"){
     df_long = matrix_to_long(data_matrix, 
                              feature_id_col = 'peptide_group_label',
                              measure_col = 'Intensity', 
