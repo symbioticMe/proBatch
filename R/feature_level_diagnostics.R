@@ -1,14 +1,20 @@
-#' Plot peptide measurements
+#' Ploting peptide measurements
 #'
 #' Creates a peptide faceted ggplot2 plot of the value in \code{measure_col}
 #' vs \code{order_col} (if `NULL`, x-axis is simply a sample name order). 
-#' Additionally, the resulting plot can also be faceted by a batch factor, 
-#' e.g. an MS instrument.
+#' Additionally, the resulting plot can also be colored either by batch factor, 
+#' by quality factor (e.g. imputated/non-imputed) and, if needed, faceted by another
+#'  batch factor, e.g. an MS instrument.
+#'  If the non-linear curve was fit, this can also be added to the plot, see 
+#'  functions specific to each case below
 #'
 #' @inheritParams proBatch
 #' @param feature_name name of the selected feature (e.g. peptide) for diagnostic profiling
 #' @param geom whether to show the feature as points and/or connect by lines (accepted 
 #' values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})
+#' @param protein_name name of the protein as defined in \code{ProteinName}
+#' @param irt_pattern substring used to identify iRT proteins in the column
+#'   'ProteinName'
 #' @param vline_color color of vertical lines, typically separating 
 #'  different MS batches in ordered runs; 
 #'  should be `NULL` for experiments without intrinsic order.
@@ -25,6 +31,31 @@
 #' plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
 #' df_long = example_proteome, example_sample_annotation, 
 #' color_by_col = 'm_score', color_by_value = 2)
+#' 
+#' #to examine peptides of a single protein:
+#' peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
+#' protein_name = "Haao",  
+#' protein_col = "Gene", df_long = example_proteome, 
+#' example_sample_annotation, 
+#' order_col = 'order', sample_id_col = 'FullRunName', 
+#' batch_col = 'MS_batch')
+#' 
+#' #to illustrate spike-ins:
+#' spike_in_plot <- plot_spike_in(example_proteome, example_sample_annotation, 
+#' protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
+#' plot_title = "Spike-in BOVINE protein peptides")
+#' #to illustrate iRT peptides:
+#' irt_plot <- plot_iRT(example_proteome, 
+#' example_sample_annotation, 
+#' protein_col = 'Gene', irt_pattern = "BOVINE_A1ag")
+#'
+#' #illustrate the fitting curve:
+#' loess_fit_70 <- adjust_batch_trend(example_proteome, 
+#' example_sample_annotation, span = 0.7)
+#' 
+#' fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
+#' df_long = example_proteome, example_sample_annotation, 
+#' fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70% span")
 #'
 #' @family feature-level diagnostic functions
 #'
@@ -54,7 +85,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
     filter(!!(sym(feature_id_col)) %in% feature_name)
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
-  plot_df = check_sample_consistency(sample_annotation, sample_id_col, plot_df)
+  plot_df = check_sample_consistency(sample_annotation, sample_id_col, plot_df, batch_col, order_col, facet_col)
   
 
   
@@ -158,30 +189,9 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   return(gg)
 }
 
-#' Plot peptides of one protein
-#'
-#' Creates a spike-in faceted ggplot2 plot of the value in
-#' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
-#' be faceted by batch.
-#'
-#' @inheritParams feature_level_diagnostics
-#' @param protein_name name of the protein as defined in \code{ProteinName}
-#' @param ... additional arguments to \code{\link{plot_single_feature}} function
-#'
-#' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
-#'   faceted by \code{spike_ins} containing proteins and (optionally) by \code{batch_col}
-#' @examples 
-#' peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
-#' protein_name = "Haao",  
-#' protein_col = "Gene", df_long = example_proteome, 
-#' example_sample_annotation, 
-#' order_col = 'order', sample_id_col = 'FullRunName', 
-#' batch_col = 'MS_batch')
-#' 
-#' @family feature-level diagnostic functions
 #'
 #' @export
+#' @rdname feature_level_diagnostics
 #'
 plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL,
                                          protein_col = 'ProteinName',
@@ -225,30 +235,10 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
   return(gg)
 }
 
-#' Plot spike-in measurements
-#'
-#' Creates a spike-in faceted ggplot2 plot of the value in
-#' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
-#' be faceted by batch.
-#'
-#' @inheritParams feature_level_diagnostics
-#' @param spike_ins substring used to identify spike-in proteins in the column
-#'   'ProteinName'
-#' @param ... additional arguments to \code{\link{plot_single_feature}} function
-#'
-#' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
-#'   faceted by \code{spike_ins} containing proteins and (optionally) 
-#'   by \code{batch_col}
-#'
-#' @family feature-level diagnostic functions
-#' 
-#' @examples 
-#' spike_in_plot <- plot_spike_in(example_proteome, example_sample_annotation, 
-#' protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
-#' plot_title = "Spike-in BOVINE protein peptides")
+
 #' 
 #' @export
+#' @rdname feature_level_diagnostics
 #'
 plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                           protein_col = 'ProteinName',
@@ -302,31 +292,9 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
   return(gg)
 }
 
-
-#' Plot iRT measurements
-#'
-#' Creates a iRT faceted ggplot2 plot of the value in
-#' \code{measure_col} vs \code{order_col} using
-#' \code{\link{plot_single_feature}}. Additionally, the resulting plot can also
-#' be faceted by batch.
-#'
-#' @inheritParams feature_level_diagnostics
-#' @param irt_pattern substring used to identify iRT proteins in the column
-#'   'ProteinName'
-#' @param ... additional arguments to \code{\link{plot_single_feature}} function
-#'
-#' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
-#'   faceted by \code{irt_pattern} containing proteins 
-#'   and (optionally) by \code{batch_col}
-#'
-#' @family feature-level diagnostic functions
-#'
-#' @examples 
-#' irt_plot <- plot_iRT(example_proteome, 
-#' example_sample_annotation, 
-#' protein_col = 'Gene', irt_pattern = "BOVINE_A1ag")
 #' 
 #' @export
+#' @rdname feature_level_diagnostics
 #'
 plot_iRT <- function(irt_pattern = 'iRT',
                      peptide_annotation = NULL,
@@ -370,33 +338,9 @@ plot_iRT <- function(irt_pattern = 'iRT',
   return(gg)
 }
 
-
-#' Plot peptide measurements across multi-step analysis
-#'
-#' Plot Intensity of a few representative peptides for each step of the analysis
-#' including the fitting curve
-#'
-#' @inheritParams feature_level_diagnostics
-#' @param fit_df data frame typically output generated from nonlinear curve 
-#'   fitting by \code{normalize_custom_fit}
-#' @param fit_value_var column denoting intensity values, typically fitted to curve
-#' @param ... additional arguments to \code{\link{plot_single_feature}} function
-#'
-#' @return \code{ggplot}-class plot with minimally two facets (before and after
-#'   non-linear fit) with \code{measure_col} (Intensity) vs \code{order_col}
-#'   (injection order) for selected peptides (specified in \code{feature_name})
-#'
-#' @family feature-level diagnostic functions
-#' @examples 
-#' loess_fit_70 <- adjust_batch_trend(example_proteome, 
-#' example_sample_annotation, span = 0.7)
 #' 
-#' fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
-#' df_long = example_proteome, example_sample_annotation, 
-#' fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70% span")
-#'
 #' @export
-#'
+#' @rdname feature_level_diagnostics
 
 plot_with_fitting_curve <- function(feature_name, 
                                     fit_df, fit_value_var = 'fit', 
@@ -412,7 +356,7 @@ plot_with_fitting_curve <- function(feature_name,
                                     vline_color = 'grey',
                                     facet_col = NULL,
                                     plot_title = sprintf("Fitting curve of %s peptide", 
-                                                         feature_name),
+                                                         paste(feature_name, collapse = ' ')),
                                     theme = 'classic'){
   
   if(length(feature_name) > 10){
