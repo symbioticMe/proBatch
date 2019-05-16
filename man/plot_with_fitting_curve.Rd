@@ -11,8 +11,8 @@ plot_with_fitting_curve(feature_name, fit_df, fit_value_var = "fit",
   batch_col = "MS_batch", color_by_batch = FALSE,
   color_scheme = "brewer", order_col = "order", vline_color = "grey",
   facet_col = NULL,
-  plot_title = sprintf("Fitting curve of \%s peptide", feature_name),
-  theme = "classic")
+  plot_title = sprintf("Fitting curve of \%s peptide",
+  paste(feature_name, collapse = " ")), theme = "classic")
 }
 \arguments{
 \item{feature_name}{name of the selected feature (e.g. peptide) for diagnostic profiling}
