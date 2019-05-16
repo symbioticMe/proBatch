@@ -12,17 +12,18 @@ plot_sample_corr_distribution(data_matrix, sample_annotation,
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. Usually the log
-transformed version of the original data}
+feature IDs in rownames and file/sample names as colnames. 
+See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data matrix with 1) \code{sample_id_col} (this can be
-repeated as row names) 2) biological and 3) technical covariates (batches
-etc)}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
 \item{repeated_samples}{if \code{NULL}, only repeated sample correlation is plotted}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix) are found}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison}
@@ -33,16 +34,18 @@ that (possibly) was profiled several times as technical replicates.
 Tip: if such ID is absent, but can be defined from several columns,
 create new \code{biospecimen_id} column}
 
-\item{plot_title}{Title of the plot (usually, processing step + representation
+\item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
 
 \item{plot_param}{columns, defined in correlation_df, which is output of
-\code{get_sample_corr_distrib}, specifically, #' \enumerate{
+\code{get_sample_corr_distrib}, specifically,  \enumerate{
 \item \code{replicate}
 \item \code{batch_the_same}
 \item \code{batch_replicate}
 \item \code{batches}
 };}
+
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 }
 \value{
 \code{ggplot} type object with violin plot 
