@@ -3,7 +3,11 @@
 \name{feature_level_diagnostics}
 \alias{feature_level_diagnostics}
 \alias{plot_single_feature}
-\title{Plot peptide measurements}
+\alias{plot_peptides_of_one_protein}
+\alias{plot_spike_in}
+\alias{plot_iRT}
+\alias{plot_with_fitting_curve}
+\title{Ploting peptide measurements}
 \usage{
 plot_single_feature(feature_name, df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
@@ -12,6 +16,45 @@ plot_single_feature(feature_name, df_long, sample_annotation = NULL,
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
   plot_title = NULL, theme = "classic", ylimits = NULL)
+
+plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
+  protein_col = "ProteinName", df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", geom = c("point", "line"),
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  plot_title = sprintf("Peptides of \%s protein", protein_name),
+  theme = "classic", ...)
+
+plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
+  protein_col = "ProteinName", df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", geom = c("point", "line"),
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  plot_title = "Spike-in BOVINE protein peptides", theme = "classic",
+  ...)
+
+plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
+  protein_col = "ProteinName", df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", geom = c("point", "line"),
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  plot_title = "iRT peptide profile", theme = "classic", ...)
+
+plot_with_fitting_curve(feature_name, fit_df, fit_value_var = "fit",
+  df_long, sample_annotation = NULL, sample_id_col = "FullRunName",
+  measure_col = "Intensity", feature_id_col = "peptide_group_label",
+  geom = c("point", "line"), qual_col = NULL, qual_value = NULL,
+  batch_col = "MS_batch", color_by_batch = FALSE,
+  color_scheme = "brewer", order_col = "order", vline_color = "grey",
+  facet_col = NULL,
+  plot_title = sprintf("Fitting curve of \%s peptide",
+  paste(feature_name, collapse = " ")), theme = "classic")
 }
 \arguments{
 \item{feature_name}{name of the selected feature (e.g. peptide) for diagnostic profiling}
@@ -76,6 +119,17 @@ level (fragments, transitions, proteins))}
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
 \item{ylimits}{range of y-axis to plot feature-level trends}
+
+\item{protein_name}{name of the protein as defined in \code{ProteinName}}
+
+\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
+protein and/or gene annotations. 
+See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
+
+\item{protein_col}{column where protein names are specified}
+
+\item{irt_pattern}{substring used to identify iRT proteins in the column
+'ProteinName'}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
@@ -84,8 +138,11 @@ ggplot2 type plot of \code{measure_col} vs \code{order_col},
 \description{
 Creates a peptide faceted ggplot2 plot of the value in \code{measure_col}
 vs \code{order_col} (if `NULL`, x-axis is simply a sample name order). 
-Additionally, the resulting plot can also be faceted by a batch factor, 
-e.g. an MS instrument.
+Additionally, the resulting plot can also be colored either by batch factor, 
+by quality factor (e.g. imputated/non-imputed) and, if needed, faceted by another
+ batch factor, e.g. an MS instrument.
+ If the non-linear curve was fit, this can also be added to the plot, see 
+ functions specific to each case below
 }
 \examples{
 single_feature_plot <- plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
@@ -97,11 +154,30 @@ plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2",
 df_long = example_proteome, example_sample_annotation, 
 color_by_col = 'm_score', color_by_value = 2)
 
-}
-\seealso{
-Other feature-level diagnostic functions: \code{\link{plot_iRT}},
-  \code{\link{plot_peptides_of_one_protein}},
-  \code{\link{plot_spike_in}},
-  \code{\link{plot_with_fitting_curve}}
+#to examine peptides of a single protein:
+peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
+protein_name = "Haao",  
+protein_col = "Gene", df_long = example_proteome, 
+example_sample_annotation, 
+order_col = 'order', sample_id_col = 'FullRunName', 
+batch_col = 'MS_batch')
+
+#to illustrate spike-ins:
+spike_in_plot <- plot_spike_in(example_proteome, example_sample_annotation, 
+protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
+plot_title = "Spike-in BOVINE protein peptides")
+#to illustrate iRT peptides:
+irt_plot <- plot_iRT(example_proteome, 
+example_sample_annotation, 
+protein_col = 'Gene', irt_pattern = "BOVINE_A1ag")
+
+#illustrate the fitting curve:
+loess_fit_70 <- adjust_batch_trend(example_proteome, 
+example_sample_annotation, span = 0.7)
+
+fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
+df_long = example_proteome, example_sample_annotation, 
+fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span")
+
 }
 \concept{feature-level diagnostic functions}
