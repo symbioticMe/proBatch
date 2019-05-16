@@ -67,7 +67,6 @@
 #' @import ggfortify
 #' @import ggplot2
 #' @import reshape2
-#' @import tibble
 #' @import lazyeval
 #' @importFrom corrplot corrplot.mixed
 #' @importFrom grDevices colorRampPalette
@@ -77,7 +76,7 @@
 #' @importFrom pheatmap pheatmap
 #' @importFrom preprocessCore normalize.quantiles
 #' @importFrom pvca pvcaBatchAssess
-#' @importFrom purrr pmap
+#' @importFrom purrr pmap negate
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom rlang :=
 #' @importFrom rlang !!
@@ -89,6 +88,7 @@
 #' @importFrom scales brewer_pal
 #' @importFrom stats as.formula complete.cases dist hclust loess median 
 #' @importFrom stats model.matrix prcomp predict reformulate setNames
+#' @importFrom tibble remove_rownames rownames_to_column column_to_rownames
 #' @importFrom viridis viridis_pal
 #' @importFrom wesanderson wes_palettes
 #' @importFrom WGCNA plotDendroAndColors standardColors

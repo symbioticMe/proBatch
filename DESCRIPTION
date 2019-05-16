@@ -49,7 +49,7 @@ Suggests:
     rmarkdown,
     devtools,
     roxygen2,
-    testthat,
+    testthat (>= 2.1.0),
     spelling
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
