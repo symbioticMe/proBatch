@@ -123,6 +123,11 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
                          color_for_missing = 'black',
                          filename = NA, plot_title = NA,
                          ...){
+  
+  df_long = matrix_to_long(data_matrix)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long)
+  data_matrix = long_to_matrix(df_long, feature_id_col, measure_col, sample_id_col)
+  
   if(fill_the_missing) {
     data_matrix[is.na(data_matrix)] = 0
     warning('substituting missing values with 0, 
@@ -432,6 +437,7 @@ plot_PCA <- function(data_matrix, sample_annotation,
   gg = autoplot(pr_comp_res, data = sample_annotation,
                 x = PC_to_plot[1], y = PC_to_plot[2])
   gg = gg + aes(color = factor(!!sym(color_by)))
+  gg = gg + labs(color=color_by)
   if (theme == 'classic'){
     gg = gg + theme_classic()
   }
