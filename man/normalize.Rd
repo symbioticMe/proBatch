@@ -2,19 +2,67 @@
 % Please edit documentation in R/normalize.R
 \name{normalize}
 \alias{normalize}
+\alias{quantile_normalize}
+\alias{normalize_sample_medians}
+\alias{normalize_data}
 \title{Data normalization methods}
+\usage{
+quantile_normalize(data_matrix)
+
+normalize_sample_medians(df_long, sample_id_col = "FullRunName",
+  measure_col = "Intensity")
+
+normalize_data(data_matrix, normalize_func = c("quantile",
+  "medianCentering"), log_base = NULL)
+}
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. Usually the log
-transformed version of the original data}
+feature IDs in rownames and file/sample names as colnames. 
+See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
 
-\item{sample_id_col}{name of the column in sample_annotation file, where the
-filenames (colnames of the data matrix are found)}
+\item{df_long}{data frame where each row is a single feature in a single
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
+\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
+file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
 
-\item{measure_col}{if `df_long` is among the parameters, it is the column
-with expression/abundance/intensity, otherwise, it is used internally for
-consistency}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
+
+\item{measure_col}{if \code{df_long} is among the parameters, it is the
+column with expression/abundance/intensity; otherwise, it is used
+internally for consistency.}
+
+\item{normalize_func}{global batch normalization method 
+(`quantile` or `MedianCentering`)}
+
+\item{log_base}{whether to log transform data matrix 
+before normalization (`NULL`, `2` or `10`)}
+}
+\value{
+the data in the same format as input (\code{data_matrix} or \code{df_long}).
+For \code{df_long} the data frame stores the original values of \code{measure_col}
+in another column called "old_intensity" if "intensity", and the normalized values
+in \code{measure_col} column.
 }
 \description{
-Data normalization methods
+Normalization of raw (usually log-transformed) data. Normalization brings the samples to the same scale
+Currently the following normalization functions are implemented:
+#' \enumerate{
+  \item Quantile normalization: `quantile_normalize()`. Quantile normalization of the data.
+  \item Median normalization: `normalize_sample_medians()`. Normalization by centering sample medians to global median of the data
+}
+Alternatively, one can call normalization function with `normalize_data()` wrapper.
+}
+\examples{
+
+#Quantile normalization:
+quantile_normalized_matrix <- quantile_normalize(example_proteome_matrix)
+
+#Median centering:
+median_normalized_df <- normalize_sample_medians(example_proteome)
+
+#Transform the data in one go:
+quantile_normalized_matrix <- normalize_data(example_proteome_matrix, 
+normalizeFunc = "quantile", log_base = 2)
+
 }
