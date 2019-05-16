@@ -5,7 +5,7 @@
 \title{Adjusts for discrete batch effects using ComBat}
 \usage{
 correct_with_ComBat(df_long, sample_annotation = NULL,
-  feature_id_col = "FullPeptideName", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", measure_col = "Intensity",
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   par.prior = TRUE)
 }
