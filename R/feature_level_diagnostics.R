@@ -57,10 +57,8 @@
 #' df_long = example_proteome, example_sample_annotation, 
 #' fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70% span")
 #'
-#' @family feature-level diagnostic functions
-#'
-#' @export
 #' @name feature_level_diagnostics
+NULL
 
 plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL,
                                  sample_id_col = 'FullRunName',
