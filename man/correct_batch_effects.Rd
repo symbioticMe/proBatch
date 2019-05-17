@@ -122,8 +122,7 @@ example_proteome, example_sample_annotation)
 combat_corrected_df <- correct_with_ComBat(example_proteome, example_sample_annotation)
 
 #Adjust the MS signal drift:
-adjusted_data <- adjust_batch_trend(example_proteome \%>\% 
-filter(peptide_group_label \%in\% unique(example_proteome$peptide_group_label)[1:3]), 
+adjusted_data <- adjust_batch_trend(example_proteome[example_proteome$peptide_group_label \%in\% unique(example_proteome$peptide_group_label)[1:3],], 
 example_sample_annotation, span = 0.7, 
 abs_threshold = 5, pct_threshold = 0.20)
 fit_df <- adjusted_data$fit_df
