@@ -11,7 +11,7 @@ test_that("sample_mean_plots", {
 
   expect_equal(meanplot$labels$colour, "MS_batch")
   expect_equal(meanplot$labels$x, "order")
-  expect_equal(meanplot$labels$y, "Average_Intensity")
+  expect_equal(meanplot$labels$y, "Mean_Intensity")
   
 })
 
