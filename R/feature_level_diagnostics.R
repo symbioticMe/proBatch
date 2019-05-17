@@ -60,6 +60,9 @@
 #' @name feature_level_diagnostics
 NULL
 
+#'
+#' @export
+#' @rdname feature_level_diagnostics
 plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL,
                                  sample_id_col = 'FullRunName',
                                  measure_col = 'Intensity',
