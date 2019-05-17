@@ -2,10 +2,7 @@
 
   <!-- badges: start -->
   [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-  <!-- badges: end -->
-  
-  <!-- badges: start -->
-[![BioC status](http://www.bioconductor.org/shields/build/release/bioc/proBatch.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/proBatch)
+  [![BioC status](http://www.bioconductor.org/shields/build/release/bioc/proBatch.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/proBatch)
 <!-- badges: end -->
 
 ## General Overview
