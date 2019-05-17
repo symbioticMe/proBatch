@@ -57,8 +57,7 @@
 #' combat_corrected_df <- correct_with_ComBat(example_proteome, example_sample_annotation)
 #' 
 #' #Adjust the MS signal drift:
-#' adjusted_data <- adjust_batch_trend(example_proteome %>% 
-#' filter(peptide_group_label %in% unique(example_proteome$peptide_group_label)[1:3]), 
+#' adjusted_data <- adjust_batch_trend(example_proteome[example_proteome$peptide_group_label %in% unique(example_proteome$peptide_group_label)[1:3],], 
 #' example_sample_annotation, span = 0.7, 
 #' abs_threshold = 5, pct_threshold = 0.20)
 #' fit_df <- adjusted_data$fit_df
@@ -92,6 +91,7 @@ center_feature_batch_medians <- function(df_long, sample_annotation = NULL,
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, order_col = NULL, facet_col = NULL)
   
+  old_measure_col <- paste('old', measure_col, sep = '_')
   corrected_df = df_long %>%
     group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
     mutate(median_batch = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
@@ -99,9 +99,9 @@ center_feature_batch_medians <- function(df_long, sample_annotation = NULL,
     group_by_at(vars(one_of(feature_id_col))) %>%
     mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
     ungroup() %>%
-    mutate(diff = median_global - median_batch) 
-  mutate(!!(paste('old', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
-    mutate(!!(sym(measure_col)) := !!(sym(measure_col))+diff)
+    mutate(diff = median_global - median_batch) %>%
+    rename(!!(old_measure_col) := !!(sym(measure_col))) %>%
+    mutate(!!(sym(measure_col)) := !!(sym(old_measure_col))+diff)
   
   return(corrected_df)
 }
@@ -141,18 +141,18 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
                              abs_threshold = abs_threshold,pct_threshold = pct_threshold, ...)) %>%
     unnest() %>%
     group_by(!!!syms(c(feature_id_col, batch_col))) %>%
-    mutate(mean_fit = mean(fit), na.rm = T) %>%
+    mutate(mean_fit = mean(fit, na.rm = T)) %>%
     ungroup() %>%
     mutate(diff = mean_fit - fit) %>%
     mutate(diff.na = ifelse(is.na(diff), 0, diff)) %>%
-    mutate(!!(paste('old', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
     mutate_(Intensity_normalized = interp(~`+`(x, y),
                                           x = as.name('diff.na'),
                                           y = as.name(measure_col))) %>%
+    rename(!!(paste('old', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
     rename(!!(sym(measure_col)) := Intensity_normalized)
   
   fit_df = corrected_df %>% dplyr::select(one_of(c('fit', 'diff', 'diff.na', feature_id_col,
-                                                    sample_id_col, measure_col)))
+                                                    sample_id_col, measure_col, batch_col)))
   
   corrected_df = corrected_df %>%
     select(c(sample_id_col, feature_id_col, measure_col, paste('old', measure_col, sep = '_')))
