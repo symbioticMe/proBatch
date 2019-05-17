@@ -253,27 +253,10 @@ sample_annotation_to_colors <- function(sample_annotation,
                     them to factor, date or numeric'), collapse = ' '))
   }
   
-  sample_annotation = sample_annotation %>%
-    select(one_of(c(columns_for_color_mapping, sample_id_col)))
-  
   rownames_ann = as.character(sample_annotation[[sample_id_col]])
+  sample_annotation = sample_annotation %>%
+    select(one_of(columns_for_color_mapping))
   
-  factor_or_not <- intersect(factor_columns, date_columns)
-  if (length(factor_or_not) > 1) {
-    stop(sprintf(
-      'Columns %s are defined as both factors and not factors',
-      paste(factor_or_not, collapse = ', ')
-    ))
-  }
-  
-  factor_like_columns = names(sample_annotation)[
-    vapply(sample_annotation, function(column)
-      is.factor(column) |is.character(column), logical(1))]
-  if (!is.null(factor_columns)) {
-    factor_columns = union(factor_columns, factor_like_columns)
-  } else {
-    factor_columns = factor_like_columns
-  }
   if (!is.null(date_columns) || !is.null(numeric_columns)) {
     factor_columns = setdiff(factor_columns, c(date_columns, numeric_columns))
     column_intersection <- intersect(factor_columns, union(date_columns, numeric_columns))
