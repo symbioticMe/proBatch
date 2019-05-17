@@ -4,10 +4,11 @@
 \alias{plot_protein_corrplot}
 \title{Peptide correlation matrix (heatmap)}
 \usage{
-plot_protein_corrplot(data_matrix, protein_name, peptide_annotation,
-  protein_col = "ProteinName", feature_id_col = "peptide_group_label",
-  flavor = c("pheatmap", "corrplot"), filename = NULL, width = NA,
-  height = NA, unit = c("cm", "in", "mm"),
+plot_protein_corrplot(data_matrix, protein_name,
+  peptide_annotation = NULL, protein_col = "ProteinName",
+  feature_id_col = "peptide_group_label", flavor = c("pheatmap",
+  "corrplot"), filename = NULL, width = NA, height = NA,
+  unit = c("cm", "in", "mm"),
   plot_title = sprintf("Peptide correlation matrix of \%s protein",
   protein_name), ...)
 }
