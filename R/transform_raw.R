@@ -1,21 +1,26 @@
+#' Functions to log transform raw data before normalization and batch correction
+#' 
 #' @inheritParams proBatch
 #' @param log_base base of the logarithm for transformation
 #' @param offset small positive number to prevent 0 conversion to \code{-Inf}
-#' @name transform_raw_data
-
-#' Log transformation of the data
-#'
-#'
+#' 
 #' @return `log_transform_df()` returns \code{df_long}-size data frame, with \code{measure_col} log transformed;
 #' with old value in another column called "old_intensity" if "intensity" 
 #' was the value of \code{measure_col};
 #' `log_transform_matrix()` returns \code{data_matrix} of same dimensions as input
 #' 
-#' 
 #' @examples 
 #' log_transformed_df <- log_transform(example_proteome)
 #' 
 #' log_transformed_matrix <- log_transform_matrix(example_proteome_matrix, log_base = 10, offset = 1)
+#' @name transform_raw_data
+NULL
+
+#' Log transformation of the data
+#'
+#'
+#' 
+#' 
 #' 
 #' @export
 #' @rdname transform_raw_data
@@ -44,7 +49,10 @@ log_transform_matrix <- function(data_matrix, log_base = 2, offset = 1){
       data_matrix_log = log10(data_matrix + offset)
     }else {
       data_matrix_log = log(data_matrix + offset, base = log_base)
-    }
+    } 
+  } else {
+    warning("Log base is NULL, returning the original data frea")
+    data_matrix_log = data_matrix
   }
   return(data_matrix_log)
 }
