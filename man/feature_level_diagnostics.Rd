@@ -2,12 +2,21 @@
 % Please edit documentation in R/feature_level_diagnostics.R
 \name{feature_level_diagnostics}
 \alias{feature_level_diagnostics}
+\alias{plot_single_feature}
 \alias{plot_peptides_of_one_protein}
 \alias{plot_spike_in}
 \alias{plot_iRT}
 \alias{plot_with_fitting_curve}
 \title{Ploting peptide measurements}
 \usage{
+plot_single_feature(feature_name, df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", geom = c("point", "line"),
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  plot_title = NULL, theme = "classic", ylimits = NULL)
+
 plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
@@ -48,13 +57,7 @@ plot_with_fitting_curve(feature_name, fit_df, fit_value_var = "fit",
   paste(feature_name, collapse = " ")), theme = "classic")
 }
 \arguments{
-\item{protein_name}{name of the protein as defined in \code{ProteinName}}
-
-\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
-protein and/or gene annotations. 
-See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
-
-\item{protein_col}{column where protein names are specified}
+\item{feature_name}{name of the selected feature (e.g. peptide) for diagnostic profiling}
 
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
@@ -115,12 +118,18 @@ level (fragments, transitions, proteins))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
+\item{ylimits}{range of y-axis to plot feature-level trends}
+
+\item{protein_name}{name of the protein as defined in \code{ProteinName}}
+
+\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
+protein and/or gene annotations. 
+See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
+
+\item{protein_col}{column where protein names are specified}
+
 \item{irt_pattern}{substring used to identify iRT proteins in the column
 'ProteinName'}
-
-\item{feature_name}{name of the selected feature (e.g. peptide) for diagnostic profiling}
-
-\item{ylimits}{range of y-axis to plot feature-level trends}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
