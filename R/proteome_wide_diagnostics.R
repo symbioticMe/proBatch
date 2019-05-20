@@ -126,7 +126,7 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
   
   df_long = matrix_to_long(data_matrix)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long)
-  data_matrix = long_to_matrix(df_long, feature_id_col, measure_col, sample_id_col)
+  data_matrix = long_to_matrix(df_long)
   
   if(fill_the_missing) {
     data_matrix[is.na(data_matrix)] = 0
@@ -149,7 +149,7 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
         column_to_rownames(var=sample_id_col)  
       
     }
-    if(!is.null(sample_annotation_row) && is.null(sample_annotatation_col)){
+    if(!is.null(sample_annotation_row) && is.null(sample_annotation_col)){
       annotation_col = NA
       annotation_row = sample_annotation %>% 
         select(one_of(sample_id_col, sample_annotation_row)) %>%
