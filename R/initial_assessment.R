@@ -175,7 +175,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     }
   }
   
-  #Defining sample order for plotting
+  #Defining sample order for plotting (even if order_col NULL, it will re-arrange df_long levels as required for plotting)
   sample_order = define_sample_order(order_col, sample_annotation, facet_col, batch_col, df_long, 
                                      sample_id_col, color_by_batch)
   order_col = sample_order$order_col
