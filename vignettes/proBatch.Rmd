@@ -344,7 +344,7 @@ example_matrix <- long_to_matrix(example_proteome,
 #### Transforming the data to log scale
 Additionally, if the data are expected to be log-transformed, one can:
 ```{r}
-log_transformed_matrix <- log_transform(example_matrix, log_base = 2, offset = 1)
+log_transformed_matrix <- log_transform_matrix(example_matrix, log_base = 2, offset = 1)
 ```
 
 
