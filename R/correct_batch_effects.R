@@ -37,7 +37,7 @@
 #' 
 #' @return the data in the same format as input (\code{data_matrix} or \code{df_long}).
 #' For \code{df_long} the data frame stores the original values of \code{measure_col}
-#' in another column called "old_intensity" if "intensity", and the normalized values
+#' in another column called "pre_corr_intensity" if "intensity", and the normalized values
 #' in \code{measure_col} column.
 #' 
 #' The function `adjust_batch_trend()` returns list of two items: 
@@ -91,7 +91,7 @@ center_feature_batch_medians <- function(df_long, sample_annotation = NULL,
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, order_col = NULL, facet_col = NULL)
   
-  old_measure_col <- paste('old', measure_col, sep = '_')
+  old_measure_col <- paste('pre_corr', measure_col, sep = '_')
   corrected_df = df_long %>%
     group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
     mutate(median_batch = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
@@ -148,14 +148,14 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
     mutate_(Intensity_normalized = interp(~`+`(x, y),
                                           x = as.name('diff.na'),
                                           y = as.name(measure_col))) %>%
-    rename(!!(paste('old', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
+    rename(!!(paste('pre_trendfit', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
     rename(!!(sym(measure_col)) := Intensity_normalized)
   
   fit_df = corrected_df %>% dplyr::select(one_of(c('fit', 'diff', 'diff.na', feature_id_col,
                                                     sample_id_col, measure_col, batch_col)))
   
   corrected_df = corrected_df %>%
-    select(c(sample_id_col, feature_id_col, measure_col, paste('old', measure_col, sep = '_')))
+    select(c(sample_id_col, feature_id_col, measure_col, paste('pre_trendfit', measure_col, sep = '_')))
   
   return(list(corrected_df = corrected_df,
               fit_df = fit_df))
@@ -244,15 +244,12 @@ correct_batch_effects <- function(df_long, sample_annotation,
                                   fit_func = continuous_func, 
                                   abs_threshold = abs_threshold, 
                                   pct_threshold = pct_threshold, ...)
-    fit_matrix = fit_list$data_matrix
-    fit_long = matrix_to_long(fit_matrix, feature_id_col = feature_id_col,
-                              measure_col = measure_col, sample_id_col = sample_id_col)
-    df_long = fit_long
+    adjusted_df = fit_list$corrected_df
   }
   
   #TODO: re-implement in a functional programming
   if(discrete_func == 'MedianCentering'){
-    corrected_df = center_feature_batch_medians(df_long = df_long, 
+    corrected_df = center_feature_batch_medians(df_long = adjusted_df, 
                                                sample_annotation = sample_annotation,
                                                sample_id_col = sample_id_col,
                                                batch_col = batch_col,
@@ -262,7 +259,7 @@ correct_batch_effects <- function(df_long, sample_annotation,
   
   if(discrete_func == 'ComBat'){
     #TODO: pick up the functional programming argument borrowing
-    corrected_df = correct_with_ComBat_df(df_long = df_long, 
+    corrected_df = correct_with_ComBat_df(df_long = adjusted_df, 
                                             sample_annotation = sample_annotation,
                                             feature_id_col = feature_id_col, 
                                             measure_col = measure_col,
