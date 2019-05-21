@@ -6,7 +6,7 @@
 \usage{
 dates_to_posix(sample_annotation, time_column = c("RunDate", "RunTime"),
   new_time_column = "DateTime", dateTimeFormat = c("\%b_\%d",
-  "\%H:\%M:\%S"))
+  "\%H:\%M:\%S"), tz = "GMT")
 }
 \arguments{
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
@@ -22,6 +22,8 @@ converted to}
 
 \item{dateTimeFormat}{POSIX format of the date and time. 
 See \code{\link{as.POSIXct}} from base R for details}
+
+\item{tz}{for time zone}
 }
 \value{
 sample annotation file with a new column \code{new_time_column} with
