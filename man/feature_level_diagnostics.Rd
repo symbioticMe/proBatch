@@ -165,8 +165,9 @@ order_col = 'order', sample_id_col = 'FullRunName',
 batch_col = 'MS_batch')
 
 #to illustrate spike-ins:
-spike_in_plot <- plot_spike_in(example_proteome, example_sample_annotation, 
-protein_col = 'Gene', spike_ins = "BOVINE_A1ag", 
+spike_in_plot <- plot_spike_in(spike_ins = "BOVINE_A1ag", protein_col = 'Gene', 
+df_long = example_proteome, sample_annotation = example_sample_annotation, 
+sample_id_col = 'FullRunName',
 plot_title = "Spike-in BOVINE protein peptides")
 #to illustrate iRT peptides:
 irt_plot <- plot_iRT(example_proteome, 
