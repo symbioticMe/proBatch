@@ -53,6 +53,7 @@
 #' @param peptide_annotation long format data frame with peptide ID and their corresponding 
 #' protein and/or gene annotations. 
 #' See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})
+#' @param color_scheme a named vector of colors to map to \code{batch_col}
 #' @param protein_col column where protein names are specified
 #' @param qual_col column to color point by certain value denoted 
 #' by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
