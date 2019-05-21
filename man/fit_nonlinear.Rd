@@ -54,9 +54,6 @@ data for curve fitting}
 data for curve fitting}
 
 \item{...}{additional parameters to be passed to the fitting function}
-
-\item{verbose}{logical: if \code{TRUE} messages for every peptide will be printed 
-(useful for debugging, otherwise makes the execution too slow)}
 }
 \value{
 vector of fitted response values
