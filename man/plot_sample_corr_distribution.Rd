@@ -38,7 +38,7 @@ create new \code{biospecimen_id} column}
 level (fragments, transitions, proteins))}
 
 \item{plot_param}{columns, defined in correlation_df, which is output of
-\code{get_sample_corr_distrib}, specifically,  \enumerate{
+\code{get_sample_corr_df}, specifically,  \enumerate{
 \item \code{replicate}
 \item \code{batch_the_same}
 \item \code{batch_replicate}
@@ -64,5 +64,5 @@ plot_param = 'batch_replicate')
 
 }
 \seealso{
-\code{\link{get_sample_corr_distrib}}, \code{\link[ggplot2]{ggplot}}
+\code{\link{get_sample_corr_df}}, \code{\link[ggplot2]{ggplot}}
 }
