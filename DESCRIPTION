@@ -48,6 +48,9 @@ Suggests:
     knitr,
     rmarkdown,
     devtools,
+    ggpubr,
+    gtable,
+    gridExtra,
     roxygen2,
     testthat (>= 2.1.0),
     spelling
