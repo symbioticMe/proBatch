@@ -662,7 +662,7 @@ given dataset.
 loess_fit_30 <- adjust_batch_trend(quantile_normalized_long, example_sample_annotation, span = 0.3)
 
 plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
-            fit_df = loess_fit_30$fit_df, fit_value_var = 'fit',
+            fit_df = loess_fit_30$fit_df, fit_value_col = 'fit',
             df_long = quantile_normalized_long, sample_annotation = example_sample_annotation, 
             color_by_batch = TRUE, color_scheme = color_list[[batch_col]], plot_title = "Span = 30%")
 ```
@@ -670,7 +670,7 @@ plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2",
 ```{r loess_70, fig.show='hold', fig.width=5, fig.height=2.4}
 loess_fit_70 <- adjust_batch_trend(quantile_normalized_long, example_sample_annotation, span = 0.7)
 plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
-            fit_df = loess_fit_70$fit_df, fit_value_var = 'fit',
+            fit_df = loess_fit_70$fit_df, fit_value_col = 'fit',
             df_long = quantile_normalized_long, sample_annotation = example_sample_annotation, 
             color_by_batch = TRUE, color_scheme = color_list[[batch_col]],plot_title = "Span = 70%")
 ```
