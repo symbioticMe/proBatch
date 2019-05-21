@@ -30,11 +30,6 @@
 #' df_long = example_proteome, example_sample_annotation, 
 #' qual_col = NULL)
 #' 
-#' #to examine features that have missing values specific per batch, this can be used:
-#' plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
-#' df_long = example_proteome, example_sample_annotation, 
-#' qual_col = 'm_score', qual_value = 2)
-#' 
 #' #to examine peptides of a single protein:
 #' peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
 #' protein_name = "Haao",  
