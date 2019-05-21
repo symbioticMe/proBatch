@@ -87,7 +87,8 @@
 #' @importFrom tidyr complete nest unnest
 #' @importFrom utils combn 
 #' @importFrom scales brewer_pal
-#' @importFrom stats as.formula complete.cases dist hclust loess median 
+#' @importFrom stats as.formula complete.cases cor dist hclust 
+#' @importFrom stats ksmooth loess median 
 #' @importFrom stats model.matrix prcomp predict reformulate setNames
 #' @importFrom tibble remove_rownames rownames_to_column column_to_rownames
 #' @importFrom viridis viridis_pal
