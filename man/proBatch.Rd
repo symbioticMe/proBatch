@@ -55,6 +55,8 @@ by batch factor as defined by \code{batch_col}.}
 protein and/or gene annotations. 
 See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
 
+\item{color_scheme}{a named vector of colors to map to \code{batch_col}}
+
 \item{protein_col}{column where protein names are specified}
 
 \item{qual_col}{column to color point by certain value denoted 
