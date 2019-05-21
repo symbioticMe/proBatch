@@ -26,8 +26,7 @@ correct_batch_effects(df_long, sample_annotation, continuous_func = NULL,
   discrete_func = c("MedianCentering", "ComBat"),
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  sample_order_col = "order", abs_threshold = 5, pct_threshold = 0.2,
-  ...)
+  order_col = "order", abs_threshold = 5, pct_threshold = 0.2, ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
