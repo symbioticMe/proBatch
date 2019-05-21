@@ -134,7 +134,7 @@ See "example_peptide_annotation" for more details (to call the description, use 
 \item{irt_pattern}{substring used to identify iRT proteins in the column
 'ProteinName'}
 
-\item{fit_df}{data frame output of \link{\code{adjust_batch_trend}} to be plotted with the line}
+\item{fit_df}{data frame output of \code{adjust_batch_trend} to be plotted with the line}
 
 \item{fit_value_col}{column in \code{fit_df} where the values for fitting trend are found}
 }
