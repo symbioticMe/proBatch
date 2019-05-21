@@ -15,10 +15,13 @@
 #' @param protein_name name of the protein as defined in \code{ProteinName}
 #' @param irt_pattern substring used to identify iRT proteins in the column
 #'   'ProteinName'
+#' @param spike_ins name of feature(s), typically proteins that were spiked in for control
 #' @param vline_color color of vertical lines, typically separating 
 #'  different MS batches in ordered runs; 
 #'  should be `NULL` for experiments without intrinsic order.
 #' @param ylimits range of y-axis to plot feature-level trends 
+#' @param fit_df data frame output of \link{\code{adjust_batch_trend}} to be plotted with the line
+#' @param fit_value_col column in \code{fit_df} where the values for fitting trend are found
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{feature_name} and (optionally) by \code{batch_col}
@@ -209,7 +212,7 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
                                          facet_col = NULL,
                                          plot_title = sprintf('Peptides of %s protein', 
                                                               protein_name),
-                                         theme = 'classic', ...){
+                                         theme = 'classic'){
   
   if (!is.null(peptide_annotation)){
     peptides = peptide_annotation %>%
@@ -232,7 +235,7 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
                            facet_col = facet_col,
                            qual_col = qual_col, 
                            qual_value = qual_value,
-                           plot_title = plot_title, ...)
+                           plot_title = plot_title)
   return(gg)
 }
 
@@ -255,7 +258,7 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                           vline_color = 'red',
                           facet_col = NULL,
                           plot_title = 'Spike-in BOVINE protein peptides', 
-                          theme = 'classic', ...){
+                          theme = 'classic'){
   
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
@@ -289,7 +292,7 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                            qual_value = qual_value,
                            order_col = order_col,
                            plot_title = plot_title, 
-                           theme = theme, ...)
+                           theme = theme)
   return(gg)
 }
 
@@ -312,7 +315,7 @@ plot_iRT <- function(irt_pattern = 'iRT',
                      vline_color = 'red',
                      facet_col = NULL,
                      plot_title = 'iRT peptide profile', 
-                     theme = 'classic', ...){
+                     theme = 'classic'){
   
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
@@ -335,16 +338,16 @@ plot_iRT <- function(irt_pattern = 'iRT',
                            vline_color = vline_color,
                            facet_col = facet_col,
                            plot_title = plot_title, 
-                           theme = theme, ...)
+                           theme = theme)
   return(gg)
 }
 
-#' 
+#'
 #' @export
 #' @rdname feature_level_diagnostics
 
 plot_with_fitting_curve <- function(feature_name, 
-                                    fit_df, fit_value_var = 'fit', 
+                                    fit_df, fit_value_col = 'fit', 
                                     df_long, sample_annotation = NULL,
                                     sample_id_col = 'FullRunName',
                                     measure_col = 'Intensity',
@@ -395,12 +398,12 @@ plot_with_fitting_curve <- function(feature_name,
    
   if(identical(color_by_batch, FALSE)){
     gg = gg + geom_line(data = fit_df,
-                        aes_string(y = fit_value_var, x = order_col, 
+                        aes_string(y = fit_value_col, x = order_col, 
                                    group = batch_col), 
                         color = 'red')
   } else {
     gg = gg + geom_line(data = fit_df,
-                        aes_string(y = fit_value_var, x = order_col,
+                        aes_string(y = fit_value_col, x = order_col,
                                    group = batch_col, 
                                    color = batch_col), size = 1.25)
     #TODO: add coloring scheme as in other functions here, too
