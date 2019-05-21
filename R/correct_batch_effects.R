@@ -226,7 +226,7 @@ correct_batch_effects <- function(df_long, sample_annotation,
                                   feature_id_col = 'peptide_group_label', 
                                   sample_id_col = 'FullRunName',
                                   measure_col = 'Intensity',  
-                                  sample_order_col = 'order', 
+                                  order_col = 'order', 
                                   abs_threshold = 5, pct_threshold = 0.20, ...){
   
   discrete_func <- match.arg(discrete_func)
@@ -240,7 +240,7 @@ correct_batch_effects <- function(df_long, sample_annotation,
                                   feature_id_col = feature_id_col,
                                   sample_id_col = sample_id_col,
                                   measure_col = measure_col,
-                                  sample_order_col = sample_order_col,
+                                  order_col = order_col,
                                   fit_func = continuous_func, 
                                   abs_threshold = abs_threshold, 
                                   pct_threshold = pct_threshold, ...)
