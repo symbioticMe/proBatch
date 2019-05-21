@@ -270,6 +270,8 @@ sample_annotation_to_colors <- function(sample_annotation,
   
   list_of_col_for_factors = list()
   if (!is.null(factor_columns)) {
+    factor_df = sample_annotation %>%
+      select(one_of(factor_columns))
     
     if (rare_categories_to_other) {
       factor_df = factor_df %>%
