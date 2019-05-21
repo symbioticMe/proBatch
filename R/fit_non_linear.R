@@ -16,9 +16,7 @@
 #' @param abs_threshold the absolute threshold to filter 
 #' data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter 
-#' data for curve fitting 
-#' @param verbose logical: if \code{TRUE} messages for every peptide will be printed 
-#' (useful for debugging, otherwise makes the execution too slow)
+#' data for curve fitting
 #' 
 #' @param ... additional parameters to be passed to the fitting function
 #'
