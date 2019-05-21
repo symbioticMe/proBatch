@@ -170,16 +170,16 @@ df_long = example_proteome, sample_annotation = example_sample_annotation,
 sample_id_col = 'FullRunName',
 plot_title = "Spike-in BOVINE protein peptides")
 #to illustrate iRT peptides:
-irt_plot <- plot_iRT(example_proteome, 
-example_sample_annotation, 
-protein_col = 'Gene', irt_pattern = "BOVINE_A1ag")
+irt_plot <- plot_iRT(irt_pattern = "BOVINE_A1ag", 
+df_long = example_proteome, sample_annotation = example_sample_annotation, 
+protein_col = 'Gene')
 
 #illustrate the fitting curve:
 loess_fit_70 <- adjust_batch_trend(example_proteome, 
 example_sample_annotation, span = 0.7)
 
 fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
-df_long = example_proteome, example_sample_annotation, 
+df_long = example_proteome, sample_annotation = example_sample_annotation, 
 fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span")
 
 }
