@@ -12,17 +12,16 @@ test_that("check_sample_consistency", {
   expect_equal(nrow(df_test), nrow(example_proteome))
   
   options(warn = 0)
-  expect_warning(df_test = check_sample_consistency(sample_annotation = NULL, 
-                                                    df_long = example_proteome, 
-                                                    sample_id_col = 'FullRunName',
+  expect_warning(check_sample_consistency(sample_annotation = NULL, df_long = example_proteome, 
+                                          sample_id_col = 'FullRunName',
                                                     batch_col = NULL, order_col = NULL, facet_col = NULL))
   
   falsified_annotation = example_sample_annotation
   colnames(falsified_annotation)[colnames(falsified_annotation) == 'FullRunName'] = 'FalseRunName'
-  expect_error(df_test = check_sample_consistency(sample_annotation = falsified_annotation, 
-                                                    df_long = example_proteome, 
-                                                    sample_id_col = 'FullRunName',
-                                                    batch_col = NULL, order_col = NULL, facet_col = NULL))
+  expect_error(check_sample_consistency(sample_annotation = falsified_annotation, 
+                                        df_long = example_proteome, 
+                                        sample_id_col = 'FullRunName',
+                                        batch_col = NULL, order_col = NULL, facet_col = NULL))
 })
 
 test_that("define_sample_order", {
