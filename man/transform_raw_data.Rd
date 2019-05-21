@@ -41,7 +41,7 @@ Functions to log transform raw data before normalization and batch correction
 Log transformation of the data
 }
 \examples{
-log_transformed_df <- log_transform(example_proteome)
+log_transformed_df <- log_transform_df(example_proteome)
 
 log_transformed_matrix <- log_transform_matrix(example_proteome_matrix, log_base = 10, offset = 1)
 }
