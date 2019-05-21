@@ -41,7 +41,7 @@ before normalization (`NULL`, `2` or `10`)}
 \value{
 the data in the same format as input (\code{data_matrix} or \code{df_long}).
 For \code{df_long} the data frame stores the original values of \code{measure_col}
-in another column called "old_intensity" if "intensity", and the normalized values
+in another column called "pre_norm_intensity" if "intensity", and the normalized values
 in \code{measure_col} column.
 }
 \description{
