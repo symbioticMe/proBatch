@@ -147,7 +147,7 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
                              abs_threshold = abs_threshold,pct_threshold = pct_threshold, ...)) %>%
     unnest() %>%
     group_by(!!!syms(c(feature_id_col, batch_col))) %>%
-    mutate(mean_fit = mean(fit, na.rm = T)) %>%
+    mutate(mean_fit = mean(fit, na.rm = TRUE)) %>%
     ungroup() %>%
     mutate(diff = mean_fit - fit) %>%
     mutate(diff.na = ifelse(is.na(diff), 0, diff)) %>%
