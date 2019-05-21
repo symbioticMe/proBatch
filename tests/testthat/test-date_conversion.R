@@ -37,7 +37,7 @@ test_that("date_to_sample_order", {
                                           instrument_col = NULL)
   
   expect_equal(new_annotation_worder$RunDate[1], "Oct_05")
-  expect_equal(new_annotation$RunTime[1], "18:35:00")
+  expect_equal(new_annotation_worder$RunTime[1], "18:35:00")
   
   expect_is(new_annotation_worder$new_DateTime, "POSIXct")
   expect_length(new_annotation_worder$new_order, nrow(sample_annotation_test))
