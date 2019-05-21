@@ -328,7 +328,7 @@ calculate_sample_corr_distribution <- function(data_matrix, repeated_samples, sa
 #' Tip: if such ID is absent, but can be defined from several columns,
 #' create new \code{biospecimen_id} column
 #' @param plot_param columns, defined in correlation_df, which is output of
-#' \code{get_sample_corr_distrib}, specifically,  \enumerate{
+#' \code{get_sample_corr_df}, specifically,  \enumerate{
 #' \item \code{replicate}
 #' \item \code{batch_the_same}
 #' \item \code{batch_replicate}
@@ -347,7 +347,7 @@ calculate_sample_corr_distribution <- function(data_matrix, repeated_samples, sa
 #' biospecimen_id_col = "EarTag", 
 #' plot_param = 'batch_replicate')
 #' 
-#' @seealso \code{\link{get_sample_corr_distrib}}, \code{\link[ggplot2]{ggplot}}
+#' @seealso \code{\link{get_sample_corr_df}}, \code{\link[ggplot2]{ggplot}}
 plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                           repeated_samples = NULL,
                                           sample_id_col = 'FullRunName',
@@ -535,7 +535,7 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
 #' starting from peptide correlation data frame
 #'
 #' @inheritParams proBatch
-#' @param corr_distribution 
+#' @param corr_distribution data frame with correlation distribution
 #'
 #' @return \code{ggplot} type object with violin plot
 #' 
