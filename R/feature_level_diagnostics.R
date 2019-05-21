@@ -34,7 +34,7 @@
 #' peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
 #' protein_name = "Haao",  
 #' protein_col = "Gene", df_long = example_proteome, 
-#' example_sample_annotation, 
+#' sample_annotation = example_sample_annotation, 
 #' order_col = 'order', sample_id_col = 'FullRunName', 
 #' batch_col = 'MS_batch')
 #' 
