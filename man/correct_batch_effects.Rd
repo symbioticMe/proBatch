@@ -118,7 +118,7 @@ median_centered_df <- center_feature_batch_medians(
 example_proteome, example_sample_annotation)
 
 #Correct with ComBat: 
-combat_corrected_df <- correct_with_ComBat(example_proteome, example_sample_annotation)
+combat_corrected_df <- correct_with_ComBat_df(example_proteome, example_sample_annotation)
 
 #Adjust the MS signal drift:
 adjusted_data <- adjust_batch_trend(example_proteome[example_proteome$peptide_group_label \%in\% unique(example_proteome$peptide_group_label)[1:3],], 
@@ -132,7 +132,7 @@ sample_annotation = example_sample_annotation)
 
 #Correct the data in one go:
 batch_corrected_matrix <- correct_batch_effects(example_proteome, example_sample_annotation, 
-continuos_func = 'loess_regression',
+continuous_func = 'loess_regression',
 discrete_func = 'MedianCentering', 
 batch_col = 'MS_batch',  
 span = 0.7,
