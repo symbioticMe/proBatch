@@ -61,10 +61,10 @@ list of two items: plot =gg, df = pvca_res
 Plot variance distribution by variable
 }
 \examples{
-matrix <- example_proteome_matrix[1:50, ]
+\donttest{matrix <- example_proteome_matrix[1:50, ]
 pvca_plot <- plot_PVCA(matrix, example_sample_annotation, 
 technical_covariates = c('MS_batch', 'digestion_batch'),
-biological_covariates = c("Diet", "Sex", "Strain"))
+biological_covariates = c("Diet", "Sex", "Strain"))}
 
 }
 \seealso{
