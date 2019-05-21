@@ -47,8 +47,8 @@ test_that("define_sample_order", {
                                      sample_annotation = example_sample_annotation, 
                                      facet_col = NULL, batch_col = 'MS_batch', 
                                      df_long = example_proteome, 
-                                     sample_id_col = 'FullRunName', 
-                                     color_by_batch = TRUE)
+                                     sample_id_col = 'FullRunName',
+                                     color_by_batch = T)
   new_order_col = sample_order$order_col
   df_long = sample_order$df_long
   
