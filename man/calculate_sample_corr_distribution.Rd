@@ -5,20 +5,21 @@
 \title{Calculates correlation of data matrix and calculates correlation distribution for all pairs 
 of the replicated samples}
 \usage{
-calculate_sample_corr_distribution(data_matrix, repeated_samples,
-  sample_annotation, biospecimen_id_col, sample_id_col, batch_col)
+calculate_sample_corr_distribution(data_matrix, sample_annotation,
+  repeated_samples = NULL, biospecimen_id_col = "EarTag",
+  sample_id_col = "FullRunName", batch_col = "MS_batch")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
 See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
 
-\item{repeated_samples}{if \code{NULL}, only repeated sample correlation is plotted}
-
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
 technical covariates (batches etc) }. 
 See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+
+\item{repeated_samples}{if \code{NULL}, only repeated sample correlation is plotted}
 
 \item{biospecimen_id_col}{column in \code{sample_annotation} 
 that defines a unique bio ID, which is usually a 
@@ -53,4 +54,10 @@ created the same as \code{sample_id_1}
 \description{
 Calculates correlation of data matrix and calculates correlation distribution for all pairs 
 of the replicated samples
+}
+\examples{
+corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 
+sample_annotation = example_sample_annotation,
+batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
+
 }
