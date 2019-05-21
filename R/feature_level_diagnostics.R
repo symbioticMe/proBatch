@@ -384,8 +384,13 @@ plot_with_fitting_curve <- function(feature_name,
     filter(!!(sym(feature_id_col)) %in% feature_name)
   
   if (!is.null(sample_annotation)){
-    fit_df = fit_df %>%
-      merge(sample_annotation, by = c(sample_id_col))
+    fit_df = check_sample_consistency(sample_annotation = sample_annotation, df_long = fit_df,
+                                      sample_id_col = sample_id_col, batch_col = batch_col, 
+                                      order_col = order_col, facet_col = facet_col)
+    fit_df = define_sample_order(order_col = order_col, sample_annotation = sample_annotation,
+                                 df_long = fit_df, sample_id_col = sample_id_col, 
+                                 facet_col = facet_col, batch_col = batch_col, 
+                                 color_by_batch = color_by_batch)$df_long
   }
    
   if(identical(color_by_batch, FALSE)){
