@@ -63,6 +63,6 @@ median_normalized_df <- normalize_sample_medians(example_proteome)
 
 #Transform the data in one go:
 quantile_normalized_matrix <- normalize_data(example_proteome_matrix, 
-normalizeFunc = "quantile", log_base = 2)
+normalize_func = "quantile", log_base = 2)
 
 }
