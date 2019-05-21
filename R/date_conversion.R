@@ -10,6 +10,7 @@
 #'   converted to
 #' @param dateTimeFormat POSIX format of the date and time. 
 #'   See \code{\link{as.POSIXct}} from base R for details
+#' @param tz for time zone
 #'
 #' @return sample annotation file with a new column \code{new_time_column} with
 #'   POSIX-formatted date
@@ -26,12 +27,12 @@
 dates_to_posix <- function(sample_annotation,
                            time_column = c('RunDate','RunTime'),
                            new_time_column = 'DateTime',
-                           dateTimeFormat = c("%b_%d", "%H:%M:%S")){
+                           dateTimeFormat = c("%b_%d", "%H:%M:%S"), tz = 'GMT'){
   if (length(time_column) == 1){
     if(is.null(new_time_column)) new_time_column = time_column
     time_col = as.character(sample_annotation[[time_column]])
     sample_annotation[[new_time_column]] = as.POSIXct(time_col ,
-                                                      format=dateTimeFormat)
+                                                      format=dateTimeFormat, tz = tz)
   }
   else {
     sample_annotation = sample_annotation %>%
