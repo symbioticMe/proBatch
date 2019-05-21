@@ -25,7 +25,7 @@ plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
   plot_title = sprintf("Peptides of \%s protein", protein_name),
-  theme = "classic", ...)
+  theme = "classic")
 
 plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
@@ -34,8 +34,7 @@ plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
-  plot_title = "Spike-in BOVINE protein peptides", theme = "classic",
-  ...)
+  plot_title = "Spike-in BOVINE protein peptides", theme = "classic")
 
 plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
@@ -44,9 +43,9 @@ plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
   qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
-  plot_title = "iRT peptide profile", theme = "classic", ...)
+  plot_title = "iRT peptide profile", theme = "classic")
 
-plot_with_fitting_curve(feature_name, fit_df, fit_value_var = "fit",
+plot_with_fitting_curve(feature_name, fit_df, fit_value_col = "fit",
   df_long, sample_annotation = NULL, sample_id_col = "FullRunName",
   measure_col = "Intensity", feature_id_col = "peptide_group_label",
   geom = c("point", "line"), qual_col = NULL, qual_value = NULL,
@@ -97,6 +96,8 @@ batch comparison}
 \item{color_by_batch}{(logical) whether to color points and connecting lines 
 by batch factor as defined by \code{batch_col}.}
 
+\item{color_scheme}{a named vector of colors to map to \code{batch_col}}
+
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
 feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
@@ -128,8 +129,14 @@ See "example_peptide_annotation" for more details (to call the description, use 
 
 \item{protein_col}{column where protein names are specified}
 
+\item{spike_ins}{name of feature(s), typically proteins that were spiked in for control}
+
 \item{irt_pattern}{substring used to identify iRT proteins in the column
 'ProteinName'}
+
+\item{fit_df}{data frame output of \link{\code{adjust_batch_trend}} to be plotted with the line}
+
+\item{fit_value_col}{column in \code{fit_df} where the values for fitting trend are found}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
