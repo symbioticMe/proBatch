@@ -9,7 +9,7 @@ plot_peptide_corr_distribution.corrDF(corr_distribution,
   plot_title = "Correlation of peptides", theme = "classic")
 }
 \arguments{
-\item{corr_distribution}{}
+\item{corr_distribution}{data frame with correlation distribution}
 
 \item{plot_title}{title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
