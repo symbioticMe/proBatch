@@ -433,13 +433,13 @@ other approaches, such as quantile normalization need to be used.
 
 ```{r median_normalization_log, fig.show='hold'}
 median_normalized_matrix = normalize_data(log_transformed_matrix, 
-                                          normalizeFunc = "medianCentering")
+                                          normalize_func = "medianCentering")
 ```
 
 Same result will be achieved with:
 ```{r median_normalization_raw, fig.show='hold'}
 median_normalized_matrix = normalize_data(example_matrix, 
-                                          normalizeFunc = "medianCentering", log_base = 2)
+                                          normalize_func = "medianCentering", log_base = 2)
 ```
 
 ### Quantile normalization
@@ -453,7 +453,7 @@ the distribution in principle are identical.
 
 ```{r quantile_norm, fig.show='hold'}
 quantile_normalized_matrix = normalize_data(log_transformed_matrix, 
-                                            normalizeFunc = "quantile")
+                                            normalize_func = "quantile")
 ```
 
 After quantile or median normalization, you can easily check if the
@@ -647,7 +647,7 @@ corrected using discrete methods such as median-centering or ComBat.
 
 ```{r loess_fit, fig.show='hold', fig.width=5, fig.height=2.4}
 loess_fit <- adjust_batch_trend(quantile_normalized_long, example_sample_annotation)
-loess_fit_matrix <- loess_fit$corrected_df
+loess_fit_df <- loess_fit$corrected_df
 ```
 
 One important parameter in LOESS fitting is span, which determines the
@@ -698,9 +698,9 @@ Currently, two methods of batch correction are implemented:
 Feature-level median centering is the simplest approach for batch effects correction. 
 However, if the variance is different between batches, other approaches need to be used.
 ```{r median_batch, fig.show='hold', fig.width=3, fig.height=2.4}
-peptide_median_df <- center_peptide_batch_medians(loess_fit_df, example_sample_annotation)
+peptide_median_df <- center_feature_batch_medians(loess_fit_df, example_sample_annotation)
 plot_single_feature(feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long = peptide_median_df, 
-            sample_annotation = example_sample_annotation, measure_col = 'Intensity_normalized',
+            sample_annotation = example_sample_annotation, measure_col = 'Intensity',
             plot_title = "Feature-level Median Centered")
 ```
 
@@ -709,18 +709,18 @@ ComBat is well-suited for batches with distinct distributions, but
 restricted to peptides that don't have missing batch
 measurements. ComBat, uses parametric and non-parametric empirical
 Bayes framework for adjusting data for batch effects [11]. The
-function `correct_with_ComBat()` can incorporate several covariates
+function `correct_with_ComBat_df()` can incorporate several covariates
 and make data comparable across batches.
 
 ```{r comBat, fig.show='hold'}
-comBat_df <- correct_with_ComBat(loess_fit_df, example_sample_annotation)
+comBat_df <- correct_with_ComBat_df(loess_fit_df, example_sample_annotation)
 ```
 
 To illustrate the correction we use the "10231_QDVDVWLWQQEGSSK_2" spike-in peptide. 
 ```{r combat_result, fig.show='hold',  fig.width=3, fig.height=2.4}
 plot_single_feature (feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long = loess_fit_df, 
           sample_annotation = example_sample_annotation, plot_title = "Loess Fitted")
-plot_single_feature (feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long =  combat_df, 
+plot_single_feature (feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long =  comBat_df, 
           sample_annotation = example_sample_annotation, plot_title = "ComBat corrected")
 ```
 
@@ -737,9 +737,9 @@ correction method is preferred at `discrete_func` either “ComBat” or
 
 ```{r batch_corr_general, fig.show='hold'}
 batch_corrected_df <- correct_batch_effects(df_long = quantile_normalized_long,
-                                                sample_annotation = example_sample_annotation, 
-                                                discrete_func = 'ComBat', continuous_func = 'loess_regression',
-                                                abs_threshold = 5, pct_threshold = 0.20)
+                                            sample_annotation = example_sample_annotation, 
+                                            discrete_func = 'ComBat', continuous_func = 'loess_regression',
+                                            abs_threshold = 5, pct_threshold = 0.20)
 batch_corrected_matrix = long_to_matrix(batch_corrected_df)
 ```
 
