@@ -135,6 +135,7 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
   
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, batch_col, order_col, facet_col = NULL)
   
+  old_measure_col = paste('pre_trendfit', measure_col, sep = '_')
   corrected_df = df_long %>%
     filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
     group_nest(!!!syms(c(feature_id_col, batch_col, "batch_total"))) %>%  
@@ -150,11 +151,8 @@ adjust_batch_trend <- function(df_long, sample_annotation = NULL,
     ungroup() %>%
     mutate(diff = mean_fit - fit) %>%
     mutate(diff.na = ifelse(is.na(diff), 0, diff)) %>%
-    mutate_(Intensity_normalized = interp(~`+`(x, y),
-                                          x = as.name('diff.na'),
-                                          y = as.name(measure_col))) %>%
-    rename(!!(paste('pre_trendfit', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
-    rename(!!(sym(measure_col)) := Intensity_normalized)
+    rename(!!(old_measure_col) := !!(sym(measure_col))) %>%
+    mutate(!!(sym(measure_col)) := !!sym('diff.na') + !!sym(old_measure_col))
   
   fit_df = corrected_df %>% dplyr::select(one_of(c('fit', 'diff', 'diff.na', feature_id_col,
                                                     sample_id_col, measure_col, batch_col)))
