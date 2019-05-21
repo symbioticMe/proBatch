@@ -31,3 +31,12 @@ that are suggested to use for plotting in
 \description{
 Transform square correlation matrix into long data frame of correlations
 }
+\examples{
+selected_genes = c('BOVINE_A1ag','BOVINE_FetuinB','Cyfip1')
+selected_peptides = example_peptide_annotation$peptide_group_label[example_peptide_annotation$Gene \%in\% selected_genes]
+matrix_test = example_proteome_matrix[selected_peptides,]
+pep_annotation_sel = example_peptide_annotation[example_peptide_annotation$Gene \%in\% selected_genes, ]
+corr_distribution = calculate_peptide_corr_distr(matrix_test, 
+pep_annotation_sel, protein_col = 'Gene')
+
+}
