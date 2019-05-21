@@ -92,8 +92,10 @@ Batch correction of normalized data. Batch correction
 brings each feature in each batch to the comparable shape.
 Currently the following batch correction functions are implemented:
 \enumerate{
-  \item Per-feature median centering: `center_feature_batch_medians()`. Median centering of the features (per batch median)
-  \item correction with ComBat: `correct_with_ComBat()`. Adjusts for discrete batch effects using ComBat. 
+  \item Per-feature median centering: `center_feature_batch_medians()`. 
+  Median centering of the features (per batch median).
+  \item correction with ComBat: `correct_with_ComBat()`. 
+  Adjusts for discrete batch effects using ComBat. 
   Standardized input-output ComBat normalization ComBat allows users to adjust
 for batch effects in datasets where the batch covariate is known, using
 methodology described in Johnson et al. 2007. It uses either parametric or
