@@ -297,10 +297,15 @@ get_sample_corr_df <- function(cor_proteome, sample_annotation,
 #' created the same as \code{sample_id_1}
 #' }
 #' 
+#' @examples 
+#' corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 
+#' sample_annotation = example_sample_annotation,
+#' batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
+#' 
 #' @export
 #'
-calculate_sample_corr_distribution <- function(data_matrix, repeated_samples, sample_annotation,
-                              biospecimen_id_col, sample_id_col, batch_col) {
+calculate_sample_corr_distribution <- function(data_matrix, sample_annotation, repeated_samples = NULL,
+                              biospecimen_id_col = 'EarTag', sample_id_col = 'FullRunName', batch_col = 'MS_batch') {
   if (!is.null(repeated_samples)){
     print('calculating correlation of repeated samples only')
     corr_matrix = cor(data_matrix[,repeated_samples], use = "pairwise.complete.obs")
@@ -362,12 +367,12 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
     
   if (!is.list(data_matrix)){
-      corr_distribution = calculate_sample_corr_distribution(data_matrix = data_matrix, 
-                                            repeated_samples = repeated_samples, 
-                                            sample_annotation = sample_annotation,
-                                            biospecimen_id_col = biospecimen_id_col, 
-                                            sample_id_col = sample_id_col, 
-                                            batch_col = batch_col)
+      corr_distribution = calculate_sample_corr_distribution(data_matrix = data_matrix,  
+                                                             sample_annotation = sample_annotation,
+                                                             repeated_samples = repeated_samples,
+                                                             biospecimen_id_col = biospecimen_id_col, 
+                                                             sample_id_col = sample_id_col, 
+                                                             batch_col = batch_col)
   } else {
       corr_distribution = lapply(1:length(data_matrix), function(i) {
           dm = data_matrix[[i]]
@@ -479,6 +484,14 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 #' that are suggested to use for plotting in 
 #' \code{\link{plot_peptide_corr_distribution}} as \code{plot_param}:
 #' 
+#' @examples 
+#' selected_genes = c('BOVINE_A1ag','BOVINE_FetuinB','Cyfip1')
+#' selected_peptides = example_peptide_annotation$peptide_group_label[example_peptide_annotation$Gene %in% selected_genes]
+#' matrix_test = example_proteome_matrix[selected_peptides,]
+#' pep_annotation_sel = example_peptide_annotation[example_peptide_annotation$Gene %in% selected_genes, ]
+#' corr_distribution = calculate_peptide_corr_distr(matrix_test, 
+#' pep_annotation_sel, protein_col = 'Gene')
+#' 
 #' @export
 #' 
 calculate_peptide_corr_distr <- function(data_matrix, peptide_annotation,
@@ -547,7 +560,7 @@ plot_peptide_corr_distribution.corrDF <- function(corr_distribution,
                                                   theme = 'classic') {
   median_same_prot = corr_distribution %>%
     filter(same_protein == 'same protein') %>%
-    summarize(median = median(correlation, na.rm = T)) %>%
+    summarize(median = median(correlation, na.rm = TRUE)) %>%
     pull(median)
   gg <- ggplot(corr_distribution, aes_string(x = 'same_protein', y = 'correlation'))+
     geom_violin(scale = 'width') +
