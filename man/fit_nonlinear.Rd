@@ -62,10 +62,10 @@ vector of fitted response values
 Fit a non-linear trend (currently optimized for LOESS)
 }
 \examples{
-df_selected = example_proteome \%>\% 
-merge(example_sample_annotation, by = 'FullRunName') \%>\%
-filter(peptide_group_label == example_proteome$peptide_group_label[1] &
-MS_batch == 'Batch_1')
-fit_values = fit_nonlinear(df_selected)
+test_peptide = example_proteome$peptide_group_label[1] 
+df_selected = example_proteome[example_proteome$peptide_group_label == test_peptide,]
+batch_selected_df = example_sample_annotation[example_sample_annotation$MS_batch == 'Batch_1',]
+df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
+fit_values = fit_nonlinear(df_for_test)
 
 }
