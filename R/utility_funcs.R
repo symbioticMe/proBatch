@@ -45,7 +45,8 @@ merge_df_with_annotation <- function(df_long, sample_annotation, sample_id_col,
 #'
 #' @examples
 #' 
-#' df_test = check_sample_consistency(sample_annotation = example_sample_annotation, df_long = example_proteome, sample_id_col = sample_id_col,
+#' df_test = check_sample_consistency(sample_annotation = example_sample_annotation, 
+#' df_long = example_proteome, sample_id_col = 'FullRunName',
 #' batch_col = NULL, order_col = NULL, facet_col = NULL)
 #' 
 #' 
@@ -80,8 +81,8 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long,
 #' @export
 #'
 #' @examples 
-#' sample_order = define_sample_order(order_col, sample_annotation, 
-#' facet_col, batch_col, df_long, sample_id_col, color_by_batch)
+#' sample_order = define_sample_order(order_col = 'order', sample_annotation = example_sample_annotation, 
+#' facet_col = NULL, batch_col = 'MS_batch', df_long = example_proteome, sample_id_col = 'FullRunName', color_by_batch = T)
 #' new_order_col = sample_order$order_col
 #' df_long = sample_order$df_long
 #' 
