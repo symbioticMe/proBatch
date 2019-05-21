@@ -46,8 +46,10 @@ list of two items: \code{order_col} new name and new \code{df_long}
 Defining sample order internally
 }
 \examples{
-sample_order = define_sample_order(order_col = 'order', sample_annotation = example_sample_annotation, 
-facet_col = NULL, batch_col = 'MS_batch', df_long = example_proteome, sample_id_col = 'FullRunName', color_by_batch = T)
+sample_order = define_sample_order(order_col = 'order', 
+sample_annotation = example_sample_annotation, 
+facet_col = NULL, batch_col = 'MS_batch', df_long = example_proteome, 
+sample_id_col = 'FullRunName', color_by_batch = T)
 new_order_col = sample_order$order_col
 df_long = sample_order$df_long
 
