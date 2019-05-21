@@ -10,7 +10,7 @@
 #' `log_transform_matrix()` returns \code{data_matrix} of same dimensions as input
 #' 
 #' @examples 
-#' log_transformed_df <- log_transform(example_proteome)
+#' log_transformed_df <- log_transform_df(example_proteome)
 #' 
 #' log_transformed_matrix <- log_transform_matrix(example_proteome_matrix, log_base = 10, offset = 1)
 #' @name transform_raw_data
