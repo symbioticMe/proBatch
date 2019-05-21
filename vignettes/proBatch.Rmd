@@ -110,15 +110,11 @@ peptide transitions, and these abundances are critical for protein quantity infe
 Instead, we do recommend to correct the technical noise at the level, which is used
 to infer the proteins (thus, fragment-level for inference tools such as aLFQ or MSstats).
 
-# Preparation for the analysis
-## Installing dependencies and `proBatch`
+# Installation
 
 To install the proBatch package, the following commands can be executed in R:
 ```{r install_proBatch, fig.show='hold', eval = FALSE}
-# Once the proBatch package is in Bioconductor, can easily install by: 
-install.packages("proBatch") 
-
-# Alternatively, install the development version from GitHub:
+#install the development version from GitHub:
 install.packages("devtools")
 devtools::install_github("symbioticMe/proBatch", build_vignettes = TRUE)
 ```
