@@ -223,7 +223,7 @@ merge_rare_levels <- function(column) {
 #' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch','EarTag', "Strain", 
 #' "Diet", "digestion_batch", "Sex"),
-#' not_factor_columns = 'DateTime',
+#' date_columns = 'DateTime',
 #' numeric_columns = c('order'))
 #' @export
 #' 
@@ -270,9 +270,6 @@ sample_annotation_to_colors <- function(sample_annotation,
   
   list_of_col_for_factors = list()
   if (!is.null(factor_columns)) {
-    factor_df = sample_annotation %>%
-      select(one_of(factor_columns)) %>%
-      mutate_at(names(.), funs(as.factor))
     
     if (rare_categories_to_other) {
       factor_df = factor_df %>%
