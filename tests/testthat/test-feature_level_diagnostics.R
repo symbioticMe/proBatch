@@ -107,7 +107,7 @@ test_that("fitting_trend_plots", {
   loess_fit <- adjust_batch_trend(short_df, example_sample_annotation, span = 0.7)
   
   fit_plot <- plot_with_fitting_curve(feature_name = "10062_NVGVSFYADKPEVTQEQK_3", 
-                                      fit_df = loess_fit$fit_df, fit_value_var = 'fit',
+                                      fit_df = loess_fit$fit_df, fit_value_col = 'fit',
                                       df_long = example_proteome, 
                                       sample_annotation = example_sample_annotation)
   
