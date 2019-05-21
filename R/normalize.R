@@ -17,7 +17,7 @@
 #' 
 #' @return the data in the same format as input (\code{data_matrix} or \code{df_long}).
 #' For \code{df_long} the data frame stores the original values of \code{measure_col}
-#' in another column called "old_intensity" if "intensity", and the normalized values
+#' in another column called "pre_norm_intensity" if "intensity", and the normalized values
 #' in \code{measure_col} column.
 #' 
 #' @examples 
@@ -59,7 +59,7 @@ normalize_sample_medians <- function(df_long,
     ungroup()
   df_normalized = df_normalized %>%
     mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE),
-           !!(paste('old', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
+           !!(paste('pre_norm', measure_col, sep = '_')) := !!(sym(measure_col))) %>%
     mutate(diff = median_global - median_run) %>%
     mutate(!!(sym(measure_col)) := !!(sym(measure_col))+diff)
   return(df_normalized)
