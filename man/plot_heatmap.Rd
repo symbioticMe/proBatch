@@ -72,7 +72,7 @@ Plot the heatmap of samples
 color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
 factor_columns = c('MS_batch','EarTag', "Strain", 
 "Diet", "digestion_batch", "Sex"),
-not_factor_columns = 'DateTime',
+date_columns = 'DateTime',
 numeric_columns = c('order'))
 
 heatmap_plot <- plot_heatmap(example_proteome_matrix, 
