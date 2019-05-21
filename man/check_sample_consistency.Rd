@@ -45,7 +45,8 @@ Check if sample annotation is consistent with data matrix and join the two
 }
 \examples{
 
-df_test = check_sample_consistency(sample_annotation = example_sample_annotation, df_long = example_proteome, sample_id_col = sample_id_col,
+df_test = check_sample_consistency(sample_annotation = example_sample_annotation, 
+df_long = example_proteome, sample_id_col = 'FullRunName',
 batch_col = NULL, order_col = NULL, facet_col = NULL)
 
 
