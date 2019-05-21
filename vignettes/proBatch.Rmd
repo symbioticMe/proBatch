@@ -113,23 +113,6 @@ to infer the proteins (thus, fragment-level for inference tools such as aLFQ or 
 # Preparation for the analysis
 ## Installing dependencies and `proBatch`
 
-`proBatch` is primarily a wrapper of functions from other packages, therefore it has 
-numerous dependencies. If some of these dependencies are not installed, you will 
-need to do that before running `proBatch`.
-```{r dependencies, eval = FALSE}
-bioc_deps <- c("GO.db", "impute", "preprocessCore", "pvca","sva" )
-#TODO: check if "BioBase" needs to be added to bioc_deps
-cran_deps <- c("corrplot", "data.table", "ggplot2", "ggfortify",
-               "ggpubr", "grid", "gridExtra", "gtable", 
-               "lazyeval", "pheatmap", "reshape2", "rlang", 
-               "tibble", "dplyr", "tidyr" "wesanderson","WGCNA") 
-
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install(bioc_deps)  
-install.packages(cran_deps)
-```
-
 To install the proBatch package, the following commands can be executed in R:
 ```{r install_proBatch, fig.show='hold', eval = FALSE}
 # Once the proBatch package is in Bioconductor, can easily install by: 
