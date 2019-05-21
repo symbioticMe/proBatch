@@ -19,7 +19,8 @@
 #'   trend with the custom (continuous) fit. Should be followed by discrete corrections,
 #'   e.g. `center_feature_batch_medians()` or `correct_with_ComBat()`.
 #' }
-#' Alternatively, one can call the correction function with `correct_batch_effects()` wrapper. #' Batch correction method allows correction of 
+#' Alternatively, one can call the correction function with `correct_batch_effects()` wrapper. 
+#' Batch correction method allows correction of 
 #' continuous signal drift within batch (if required) and adjustment for
 #' discrete difference across batches. 
 #' 
@@ -57,7 +58,9 @@
 #' combat_corrected_df <- correct_with_ComBat_df(example_proteome, example_sample_annotation)
 #' 
 #' #Adjust the MS signal drift:
-#' adjusted_data <- adjust_batch_trend(example_proteome[example_proteome$peptide_group_label %in% unique(example_proteome$peptide_group_label)[1:3],], 
+#' test_peptides = unique(example_proteome$peptide_group_label)[1:3]
+#' test_proteome = example_proteome[example_proteome$peptide_group_label %in% test_peptides,]
+#' adjusted_data <- adjust_batch_trend(test_proteome, 
 #' example_sample_annotation, span = 0.7, 
 #' abs_threshold = 5, pct_threshold = 0.20)
 #' fit_df <- adjusted_data$fit_df
