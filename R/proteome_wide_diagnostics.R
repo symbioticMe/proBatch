@@ -20,7 +20,7 @@
 #' @examples
 #' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
-#' not_factor_columns = 'DateTime',
+#' date_columns = 'DateTime',
 #' numeric_columns = c('order'))
 #' 
 #' color_annotation <- color_scheme$color_df
@@ -102,7 +102,7 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch','EarTag', "Strain", 
 #' "Diet", "digestion_batch", "Sex"),
-#' not_factor_columns = 'DateTime',
+#' date_columns = 'DateTime',
 #' numeric_columns = c('order'))
 #' 
 #' heatmap_plot <- plot_heatmap(example_proteome_matrix, 
@@ -232,10 +232,10 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @export
 #'
 #' @examples 
-#' matrix <- example_proteome_matrix[1:50, ]
+#' \donttest{matrix <- example_proteome_matrix[1:50, ]
 #' pvca_plot <- plot_PVCA(matrix, example_sample_annotation, 
 #' technical_covariates = c('MS_batch', 'digestion_batch'),
-#' biological_covariates = c("Diet", "Sex", "Strain"))
+#' biological_covariates = c("Diet", "Sex", "Strain"))}
 #' 
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
 plot_PVCA <- function(data_matrix, sample_annotation,
