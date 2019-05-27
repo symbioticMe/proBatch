@@ -306,6 +306,12 @@ get_sample_corr_df <- function(cor_proteome, sample_annotation,
 #'
 calculate_sample_corr_distribution <- function(data_matrix, sample_annotation, repeated_samples = NULL,
                               biospecimen_id_col = 'EarTag', sample_id_col = 'FullRunName', batch_col = 'MS_batch') {
+  
+  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col, order_col = NULL, facet_col = NULL)
+  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
+  
   if (!is.null(repeated_samples)){
     print('calculating correlation of repeated samples only')
     corr_matrix = cor(data_matrix[,repeated_samples], use = "pairwise.complete.obs")
@@ -361,10 +367,6 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                           plot_title = 'Sample correlation distribution',
                                           plot_param = 'batch_replicate',
                                           theme = 'classic'){
-  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
-  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
-                                     batch_col, order_col = NULL, facet_col = NULL)
-  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
     
   if (!is.list(data_matrix)){
       corr_distribution = calculate_sample_corr_distribution(data_matrix = data_matrix,  
