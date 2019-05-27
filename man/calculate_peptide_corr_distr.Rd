@@ -33,9 +33,11 @@ Transform square correlation matrix into long data frame of correlations
 }
 \examples{
 selected_genes = c('BOVINE_A1ag','BOVINE_FetuinB','Cyfip1')
-selected_peptides = example_peptide_annotation$peptide_group_label[example_peptide_annotation$Gene \%in\% selected_genes]
+gene_filter = example_peptide_annotation$Gene \%in\% selected_genes
+peptides_ann = example_peptide_annotation$peptide_group_label
+selected_peptides = peptides_ann[gene_filter]
 matrix_test = example_proteome_matrix[selected_peptides,]
-pep_annotation_sel = example_peptide_annotation[example_peptide_annotation$Gene \%in\% selected_genes, ]
+pep_annotation_sel = example_peptide_annotation[gene_filter, ]
 corr_distribution = calculate_peptide_corr_distr(matrix_test, 
 pep_annotation_sel, protein_col = 'Gene')
 
