@@ -83,6 +83,8 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   #reduce df to measurements of selected features
   plot_df = df_long %>%
     filter(!!(sym(feature_id_col)) %in% feature_name)
+  rm(df_long)
+  gc()
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
   plot_df = check_sample_consistency(sample_annotation, sample_id_col, plot_df, batch_col, order_col, facet_col)
