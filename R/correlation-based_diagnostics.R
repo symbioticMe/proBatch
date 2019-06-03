@@ -411,7 +411,8 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
   
   gg <- ggplot(corr_distribution, aes_string(x = plot_param, y = 'correlation'))+
     geom_violin(scale = 'width')+
-    geom_boxplot(width = .1) 
+    geom_boxplot(width = .1) +
+    theme(axis.title.x=element_blank())
   
   if (!is.null(plot_title)){
     gg = gg + ggtitle(plot_title)
