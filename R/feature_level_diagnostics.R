@@ -97,7 +97,28 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   order_col = sample_order$order_col
   plot_df = sample_order$df_long
   
+  #Ensure that batch-coloring-related arguments are defined properly
+  if(!is.null(batch_col)){
+    if(!(batch_col %in% names(plot_df))){
+      stop('batches cannot be colored as the batch column or sample ID column
+           is not defined, check sample_annotation and data matrix')
+    }
+    #For proper plotting, batch column has to be a factor
+    plot_df[, batch_col] <- as.factor(plot_df[, batch_col])
+    } else {
+      if (color_by_batch){
+        warning('batches cannot be colored as the batch column is defined as NULL, continuing without colors')
+        color_by_batch = FALSE
+      }
+    }
   
+  #For order definition and subsequent faceting, facet column has to be in the data frame
+  if(!is.null(facet_col)){
+    if ( !(facet_col %in% names(plot_df))){
+      stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
+                   check sample annotation data frame', facet_col))
+    }
+  }
   
   #Main plotting function
   gg = ggplot(plot_df,
@@ -124,6 +145,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   }
   
   #add colors
+  
   gg = color_points_by_batch(color_by_batch, batch_col, gg, color_scheme, sample_annotation)
   if(!is.null(qual_col) && !is.null(color_by_batch) && color_by_batch){
     warning('coloring both inferred values and batches may lead to confusing visualisation, consider plotting separately')
