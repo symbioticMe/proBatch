@@ -129,11 +129,12 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   rm(df_long)
   
-  if(fill_the_missing) {
-    data_matrix[is.na(data_matrix)] = 0
-    warning('substituting missing values with 0, 
-                this might affect the clustering!')
-    heatmap_color = c(color_for_missing, heatmap_color)
+  if(!is.null(fill_the_missing)){
+    warning(sprintf('filling missing value with %s', fill_the_missing))
+    data_matrix[is.na(data_matrix)] = fill_the_missing
+  } else {
+    warning('filling value is NULL, removing features with missing values')
+    data_matrix = data_matrix[complete.cases(data_matrix),]
   }
   
   if (is.null(sample_annotation)){
@@ -162,6 +163,7 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
       annotation_col = sample_annotation %>% 
         remove_rownames %>% 
         column_to_rownames(var=sample_id_col)
+      annotation_row = NA
     }
   }
   
