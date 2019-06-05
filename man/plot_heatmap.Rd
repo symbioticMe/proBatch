@@ -6,7 +6,7 @@
 \usage{
 plot_heatmap(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", sample_annotation_col = NULL,
-  sample_annotation_row = NULL, fill_the_missing = TRUE,
+  sample_annotation_row = NULL, fill_the_missing = -1,
   cluster_rows = TRUE, cluster_cols = FALSE,
   annotation_color_list = NA,
   heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
@@ -38,8 +38,8 @@ factors to be annotated in heatmap columns}
 factors to be annotated in heatmap rows}
 
 \item{fill_the_missing}{boolean value determining if 
-missing values should be
-  substituted with -1 (and colored with black)}
+missing values should be substituted with -1 (and colored with 
+\code{color_for_missing}). If \code{NULL}, features with missing values are excluded.}
 
 \item{cluster_rows}{boolean value determining if rows 
 should be clustered}
