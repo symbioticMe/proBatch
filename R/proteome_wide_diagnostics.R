@@ -35,11 +35,23 @@
 #' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
 #'   \code{\link[WGCNA]{plotDendroAndColors}}
 plot_hierarchical_clustering  <- function(data_matrix, color_df,
+                                          fill_the_missing = NULL,
                                           distance = "euclidean",
                                           agglomeration = 'complete',
                                           label_samples = TRUE, label_font = .2,
                                           plot_title = NULL,
                                           ...){
+  if (any(is.na(as.vector(data_matrix)))){
+    warning('Hierarchical clustering cannot operate with missing values in the matrix')
+    if(!is.null(fill_the_missing)){
+      warning(sprintf('filling missing value with %s', fill_the_missing))
+      data_matrix[is.na(data_matrix)] = fill_the_missing
+    } else {
+      warning('filling value is NULL, removing features with missing values')
+      data_matrix = data_matrix[complete.cases(data_matrix),]
+    }
+  }
+  
   dist_matrix = dist(t(as.matrix(data_matrix)), method = distance)
   hierarchical_clust = hclust(dist_matrix, method = agglomeration)
   if (label_samples){
@@ -75,8 +87,8 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
 #' @param fill_the_missing boolean value determining if 
-#' missing values should be
-#'   substituted with -1 (and colored with black)
+#' missing values should be substituted with -1 (and colored with 
+#' \code{color_for_missing}). If \code{NULL}, features with missing values are excluded.
 #' @param cluster_rows boolean value determining if rows 
 #' should be clustered
 #' @param cluster_cols boolean value determining if columns 
@@ -116,7 +128,7 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 'FullRunName',
                          sample_annotation_col = NULL, 
                          sample_annotation_row = NULL, 
-                         fill_the_missing = TRUE, cluster_rows = TRUE, cluster_cols = FALSE,
+                         fill_the_missing = -1, cluster_rows = TRUE, cluster_cols = FALSE,
                          annotation_color_list = NA,
                          heatmap_color = colorRampPalette(
                            rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
@@ -129,12 +141,16 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   rm(df_long)
   
-  if(!is.null(fill_the_missing)){
-    warning(sprintf('filling missing value with %s', fill_the_missing))
-    data_matrix[is.na(data_matrix)] = fill_the_missing
-  } else {
-    warning('filling value is NULL, removing features with missing values')
-    data_matrix = data_matrix[complete.cases(data_matrix),]
+  if (any(is.na(as.vector(data_matrix)))){
+    warning('heatmap cannot operate with missing values in the matrix')
+    if(!is.null(fill_the_missing)){
+      warning(sprintf('filling missing value with %s', fill_the_missing))
+      data_matrix[is.na(data_matrix)] = fill_the_missing
+      heatmap_color = c(color_for_missing, heatmap_color)
+    } else {
+      warning('filling value is NULL, removing features with missing values')
+      data_matrix = data_matrix[complete.cases(data_matrix),]
+    }
   }
   
   if (is.null(sample_annotation)){
@@ -159,7 +175,8 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
         column_to_rownames(var=sample_id_col)
     }
     if(is.null(sample_annotation_col) && is.null(sample_annotation_row)){
-      warning("Sample annotation columns and rows are not specified for heatmap.")
+      warning("annotation_row and annotation_col are not specified for heatmap, 
+              using sample_annotation for annotation_col.")
       annotation_col = sample_annotation %>% 
         remove_rownames %>% 
         column_to_rownames(var=sample_id_col)
@@ -225,7 +242,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @param threshold_var the percentile value of weight each of the covariates
 #'   needs to explain (the rest will be lumped together)
 #' @param fill_the_missing numeric value that the missing values are
-#'   substituted with
+#'   substituted with, or \code{NULL} if features with missing values are to be excluded.
 #' @param theme ggplot theme, by default \code{classic}. Can be easily overridden (see
 #'   examples)
 #' @param plot_title Title of the plot (usually, processing step + representation
@@ -246,7 +263,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                       feature_id_col = 'peptide_group_label',
                       technical_covariates = c('MS_batch', 'instrument'),
                       biological_covariates = c('cell_line','drug_dose'),
-                      fill_the_missing = 0,
+                      fill_the_missing = -1,
                       threshold_pca = .6, threshold_var = .01,
                       colors_for_bars = NULL,
                       theme = 'classic', plot_title = NULL){
