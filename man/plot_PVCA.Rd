@@ -8,7 +8,7 @@ plot_PVCA(data_matrix, sample_annotation, sample_id_col = "FullRunName",
   feature_id_col = "peptide_group_label",
   technical_covariates = c("MS_batch", "instrument"),
   biological_covariates = c("cell_line", "drug_dose"),
-  fill_the_missing = 0, threshold_pca = 0.6, threshold_var = 0.01,
+  fill_the_missing = -1, threshold_pca = 0.6, threshold_var = 0.01,
   colors_for_bars = NULL, theme = "classic", plot_title = NULL)
 }
 \arguments{
@@ -36,7 +36,7 @@ technical covariates}
 are biologically meaningful covariates}
 
 \item{fill_the_missing}{numeric value that the missing values are
-substituted with}
+substituted with, or \code{NULL} if features with missing values are to be excluded.}
 
 \item{threshold_pca}{the percentile value of the minimum amount of the
 variabilities that the selected principal components need to explain}
