@@ -102,7 +102,7 @@ map_numbers_to_colors <-
 #' @param i if \code{palette_type} is 'brewer' the palette argument to
 #'   \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument
 #'   to \code{viridis_pal}
-#' @param granularity the breaks to use when generating colors for \code{num_col}
+#' @param granularity breaks to use when generating colors for \code{num_col}
 #'
 #' @return list, containing the following items:
 #' \enumerate{
@@ -207,7 +207,7 @@ merge_rare_levels <- function(column) {
 #' (e.g. in column "Batch", values are 1, 2 and 3), specification here allows to
 #' map them correctly to qualitative palettes.
 #' @param date_columns columns of `POSIXct` class. These columns are mapped to 
-#' continuous palettes, as numeric columns, however, they require special treatment.
+#' continuous palettes, as numeric columns, but require special treatment.
 #' @param numeric_columns columns of \code{sample_annotation} to be 
 #' treated as continuous numeric values. 
 #' @param rare_categories_to_other if \code{True} rare categories 
@@ -217,7 +217,11 @@ merge_rare_levels <- function(column) {
 #' @param numeric_palette_type palette to be used for 
 #' numeric values coloring
 #'
-#' @return list of three items: 1) list of colors; 2) data frame of colors; 3) updated sample annotation (e.g. with rare factor levels merged into "other")
+#' @return list of three items: \enumerate{
+#'   \item list of colors; 
+#'   \item data frame of colors; 
+#'   \item new sample annotation (e.g. rare factor levels merged into "other")
+#'   }
 #' 
 #' @examples 
 #' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
@@ -239,14 +243,17 @@ sample_annotation_to_colors <- function(sample_annotation,
                                         granularity = 10) {
   
   sample_annotation = as.data.frame(sample_annotation)
-  message('converting columns to corresponding classes (factor, POSIXct date, numeric)')
+  message('converting columns to corresponding classes 
+          (factor, POSIXct date, numeric)')
   sample_annotation <- sample_annotation %>%
     mutate_at(vars(factor_columns), as.factor) %>%
     mutate_at(vars(numeric_columns), as.numeric) %>%
     mutate_at(vars(date_columns), as.POSIXct, date_columns)
   
-  columns_for_color_mapping = union(factor_columns, union(numeric_columns, date_columns))
-  undefined_cols <- setdiff(names(sample_annotation), c(columns_for_color_mapping, sample_id_col))
+  columns_for_color_mapping = union(factor_columns, 
+                                    union(numeric_columns, date_columns))
+  undefined_cols <- setdiff(names(sample_annotation), 
+                            c(columns_for_color_mapping, sample_id_col))
   if (length(undefined_cols) > 0){
     warning(paste(c('The following columns will not be mapped to colors:',
                     undefined_cols, 'if these have to be mapped, please assign 
@@ -259,7 +266,8 @@ sample_annotation_to_colors <- function(sample_annotation,
   
   if (!is.null(date_columns) || !is.null(numeric_columns)) {
     factor_columns = setdiff(factor_columns, c(date_columns, numeric_columns))
-    column_intersection <- intersect(factor_columns, union(date_columns, numeric_columns))
+    column_intersection <- intersect(factor_columns, 
+                                     union(date_columns, numeric_columns))
     if (length(column_intersection) > 0) {
       warning(paste(c('The following columns are repeatedly listed among factors 
                       and numeric-like variables:', column_intersection, 
