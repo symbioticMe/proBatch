@@ -16,7 +16,7 @@ generate_colors_for_numeric(num_col, palette_type = "brewer", i = 1,
 \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument
 to \code{viridis_pal}}
 
-\item{granularity}{the breaks to use when generating colors for \code{num_col}}
+\item{granularity}{breaks to use when generating colors for \code{num_col}}
 }
 \value{
 list, containing the following items:
