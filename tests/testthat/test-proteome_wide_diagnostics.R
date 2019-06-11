@@ -58,12 +58,12 @@ test_that("pvca_plot", {
                    biological_covariates = c("Diet", "Sex", "Strain"))
   
   expect_equivalent(pvca$plot$data$label[1], factor("Strain"))
-  expect_equivalent(pvca$plot$data$label[2], factor("digestion_batch"))
-  expect_equivalent(pvca$plot$data$label[3], factor("digestion_batch:Strain"))
+  expect_equivalent(pvca$plot$data$label[2], factor("Sex:Strain"))
+  expect_equivalent(pvca$plot$data$label[3], factor("digestion_batch"))
   expect_equivalent(pvca$plot$data$label[4], factor("MS_batch"))
   
   expect_equal(pvca$plot$data$category[1], "biological")
-  expect_equal(pvca$plot$data$category[2], "technical")
+  expect_equal(pvca$plot$data$category[3], "technical")
   
 })
 
