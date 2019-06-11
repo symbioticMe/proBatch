@@ -6,7 +6,7 @@
 \usage{
 sample_annotation_to_colors(sample_annotation,
   sample_id_col = "FullRunName", factor_columns = c("MS_batch",
-  "EarTag", "digestion_batch", "Strain", "Diet", "Sex"),
+  "EarTag", "digestion_batch", "Strain", "Diet"),
   date_columns = "DateTime", numeric_columns = "order",
   rare_categories_to_other = TRUE, numeric_palette_type = "brewer",
   granularity = 10)
