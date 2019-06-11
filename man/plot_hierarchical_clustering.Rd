@@ -17,6 +17,10 @@ original data}
 
 \item{color_df}{data frame of colors, as created by \code{sample_annotation_to_colors}}
 
+\item{fill_the_missing}{boolean value determining if 
+missing values should be substituted with -1 (and colored with 
+\code{color_for_missing}). If \code{NULL}, features with missing values are excluded.}
+
 \item{distance}{distance metric used for clustering}
 
 \item{agglomeration}{agglomeration methods as used by \code{hclust}}
