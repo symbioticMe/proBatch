@@ -234,8 +234,9 @@ merge_rare_levels <- function(column) {
 #' @name sample_annotation_to_colors
 sample_annotation_to_colors <- function(sample_annotation,
                                         sample_id_col = 'FullRunName',
-                                        factor_columns = c('MS_batch','EarTag', 'digestion_batch',
-                                                           "Strain", "Diet", "Sex"),
+                                        factor_columns = c('MS_batch','EarTag', 
+                                                           'digestion_batch',
+                                                           "Strain", "Diet"),
                                         date_columns = 'DateTime',
                                         numeric_columns = 'order',
                                         rare_categories_to_other = TRUE,
@@ -269,9 +270,10 @@ sample_annotation_to_colors <- function(sample_annotation,
     column_intersection <- intersect(factor_columns, 
                                      union(date_columns, numeric_columns))
     if (length(column_intersection) > 0) {
-      warning(paste(c('The following columns are repeatedly listed among factors 
+      warning(paste(c('The following columns are repeatedly listed among factors
                       and numeric-like variables:', column_intersection, 
-                      '; they will be excluded from factors and mapped to continuous palettes'), 
+                      '; they will be excluded from factors and mapped to 
+                      continuous palettes'), 
                     collapse = ' '))
     }
   }
@@ -340,7 +342,8 @@ color_list_to_df <- function(color_list, sample_annotation) {
     return(color_df)
 }
 
-color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, sample_annotation) {
+color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, 
+                                  sample_annotation) {
   if(color_by_batch & !is.null(batch_col)){
     gg = gg + aes_string(color = batch_col)
     
@@ -353,20 +356,23 @@ color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, s
         if (n_batches <= 12){
           gg = gg + scale_color_brewer(palette = 'Set3')
         } else {
-          warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
-                            consider defining color scheme with sample_annotation_to_colors function', 
+          warning(sprintf('brewer palettes have maximally 12 colors, 
+                           %s batches are specified,
+                          consider defining color scheme with 
+                          sample_annotation_to_colors function', 
                           n_batches))
         }
       }
     } else {
-      #color vector is provided by color-defining function, e.g. "define_color_scheme"
+      #color vector provided by "sample_annotation_to_colors"
       gg = gg + scale_color_manual(values = color_scheme)
     }
   }
   return(gg)
 }
 
-color_fill_boxes_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, df_long) {
+color_fill_boxes_by_batch <- function(color_by_batch, batch_col, gg, 
+                                      color_scheme, df_long) {
   if(color_by_batch & !is.null(batch_col)){
     gg = gg + aes_string(fill = batch_col)
     if(length(color_scheme) == 1 && color_scheme == 'brewer'){
@@ -378,8 +384,11 @@ color_fill_boxes_by_batch <- function(color_by_batch, batch_col, gg, color_schem
         if (n_batches <= 12){
           gg = gg + scale_fill_brewer(palette = 'Set3')
         } else {
-          warning(sprintf('brewer palettes have maximally 12 colors, you specified %s batches,
-                          consider defining color scheme with sample_annotation_to_colors function', n_batches))
+          warning(sprintf('brewer palettes have maximally 12 colors, 
+                           %s batches are specified,
+                          consider defining color scheme with 
+                          sample_annotation_to_colors function', 
+                          n_batches))
         }
         }
       } else{
