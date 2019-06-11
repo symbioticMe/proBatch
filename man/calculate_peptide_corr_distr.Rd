@@ -2,7 +2,7 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{calculate_peptide_corr_distr}
 \alias{calculate_peptide_corr_distr}
-\title{Transform square correlation matrix into long data frame of correlations}
+\title{Calculate peptide correlation between and within peptides of one protein}
 \usage{
 calculate_peptide_corr_distr(data_matrix, peptide_annotation,
   protein_col = "ProteinName", feature_id_col = "peptide_group_label")
@@ -29,7 +29,7 @@ that are suggested to use for plotting in
 \code{\link{plot_peptide_corr_distribution}} as \code{plot_param}:
 }
 \description{
-Transform square correlation matrix into long data frame of correlations
+Calculate peptide correlation between and within peptides of one protein
 }
 \examples{
 selected_genes = c('BOVINE_A1ag','BOVINE_FetuinB','Cyfip1')
