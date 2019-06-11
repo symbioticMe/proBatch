@@ -33,8 +33,8 @@ long_to_matrix <- function(df_long,
 #'
 #' @inheritParams proBatch
 #'
-#' @param step normalization step (e.g. \code{Raw} or \code{Quantile_normalized} or
-#'   \code{qNorm_ComBat}). Useful if consecutive steps are compared in plots. Note
+#' @param step normalization step (e.g. \code{Raw} or \code{Normalized}.
+#' Useful if consecutive steps are compared in plots. Note
 #'   that in plots these are usually ordered alphabetically, so it's worth
 #'   naming with numbers, e.g. \code{1_raw}, \code{2_quantile}
 #'
@@ -89,7 +89,8 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #' 
 #' @seealso \code{\link{plot_peptides_of_one_protein}}, 
 #' \code{\link{plot_protein_corrplot}}
-create_peptide_annotation <- function(df_long, feature_id_col = 'peptide_group_label',
+create_peptide_annotation <- function(df_long, 
+                                      feature_id_col = 'peptide_group_label',
                                       protein_col = c("ProteinName" )){
   peptide_annotation = df_long %>%
     select(one_of(c(feature_id_col, protein_col))) %>%
