@@ -26,7 +26,7 @@ treated as factors. Sometimes categorical variables are depicted as integers
 map them correctly to qualitative palettes.}
 
 \item{date_columns}{columns of `POSIXct` class. These columns are mapped to 
-continuous palettes, as numeric columns, however, they require special treatment.}
+continuous palettes, as numeric columns, but require special treatment.}
 
 \item{numeric_columns}{columns of \code{sample_annotation} to be 
 treated as continuous numeric values.}
@@ -41,7 +41,11 @@ numeric values coloring}
 vector (equally spaced between minimum and maximum)}
 }
 \value{
-list of three items: 1) list of colors; 2) data frame of colors; 3) updated sample annotation (e.g. with rare factor levels merged into "other")
+list of three items: \enumerate{
+  \item list of colors; 
+  \item data frame of colors; 
+  \item new sample annotation (e.g. rare factor levels merged into "other")
+  }
 }
 \description{
 Convert the sample annotation data frame to list of colors
