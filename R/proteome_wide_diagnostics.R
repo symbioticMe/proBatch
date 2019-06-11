@@ -14,6 +14,9 @@
 #' \code{TRUE}, ignored otherwise
 #' @param plot_title Title of the plot (usually, processing step + representation
 #'   level (fragments, transitions, proteins))
+#' @param fill_the_missing boolean value determining if 
+#' missing values should be substituted with -1 (and colored with 
+#' \code{color_for_missing}). If \code{NULL}, features with missing values are excluded.
 #' @param ... other parameters of \code{plotDendroAndColors} from \code{WGCNA} package
 #'
 #' @return No return
