@@ -3,7 +3,7 @@
 \name{calculate_sample_corr_distribution}
 \alias{calculate_sample_corr_distribution}
 \title{Calculates correlation of data matrix and calculates correlation distribution for all pairs 
-of the replicated samples}
+of the samples, labelled as replicated/same_batch/unrelated in corresponding output colums (see "Value").}
 \usage{
 calculate_sample_corr_distribution(data_matrix, sample_annotation,
   repeated_samples = NULL, biospecimen_id_col = "EarTag",
@@ -53,7 +53,7 @@ created the same as \code{sample_id_1}
 }
 \description{
 Calculates correlation of data matrix and calculates correlation distribution for all pairs 
-of the replicated samples
+of the samples, labelled as replicated/same_batch/unrelated in corresponding output colums (see "Value").
 }
 \examples{
 corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 

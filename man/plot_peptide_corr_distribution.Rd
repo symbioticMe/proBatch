@@ -2,13 +2,16 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{plot_peptide_corr_distribution}
 \alias{plot_peptide_corr_distribution}
-\title{Plot distribution of peptide correlations within one 
-protein and between proteins}
+\alias{plot_peptide_corr_distribution.corrDF}
+\title{Create violin plot of peptide correlation distribution}
 \usage{
 plot_peptide_corr_distribution(data_matrix, peptide_annotation,
   protein_col = "ProteinName", feature_id_col = "peptide_group_label",
   plot_title = "Distribution of peptide correlation",
   theme = "classic")
+
+plot_peptide_corr_distribution.corrDF(corr_distribution,
+  plot_title = "Correlation of peptides", theme = "classic")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -30,9 +33,11 @@ names.}
 level (fragments, transitions, proteins))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
+
+\item{corr_distribution}{data frame with peptide correlation distribution}
 }
 \value{
-\code{ggplot} type object with violin plot
+\code{ggplot} type object with violin plot of peptide correlation distribution
 }
 \description{
 Plot distribution of peptide correlations within one 
@@ -43,4 +48,17 @@ peptide_corr_distribution <- plot_peptide_corr_distribution(
 example_proteome_matrix, 
 example_peptide_annotation, protein_col = 'Gene')
 
+selected_genes = c('BOVINE_A1ag','BOVINE_FetuinB','Cyfip1')
+gene_filter = example_peptide_annotation$Gene \%in\% selected_genes
+peptides_ann = example_peptide_annotation$peptide_group_label
+selected_peptides = peptides_ann[gene_filter]
+matrix_test = example_proteome_matrix[selected_peptides,]
+pep_annotation_sel = example_peptide_annotation[gene_filter, ]
+corr_distribution = calculate_peptide_corr_distr(matrix_test, 
+pep_annotation_sel, protein_col = 'Gene')
+peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution)
+
+}
+\seealso{
+\code{\link{calculate_peptide_corr_distr}}, \code{\link[ggplot2]{ggplot}}
 }
