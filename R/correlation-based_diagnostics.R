@@ -200,39 +200,6 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
   }
 }
 
-
-#' Transform square correlation matrix into long data.frame of correlations
-#' of the replicated samples, samples from same batch and unrelated samples
-#' @description useful to infer summary statistics (medians etc.) of correlation 
-#' within/between replicates and batches.
-#'
-#' @inheritParams proBatch
-#' @param cor_proteome sample correlation matrix (square)
-#' @param biospecimen_id_col column in \code{sample_annotation} 
-#' that defines a unique bio ID, which is usually a 
-#' combination of conditions or groups.
-#'  Tip: if such ID is absent, but can be defined from several columns,
-#'  create new \code{biospecimen_id} column
-#'
-#' @return dataframe with the following columns, that 
-#' are suggested to use for plotting in 
-#' \code{\link{plot_sample_corr_distribution}} as \code{plot_param}:
-#' \enumerate{
-#' \item \code{replicate}
-#' \item \code{batch_the_same}
-#' \item \code{batch_replicate}
-#' \item \code{batches}
-#' }
-#' other columns are: \enumerate{
-#' \item \code{sample_id_1} & \code{sample_id_2}, both 
-#' generated from \code{sample_id_col} variable
-#' \item \code{correlation} - correlation of two corresponding samples
-#' \item \code{batch_1} & \code{batch_2} or analogous, 
-#' created the same as \code{sample_id_1}
-#' }
-#' 
-#' @export
-#' 
 get_sample_corr_df <- function(cor_proteome, sample_annotation,
                                     sample_id_col = 'FullRunName',
                                     biospecimen_id_col = 'EarTag',
@@ -270,7 +237,7 @@ get_sample_corr_df <- function(cor_proteome, sample_annotation,
 
 
 #' Calculates correlation of data matrix and calculates correlation distribution for all pairs 
-#' of the replicated samples 
+#' of the samples, labelled as replicated/same_batch/unrelated in corresponding output colums (see "Value").
 #'
 #' @inheritParams proBatch
 #' @param repeated_samples if \code{NULL}, only repeated sample correlation is plotted
@@ -326,31 +293,41 @@ calculate_sample_corr_distribution <- function(data_matrix, sample_annotation, r
   return(corr_distribution)
 }
 
-#' Create violin plot of correlation distribution
+#' @name plot_sample_corr_distribution
+#' @rdname plot_sample_corr_distribution
+#' @title Create violin plot of sample correlation distribution
 #'
-#' Useful to visualize within batch vs within replicate 
+#' @description Useful to visualize within batch vs within replicate 
 #' vs non-related sample correlation
 #' 
 #' @inheritParams proBatch
-#' @param repeated_samples if \code{NULL}, only repeated sample correlation is plotted
+#' @param repeated_samples if \code{NULL}, correlation of all samples is plotted
 #' @param biospecimen_id_col column in \code{sample_annotation} 
 #' that captures the biological sample, 
 #' that (possibly) was profiled several times as technical replicates.
 #' Tip: if such ID is absent, but can be defined from several columns,
 #' create new \code{biospecimen_id} column
 #' @param plot_param columns, defined in correlation_df, which is output of
-#' \code{get_sample_corr_df}, specifically,  \enumerate{
+#' \code{calculate_sample_corr_distribution}, specifically,  \enumerate{
 #' \item \code{replicate}
 #' \item \code{batch_the_same}
 #' \item \code{batch_replicate}
 #' \item \code{batches}
-#' };
+#' }
+#' @param corr_distribution data frame with correlation distribution, 
+#' as returned by \code{calculate_sample_corr_distribution}
 #'
 #' @return \code{ggplot} type object with violin plot 
 #' for each \code{plot_param}
 #'
-#' @export
 #'
+
+#' 
+#' @seealso \code{\link{calculate_sample_corr_distribution}}, \code{\link[ggplot2]{ggplot}}
+NULL
+
+#' @rdname plot_sample_corr_distribution
+#' 
 #' @examples 
 #' sample_corr_distribution_plot <- plot_sample_corr_distribution(
 #' example_proteome_matrix,
@@ -358,7 +335,8 @@ calculate_sample_corr_distribution <- function(data_matrix, sample_annotation, r
 #' biospecimen_id_col = "EarTag", 
 #' plot_param = 'batch_replicate')
 #' 
-#' @seealso \code{\link{get_sample_corr_df}}, \code{\link[ggplot2]{ggplot}}
+#' @export
+#' 
 plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                           repeated_samples = NULL,
                                           sample_id_col = 'FullRunName',
@@ -394,16 +372,17 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
   return(gg)
 }
 
-#' Plot correlation distribution, starting from the correlation matrix
-#'
-#' @inheritParams proBatch
-#' @param corr_distribution data frame with correlation distribution
-#' @param plot_param one of the columns, as returned by \code{get_sample_corr_df}
-#'
-#' @return \code{ggplot} type object with violin plot
+#' @rdname plot_sample_corr_distribution
+#' 
+#' @examples 
+#' corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 
+#' sample_annotation = example_sample_annotation,
+#' batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
+#' sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
+#' plot_param = 'batch_replicate')
+#' 
 #' @export
-#'
-#' @examples
+#' 
 plot_sample_corr_distribution.corrDF <- function(corr_distribution,
                                                  plot_title = 'Sample correlation distribution',
                                                  plot_param = 'batch_replicate',
@@ -441,19 +420,6 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
   return(gg)
 }
 
-
-
-#' Transform square correlation matrix into long data frame of correlations
-#'
-#' @inheritParams proBatch
-#' @param peptide_cor peptide correlation matrix (square)
-#'
-#' @return dataframe with correlation coefficients for each peptide pair and label
-#' \code{same_protein} or \code{different_proteins} in column \code{same_protein}. 
-#' Intended for use in \code{\link{plot_peptide_corr_distribution}}.
-#' 
-#' @export
-#' 
 get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = 'ProteinName',
                                 feature_id_col = 'peptide_group_label'){
     comb_to_keep = data.frame(t(combn(colnames(peptide_cor), 2)))
@@ -462,6 +428,7 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
     corr_distribution = melt(peptide_cor,
                              varnames = paste(feature_id_col,1:2, sep = '_'),
                              value.name = 'correlation') %>%
+      filter(!is.na(correlation)) %>%
       merge(comb_to_keep) %>%
       merge(peptide_annotation %>% select(one_of(c(feature_id_col, protein_col))),
               by.x = paste(feature_id_col,'1', sep = '_'),
@@ -479,7 +446,7 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation, protein_col = '
 }
 
 
-#' Transform square correlation matrix into long data frame of correlations
+#' Calculate peptide correlation between and within peptides of one protein
 #'
 #' @inheritParams proBatch
 #'
@@ -510,12 +477,22 @@ calculate_peptide_corr_distr <- function(data_matrix, peptide_annotation,
     return(corr_distribution)
 }
 
-#' Plot distribution of peptide correlations within one 
+#' @name plot_peptide_corr_distribution
+#' @rdname plot_peptide_corr_distribution
+#' @title Create violin plot of peptide correlation distribution
+#'
+#' @description Plot distribution of peptide correlations within one 
 #' protein and between proteins
-#'
+#' 
 #' @inheritParams proBatch
+#' @param corr_distribution data frame with peptide correlation distribution
 #'
-#' @return \code{ggplot} type object with violin plot
+#' @return \code{ggplot} type object with violin plot of peptide correlation distribution
+#' 
+#' @seealso \code{\link{calculate_peptide_corr_distr}}, \code{\link[ggplot2]{ggplot}}
+NULL
+
+#' @rdname plot_peptide_corr_distribution
 #' 
 #' @examples 
 #' peptide_corr_distribution <- plot_peptide_corr_distribution(
@@ -549,17 +526,22 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
     return(p)
 }
 
-#' Plot distribution of peptide correlation within and between proteins, 
-#' starting from peptide correlation data frame
+
+#' @rdname plot_peptide_corr_distribution
 #'
-#' @inheritParams proBatch
-#' @param corr_distribution data frame with correlation distribution
-#'
-#' @return \code{ggplot} type object with violin plot
+#' @examples 
+#' selected_genes = c('BOVINE_A1ag','BOVINE_FetuinB','Cyfip1')
+#' gene_filter = example_peptide_annotation$Gene %in% selected_genes
+#' peptides_ann = example_peptide_annotation$peptide_group_label
+#' selected_peptides = peptides_ann[gene_filter]
+#' matrix_test = example_proteome_matrix[selected_peptides,]
+#' pep_annotation_sel = example_peptide_annotation[gene_filter, ]
+#' corr_distribution = calculate_peptide_corr_distr(matrix_test, 
+#' pep_annotation_sel, protein_col = 'Gene')
+#' peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution)
 #' 
 #' @export
-#'
-#' @examples
+#' 
 plot_peptide_corr_distribution.corrDF <- function(corr_distribution, 
                                                   plot_title = 'Correlation of peptides', 
                                                   theme = 'classic') {

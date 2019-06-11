@@ -2,11 +2,16 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{plot_sample_corr_distribution}
 \alias{plot_sample_corr_distribution}
-\title{Create violin plot of correlation distribution}
+\alias{plot_sample_corr_distribution.corrDF}
+\title{Create violin plot of sample correlation distribution}
 \usage{
 plot_sample_corr_distribution(data_matrix, sample_annotation,
   repeated_samples = NULL, sample_id_col = "FullRunName",
   batch_col = "MS_batch", biospecimen_id_col = "EarTag",
+  plot_title = "Sample correlation distribution",
+  plot_param = "batch_replicate", theme = "classic")
+
+plot_sample_corr_distribution.corrDF(corr_distribution,
   plot_title = "Sample correlation distribution",
   plot_param = "batch_replicate", theme = "classic")
 }
@@ -20,7 +25,7 @@ See "example_proteome_matrix" for more details (to call the description, use \co
 technical covariates (batches etc) }. 
 See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
-\item{repeated_samples}{if \code{NULL}, only repeated sample correlation is plotted}
+\item{repeated_samples}{if \code{NULL}, correlation of all samples is plotted}
 
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
@@ -38,14 +43,17 @@ create new \code{biospecimen_id} column}
 level (fragments, transitions, proteins))}
 
 \item{plot_param}{columns, defined in correlation_df, which is output of
-\code{get_sample_corr_df}, specifically,  \enumerate{
+\code{calculate_sample_corr_distribution}, specifically,  \enumerate{
 \item \code{replicate}
 \item \code{batch_the_same}
 \item \code{batch_replicate}
 \item \code{batches}
-};}
+}}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
+
+\item{corr_distribution}{data frame with correlation distribution, 
+as returned by \code{calculate_sample_corr_distribution}}
 }
 \value{
 \code{ggplot} type object with violin plot 
@@ -62,7 +70,13 @@ example_sample_annotation, batch_col = 'MS_batch',
 biospecimen_id_col = "EarTag", 
 plot_param = 'batch_replicate')
 
+corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 
+sample_annotation = example_sample_annotation,
+batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
+sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
+plot_param = 'batch_replicate')
+
 }
 \seealso{
-\code{\link{get_sample_corr_df}}, \code{\link[ggplot2]{ggplot}}
+\code{\link{calculate_sample_corr_distribution}}, \code{\link[ggplot2]{ggplot}}
 }
