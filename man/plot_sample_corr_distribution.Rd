@@ -43,7 +43,7 @@ create new \code{biospecimen_id} column}
 level (fragments, transitions, proteins))}
 
 \item{plot_param}{columns, defined in correlation_df, which is output of
-\code{calculate_sample_corr_distribution}, specifically,  \enumerate{
+\code{calculate_sample_corr_distr}, specifically,  \enumerate{
 \item \code{replicate}
 \item \code{batch_the_same}
 \item \code{batch_replicate}
@@ -53,7 +53,7 @@ level (fragments, transitions, proteins))}
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
 \item{corr_distribution}{data frame with correlation distribution, 
-as returned by \code{calculate_sample_corr_distribution}}
+as returned by \code{calculate_sample_corr_distr}}
 }
 \value{
 \code{ggplot} type object with violin plot 
@@ -70,7 +70,7 @@ example_sample_annotation, batch_col = 'MS_batch',
 biospecimen_id_col = "EarTag", 
 plot_param = 'batch_replicate')
 
-corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 
+corr_distribution = calculate_sample_corr_distr(data_matrix = example_proteome_matrix, 
 sample_annotation = example_sample_annotation,
 batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
 sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
@@ -78,6 +78,6 @@ plot_param = 'batch_replicate')
 
 }
 \seealso{
-\code{\link{calculate_sample_corr_distribution}}, 
+\code{\link{calculate_sample_corr_distr}}, 
 \code{\link[ggplot2]{ggplot}}
 }

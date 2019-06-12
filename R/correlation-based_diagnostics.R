@@ -207,9 +207,9 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
 }
 
 get_sample_corr_df <- function(cor_proteome, sample_annotation,
-                                    sample_id_col = 'FullRunName',
-                                    biospecimen_id_col = 'EarTag',
-                                    batch_col = 'batch'){
+                               sample_id_col = 'FullRunName',
+                               biospecimen_id_col = 'EarTag',
+                               batch_col = 'MS_batch'){
   comb_to_keep = data.frame(t(combn(colnames(cor_proteome), 2)))
   names(comb_to_keep) = paste(sample_id_col, seq_len(2), sep = '_')
   
@@ -276,7 +276,7 @@ get_sample_corr_df <- function(cor_proteome, sample_annotation,
 #' }
 #' 
 #' @examples 
-#' corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 
+#' corr_distribution = calculate_sample_corr_distr(data_matrix = example_proteome_matrix, 
 #' sample_annotation = example_sample_annotation,
 #' batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
 #' 
@@ -291,7 +291,7 @@ calculate_sample_corr_distr <- function(data_matrix, sample_annotation,
   df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, order_col = NULL, 
-                                     facet_col = NULL)
+                                     facet_col = NULL, merge = FALSE)
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   
   if (!is.null(repeated_samples)){
@@ -324,14 +324,14 @@ calculate_sample_corr_distr <- function(data_matrix, sample_annotation,
 #' Tip: if such ID is absent, but can be defined from several columns,
 #' create new \code{biospecimen_id} column
 #' @param plot_param columns, defined in correlation_df, which is output of
-#' \code{calculate_sample_corr_distribution}, specifically,  \enumerate{
+#' \code{calculate_sample_corr_distr}, specifically,  \enumerate{
 #' \item \code{replicate}
 #' \item \code{batch_the_same}
 #' \item \code{batch_replicate}
 #' \item \code{batches}
 #' }
 #' @param corr_distribution data frame with correlation distribution, 
-#' as returned by \code{calculate_sample_corr_distribution}
+#' as returned by \code{calculate_sample_corr_distr}
 #'
 #' @return \code{ggplot} type object with violin plot 
 #' for each \code{plot_param}
@@ -339,7 +339,7 @@ calculate_sample_corr_distr <- function(data_matrix, sample_annotation,
 #'
 
 #' 
-#' @seealso \code{\link{calculate_sample_corr_distribution}}, 
+#' @seealso \code{\link{calculate_sample_corr_distr}}, 
 #' \code{\link[ggplot2]{ggplot}}
 NULL
 
@@ -364,23 +364,23 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                           theme = 'classic'){
     
   if (!is.list(data_matrix)){
-      corr_distribution = calculate_sample_corr_distribution(data_matrix = data_matrix,  
-                                                             sample_annotation = sample_annotation,
-                                                             repeated_samples = repeated_samples,
-                                                             biospecimen_id_col = biospecimen_id_col, 
-                                                             sample_id_col = sample_id_col, 
-                                                             batch_col = batch_col)
+    corr_distribution = calculate_sample_corr_distr(data_matrix = data_matrix,
+                                                    sample_annotation = sample_annotation,
+                                                    repeated_samples = repeated_samples,
+                                                    biospecimen_id_col = biospecimen_id_col,
+                                                    sample_id_col = sample_id_col,
+                                                    batch_col = batch_col)
   } else {
-      corr_distribution = lapply(1:length(data_matrix), function(i) {
-          dm = data_matrix[[i]]
-          corr_distribution = calculate_sample_corr_distribution(data_matrix = dm, 
-                                                repeated_samples = repeated_samples, 
-                                                sample_annotation = sample_annotation,
-                                                biospecimen_id_col = biospecimen_id_col, 
-                                                sample_id_col =sample_id_col, 
-                                                batch_col = batch_col)
-          corr_distribution$Step = names(data_matrix)[i]
-          return(corr_distribution)
+    corr_distribution = lapply(1:length(data_matrix), function(i) {
+      dm = data_matrix[[i]]
+      corr_distribution = calculate_sample_corr_distr(data_matrix = dm, 
+                                                      repeated_samples = repeated_samples, 
+                                                      sample_annotation = sample_annotation,
+                                                      biospecimen_id_col = biospecimen_id_col,
+                                                      sample_id_col =sample_id_col,
+                                                      batch_col = batch_col)
+      corr_distribution$Step = names(data_matrix)[i]
+      return(corr_distribution)
       })
       corr_distribution = do.call(rbind, corr_distribution)
   }
@@ -394,7 +394,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 #' @rdname plot_sample_corr_distribution
 #' 
 #' @examples 
-#' corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 
+#' corr_distribution = calculate_sample_corr_distr(data_matrix = example_proteome_matrix, 
 #' sample_annotation = example_sample_annotation,
 #' batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
 #' sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
