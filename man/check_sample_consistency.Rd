@@ -5,7 +5,8 @@
 \title{Check if sample annotation is consistent with data matrix and join the two}
 \usage{
 check_sample_consistency(sample_annotation, sample_id_col, df_long,
-  batch_col = NULL, order_col = NULL, facet_col = NULL)
+  batch_col = NULL, order_col = NULL, facet_col = NULL,
+  merge = TRUE)
 }
 \arguments{
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
@@ -35,6 +36,9 @@ plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-in
 MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
 or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
 For single-instrument case should be set to `NULL`}
+
+\item{merge}{(logical) whether to merge \code{df_long} with 
+\code{sample_annotation} or not}
 }
 \value{
 \code{df_long} format data frame, merged with sample_annotation using 
