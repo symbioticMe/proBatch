@@ -2,18 +2,32 @@
 % Please edit documentation in R/normalize.R
 \name{normalize}
 \alias{normalize}
-\alias{quantile_normalize}
-\alias{normalize_sample_medians}
-\alias{normalize_data}
+\alias{quantile_normalize_dm}
+\alias{quantile_normalize_df}
+\alias{normalize_sample_medians_dm}
+\alias{normalize_sample_medians_df}
+\alias{normalize_data_dm}
+\alias{normalize_data_df}
 \title{Data normalization methods}
 \usage{
-quantile_normalize(data_matrix)
+quantile_normalize_dm(data_matrix)
 
-normalize_sample_medians(df_long, sample_id_col = "FullRunName",
+quantile_normalize_df(df_long, feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName", measure_col = "Intensity")
+
+normalize_sample_medians_dm(data_matrix, sample_id_col = "FullRunName",
   measure_col = "Intensity")
 
-normalize_data(data_matrix, normalize_func = c("quantile",
+normalize_sample_medians_df(df_long, sample_id_col = "FullRunName",
+  measure_col = "Intensity")
+
+normalize_data_dm(data_matrix, normalize_func = c("quantile",
   "medianCentering"), log_base = NULL)
+
+normalize_data_df(df_long, normalize_func = c("quantile",
+  "medianCentering"), log_base = NULL, offset = 1,
+  feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName", measure_col = "Intensity")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -24,6 +38,11 @@ See "example_proteome_matrix" for more details (to call the description, use \co
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
 file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
+
+\item{feature_id_col}{name of the column with feature/gene/peptide/protein
+ID used in the long format representation \code{df_long}. In the wide
+formatted representation \code{data_matrix} this corresponds to the row
+names.}
 
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
@@ -36,33 +55,40 @@ internally for consistency.}
 (`quantile` or `MedianCentering`)}
 
 \item{log_base}{whether to log transform data matrix 
-before normalization (`NULL`, `2` or `10`)}
+before normalization (e.g. `NULL`, `2` or `10`)}
 }
 \value{
-the data in the same format as input (\code{data_matrix} or \code{df_long}).
-For \code{df_long} the data frame stores the original values of \code{measure_col}
-in another column called "pre_norm_intensity" if "intensity", and the normalized values
+the data in the same format as input (\code{data_matrix} or 
+\code{df_long}).
+For \code{df_long} the data frame stores the original values of 
+\code{measure_col}
+in another column called "preNorm_intensity" if "intensity", and the 
+normalized values
 in \code{measure_col} column.
 }
 \description{
-Normalization of raw (usually log-transformed) data. Normalization brings the samples to the same scale
+Normalization of raw (usually log-transformed) data. 
+Normalization brings the samples to the same scale.
 Currently the following normalization functions are implemented:
 #' \enumerate{
-  \item Quantile normalization: `quantile_normalize()`. Quantile normalization of the data.
-  \item Median normalization: `normalize_sample_medians()`. Normalization by centering sample medians to global median of the data
+  \item Quantile normalization: `quantile_normalize()`. 
+  Quantile normalization of the data.
+  \item Median normalization: `normalize_sample_medians()`. 
+  Normalization by centering sample medians to global median of the data
 }
-Alternatively, one can call normalization function with `normalize_data()` wrapper.
+Alternatively, one can call normalization function with `normalize_data()` 
+wrapper.
 }
 \examples{
 
 #Quantile normalization:
-quantile_normalized_matrix <- quantile_normalize(example_proteome_matrix)
+quantile_normalized_matrix <- quantile_normalize_dm(example_proteome_matrix)
 
 #Median centering:
-median_normalized_df <- normalize_sample_medians(example_proteome)
+median_normalized_df <- normalize_sample_medians_df(example_proteome)
 
 #Transform the data in one go:
-quantile_normalized_matrix <- normalize_data(example_proteome_matrix, 
-normalize_func = "quantile", log_base = 2)
+quantile_normalized_matrix <- normalize_data_dm(example_proteome_matrix, 
+normalize_func = "quantile", log_base = 2, offset = 1)
 
 }
