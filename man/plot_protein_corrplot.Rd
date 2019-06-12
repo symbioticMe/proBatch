@@ -44,7 +44,7 @@ only pdf and png format is supported}
 
 \item{unit}{units: 'cm', 'in' or 'mm'}
 
-\item{plot_title}{The title of the plot, e.g. protein name and the processing step}
+\item{plot_title}{The title of the plot, e.g. protein name / processing step}
 
 \item{...}{parameters for the corrplot visualisation}
 }
@@ -55,8 +55,8 @@ only pdf and png format is supported}
 Plots correlation plot of peptides from a single protein
 }
 \examples{
-protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
-               peptide_annotation = example_peptide_annotation, 
-               protein_col = 'Gene', flavor = "pheatmap")
+protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, 
+protein_name = 'Haao', peptide_annotation = example_peptide_annotation, 
+protein_col = 'Gene', flavor = "pheatmap")
 
 }
