@@ -52,12 +52,6 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
                            measure_col = 'Intensity',
                            sample_id_col = 'FullRunName',
                            step = NULL){
-  if(!is.null(sample_annotation)){
-    if(!setequal(unique(sample_annotation[[sample_id_col]]), 
-                 unique(colnames(data_matrix)))){
-      warning('Sample IDs in sample annotation not 
-                    consistent with samples in input data.')}
-  }
   
   df_long = data_matrix %>%
     as.data.frame() %>%
@@ -68,6 +62,13 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
     df_long = df_long %>%
       mutate(Step = step)
   }
+  
+  df_long = check_sample_consistency(sample_annotation = sample_annotation, 
+                                     sample_id_col = sample_id_col, 
+                                     df_long = df_long, 
+                                     batch_col = NULL, order_col = NULL, 
+                                     facet_col = NULL, merge = FALSE)
+  
   return(df_long)
 }
 
