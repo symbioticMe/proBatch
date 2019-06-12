@@ -2,7 +2,7 @@
 
 export(adjust_batch_trend)
 export(calculate_peptide_corr_distr)
-export(calculate_sample_corr_distribution)
+export(calculate_sample_corr_distr)
 export(center_feature_batch_medians)
 export(check_sample_consistency)
 export(correct_batch_effects)

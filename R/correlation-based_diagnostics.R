@@ -282,11 +282,11 @@ get_sample_corr_df <- function(cor_proteome, sample_annotation,
 #' 
 #' @export
 #'
-calculate_sample_corr_distribution <- function(data_matrix, sample_annotation, 
-                                               repeated_samples = NULL,
-                                               biospecimen_id_col = 'EarTag', 
-                                               sample_id_col = 'FullRunName', 
-                                               batch_col = 'MS_batch') {
+calculate_sample_corr_distr <- function(data_matrix, sample_annotation, 
+                                        repeated_samples = NULL,
+                                        biospecimen_id_col = 'EarTag', 
+                                        sample_id_col = 'FullRunName', 
+                                        batch_col = 'MS_batch') {
   
   df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
