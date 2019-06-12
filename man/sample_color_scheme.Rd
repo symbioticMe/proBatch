@@ -7,17 +7,22 @@
 \format{A list of 3 components: \code{list_of_colors}, \code{color_df} and 
 \code{sample_annotation}
 \describe{
-  \item{list_of_colors}{a list of colors for 11 variables, including \code{MS_batch},
-  \code{EarTag}, \code{Strain}, \code{Diet}, \code{digestion_batch}, \code{Sex}, \code{FullRunName},
+  \item{list_of_colors}{a list of colors for 11 variables, including 
+  \code{MS_batch},
+  \code{EarTag}, \code{Strain}, \code{Diet}, \code{digestion_batch}, 
+  \code{Sex}, \code{FullRunName},
   \code{RunDate}, \code{RunTime}, \code{DateTime}, \code{order}}
-  \item{color_df}{a data frame with 233 samples and 11 variables describing a color for each component}
-  \item{sample_anotation}{a data frame containing 233 samples and 11 variables annotating samples 
+  \item{color_df}{a data frame with 233 samples and 11 variables describing a 
+  color for each component}
+  \item{sample_anotation}{a data frame containing 233 samples and 11 
+  variables annotating samples 
   to facilitate conversion to a color scheme}
   }}
 \usage{
 sample_color_scheme
 }
 \description{
-This is an color scheme generated from example sample annotation by \code{sample_annotation_to_colors}
+This is an color scheme generated from example sample annotation by 
+\code{sample_annotation_to_colors}
 }
 \keyword{datasets}

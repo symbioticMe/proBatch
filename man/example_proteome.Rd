@@ -7,15 +7,19 @@
 \format{A data frame with 124655 rows and 5 variables:
 \describe{
   \item{peptide_group_label}{peptide ID, which is regular feature level. 
-  This column is mostly used as \code{feature_id_col}} used for merging with \code{"example_peptide_annotation"}
+  This column is mostly used as \code{feature_id_col}} used for merging with 
+  \code{"example_peptide_annotation"}
   \item{Intensity}{peptide group intensity in given sample. 
   Used in function as \code{measure_col}}
   \item{ProteinName}{Protein group ID, specified as 
   N/UniProtID1|UniProtID2|...,
   where N is number of protein peptide group maps to. If 
-  1/UniProtID, then this is proteotypic peptide, in functions used as \code{protein_col}}
-  \item{Gene}{conventional gene name of corresponding \code{ProteinName}, in functions used as \code{protein_col}}
-  \item{FullRunName}{name of the file, in most functions used for \code{sample_id_col}}
+  1/UniProtID, then this is proteotypic peptide, in functions used as 
+  \code{protein_col}}
+  \item{Gene}{conventional gene name of corresponding \code{ProteinName}, 
+  in functions used as \code{protein_col}}
+  \item{FullRunName}{name of the file, in most functions used for 
+  \code{sample_id_col}}
 ...
 }}
 \source{

@@ -2,8 +2,8 @@
 % Please edit documentation in R/correlation-based_diagnostics.R
 \name{calculate_sample_corr_distribution}
 \alias{calculate_sample_corr_distribution}
-\title{Calculates correlation of data matrix and calculates correlation distribution for all pairs 
-of the samples, labelled as replicated/same_batch/unrelated in corresponding output colums (see "Value").}
+\title{Calculates correlation for all pairs of the samples in data matrix, labels 
+as replicated/same_batch/unrelated in output colums (see "Value").}
 \usage{
 calculate_sample_corr_distribution(data_matrix, sample_annotation,
   repeated_samples = NULL, biospecimen_id_col = "EarTag",
@@ -19,7 +19,8 @@ See "example_proteome_matrix" for more details (to call the description, use \co
 technical covariates (batches etc) }. 
 See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
-\item{repeated_samples}{if \code{NULL}, only repeated sample correlation is plotted}
+\item{repeated_samples}{vector of sample IDs to evaluate, if \code{NULL}, 
+all samples are taken into account for plotting}
 
 \item{biospecimen_id_col}{column in \code{sample_annotation} 
 that defines a unique bio ID, which is usually a 
@@ -52,8 +53,8 @@ created the same as \code{sample_id_1}
 }
 }
 \description{
-Calculates correlation of data matrix and calculates correlation distribution for all pairs 
-of the samples, labelled as replicated/same_batch/unrelated in corresponding output colums (see "Value").
+Calculates correlation for all pairs of the samples in data matrix, labels 
+as replicated/same_batch/unrelated in output colums (see "Value").
 }
 \examples{
 corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 
