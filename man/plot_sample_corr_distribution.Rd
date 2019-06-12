@@ -78,5 +78,6 @@ plot_param = 'batch_replicate')
 
 }
 \seealso{
-\code{\link{calculate_sample_corr_distribution}}, \code{\link[ggplot2]{ggplot}}
+\code{\link{calculate_sample_corr_distribution}}, 
+\code{\link[ggplot2]{ggplot}}
 }

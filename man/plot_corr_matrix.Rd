@@ -36,8 +36,9 @@ representation level (fragments, transitions, proteins) or Protein Name)}
 \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
 }
 \description{
-recommended for heatmap-type visualisation of  correlation matrix with
- <100 items. With >50 samples and ~10 replicate pairs distribution plots may be more informative.
+recommended for heatmap-type visualisation of correlation matrix 
+with <100 items. With >50 samples and ~10 replicate pairs distribution plots 
+may be more informative.
 }
 \details{
 Plot correlation of selected  samples or peptides
@@ -50,6 +51,8 @@ corr_matrix_plot <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
 
 }
 \seealso{
-\code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}},
-\code{\link{plot_sample_corr_distribution}}, \code{\link{plot_peptide_corr_distribution}}
+\code{\link[pheatmap]{pheatmap}}, 
+\code{\link[corrplot]{corrplot.mixed}},
+\code{\link{plot_sample_corr_distribution}}, 
+\code{\link{plot_peptide_corr_distribution}}
 }
