@@ -4,22 +4,26 @@ merge_df_with_annotation <- function(df_long, sample_annotation, sample_id_col,
   if (any(annotation_cols %in% names(df_long)) && 
       any(annotation_cols %in% names(sample_annotation))){
     
-    if (all(annotation_cols %in% names(df_long)) && all(annotation_cols %in% names(sample_annotation))){
+    if (all(annotation_cols %in% names(df_long)) && 
+        all(annotation_cols %in% names(sample_annotation))){
       annotation_string = paste(annotation_cols, collapse = ' ')
-      warning(sprintf('All annotation columns (%s) are both in data matrix and in sample annotation, 
-                      ignoring sample annotation; if this is not intended behavior, 
-                      remove these columns from df_long and repeat the function execution.',
+      warning(sprintf('All annotation columns (%s) are both in data matrix and 
+                       in sample annotation,  ignoring sample annotation; 
+                       if this is not intended behavior, remove these columns 
+                      from df_long and repeat the function execution.',
                       annotation_string))
       df_long = df_long %>%
         select(-one_of(annotation_cols))
     } else {
-      common_cols = setdiff(intersect(names(sample_annotation), names(df_long)), sample_id_col)
+      common_cols = setdiff(intersect(names(sample_annotation), names(df_long)), 
+                            sample_id_col)
       common_col_string = paste(common_cols, collapse = ' ')
       warning(sprintf('The following columns are represented in both df_long 
                       and sample_annotation: %s, these columns in df_long 
                       will be overriden from sample_annotation. 
                       If this is not intended behavior, 
-                      remove these columns from df_long and repeat the function execution.', common_col_string))
+                      remove these columns from df_long and 
+                      repeat the function execution.', common_col_string))
       df_long = df_long %>%
         select(-one_of(common_cols))
     }
@@ -58,9 +62,11 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long,
   if (!is.null(sample_annotation)){
     if (!(sample_id_col %in% names(sample_annotation))){
       stop(sprintf('Sample ID column %s is not defined in sample annotation, 
-                    sample annotation cannot be used for correction/plotting', sample_id_col))
+                    sample annotation cannot be used for correction/plotting', 
+                   sample_id_col))
     }
-    if(!setequal(unique(sample_annotation[[sample_id_col]]), unique(df_long[[sample_id_col]]))){
+    if(!setequal(unique(sample_annotation[[sample_id_col]]), 
+                 unique(df_long[[sample_id_col]]))){
       warning('Sample IDs in sample annotation not consistent with samples in input data, 
               will merge, using intersecting Sample IDs only')
       #TODO: expand the warnings for more specific cases: 1) sample annotation has samples not represented in data matrix; 2) dm has samples not in annotation;
