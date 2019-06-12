@@ -37,6 +37,8 @@ merge_df_with_annotation <- function(df_long, sample_annotation, sample_id_col,
 #' Check if sample annotation is consistent with data matrix and join the two
 #'
 #' @inheritParams proBatch
+#' @param merge (logical) whether to merge \code{df_long} with 
+#' \code{sample_annotation} or not
 #'
 #' @return \code{df_long} format data frame, merged with sample_annotation using 
 #' inner_join (samples represented in both)
@@ -51,7 +53,8 @@ merge_df_with_annotation <- function(df_long, sample_annotation, sample_id_col,
 #' 
 #' 
 check_sample_consistency <- function(sample_annotation, sample_id_col, df_long,
-                                     batch_col = NULL, order_col = NULL, facet_col = NULL) {
+                                     batch_col = NULL, order_col = NULL, 
+                                     facet_col = NULL, merge = TRUE) {
   if (!is.null(sample_annotation)){
     if (!(sample_id_col %in% names(sample_annotation))){
       stop(sprintf('Sample ID column %s is not defined in sample annotation, 
@@ -63,9 +66,10 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long,
       #TODO: expand the warnings for more specific cases: 1) sample annotation has samples not represented in data matrix; 2) dm has samples not in annotation;
       #TODO: Break the merge if 1) sample annotation has duplicated samples; 2) dm has duplicated samples
     }
-    
-    df_long = merge_df_with_annotation(df_long, sample_annotation, sample_id_col, 
-                                       batch_col, order_col, facet_col)
+    if (merge){
+      df_long = merge_df_with_annotation(df_long, sample_annotation, sample_id_col, 
+                                         batch_col, order_col, facet_col)
+    }
 
   } else {
     warning('Sample annotation is not provided, only the using df_long alone for correction/plotting')
