@@ -86,12 +86,12 @@ test_that("calculate_sample_corr_distribution", {
   data(example_sample_annotation, package = "proBatch")
   
   matrix_test <- example_proteome_matrix[1:20, ]
-  corr_distribution = calculate_sample_corr_distribution(data_matrix = matrix_test, 
-                                                         repeated_samples = NULL,
-                                                         sample_annotation = example_sample_annotation,
-                                                         biospecimen_id_col = "EarTag", 
-                                                         sample_id_col = 'FullRunName', 
-                                                         batch_col = 'MS_batch')
+  corr_distribution = calculate_sample_corr_distr(data_matrix = matrix_test, 
+                                                  repeated_samples = NULL,
+                                                  sample_annotation = example_sample_annotation,
+                                                  biospecimen_id_col = "EarTag", 
+                                                  sample_id_col = 'FullRunName', 
+                                                  batch_col = 'MS_batch')
   
   expect_is(corr_distribution, "data.frame")
   

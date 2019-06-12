@@ -57,7 +57,7 @@ Calculates correlation for all pairs of the samples in data matrix, labels
 as replicated/same_batch/unrelated in output colums (see "Value").
 }
 \examples{
-corr_distribution = calculate_sample_corr_distribution(data_matrix = example_proteome_matrix, 
+corr_distribution = calculate_sample_corr_distr(data_matrix = example_proteome_matrix, 
 sample_annotation = example_sample_annotation,
 batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
 
