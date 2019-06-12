@@ -37,7 +37,7 @@ level (fragments, transitions, proteins))}
 \item{corr_distribution}{data frame with peptide correlation distribution}
 }
 \value{
-\code{ggplot} type object with violin plot of peptide correlation distribution
+\code{ggplot} object (violin plot of peptide correlation)
 }
 \description{
 Plot distribution of peptide correlations within one 
