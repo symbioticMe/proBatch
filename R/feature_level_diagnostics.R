@@ -20,7 +20,7 @@
 #'  different MS batches in ordered runs; 
 #'  should be `NULL` for experiments without intrinsic order.
 #' @param ylimits range of y-axis to plot feature-level trends 
-#' @param fit_df data frame output of \code{adjust_batch_trend} to be plotted with the line
+#' @param fit_df data frame output of \code{adjust_batch_trend_df} to be plotted with the line
 #' @param fit_value_col column in \code{fit_df} where the values for fitting trend are found
 #'
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
@@ -49,7 +49,7 @@
 #' protein_col = 'Gene')
 #'
 #' #illustrate the fitting curve:
-#' loess_fit_70 <- adjust_batch_trend(example_proteome, 
+#' loess_fit_70 <- adjust_batch_trend_df(example_proteome, 
 #' example_sample_annotation, span = 0.7)
 #' 
 #' fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
