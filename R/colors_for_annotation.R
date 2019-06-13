@@ -349,9 +349,13 @@ color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme,
   if(color_by_batch & !is.null(batch_col)){
     gg = gg + aes_string(color = batch_col)
     
+    n_batches <- length(unique(sample_annotation[[batch_col]]))
+    if (n_batches == length(color_scheme)){
+      
+    }
     #Define the color scheme on the fly
     if(length(color_scheme) == 1 && color_scheme == 'brewer'){
-      n_batches <- length(unique(sample_annotation[[batch_col]]))
+      
       if (n_batches <= 9){
         gg = gg + scale_color_brewer(palette = 'Set1')
       } else {
@@ -368,6 +372,10 @@ color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme,
     } else {
       #color vector provided by "sample_annotation_to_colors"
       gg = gg + scale_color_manual(values = color_scheme)
+    }
+  } else {
+    if (is.null(batch_col)){
+      stop('Coloring column not defined, please define the color column!')
     }
   }
   return(gg)
@@ -396,6 +404,133 @@ color_fill_boxes_by_batch <- function(color_by_batch, batch_col, gg,
       } else{
         gg = gg + scale_fill_manual(values = color_scheme)
     }
+  }
+  return(gg)
+}
+
+color_discrete <- function(color_scheme, batch_col, n_batches, fill_or_color, gg) {
+  
+  gg = gg + aes(color = as.factor(!!sym(batch_col)))
+  #Define the color scheme on the fly
+  if(length(color_scheme) == 1 && color_scheme == 'brewer'){
+    if (n_batches <= 9){
+      if(fill_or_color == 'color'){
+        gg = gg + scale_color_brewer(palette = 'Set1')
+      } else {
+        if(fill_or_color == 'fill'){
+          gg = gg + scale_fill_brewer(palette = 'Set1')
+        }
+      }
+      
+    } else {
+      if (n_batches <= 12){
+        if(fill_or_color == 'color'){
+          gg = gg + scale_color_brewer(palette = 'Set3')
+        } else {
+          if(fill_or_color == 'fill'){
+            gg = gg + scale_fill_brewer(palette = 'Set3')
+          }
+        }
+        
+      } else {
+        warning(sprintf('brewer palettes have maximally 12 colors, 
+                        %s batches are specified,
+                        consider defining color scheme with 
+                        sample_annotation_to_colors function', 
+                        n_batches))
+      }
+    }
+    } else {
+      #color vector provided by "sample_annotation_to_colors"
+      if(fill_or_color == 'color'){
+        gg = gg + scale_color_manual(values = color_scheme)
+      } else {
+        if(fill_or_color == 'fill'){
+          gg = gg + scale_fill_manual(values = color_scheme)
+        }
+      }
+    }
+  if(fill_or_color == 'color'){
+    gg = gg + labs(color = batch_col)
+  } else {
+    if(fill_or_color == 'fill'){
+      gg = gg + labs(fill = batch_col)
+    }
+  }
+  
+  return(gg)
+}
+
+color_continuous <- function(color_scheme, batch_col, n_batches, fill_or_color, gg) {
+  batch_vector = gg$data[[batch_col]]
+  lab_datetime <- pretty(batch_vector)
+  
+  gg = gg + aes(color = as.numeric(!!sym(batch_col)))
+  #Define the color scheme on the fly
+  if(length(color_scheme) == 1 && color_scheme == 'brewer'){
+    
+    if(fill_or_color == 'color'){
+      gg = gg + scale_color_distiller(palette = 'PiYG',
+                                      breaks = as.numeric(lab_datetime), 
+                                      labels = lab_datetime)+
+        labs(color=batch_col)
+    } else {
+      if(fill_or_color == 'fill'){
+        gg = gg + scale_color_distiller(palette = 'PiYG',
+                                        breaks = as.numeric(lab_datetime), 
+                                        labels = lab_datetime)+
+          labs(fill=batch_col)
+      }
+    }
+  } else {
+    #color vector provided by "sample_annotation_to_colors"
+    if(fill_or_color == 'color'){
+      gg = gg + scale_color_gradientn(colors = color_scheme)
+    } else {
+      if(fill_or_color == 'fill'){
+        gg = gg + scale_color_gradientn(colors = color_scheme)
+      }
+    }
+  }
+  return(gg)
+}
+
+color_by_factor <- function(color_by_batch, batch_col, gg, color_scheme, 
+                            sample_annotation, fill_or_color = 'color') {
+  if(color_by_batch & !is.null(batch_col)){
+    
+    batch_vector <- sample_annotation[[batch_col]]
+    n_batches <- length(unique(batch_vector))
+    is_factor = is.factor(batch_vector) || 
+      is.character(batch_vector) ||
+      ((n_batches == length(color_scheme)) && 
+         setequal(names(color_scheme), unique(batch_vector)))
+    
+    is_numeric = (!is_factor) && 
+      (is.numeric(batch_vector) || is.POSIXct(batch_vector))
+    
+    if (is_numeric && 
+        (n_batches <= 10 || n_batches < 0.1*nrow(sample_annotation))){
+      warning(sprintf('%s column has very few values, but is numeric-like,
+                      should it be treated as factor? 
+                      \nThen modify it with as.factor() function', batch_col))
+    }
+    
+    if(is_factor){
+      gg = color_discrete(color_scheme, batch_col, n_batches, fill_or_color, gg)
+    } else if(is_numeric) {
+      gg = color_continuous(color_scheme, batch_col, n_batches, fill_or_color, gg)
+    } else{
+      stop('batch_col class is neither factor-like, nor numeric-like,  
+           check sample_annotation and/or color_scheme')
+    }
+    
+    
+    
+    } else {
+      if (is.null(batch_col)){
+        stop('Coloring column not defined, please define the color column!')
+      }
   }
   return(gg)
 }
