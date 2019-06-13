@@ -66,8 +66,8 @@ which means argument value has to be set to \code{m_score}.}
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
 this argument value has to be set to \code{2} (this is an \code{m_score} value for imputed values (requant values).}
 
-\item{plot_title}{title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
+\item{plot_title}{title of the plot (e.g., processing step + representation
+level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 }
