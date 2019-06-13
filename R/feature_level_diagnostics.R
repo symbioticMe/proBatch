@@ -32,7 +32,7 @@
 #' 
 #' #to examine peptides of a single protein:
 #' peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
-#' protein_name = "Haao",  
+#' protein_name = "Haao", peptide_annotation = example_peptide_annotation,
 #' protein_col = "Gene", df_long = example_proteome, 
 #' sample_annotation = example_sample_annotation, 
 #' order_col = 'order', sample_id_col = 'FullRunName', 
@@ -43,6 +43,7 @@
 #' df_long = example_proteome, sample_annotation = example_sample_annotation, 
 #' sample_id_col = 'FullRunName',
 #' plot_title = "Spike-in BOVINE protein peptides")
+#' 
 #' #to illustrate iRT peptides:
 #' irt_plot <- plot_iRT(irt_pattern = "BOVINE_A1ag", 
 #' df_long = example_proteome, sample_annotation = example_sample_annotation, 
