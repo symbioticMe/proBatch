@@ -1,22 +1,17 @@
 #' cluster the data matrix to visually inspect which confounder dominates
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. in most
-#'   function, it is assumed that this is the log transformed version of the
-#'   original data
-#' @param color_df data frame of colors, as created by \code{sample_annotation_to_colors}
-#'   
+#' @inheritParams proBatch
+#' @param color_df data frame of colors, as created by 
+#' \code{sample_annotation_to_colors}
 #' @param distance distance metric used for clustering
 #' @param agglomeration agglomeration methods as used by \code{hclust}
 #' @param label_samples if \code{TRUE} sample IDs (column names of 
 #' \code{data_matrix}) will be printed
 #' @param label_font size of the font. Is active if \code{label_samples} is 
 #' \code{TRUE}, ignored otherwise
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
-#' @param fill_the_missing boolean value determining if 
-#' missing values should be substituted with -1 (and colored with 
-#' \code{color_for_missing}). If \code{NULL}, features with missing values are excluded.
+#' @param fill_the_missing boolean value determining if  missing values 
+#' should be substituted with -1 (and colored with   \code{color_for_missing}). 
+#' If \code{NULL}, features with missing values are excluded.
 #' @param ... other parameters of \code{plotDendroAndColors} from \code{WGCNA} package
 #'
 #' @return No return
@@ -47,8 +42,12 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
   if (any(is.na(as.vector(data_matrix)))){
     warning('Hierarchical clustering cannot operate with missing values in the matrix')
     if(!is.null(fill_the_missing)){
-      warning(sprintf('filling missing value with %s', fill_the_missing))
-      data_matrix[is.na(data_matrix)] = fill_the_missing
+      if (!is.numeric(fill_the_missing)){
+        fill_the_missing = 0
+      } else{
+        warning(sprintf('filling missing value with %s', fill_the_missing))
+        data_matrix[is.na(data_matrix)] = fill_the_missing
+      }
     } else {
       warning('filling value is NULL, removing features with missing values')
       data_matrix = data_matrix[complete.cases(data_matrix),]
@@ -89,9 +88,8 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' @param sample_id_col name of the column in 
 #' sample_annotation file, where the
 #'   filenames (colnames of the data matrix are found)
-#' @param fill_the_missing boolean value determining if 
-#' missing values should be substituted with -1 (and colored with 
-#' \code{color_for_missing}). If \code{NULL}, features with missing values are excluded.
+#' @param fill_the_missing numeric value that the missing values are
+#'   substituted with, or \code{NULL} if features with missing values are to be excluded.
 #' @param cluster_rows boolean value determining if rows 
 #' should be clustered
 #' @param cluster_cols boolean value determining if columns 
@@ -106,8 +104,6 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' @param color_for_missing special color to make missing values. 
 #' Usually black or white, depending on \code{heatmap_color}
 #' @param filename filepath where to save the image
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
 #' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
 #' 
 #' @return object returned by \code{link[pheatmap]{pheatmap}}
@@ -145,16 +141,20 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
   rm(df_long)
   
   if (any(is.na(as.vector(data_matrix)))){
-    warning('heatmap cannot operate with missing values in the matrix')
+    warning('Heatmap cannot operate with missing values in the matrix')
     if(!is.null(fill_the_missing)){
-      warning(sprintf('filling missing value with %s', fill_the_missing))
-      data_matrix[is.na(data_matrix)] = fill_the_missing
-      heatmap_color = c(color_for_missing, heatmap_color)
+      if (!is.numeric(fill_the_missing)){
+        fill_the_missing = 0
+      } else{
+        warning(sprintf('filling missing value with %s', fill_the_missing))
+        data_matrix[is.na(data_matrix)] = fill_the_missing
+      }
     } else {
       warning('filling value is NULL, removing features with missing values')
       data_matrix = data_matrix[complete.cases(data_matrix),]
     }
   }
+  
   
   if (is.null(sample_annotation)){
     annotation_col = NA
@@ -244,8 +244,9 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #'   variabilities that the selected principal components need to explain
 #' @param threshold_var the percentile value of weight each of the covariates
 #'   needs to explain (the rest will be lumped together)
-#' @param fill_the_missing numeric value that the missing values are
-#'   substituted with, or \code{NULL} if features with missing values are to be excluded.
+#' @param fill_the_missing boolean value determining if  missing values 
+#' should be substituted with -1 (and colored with   \code{color_for_missing}). 
+#' If \code{NULL}, features with missing values are excluded.
 #' @param theme ggplot theme, by default \code{classic}. Can be easily overridden (see
 #'   examples)
 #' @param plot_title Title of the plot (usually, processing step + representation
@@ -255,12 +256,13 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @export
 #'
 #' @examples 
-#' \donttest{matrix <- example_proteome_matrix[1:50, ]
-#' pvca_plot <- plot_PVCA(matrix, example_sample_annotation, 
+#' matrix_test <- example_proteome_matrix[1:50, ]
+#' pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
 #' technical_covariates = c('MS_batch', 'digestion_batch'),
-#' biological_covariates = c("Diet", "Sex", "Strain"))}
+#' biological_covariates = c("Diet", "Sex", "Strain"))
 #' 
-#' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
+#' @seealso \code{\link{sample_annotation_to_colors}}, 
+#' \code{\link[ggplot2]{ggplot}}
 plot_PVCA <- function(data_matrix, sample_annotation,
                       sample_id_col = 'FullRunName',
                       feature_id_col = 'peptide_group_label',
@@ -290,9 +292,10 @@ plot_PVCA <- function(data_matrix, sample_annotation,
     }
     if(feature_id_col %in% colnames(data_matrix)){
       if(is.data.frame(data_matrix)){
-        warning(sprintf('feature_id_col with name %s in data matrix instead of rownames,
-                        this might cause errors in other diagnostic functions,
-                        assign values of this column to rowname and remove from the data frame!', 
+        warning(sprintf('feature_id_col with name %s in data matrix instead of 
+                         rownames, this might cause errors in other diagnostic 
+                         functions, assign values of this column to rowname and 
+                        remove from the data frame!', 
                         feature_id_col))
         rownames(data_matrix) = data_matrix[[feature_id_col]]
         data_matrix[[feature_id_col]] = NULL
@@ -309,8 +312,12 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   if (any(is.na(as.vector(data_matrix)))){
     warning('PVCA cannot operate with missing values in the matrix')
     if(!is.null(fill_the_missing)){
-      warning(sprintf('filling missing value with %s', fill_the_missing))
-      data_matrix[is.na(data_matrix)] = fill_the_missing
+      if (!is.numeric(fill_the_missing)){
+        fill_the_missing = 0
+      } else{
+        warning(sprintf('filling missing value with %s', fill_the_missing))
+        data_matrix[is.na(data_matrix)] = fill_the_missing
+      }
     } else {
       warning('filling value is NULL, removing features with missing values')
       data_matrix = data_matrix[complete.cases(data_matrix),]
@@ -320,10 +327,12 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   pvca_res = calculate_PVCA(data_matrix, sample_annotation, factors_for_PVCA,
                             threshold_pca, threshold_var = threshold_var)
   
-  tech_interactions = expand.grid(technical_covariates, technical_covariates) %>%
+  tech_interactions = expand.grid(technical_covariates, 
+                                  technical_covariates) %>%
     mutate(tech_interactions = paste(Var1, Var2, sep = ':')) %>%
     pull(tech_interactions)
-  biol_interactions = expand.grid(biological_covariates, biological_covariates) %>%
+  biol_interactions = expand.grid(biological_covariates, 
+                                  biological_covariates) %>%
     mutate(biol_interactions = paste(Var1, Var2, sep = ':')) %>%
     pull(biol_interactions)
   
@@ -334,8 +343,10 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   label_of_small = sprintf('Below %1.0f%%', 100*threshold_var)
   technical_covariates = c(technical_covariates, tech_interactions)
   biological_covariates = c(biological_covariates, biol_interactions)
-  pvca_res = pvca_res %>% mutate(category = ifelse(label %in% technical_covariates, 'technical',
-                                                   ifelse(label %in% biological_covariates, 'biological',
+  pvca_res = pvca_res %>% mutate(category = ifelse(label %in% technical_covariates, 
+                                                   'technical',
+                                                   ifelse(label %in% biological_covariates, 
+                                                          'biological',
                                                           ifelse(label %in% c(label_of_small, 'resid'), 
                                                                  'residual', 'biol:techn'))))
   
@@ -385,26 +396,12 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 
 #' plot PCA plot
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. in most
-#'   function, it is assumed that this is the log transformed version of the
-#'   original data
-#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
-#' @param feature_id_col name of the column with feature/gene/peptide/protein
-#'   ID used in the long format representation \code{df_long}. In the wide
-#'   formatted representation \code{data_matrix} this corresponds to the row
-#'   names.
+#' @inheritParams proBatch
 #' @param color_by column name (as in \code{sample_annotation}) to color by
 #' @param PC_to_plot principal component numbers for x and y axis
-#' @param colors_for_factor named vector of colors for the \code{color_by} variable
-#' @param fill_the_missing boolean value determining if missing values should be
-#'   substituted with -1 (and colored with black)
-#' @param theme ggplot theme, by default \code{classic}. Can be easily overriden (see
-#'   examples)
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
+#' @param fill_the_missing boolean value determining if  missing values 
+#' should be substituted with -1 (and colored with   \code{color_for_missing}). 
+#' If \code{NULL}, features with missing values are excluded.
 #'
 #' @return ggplot scatterplot colored by factor levels of column specified in
 #'   \code{factor_to_color}
@@ -413,14 +410,18 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #' @examples 
 #' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 #' color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
+#' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+#' color_by = 'digestion_batch', plot_title = "PCA colored by digestion_batch")
+#' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+#' color_by = 'DateTime', plot_title = "PCA colored by DateTime")
 #' 
 #' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, 
 #' \code{\link[ggplot2]{ggplot}}
 plot_PCA <- function(data_matrix, sample_annotation,
                      feature_id_col = 'peptide_group_label',
                      color_by = 'MS_batch',
-                     PC_to_plot = c(1,2), fill_the_missing = 0,
-                     colors_for_factor = NULL,
+                     PC_to_plot = c(1,2), fill_the_missing = -1,
+                     color_scheme = 'brewer',
                      theme = 'classic',
                      plot_title = NULL){
   
@@ -443,33 +444,45 @@ plot_PCA <- function(data_matrix, sample_annotation,
     if(!is.null(fill_the_missing)){
       if (!is.numeric(fill_the_missing)){
         fill_the_missing = 0
+      } else{
+        warning(sprintf('filling missing value with %s', fill_the_missing))
+        data_matrix[is.na(data_matrix)] = fill_the_missing
       }
-      warning(sprintf('filling missing value with %s', fill_the_missing))
-      data_matrix[is.na(data_matrix)] = fill_the_missing
     } else {
       warning('filling value is NULL, removing features with missing values')
       data_matrix = data_matrix[complete.cases(data_matrix),]
     }
   }
   
-  if(length(color_by) > 1){
-    warning('Coloring by the first column specified')
-    color_by = color_by[1]
-  }
+  
   pr_comp_res <- prcomp(t(data_matrix))
   gg = autoplot(pr_comp_res, data = sample_annotation,
                 x = PC_to_plot[1], y = PC_to_plot[2])
-  gg = gg + aes(color = factor(!!sym(color_by)))
-  gg = gg + labs(color=color_by)
-  if (theme == 'classic'){
+  
+  
+  #add colors
+  
+  if(length(color_by) > 1){
+    warning('Coloring by the first column specified')
+    color_by = color_by[1]
+  } #TODO: create the ggpubr graph with multiple panels, colored by factors
+  gg = color_by_factor(color_by_batch = TRUE, 
+                       batch_col = color_by, gg = gg, 
+                       color_scheme = color_scheme, 
+                       sample_annotation = sample_annotation,
+                       fill_or_color = 'color')
+  
+  #Add the title
+  if(!is.null(plot_title)) {
+    gg = gg + ggtitle(plot_title)+
+      theme(plot.title = element_text(face = 'bold',hjust = .5))
+  }
+  
+  #Change the theme
+  if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
   }
-  if(!is.null(colors_for_factor)){
-    gg = gg + scale_color_manual(values = colors_for_factor)
-  }
-  if(!is.null(plot_title)){
-    gg = gg + ggtitle(plot_title)
-  }
+  
   return(gg)
 }
 
