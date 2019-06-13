@@ -13,13 +13,15 @@
 quantile_normalize_dm(data_matrix)
 
 quantile_normalize_df(df_long, feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName", measure_col = "Intensity")
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  keep_all = FALSE)
 
-normalize_sample_medians_dm(data_matrix, sample_id_col = "FullRunName",
-  measure_col = "Intensity")
+normalize_sample_medians_dm(data_matrix)
 
-normalize_sample_medians_df(df_long, sample_id_col = "FullRunName",
-  measure_col = "Intensity")
+normalize_sample_medians_df(df_long,
+  feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  keep_all = FALSE)
 
 normalize_data_dm(data_matrix, normalize_func = c("quantile",
   "medianCentering"), log_base = NULL, offset = 1)
@@ -27,7 +29,8 @@ normalize_data_dm(data_matrix, normalize_func = c("quantile",
 normalize_data_df(df_long, normalize_func = c("quantile",
   "medianCentering"), log_base = NULL, offset = 1,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName", measure_col = "Intensity")
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  keep_all = FALSE)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -50,6 +53,8 @@ filenames (colnames of the data matrix are found).}
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
+
+\item{keep_all}{whether all columns from \code{df_long} should be kept}
 
 \item{normalize_func}{global batch normalization method 
 (`quantile` or `MedianCentering`)}
