@@ -134,7 +134,7 @@ See "example_peptide_annotation" for more details (to call the description, use 
 \item{irt_pattern}{substring used to identify iRT proteins in the column
 'ProteinName'}
 
-\item{fit_df}{data frame output of \code{adjust_batch_trend} to be plotted with the line}
+\item{fit_df}{data frame output of \code{adjust_batch_trend_df} to be plotted with the line}
 
 \item{fit_value_col}{column in \code{fit_df} where the values for fitting trend are found}
 }
@@ -175,7 +175,7 @@ df_long = example_proteome, sample_annotation = example_sample_annotation,
 protein_col = 'Gene')
 
 #illustrate the fitting curve:
-loess_fit_70 <- adjust_batch_trend(example_proteome, 
+loess_fit_70 <- adjust_batch_trend_df(example_proteome, 
 example_sample_annotation, span = 0.7)
 
 fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 

@@ -8,7 +8,7 @@ test_that("center_feature_batch_medians", {
   rows <- which(example_proteome$peptide_group_label == "10062_NVGVSFYADKPEVTQEQK_3")
   
   proteome <- example_proteome[rows,]
-  median_proteome <- center_feature_batch_medians(proteome, example_sample_annotation)
+  median_proteome <- center_feature_batch_medians_df(proteome, example_sample_annotation)
   
   n_batch <- length(unique(median_proteome$MS_batch))
   expect_equal(length(unique(median_proteome$diff)), n_batch)
@@ -24,7 +24,7 @@ test_that("adjust_batch_trend", {
   short_df <- example_proteome[example_proteome[['peptide_group_label']]
                                %in% c( "10062_NVGVSFYADKPEVTQEQK_3","101233_QGFNVVVESGAGEASK_2"), ]
   
-  adjusted <- adjust_batch_trend(short_df, example_sample_annotation, span = 0.7, 
+  adjusted <- adjust_batch_trend_df(short_df, example_sample_annotation, span = 0.7, 
                      abs_threshold = 5, pct_threshold = 0.20)
 
   n_batch <- length(unique(example_sample_annotation$MS_batch))
