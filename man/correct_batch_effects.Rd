@@ -100,6 +100,9 @@ batch) to filter data for curve fitting.}
 \item{...}{other parameters, usually of \code{adjust_batch_trend}, 
 and \code{fit_func}.}
 
+\item{return_fit_df}{(logical) whether to return the \code{fit_df} from 
+\code{adjust_batch_trend_dm} or only the data matrix}
+
 \item{par.prior}{use parametrical or non-parametrical prior}
 
 \item{continuous_func}{function to use for the fit (currently 
