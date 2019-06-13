@@ -2,4 +2,19 @@ proBatch  v1.1.0
 ==============
 
 Changes:
-*
+* all functions that deal with data matrix and sample annotation, are checking 
+for sample consistency (discrepancies in sample IDs);
+* all functions, transforming the data (log, normalization, batch correction) 
+work with both `data_matrix` and `df_long` formats, and called as 
+`[correction_func]_dm` and `[correction_func]_df` correspondingly.
+* for all `df_long` functions, modifying `measure_col` (Intensity), keeping the 
+old column as:
+    - log_transform_df: beforeLog_[measure_col];
+    - normalization: preNorm_[measure_col];
+    - batch correction: preBatchCorr_[measure_col];
+    - (if adjusting trend): preTrendFit_[measure_col].
+  Note that this increases the data size. If this is of a concern, 
+  use `data_matrix` format instead.
+* renamed functions: 
+  - "center_peptide_batch_medians" to "center_feature_batch_medians"
+  - "normalize_custom_fit" into "adjust_batch_trend";
