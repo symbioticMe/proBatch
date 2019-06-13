@@ -371,7 +371,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                                     sample_id_col = sample_id_col,
                                                     batch_col = batch_col)
   } else {
-    corr_distribution = lapply(1:length(data_matrix), function(i) {
+    corr_distribution = lapply(seq_len(length(data_matrix)), function(i) {
       dm = data_matrix[[i]]
       corr_distribution = calculate_sample_corr_distr(data_matrix = dm, 
                                                       repeated_samples = repeated_samples, 
@@ -444,10 +444,10 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation,
                                 protein_col = 'ProteinName',
                                 feature_id_col = 'peptide_group_label'){
     comb_to_keep = data.frame(t(combn(colnames(peptide_cor), 2)))
-    names(comb_to_keep) = paste(feature_id_col, 1:2, sep = '_')
+    names(comb_to_keep) = paste(feature_id_col, seq_len(2), sep = '_')
 
     corr_distribution = melt(peptide_cor,
-                             varnames = paste(feature_id_col,1:2, sep = '_'),
+                             varnames = paste(feature_id_col,seq_len(2), sep = '_'),
                              value.name = 'correlation') %>%
       filter(!is.na(correlation)) %>%
       merge(comb_to_keep) %>%
@@ -539,7 +539,7 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
                                                          protein_col, 
                                                          feature_id_col)
     } else {
-        corr_distribution = lapply(1:length(data_matrix), function(i) {
+        corr_distribution = lapply(seq_len(length(data_matrix)), function(i) {
             dm = data_matrix[[i]]
             corr_distribution = calculate_peptide_corr_distr(dm, peptide_annotation,
                                                        protein_col, feature_id_col)
