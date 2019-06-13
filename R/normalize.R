@@ -153,7 +153,7 @@ normalize_data_dm <- function(data_matrix, normalize_func = c("quantile", "media
   if(normalize_func == "quantile"){
     normalized_matrix = quantile_normalize_dm(data_matrix)
   } else if(normalize_func == "medianCentering"){
-    normalize_sample_medians_dm(data_matrix)
+    normalized_matrix = normalize_sample_medians_dm(data_matrix)
   } else {
     stop("Only quantile and median centering normalization methods are available")
   }
