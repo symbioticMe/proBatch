@@ -131,14 +131,17 @@ loocv.nw <- function(x, y, bw = 1.5, kernel = "normal"){
   ## Calculate LOO regression values using the help function above
   
   n <- max(length(x), length(y))
-  loo.values.bw <- sapply(1:n, loo.reg.value.bw, x, y, bw, kernel)
+  loo.values.bw <- vapply(seq_len(n), FUN = loo.reg.value.bw, 
+                          FUN.VALUE = numeric(1),
+                          x, y, bw, kernel)
   ## Calculate and return MSE
   return(mean((y - loo.values.bw)^2))
 }
 
 optimise_bw <- function(x, y, kernel = 'normal',
                         bws = c(0.01, 0.5, 1, 1.5, 2, 5, 10)){
-  cv.nw_mult = sapply(bws, function(bw) loocv.nw(x, y, bw, kernel))
+  cv.nw_mult = vapply(bws, FUN = function(bw) loocv.nw(x, y, bw, kernel), 
+                      FUN.VALUE = numeric(1))
   bw_best = bws[which.min(cv.nw_mult)]
   return(bw_best)
 }
@@ -152,7 +155,7 @@ optimise_df <- function(x, bw){
   n <- length(x)
   Id <- diag(n)
   S.nw <- matrix(0, n, n)
-  for (j in 1:n)
+  for (j in seq_len(n))
       S.nw[, j] <- reg.fcn.nw(x, Id[,j],x, bw = bw)
     df.nw <- sum(diag(S.nw))
     return(df.nw)
