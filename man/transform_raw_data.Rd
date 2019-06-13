@@ -3,13 +3,13 @@
 \name{transform_raw_data}
 \alias{transform_raw_data}
 \alias{log_transform_df}
-\alias{log_transform_matrix}
+\alias{log_transform_dm}
 \title{Functions to log transform raw data before normalization and batch correction}
 \usage{
 log_transform_df(df_long, log_base = 2, offset = 1,
   measure_col = "Intensity")
 
-log_transform_matrix(data_matrix, log_base = 2, offset = 1)
+log_transform_dm(data_matrix, log_base = 2, offset = 1)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -30,10 +30,11 @@ feature IDs in rownames and file/sample names as colnames.
 See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
 }
 \value{
-`log_transform_df()` returns \code{df_long}-size data frame, with \code{measure_col} log transformed;
-with old value in another column called "old_intensity" if "intensity" 
-was the value of \code{measure_col};
-`log_transform_matrix()` returns \code{data_matrix} of same dimensions as input
+`log_transform_df()` returns \code{df_long}-size data frame, with 
+\code{measure_col} log transformed; with old value in another column 
+called "beforeLog_intensity" if "intensity" was the value of 
+\code{measure_col};
+`log_transform_dm()` returns \code{data_matrix} format matrix
 }
 \description{
 Functions to log transform raw data before normalization and batch correction
@@ -43,5 +44,6 @@ Log transformation of the data
 \examples{
 log_transformed_df <- log_transform_df(example_proteome)
 
-log_transformed_matrix <- log_transform_matrix(example_proteome_matrix, log_base = 10, offset = 1)
+log_transformed_matrix <- log_transform_dm(example_proteome_matrix, 
+log_base = 10, offset = 1)
 }

@@ -4,12 +4,12 @@
 #' Normalization brings the samples to the same scale.
 #' Currently the following normalization functions are implemented:
 #' #' \enumerate{
-#'   \item Quantile normalization: `quantile_normalize()`. 
+#'   \item Quantile normalization: `quantile_normalize_dm()`. 
 #'   Quantile normalization of the data.
-#'   \item Median normalization: `normalize_sample_medians()`. 
+#'   \item Median normalization: `normalize_sample_medians_dm()`. 
 #'   Normalization by centering sample medians to global median of the data
 #' }
-#' Alternatively, one can call normalization function with `normalize_data()` 
+#' Alternatively, one can call normalization function with `normalize_data_dm()` 
 #' wrapper.
 #' 
 #' 
@@ -18,14 +18,14 @@
 #' (`quantile` or `MedianCentering`)
 #' @param log_base whether to log transform data matrix 
 #' before normalization (e.g. `NULL`, `2` or `10`)
+#' @param offset small positive number to prevent 0 conversion to \code{-Inf}
 #' 
 #' @return the data in the same format as input (\code{data_matrix} or 
 #' \code{df_long}).
 #' For \code{df_long} the data frame stores the original values of 
 #' \code{measure_col}
 #' in another column called "preNorm_intensity" if "intensity", and the 
-#' normalized values
-#' in \code{measure_col} column.
+#' normalized values in \code{measure_col} column.
 #' 
 #' @examples 
 #' 
@@ -137,21 +137,21 @@ normalize_sample_medians_df <- function(df_long,
 #' 
 #' 
 normalize_data_dm <- function(data_matrix, normalize_func = c("quantile", "medianCentering"), 
-                           log_base = NULL){
+                           log_base = NULL, offset = 1){
   
   normalize_func <- match.arg(normalize_func)    
   if(!is.null(log_base)){
-    data_matrix = log_transform_matrix(data_matrix, log_base = log_base)
+    data_matrix = log_transform_dm(data_matrix, log_base = log_base)
   }
   
   if(normalize_func == "quantile"){
-    normalized_matrix = quantile_normalize(data_matrix)
+    normalized_matrix = quantile_normalize_dm(data_matrix)
   } else if(normalize_func == "medianCentering"){
     df_long = matrix_to_long(data_matrix, 
                              feature_id_col = 'peptide_group_label',
                              measure_col = 'Intensity', 
                              sample_id_col = 'FullRunName')
-    normalized_df = normalize_sample_medians(df_long, 
+    normalized_df = normalize_sample_medians_df(df_long, 
                                              sample_id_col = 'FullRunName', 
                                              measure_col = 'Intensity')
     normalized_matrix = long_to_matrix(normalized_df)
@@ -185,7 +185,7 @@ normalize_data_df <- function(df_long,
                                  feature_id_col = feature_id_col, 
                                  measure_col = measure_col,
                                  sample_id_col = sample_id_col)
-    normalized_matrix = quantile_normalize(data_matrix)
+    normalized_matrix = quantile_normalize_dm(data_matrix)
     normalized_df = matrix_to_long(normalized_matrix,
                                    feature_id_col = feature_id_col, 
                                    measure_col = measure_col,

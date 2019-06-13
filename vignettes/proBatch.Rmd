@@ -323,7 +323,8 @@ example_matrix <- long_to_matrix(example_proteome,
 #### Transforming the data to log scale
 Additionally, if the data are expected to be log-transformed, one can:
 ```{r}
-log_transformed_matrix <- log_transform_matrix(example_matrix, log_base = 2, offset = 1)
+log_transformed_matrix <- log_transform_dm(example_matrix, 
+                                           log_base = 2, offset = 1)
 ```
 
 
@@ -411,14 +412,15 @@ explained by non-technical factors, such as heterogeneity of samples,
 other approaches, such as quantile normalization need to be used.
 
 ```{r median_normalization_log, fig.show='hold'}
-median_normalized_matrix = normalize_data(log_transformed_matrix, 
-                                          normalize_func = "medianCentering")
+median_normalized_matrix = normalize_data_dm(log_transformed_matrix, 
+                                             normalize_func = "medianCentering")
 ```
 
 Same result will be achieved with:
 ```{r median_normalization_raw, fig.show='hold'}
-median_normalized_matrix = normalize_data(example_matrix, 
-                                          normalize_func = "medianCentering", log_base = 2)
+median_normalized_matrix = normalize_data_dm(example_matrix, 
+                                             normalize_func = "medianCentering", 
+                                             log_base = 2, offset = 1)
 ```
 
 ### Quantile normalization
@@ -431,8 +433,8 @@ the distribution in principle are identical.
 
 
 ```{r quantile_norm, fig.show='hold'}
-quantile_normalized_matrix = normalize_data(log_transformed_matrix, 
-                                            normalize_func = "quantile")
+quantile_normalized_matrix = normalize_data_dm(log_transformed_matrix,
+                                               normalize_func = "quantile")
 ```
 
 After quantile or median normalization, you can easily check if the
@@ -625,7 +627,7 @@ batch-dependent. However, now the batches are discrete and thus can be
 corrected using discrete methods such as median-centering or ComBat.
 
 ```{r loess_fit, fig.show='hold', fig.width=5, fig.height=2.4}
-loess_fit <- adjust_batch_trend(quantile_normalized_long, example_sample_annotation)
+loess_fit <- adjust_batch_trend_df(quantile_normalized_long, example_sample_annotation)
 loess_fit_df <- loess_fit$corrected_df
 ```
 
@@ -638,7 +640,7 @@ evaluate several peptides to determine the best smoothing degree for a
 given dataset.
 
 ```{r loess_30, fig.show='hold', fig.width=5, fig.height=2.4}
-loess_fit_30 <- adjust_batch_trend(quantile_normalized_long, example_sample_annotation, span = 0.3)
+loess_fit_30 <- adjust_batch_trend_df(quantile_normalized_long, example_sample_annotation, span = 0.3)
 
 plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
             fit_df = loess_fit_30$fit_df, fit_value_col = 'fit',
@@ -647,7 +649,7 @@ plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2",
 ```
 
 ```{r loess_70, fig.show='hold', fig.width=5, fig.height=2.4}
-loess_fit_70 <- adjust_batch_trend(quantile_normalized_long, example_sample_annotation, span = 0.7)
+loess_fit_70 <- adjust_batch_trend_df(quantile_normalized_long, example_sample_annotation, span = 0.7)
 plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
             fit_df = loess_fit_70$fit_df, fit_value_col = 'fit',
             df_long = quantile_normalized_long, sample_annotation = example_sample_annotation, 
@@ -662,7 +664,7 @@ fit the curve to the specific peptide within the specific batch, and
 proceed directly to discrete correction methods. To identify such
 peptides, absolute and relative thresholds (`abs_threshold` and
 `pct_threshold`) on the number of missing values for each peptide can
-be passed as parameters to `adjust_batch_trend()`.
+be passed as parameters to `adjust_batch_trend_df()`.
 
 ### Discrete batch correction: combat or peptide-level median centering 
 Once the data are normalized and corrected for continuous drift, only
@@ -677,7 +679,7 @@ Currently, two methods of batch correction are implemented:
 Feature-level median centering is the simplest approach for batch effects correction. 
 However, if the variance is different between batches, other approaches need to be used.
 ```{r median_batch, fig.show='hold', fig.width=3, fig.height=2.4}
-peptide_median_df <- center_feature_batch_medians(loess_fit_df, example_sample_annotation)
+peptide_median_df <- center_feature_batch_medians_df(loess_fit_df, example_sample_annotation)
 plot_single_feature(feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long = peptide_median_df, 
             sample_annotation = example_sample_annotation, measure_col = 'Intensity',
             plot_title = "Feature-level Median Centered")
@@ -697,9 +699,9 @@ comBat_df <- correct_with_ComBat_df(loess_fit_df, example_sample_annotation)
 
 To illustrate the correction we use the "10231_QDVDVWLWQQEGSSK_2" spike-in peptide. 
 ```{r combat_result, fig.show='hold',  fig.width=3, fig.height=2.4}
-plot_single_feature (feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long = loess_fit_df, 
+plot_single_feature(feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long = loess_fit_df, 
           sample_annotation = example_sample_annotation, plot_title = "Loess Fitted")
-plot_single_feature (feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long =  comBat_df, 
+plot_single_feature(feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long =  comBat_df, 
           sample_annotation = example_sample_annotation, plot_title = "ComBat corrected")
 ```
 
@@ -708,18 +710,18 @@ between batches similar to one another.
 
 ### Correct batch effects: universal function
 We provide a convenient all-in-one function for batch correction. The
-function `correct_batch_effects()` corrects MS signal drift and discrete
+function `correct_batch_effects_df()` corrects MS signal drift and discrete
 shift in a single function call. Simply specify which discrete
 correction method is preferred at `discrete_func` either “ComBat” or
 “MedianCentering” and supplement other arguments such as `span`,
-`abs_threshold` or `pct_threshold` as in `normalize_custom_fit()`.
+`abs_threshold` or `pct_threshold` as in `adjust_batch_trend_df()`.
 
 ```{r batch_corr_general, fig.show='hold'}
-batch_corrected_df <- correct_batch_effects(df_long = quantile_normalized_long,
-                                            sample_annotation = example_sample_annotation, 
-                                            discrete_func = 'ComBat', continuous_func = 'loess_regression',
-                                            abs_threshold = 5, pct_threshold = 0.20)
-batch_corrected_matrix = long_to_matrix(batch_corrected_df)
+batch_corrected_df <- correct_batch_effects_df(df_long = quantile_normalized_long,
+                                               sample_annotation = example_sample_annotation, 
+                                               discrete_func = 'ComBat', continuous_func = 'loess_regression',
+                                               abs_threshold = 5, pct_threshold = 0.20)
+batch_corrected_matrix = long_to_dm(batch_corrected_df)
 ```
 
 \pagebreak
