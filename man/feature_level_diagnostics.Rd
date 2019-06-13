@@ -114,8 +114,8 @@ MS experiments (where each instrument has its own order-associated effects, see 
 or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
 For single-instrument case should be set to `NULL`}
 
-\item{plot_title}{title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
+\item{plot_title}{title of the plot (e.g., processing step + representation
+level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
