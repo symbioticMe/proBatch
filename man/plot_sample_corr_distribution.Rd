@@ -39,8 +39,8 @@ that (possibly) was profiled several times as technical replicates.
 Tip: if such ID is absent, but can be defined from several columns,
 create new \code{biospecimen_id} column}
 
-\item{plot_title}{title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
+\item{plot_title}{title of the plot (e.g., processing step + representation
+level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{plot_param}{columns, defined in correlation_df, which is output of
 \code{calculate_sample_corr_distr}, specifically,  \enumerate{

@@ -35,8 +35,9 @@ technical covariates}
 \item{biological_covariates}{vector \code{sample_annotation} column names, that
 are biologically meaningful covariates}
 
-\item{fill_the_missing}{numeric value that the missing values are
-substituted with, or \code{NULL} if features with missing values are to be excluded.}
+\item{fill_the_missing}{boolean value determining if  missing values 
+should be substituted with -1 (and colored with   \code{color_for_missing}). 
+If \code{NULL}, features with missing values are excluded.}
 
 \item{threshold_pca}{the percentile value of the minimum amount of the
 variabilities that the selected principal components need to explain}
@@ -61,12 +62,13 @@ list of two items: plot =gg, df = pvca_res
 Plot variance distribution by variable
 }
 \examples{
-\donttest{matrix <- example_proteome_matrix[1:50, ]
-pvca_plot <- plot_PVCA(matrix, example_sample_annotation, 
+matrix_test <- example_proteome_matrix[1:50, ]
+pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
 technical_covariates = c('MS_batch', 'digestion_batch'),
-biological_covariates = c("Diet", "Sex", "Strain"))}
+biological_covariates = c("Diet", "Sex", "Strain"))
 
 }
 \seealso{
-\code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
+\code{\link{sample_annotation_to_colors}}, 
+\code{\link[ggplot2]{ggplot}}
 }

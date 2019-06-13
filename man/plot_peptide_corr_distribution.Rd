@@ -29,8 +29,8 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{plot_title}{title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
+\item{plot_title}{title of the plot (e.g., processing step + representation
+level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 

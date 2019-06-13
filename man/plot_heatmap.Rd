@@ -37,9 +37,8 @@ factors to be annotated in heatmap columns}
 \item{sample_annotation_row}{biological or technical 
 factors to be annotated in heatmap rows}
 
-\item{fill_the_missing}{boolean value determining if 
-missing values should be substituted with -1 (and colored with 
-\code{color_for_missing}). If \code{NULL}, features with missing values are excluded.}
+\item{fill_the_missing}{numeric value that the missing values are
+substituted with, or \code{NULL} if features with missing values are to be excluded.}
 
 \item{cluster_rows}{boolean value determining if rows 
 should be clustered}
@@ -57,8 +56,8 @@ Usually black or white, depending on \code{heatmap_color}}
 
 \item{filename}{filepath where to save the image}
 
-\item{plot_title}{Title of the plot (usually, processing step + representation
-level (fragments, transitions, proteins))}
+\item{plot_title}{title of the plot (e.g., processing step + representation
+level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{...}{other parameters of \code{link[pheatmap]{pheatmap}}}
 }
