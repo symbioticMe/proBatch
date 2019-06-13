@@ -515,21 +515,31 @@ technique is particularly convenient to assess replicate similarity.
 
 You can identify the covariate leading the direction of variations by
 coloring potential candidates.
-```{r plot_PCA, fig.show='hold', fig.width=10, fig.height=11}
+```{r plot_PCA, fig.show='hold', fig.width=10, fig.height=8.5}
 pca1 = plot_PCA(quantile_normalized_matrix, example_sample_annotation, color_by = 'MS_batch', 
-              plot_title = 'MS batch', colors_for_factor = color_list[[batch_col]])
+              plot_title = 'MS batch', color_scheme = color_list[['MS_batch']])
 pca2 = plot_PCA(quantile_normalized_matrix, example_sample_annotation, color_by = 'digestion_batch', 
-         plot_title = 'Digestion batch', colors_for_factor = color_list[['digestion_batch']])
+         plot_title = 'Digestion batch', color_scheme = color_list[['digestion_batch']])
 pca3 = plot_PCA(quantile_normalized_matrix, example_sample_annotation, color_by = 'Diet',  
-         plot_title = 'Diet', colors_for_factor = color_list[['Diet']])
+         plot_title = 'Diet', color_scheme = color_list[['Diet']])
+pca4 = plot_PCA(quantile_normalized_matrix, example_sample_annotation, color_by = 'DateTime',  
+         plot_title = 'DateTime', color_scheme = color_list[['DateTime']])
 
 library(ggpubr)
-ggarrange(pca1, pca2, pca3, ncol = 2, nrow = 2)
+ggarrange(pca1, pca2, pca3, pca4, ncol = 2, nrow = 2)
 ```
 
 By plotting the first two principal components and applying different
 color overlaps, we see once again that the clusters overlap nicely
 with the MS batches.
+
+Note that when the color scheme is not provided, `digestion_batch` is mapped to 
+continuous scale. Which is why defining color scheme is so important.
+```{r plot_PCA_spec, fig.show='hold', fig.width=5, fig.height=5}
+pca_spec = plot_PCA(quantile_normalized_matrix, example_sample_annotation, 
+                    color_by = 'digestion_batch', 
+         plot_title = 'Digestion batch')
+```
 
 \pagebreak
 
