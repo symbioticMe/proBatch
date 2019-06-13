@@ -6,8 +6,8 @@
 \usage{
 plot_PCA(data_matrix, sample_annotation,
   feature_id_col = "peptide_group_label", color_by = "MS_batch",
-  PC_to_plot = c(1, 2), fill_the_missing = 0, color_scheme = NULL,
-  theme = "classic", plot_title = NULL)
+  PC_to_plot = c(1, 2), fill_the_missing = -1,
+  color_scheme = "brewer", theme = "classic", plot_title = NULL)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -38,8 +38,6 @@ If \code{NULL}, features with missing values are excluded.}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
-
-\item{colors_for_factor}{named vector of colors for the \code{color_by} variable}
 }
 \value{
 ggplot scatterplot colored by factor levels of column specified in
@@ -51,6 +49,10 @@ plot PCA plot
 \examples{
 pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
+pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+color_by = 'digestion_batch', plot_title = "PCA colored by digestion_batch")
+pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+color_by = 'DateTime', plot_title = "PCA colored by DateTime")
 
 }
 \seealso{
