@@ -1,6 +1,8 @@
 map_factors_to_colors <- function(annotation_df_factors) {
   #calculate number of colors to create
-  col_class = sapply(annotation_df_factors, class)
+  col_class = vapply(annotation_df_factors, 
+                     FUN = function(x) paste(class(x), collapse = "; "),
+                     FUN.VALUE = character(1))
   non_factor_cols = names(annotation_df_factors)[col_class != 'factor']
   wrong_classes = col_class[col_class != 'factor']
   if (length(non_factor_cols) > 0){
@@ -26,7 +28,7 @@ map_factors_to_colors <- function(annotation_df_factors) {
   colors = standardColors(n_colors_total)
   start_indxs = c(1, 1 + cumsum(nlev_covariate[-length(nlev_covariate)]))
   end_indx = cumsum(nlev_covariate)
-  ann_colors_covariate = lapply(1:length(nlev_covariate),
+  ann_colors_covariate = lapply(seq_len(length(nlev_covariate)),
                                 function(i)
                                   colors[start_indxs[i]:end_indx[i]])
 
