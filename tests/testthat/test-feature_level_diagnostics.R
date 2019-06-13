@@ -104,7 +104,7 @@ test_that("fitting_trend_plots", {
   
   short_df <- example_proteome[example_proteome$peptide_group_label %in% 
                                  unique(example_proteome$peptide_group_label)[1:3], ]
-  loess_fit <- adjust_batch_trend(short_df, example_sample_annotation, span = 0.7)
+  loess_fit <- adjust_batch_trend_df(short_df, example_sample_annotation, span = 0.7)
   
   fit_plot <- plot_with_fitting_curve(feature_name = "10062_NVGVSFYADKPEVTQEQK_3", 
                                       fit_df = loess_fit$fit_df, fit_value_col = 'fit',

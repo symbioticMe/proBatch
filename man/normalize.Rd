@@ -22,7 +22,7 @@ normalize_sample_medians_df(df_long, sample_id_col = "FullRunName",
   measure_col = "Intensity")
 
 normalize_data_dm(data_matrix, normalize_func = c("quantile",
-  "medianCentering"), log_base = NULL)
+  "medianCentering"), log_base = NULL, offset = 1)
 
 normalize_data_df(df_long, normalize_func = c("quantile",
   "medianCentering"), log_base = NULL, offset = 1,
@@ -56,6 +56,8 @@ internally for consistency.}
 
 \item{log_base}{whether to log transform data matrix 
 before normalization (e.g. `NULL`, `2` or `10`)}
+
+\item{offset}{small positive number to prevent 0 conversion to \code{-Inf}}
 }
 \value{
 the data in the same format as input (\code{data_matrix} or 
@@ -63,20 +65,19 @@ the data in the same format as input (\code{data_matrix} or
 For \code{df_long} the data frame stores the original values of 
 \code{measure_col}
 in another column called "preNorm_intensity" if "intensity", and the 
-normalized values
-in \code{measure_col} column.
+normalized values in \code{measure_col} column.
 }
 \description{
 Normalization of raw (usually log-transformed) data. 
 Normalization brings the samples to the same scale.
 Currently the following normalization functions are implemented:
 #' \enumerate{
-  \item Quantile normalization: `quantile_normalize()`. 
+  \item Quantile normalization: `quantile_normalize_dm()`. 
   Quantile normalization of the data.
-  \item Median normalization: `normalize_sample_medians()`. 
+  \item Median normalization: `normalize_sample_medians_dm()`. 
   Normalization by centering sample medians to global median of the data
 }
-Alternatively, one can call normalization function with `normalize_data()` 
+Alternatively, one can call normalization function with `normalize_data_dm()` 
 wrapper.
 }
 \examples{
