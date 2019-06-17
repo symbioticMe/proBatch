@@ -188,6 +188,8 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   #Add the theme
   if (!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
+  } else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
   
   #Change the limits of vertical axes

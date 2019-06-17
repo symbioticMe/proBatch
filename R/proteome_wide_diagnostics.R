@@ -422,8 +422,8 @@ plot_PCA <- function(data_matrix, sample_annotation,
                      color_by = 'MS_batch',
                      PC_to_plot = c(1,2), fill_the_missing = -1,
                      color_scheme = 'brewer',
-                     theme = 'classic',
-                     plot_title = NULL){
+                     plot_title = NULL,
+                     theme = 'classic'){
   
   if(!is.null(feature_id_col)){
     if(feature_id_col %in% colnames(data_matrix)){

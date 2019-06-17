@@ -425,8 +425,10 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
       gg = gg +facet_grid(Step ~ .)
     }
   }
-  if (theme == 'classic'){
+  if (!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
+  } else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
   
   if (plot_param =='batches'){
@@ -602,8 +604,10 @@ plot_peptide_corr_distribution.corrDF <- function(corr_distribution,
     }
   }
   
-  if (theme == 'classic'){
+  if (!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
+  } else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
   gg = gg + theme(plot.title = element_text(hjust = .5, face = 'bold'))
   return(gg)
