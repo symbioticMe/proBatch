@@ -104,6 +104,8 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   #Change the theme
   if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
+  } else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
   
   #Change the limits of vertical axes
@@ -210,6 +212,8 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   #Change the plot theme
   if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
+  } else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
   
   #Change the limits of vertical axes
