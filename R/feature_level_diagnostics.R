@@ -274,16 +274,20 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
   }
   gg = plot_single_feature(peptides, df_long = df_long,
                            sample_annotation = sample_annotation,
-                           order_col = order_col,
                            sample_id_col = sample_id_col,
-                           batch_col = batch_col, measure_col = measure_col,
+                           measure_col = measure_col,
                            feature_id_col = feature_id_col,
-                           color_by_batch = color_by_batch, 
-                           color_scheme = color_scheme,
-                           facet_col = facet_col,
+                           geom = geom,
                            qual_col = qual_col, 
                            qual_value = qual_value,
-                           plot_title = plot_title)
+                           batch_col = batch_col, 
+                           color_by_batch = color_by_batch, 
+                           color_scheme = color_scheme,
+                           order_col = order_col,
+                           vline_color = vline_color,
+                           facet_col = facet_col,
+                           plot_title = plot_title, 
+                           theme = theme)
   
   #save the plot
   save_ggplot(filename, units, width, height, gg)
@@ -337,13 +341,13 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                            sample_id_col = sample_id_col,
                            measure_col = measure_col,
                            feature_id_col = feature_id_col,
+                           geom = geom,
+                           qual_col = qual_col, qual_value = qual_value,
                            batch_col = batch_col, 
                            color_by_batch = color_by_batch, 
                            color_scheme = color_scheme,
-                           facet_col = facet_col,
-                           qual_col = qual_col,
-                           qual_value = qual_value,
                            order_col = order_col,
+                           facet_col = facet_col,
                            plot_title = plot_title, 
                            theme = theme)
   
