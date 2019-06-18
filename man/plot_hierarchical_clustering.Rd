@@ -7,8 +7,8 @@
 plot_hierarchical_clustering(data_matrix, color_df,
   fill_the_missing = NULL, distance = "euclidean",
   agglomeration = "complete", label_samples = TRUE, label_font = 0.2,
-  color_for_missing = "black", filename = NULL, width = 38,
-  height = 25, units = c("cm", "in", "mm"), plot_title = NULL, ...)
+  filename = NULL, width = 38, height = 25, units = c("cm", "in",
+  "mm"), plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
