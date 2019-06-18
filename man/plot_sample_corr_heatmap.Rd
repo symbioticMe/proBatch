@@ -27,13 +27,10 @@ See "example_sample_annotation" for example with the detailed description (to ca
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
-\item{flavor}{either corrplot from 'corrplot' package or 
-heatmap, as in 'pheatmap'}
-
 \item{filename}{path where the results are saved. 
 If null the object is returned to the active window;
-otherwise, the object is save into the file. 
-Currently only pdf and png format is supported}
+otherwise, the object is save into the file. Currently only 
+pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
 
@@ -41,8 +38,8 @@ Currently only pdf and png format is supported}
 
 \item{units}{units: 'cm', 'in' or 'mm'}
 
-\item{plot_title}{Title of the plot (usually, processing step + 
-representation level (fragments, transitions, proteins))}
+\item{plot_title}{title of the plot (e.g., processing step + representation
+level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 \code{\link[pheatmap]{pheatmap}} visualisation, for details see 

@@ -25,8 +25,8 @@ pdf and png format is supported}
 
 \item{units}{units: 'cm', 'in' or 'mm'}
 
-\item{plot_title}{Title of the correlation plot (e.g., processing step + 
-representation level (fragments, transitions, proteins) or Protein Name)}
+\item{plot_title}{title of the plot (e.g., processing step + representation
+level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
