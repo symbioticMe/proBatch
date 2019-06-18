@@ -310,7 +310,7 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                           facet_col = NULL,
                           filename = NULL, width = NA, height = NA, 
                           units = c('cm','in','mm'),
-                          plot_title = 'Spike-in BOVINE protein peptides', 
+                          plot_title = sprintf('Spike-in %s plots', spike_ins), 
                           theme = 'classic'){
   
   if (!is.null(peptide_annotation)){
