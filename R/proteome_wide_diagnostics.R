@@ -264,20 +264,8 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 }
 
 #' Plot variance distribution by variable
-#'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. in most
-#'   function, it is assumed that this is the log transformed version of the
-#'   original data
-#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param feature_id_col name of the column with feature/gene/peptide/protein
-#'   ID used in the long format representation \code{df_long}. In the wide
-#'   formatted representation \code{data_matrix} this corresponds to the row
-#'   names.
+#' 
+#' @inheritParams proBatch
 #' @param technical_covariates vector \code{sample_annotation} column names that are
 #'   technical covariates
 #' @param biological_covariates vector \code{sample_annotation} column names, that
@@ -292,10 +280,6 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @param fill_the_missing boolean value determining if  missing values 
 #' should be substituted with -1 (and colored with   \code{color_for_missing}). 
 #' If \code{NULL}, features with missing values are excluded.
-#' @param theme ggplot theme, by default \code{classic}. Can be easily overridden (see
-#'   examples)
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
 #'
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export

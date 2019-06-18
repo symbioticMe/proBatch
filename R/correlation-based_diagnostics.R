@@ -127,6 +127,8 @@ plot_protein_corrplot <- function(data_matrix,
 #' @inheritParams proBatch
 #' @param samples_to_plot string vector of samples in 
 #' \code{data_matrix} to be used in the plot
+#' @param flavor either corrplot from 'corrplot' package or 
+#' heatmap, as in 'pheatmap'
 #' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 #' \code{\link[pheatmap]{pheatmap}} visualisation, for details see 
 #'   examples and help to corresponding functions
