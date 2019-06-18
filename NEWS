@@ -18,3 +18,5 @@ old column as:
 * renamed functions: 
   - "center_peptide_batch_medians" to "center_feature_batch_medians"
   - "normalize_custom_fit" into "adjust_batch_trend";
+* consistent handling of missing values by proteome-wide diagnostic functions;
+
