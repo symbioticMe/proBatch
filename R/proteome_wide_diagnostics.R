@@ -242,19 +242,19 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
 
 
 calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
-                           threshold_pca, threshold_var = Inf) {
+                           pca_threshold, variance_threshold = Inf) {
   
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
   expr_set = Biobase::ExpressionSet(data_matrix[,rownames(sample_annotation)], covrts.annodf)
-  pvcaAssess = pvcaBatchAssess(expr_set, factors_for_PVCA, threshold = threshold_pca)
+  pvcaAssess = pvcaBatchAssess(expr_set, factors_for_PVCA, threshold = pca_threshold)
   pvcaAssess_df = data.frame(weights = as.vector(pvcaAssess$dat),
                              label = pvcaAssess$label,
                              stringsAsFactors = FALSE)
   
-  label_of_small = sprintf('Below %1.0f%%', 100*threshold_var)
-  if (sum(pvcaAssess_df$weights < threshold_var) > 1){
-    pvca_res_small = sum(pvcaAssess_df$weights[pvcaAssess_df$weights < threshold_var])
-    pvca_res = pvcaAssess_df[pvcaAssess_df$weights >= threshold_var, ]
+  label_of_small = sprintf('Below %1.0f%%', 100*variance_threshold)
+  if (sum(pvcaAssess_df$weights < variance_threshold) > 1){
+    pvca_res_small = sum(pvcaAssess_df$weights[pvcaAssess_df$weights < variance_threshold])
+    pvca_res = pvcaAssess_df[pvcaAssess_df$weights >= variance_threshold, ]
     pvca_res_add = data.frame(weights = pvca_res_small, label = label_of_small)
     pvca_res = rbind(pvca_res, pvca_res_add)
   } else {
@@ -273,9 +273,9 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @param colors_for_bars four-item color vector, specifying colors for the
 #'   following categories: c('residual', 'biological', 'biol:techn',
 #'   'technical')
-#' @param threshold_pca the percentile value of the minimum amount of the
+#' @param pca_threshold the percentile value of the minimum amount of the
 #'   variabilities that the selected principal components need to explain
-#' @param threshold_var the percentile value of weight each of the covariates
+#' @param variance_threshold the percentile value of weight each of the covariates
 #'   needs to explain (the rest will be lumped together)
 #' @param fill_the_missing boolean value determining if  missing values 
 #' should be substituted with -1 (and colored with   \code{color_for_missing}). 
@@ -305,7 +305,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                       technical_covariates = c('MS_batch', 'instrument'),
                       biological_covariates = c('cell_line','drug_dose'),
                       fill_the_missing = -1,
-                      threshold_pca = .6, threshold_var = .01,
+                      pca_threshold = .6, variance_threshold = .01,
                       colors_for_bars = NULL,
                       filename = NULL, width = NA, height = NA, 
                       units = c('cm','in','mm'),
@@ -364,7 +364,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   }
   
   pvca_res = calculate_PVCA(data_matrix, sample_annotation, factors_for_PVCA,
-                            threshold_pca, threshold_var = threshold_var)
+                            pca_threshold, variance_threshold = variance_threshold)
   
   tech_interactions = expand.grid(technical_covariates, 
                                   technical_covariates) %>%
@@ -379,7 +379,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
     stop('check data matrix column names or these in sample annotation')
   }
   
-  label_of_small = sprintf('Below %1.0f%%', 100*threshold_var)
+  label_of_small = sprintf('Below %1.0f%%', 100*variance_threshold)
   technical_covariates = c(technical_covariates, tech_interactions)
   biological_covariates = c(biological_covariates, biol_interactions)
   pvca_res = pvca_res %>% mutate(category = ifelse(label %in% technical_covariates, 
