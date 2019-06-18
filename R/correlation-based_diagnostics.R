@@ -163,6 +163,12 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                        paste(samples_to_plot, collapse = ';\n')), ...){
   flavor <- match.arg(flavor)    
   if(!is.null(samples_to_plot)){
+    if (!all(samples_to_plot) %in% colnames(data_matrix)){
+      missing_samples = setdiff(samples_to_plot, colnames(data_matrix))
+      stop(sprintf('The following samples are not in data matrix and can not 
+                    be used in sample correlation plotting %s', 
+                   paste(missing_samples, collapse = ';\n')))
+    }
     corr_matrix = cor(data_matrix[,samples_to_plot], use = 'complete.obs')
   } else {
     corr_matrix = cor(data_matrix, use = 'complete.obs')
@@ -172,12 +178,23 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
       sample_annotation <- sample_annotation %>%
         filter((!!sym(sample_id_col)) %in% samples_to_plot)
     }
+    
+    if (!all(samples_to_plot) %in% sample_annotation[[sample_id_col]]){
+      missing_samples = setdiff(samples_to_plot,sample_annotation[[sample_id_col]])
+      warning(sprintf('The following samples are not in sample annotation and can not 
+                   be used in sample correlation plotting %s. 
+                      Plotting correlation heatmap without sample annotation', 
+                   paste(missing_samples, collapse = ';\n')))
+      sample_annotation = NULL
+    }
     sample_annotation <- sample_annotation %>%
       remove_rownames() %>% 
       column_to_rownames(var=sample_id_col)
-      
     
-    plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = flavor,
+    #TODO: check that this doesn't contain the DateTime 
+    #TODO: understand where is the legend
+    
+    plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = 'pheatmap',
                      filename = filename, width = width,
                      annotation_col = sample_annotation,
                      height = height, units = units, ...)
