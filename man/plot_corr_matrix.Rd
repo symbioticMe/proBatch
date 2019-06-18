@@ -5,7 +5,7 @@
 \title{Visualise correlation matrix}
 \usage{
 plot_corr_matrix(corr_matrix, flavor = c("pheatmap", "corrplot"),
-  filename = NULL, width = NA, height = NA, unit = c("cm", "in",
+  filename = NULL, width = 7, height = 7, units = c("cm", "in",
   "mm"), plot_title = NULL, ...)
 }
 \arguments{
@@ -23,7 +23,7 @@ pdf and png format is supported}
 
 \item{height}{option  determining the output image width}
 
-\item{unit}{units: 'cm', 'in' or 'mm'}
+\item{units}{units: 'cm', 'in' or 'mm'}
 
 \item{plot_title}{Title of the correlation plot (e.g., processing step + 
 representation level (fragments, transitions, proteins) or Protein Name)}

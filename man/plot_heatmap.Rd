@@ -10,8 +10,9 @@ plot_heatmap(data_matrix, sample_annotation = NULL,
   cluster_rows = TRUE, cluster_cols = FALSE,
   annotation_color_list = NA,
   heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
-  "RdYlBu")))(100), color_for_missing = "black", filename = NA,
-  plot_title = NA, ...)
+  "RdYlBu")))(100), color_for_missing = "black", filename = NULL,
+  width = 7, height = 7, units = c("cm", "in", "mm"),
+  plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -54,7 +55,16 @@ for columns (samples). Best created by \code{sample_annotation_to_colors}}
 \item{color_for_missing}{special color to make missing values. 
 Usually black or white, depending on \code{heatmap_color}}
 
-\item{filename}{filepath where to save the image}
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. Currently only 
+pdf and png format is supported}
+
+\item{width}{option  determining the output image width}
+
+\item{height}{option  determining the output image width}
+
+\item{units}{units: 'cm', 'in' or 'mm'}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}

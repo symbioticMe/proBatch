@@ -15,7 +15,7 @@
 #' pdf and png format is supported
 #' @param width option  determining the output image width
 #' @param height option  determining the output image width
-#' @param unit units: 'cm', 'in' or 'mm'
+#' @param units units: 'cm', 'in' or 'mm'
 #' @param plot_title Title of the correlation plot (e.g., processing step + 
 #' representation level (fragments, transitions, proteins) or Protein Name)
 #' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
@@ -38,8 +38,8 @@
 #' corr_matrix_plot <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
 #' 
 plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'), 
-                             filename = NULL, width = NA, height = NA, 
-                             unit = c('cm','in','mm'),
+                             filename = NULL, width = 7, height = 7, 
+                             units = c('cm','in','mm'),
                              plot_title = NULL, ...) {
   
   flavor <- match.arg(flavor)    
@@ -54,22 +54,31 @@ plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'),
                                      tl.pos ="lt", ...),
            pheatmap = pheatmap(corr_matrix, main = plot_title, ...))
   } else {
-    if(length(unit) > 1) unit = unit[1]
-    if (unit == 'mm'){
-      unit = 'cm'
-      width = width/10
-      height = height/10
-    }
-    if(unit == 'cm'){
-      width  = width/2.54
-      height = height/2.54
-    }
+    
+    units_adjusted = adjust_units(units, width, height)
+    units = units_adjusted$unit
+    width = units_adjusted$width
+    height = units_adjusted$height
+    
     if (flavor == 'corrplot'){
-      pdf(file = filename, width = width, height = height, title = plot_title)
-      corrplot.mixed(corr_matrix, title = plot_title, ...)
+      if (is.na(width)){
+        width = 7
+      }
+      if (is.na(height)){
+        height = 7
+      }
+      if (file_ext(filename) == 'pdf'){
+        pdf(file = filename, width = width, height = height, title = plot_title)
+      } else if(file_ext(filename) == 'png'){
+        png(file = filename, width = width, height = height, units = units, res = 300)
+      } else{
+        stop('currently only pdf and png extensions for filename are implemented')
+      }
+      #pdf(file = filename, width = width, height = height)
+      corrplot.mixed(corr_matrix, title = plot_title, tl.pos ="lt", ...)
       dev.off()
     } else{
-      pheatmap(corr_matrix, filename = paste(filename, '.pdf', sep = ''),
+      pheatmap(corr_matrix, filename = filename,
                width = width, height = height, main = plot_title, ...)
     }
     
@@ -90,7 +99,7 @@ plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'),
 #' only pdf and png format is supported
 #' @param width option  determining the output image width
 #' @param height option  determining the output image width
-#' @param unit units: 'cm', 'in' or 'mm'
+#' @param units units: 'cm', 'in' or 'mm'
 #' @param plot_title The title of the plot, e.g. protein name / processing step
 #' @param ... parameters for the corrplot visualisation
 #'
@@ -110,7 +119,7 @@ plot_protein_corrplot <- function(data_matrix,
                                   flavor = c('pheatmap','corrplot'),
                                   filename = NULL,
                                   width = NA, height = NA, 
-                                  unit = c('cm','in','mm'),
+                                  units = c('cm','in','mm'),
                                   plot_title = sprintf(
                                     'Peptide correlation matrix of %s protein', 
                                     protein_name), ...) {
@@ -125,7 +134,7 @@ plot_protein_corrplot <- function(data_matrix,
   corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
   plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = flavor,
                    filename = filename, width = width, 
-                   height = height, unit = unit, ...)
+                   height = height, units = units, ...)
 }
 
 #' Sample correlation matrix (heatmap)
@@ -143,7 +152,7 @@ plot_protein_corrplot <- function(data_matrix,
 #' @param height option  determining the output image width
 #' @param flavor either corrplot from 'corrplot' package or 
 #' heatmap, as in 'pheatmap'
-#' @param unit units: 'cm', 'in' or 'mm'
+#' @param units units: 'cm', 'in' or 'mm'
 #' @param plot_title Title of the plot (usually, processing step + 
 #' representation level (fragments, transitions, proteins))
 #' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
@@ -174,10 +183,10 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                      flavor = c('pheatmap','corrplot'), 
                                      filename = NULL,
                                      width = NA, height = NA, 
-                                     unit = c('cm','in','mm'),
+                                     units = c('cm','in','mm'),
                                      plot_title = sprintf(
-                                       'Correlation matrix of sample %s',
-                                       samples_to_plot), ...){
+                                       'Correlation matrix of samples %s',
+                                       paste(samples_to_plot, collapse = ';\n')), ...){
   flavor <- match.arg(flavor)    
   if(!is.null(samples_to_plot)){
     corr_matrix = cor(data_matrix[,samples_to_plot], use = 'complete.obs')
@@ -197,12 +206,12 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
     plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = flavor,
                      filename = filename, width = width,
                      annotation_col = sample_annotation,
-                     height = height, unit = unit, ...)
+                     height = height, units = units, ...)
     
   } else {
     plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = flavor,
                      filename = filename, width = width, 
-                     height = height, unit = unit, ...)
+                     height = height, units = units, ...)
   }
 }
 
@@ -359,6 +368,8 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
                                           sample_id_col = 'FullRunName',
                                           batch_col = 'MS_batch',
                                           biospecimen_id_col = 'EarTag',
+                                          filename = NULL, width = NA, height = NA, 
+                                          units = c('cm','in','mm'),
                                           plot_title = 'Sample correlation distribution',
                                           plot_param = 'batch_replicate',
                                           theme = 'classic'){
@@ -385,9 +396,12 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
       corr_distribution = do.call(rbind, corr_distribution)
   }
   gg <- plot_sample_corr_distribution.corrDF(corr_distribution = corr_distribution,
-                                            plot_title = plot_title, 
-                                            plot_param = plot_param, 
-                                            theme = theme)
+                                             filename = filename, 
+                                             width = width, height = height, 
+                                             units = units,
+                                             plot_title = plot_title, 
+                                             plot_param = plot_param, 
+                                             theme = theme)
   return(gg)
 }
 
@@ -400,9 +414,18 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 #' sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
 #' plot_param = 'batch_replicate')
 #' 
+#' \dontrun{
+#' sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
+#' plot_param = 'batch_replicate', 
+#' filename = 'test_sampleCorr.png', 
+#' width = 28, height = 28, units = 'cm')
+#' }
+#' 
 #' @export
 #' 
 plot_sample_corr_distribution.corrDF <- function(corr_distribution,
+                                                 filename = NULL, width = NA, height = NA, 
+                                                 units = c('cm','in','mm'),
                                                  plot_title = 'Sample correlation distribution',
                                                  plot_param = 'batch_replicate',
                                                  theme = 'classic'){
@@ -439,6 +462,8 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
   }
   
   gg = gg + theme(plot.title = element_text(hjust = .5, face = 'bold'))
+  
+  save_ggplot(filename, units, width, height, gg)
   return(gg)
 }
 
@@ -532,6 +557,8 @@ NULL
 plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
                                            protein_col = 'ProteinName',
                                            feature_id_col = 'peptide_group_label',
+                                           filename = NULL, width = NA, height = NA, 
+                                           units = c('cm','in','mm'),
                                            plot_title = 'Distribution of peptide correlation',
                                            theme = 'classic'){
     
@@ -553,6 +580,9 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
     }
     p = plot_peptide_corr_distribution.corrDF(corr_distribution = corr_distribution,
                                               theme =  theme, 
+                                              filename = filename, 
+                                              width = width, height = height, 
+                                              units = units,
                                               plot_title = plot_title)
     return(p)
 }
@@ -571,9 +601,17 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
 #' pep_annotation_sel, protein_col = 'Gene')
 #' peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution)
 #' 
+#' \dontrun{
+#' peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution, 
+#' filename = 'test_peptide.png', 
+#' width = 28, height = 28, units = 'cm')
+#' }
+#' 
 #' @export
 #' 
 plot_peptide_corr_distribution.corrDF <- function(corr_distribution, 
+                                                  filename = NULL, width = NA, height = NA, 
+                                                  units = c('cm','in','mm'),
                                                   plot_title = 'Correlation of peptides', 
                                                   theme = 'classic') {
   median_same_prot = corr_distribution %>%
@@ -610,5 +648,7 @@ plot_peptide_corr_distribution.corrDF <- function(corr_distribution,
     message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
   gg = gg + theme(plot.title = element_text(hjust = .5, face = 'bold'))
+  
+  save_ggplot(filename, units, width, height, gg)
   return(gg)
 }

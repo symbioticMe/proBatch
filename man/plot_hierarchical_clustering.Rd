@@ -7,7 +7,8 @@
 plot_hierarchical_clustering(data_matrix, color_df,
   fill_the_missing = NULL, distance = "euclidean",
   agglomeration = "complete", label_samples = TRUE, label_font = 0.2,
-  plot_title = NULL, ...)
+  color_for_missing = "black", filename = NULL, width = 38,
+  height = 25, units = c("cm", "in", "mm"), plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -30,6 +31,17 @@ If \code{NULL}, features with missing values are excluded.}
 
 \item{label_font}{size of the font. Is active if \code{label_samples} is 
 \code{TRUE}, ignored otherwise}
+
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. Currently only 
+pdf and png format is supported}
+
+\item{width}{option  determining the output image width}
+
+\item{height}{option  determining the output image width}
+
+\item{units}{units: 'cm', 'in' or 'mm'}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}

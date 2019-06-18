@@ -18,7 +18,7 @@
 #' @param spike_ins name of feature(s), typically proteins that were spiked in for control
 #' @param vline_color color of vertical lines, typically separating 
 #'  different MS batches in ordered runs; 
-#'  should be `NULL` for experiments without intrinsic order.
+#'  should be `NULL` for experiments without intrinsic order
 #' @param ylimits range of y-axis to plot feature-level trends 
 #' @param fit_df data frame output of \code{adjust_batch_trend_df} to be plotted with the line
 #' @param fit_value_col column in \code{fit_df} where the values for fitting trend are found
@@ -30,6 +30,14 @@
 #' df_long = example_proteome, example_sample_annotation, 
 #' qual_col = NULL)
 #' 
+#' #saving the plot
+#' \dontrun{
+#' single_feature_plot <- plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+#' df_long = example_proteome, example_sample_annotation, 
+#' qual_col = NULL, filename = 'test_peptide.png', 
+#' width = 28, height = 18, units = 'cm')
+#' }
+#' 
 #' #to examine peptides of a single protein:
 #' peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
 #' protein_name = "Haao", peptide_annotation = example_peptide_annotation,
@@ -37,6 +45,16 @@
 #' sample_annotation = example_sample_annotation, 
 #' order_col = 'order', sample_id_col = 'FullRunName', 
 #' batch_col = 'MS_batch')
+#' 
+#' #saving the peptides of one protein
+#' \dontrun{
+#'  peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
+#' protein_name = "Haao", peptide_annotation = example_peptide_annotation,
+#' protein_col = "Gene", df_long = example_proteome, 
+#' sample_annotation = example_sample_annotation, 
+#' order_col = 'order', sample_id_col = 'FullRunName', 
+#' batch_col = 'MS_batch',
+#' filename = 'test_protein.png', width = 14, height = 9, units = 'in')}
 #' 
 #' #to illustrate spike-ins:
 #' spike_in_plot <- plot_spike_in(spike_ins = "BOVINE_A1ag", protein_col = 'Gene', 
@@ -74,6 +92,8 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
                                  order_col = 'order',
                                  vline_color ='red',
                                  facet_col = NULL,
+                                 filename = NULL, width = NA, height = NA, 
+                                 units = c('cm','in','mm'),
                                  plot_title = NULL,
                                  theme = 'classic',
                                  ylimits = NULL){
@@ -213,6 +233,9 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
     gg = gg + theme(legend.position="top")
   }
   
+  #save the plot
+  save_ggplot(filename, units, width, height, gg)
+  
   return(gg)
 }
 
@@ -233,6 +256,8 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
                                          order_col = 'order',
                                          vline_color ='red',
                                          facet_col = NULL,
+                                         filename = NULL, width = NA, height = NA, 
+                                         units = c('cm','in','mm'),
                                          plot_title = sprintf('Peptides of %s protein', 
                                                               protein_name),
                                          theme = 'classic'){
@@ -259,6 +284,9 @@ plot_peptides_of_one_protein <- function(protein_name, peptide_annotation = NULL
                            qual_col = qual_col, 
                            qual_value = qual_value,
                            plot_title = plot_title)
+  
+  #save the plot
+  save_ggplot(filename, units, width, height, gg)
   return(gg)
 }
 
@@ -280,6 +308,8 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                           order_col = 'order',
                           vline_color = 'red',
                           facet_col = NULL,
+                          filename = NULL, width = NA, height = NA, 
+                          units = c('cm','in','mm'),
                           plot_title = 'Spike-in BOVINE protein peptides', 
                           theme = 'classic'){
   
@@ -316,6 +346,9 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                            order_col = order_col,
                            plot_title = plot_title, 
                            theme = theme)
+  
+  #save the plot
+  save_ggplot(filename, units, width, height, gg)
   return(gg)
 }
 
@@ -337,6 +370,8 @@ plot_iRT <- function(irt_pattern = 'iRT',
                      order_col = 'order',
                      vline_color = 'red',
                      facet_col = NULL,
+                     filename = NULL, width = NA, height = NA, 
+                     units = c('cm','in','mm'),
                      plot_title = 'iRT peptide profile', 
                      theme = 'classic'){
   
@@ -362,6 +397,9 @@ plot_iRT <- function(irt_pattern = 'iRT',
                            facet_col = facet_col,
                            plot_title = plot_title, 
                            theme = theme)
+  
+  #save the plot
+  save_ggplot(filename, units, width, height, gg)
   return(gg)
 }
 
@@ -382,6 +420,8 @@ plot_with_fitting_curve <- function(feature_name,
                                     order_col = 'order',
                                     vline_color = 'grey',
                                     facet_col = NULL,
+                                    filename = NULL, width = NA, height = NA, 
+                                    units = c('cm','in','mm'),
                                     plot_title = sprintf("Fitting curve of %s peptide", 
                                                          paste(feature_name, collapse = ' ')),
                                     theme = 'classic'){
@@ -434,6 +474,9 @@ plot_with_fitting_curve <- function(feature_name,
       gg = gg + scale_color_manual(values = color_scheme)
     }
   }
+  
+  #save the plot
+  save_ggplot(filename, units, width, height, gg)
   
   return(gg)
 }

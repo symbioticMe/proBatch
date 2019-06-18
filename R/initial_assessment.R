@@ -21,6 +21,13 @@
 #' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 #' order_col = 'order', batch_col = "MS_batch")
 #' 
+#' \dontrun{
+#' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+#'                               order_col = 'order', batch_col = "MS_batch", 
+#'                               filename = 'test_meanplot.png', 
+#'                               width = 28, height = 18, units = 'cm')
+#' }
+#' 
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              sample_id_col = 'FullRunName',
                              batch_col = "MS_batch",
@@ -28,6 +35,8 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              order_col = 'order',
                              vline_color = 'grey',
                              facet_col = NULL,
+                             filename = NULL, width = NA, height = NA, 
+                             units = c('cm','in','mm'),
                              plot_title = NULL,
                              theme = 'classic',
                              ylimits = NULL){
@@ -129,6 +138,9 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     gg = gg + theme(legend.position="top")
   }
   
+  #save the plot
+  save_ggplot(filename, units, width, height, gg)
+  
   return(gg)
 }
 
@@ -138,8 +150,16 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' @export
 #'
 #' @examples
-#' boxplot <- plot_boxplot(example_proteome, example_sample_annotation, 
+#' boxplot <- plot_boxplot(log_transform_df(example_proteome), 
+#' sample_annotation = example_sample_annotation, 
 #' batch_col = "MS_batch")
+#' 
+#' \dontrun{
+#' boxplot <- plot_boxplot(log_transform_df(example_proteome), 
+#' sample_annotation = example_sample_annotation, 
+#' batch_col = "MS_batch", filename = 'test_boxplot.png', 
+#' width = 14, height = 9, units = 'in')
+#' }
 #' 
 plot_boxplot <- function(df_long, sample_annotation = NULL,
                          sample_id_col = 'FullRunName',
@@ -148,6 +168,8 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                          color_by_batch = TRUE, color_scheme = 'brewer',
                          order_col = 'order',
                          facet_col = NULL,
+                         filename = NULL, width = NA, height = NA, 
+                         units = c('cm','in','mm'),
                          plot_title = NULL, theme = 'classic',
                          ylimits = NULL, outliers = TRUE){
   
@@ -236,6 +258,9 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   if (length(unique(df_long[[order_col]])) > 30){
     gg = gg + theme(legend.position="top")
   }
+  
+  #save the plot
+  save_ggplot(filename, units, width, height, gg)
   
   return(gg)
 }
