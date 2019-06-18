@@ -37,7 +37,7 @@ plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
   filename = NULL, width = NA, height = NA, units = c("cm", "in",
-  "mm"), plot_title = "Spike-in BOVINE protein peptides",
+  "mm"), plot_title = sprintf("Spike-in \%s plots", spike_ins),
   theme = "classic")
 
 plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
