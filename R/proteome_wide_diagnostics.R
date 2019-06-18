@@ -146,7 +146,7 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' date_columns = 'DateTime',
 #' numeric_columns = c('order'))
 #' 
-#' heatmap_plot <- plot_heatmap(example_proteome_matrix, 
+#' heatmap_plot <- plot_heatmap(log_transform_dm(example_proteome_matrix), 
 #' example_sample_annotation, 
 #' sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
 #' cluster_cols = TRUE, 
@@ -175,6 +175,7 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
   if (any(is.na(as.vector(data_matrix)))){
     warning('Heatmap cannot operate with missing values in the matrix')
     if(!is.null(fill_the_missing)){
+      heatmap_color = c(color_for_missing, heatmap_color)
       if (!is.numeric(fill_the_missing)){
         fill_the_missing = 0
       } else{
