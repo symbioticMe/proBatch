@@ -8,9 +8,10 @@ plot_PVCA(data_matrix, sample_annotation, sample_id_col = "FullRunName",
   feature_id_col = "peptide_group_label",
   technical_covariates = c("MS_batch", "instrument"),
   biological_covariates = c("cell_line", "drug_dose"),
-  fill_the_missing = -1, threshold_pca = 0.6, threshold_var = 0.01,
-  colors_for_bars = NULL, filename = NULL, width = NA, height = NA,
-  units = c("cm", "in", "mm"), plot_title = NULL, theme = "classic")
+  fill_the_missing = -1, pca_threshold = 0.6,
+  variance_threshold = 0.01, colors_for_bars = NULL, filename = NULL,
+  width = NA, height = NA, units = c("cm", "in", "mm"),
+  plot_title = NULL, theme = "classic")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -40,10 +41,10 @@ are biologically meaningful covariates}
 should be substituted with -1 (and colored with   \code{color_for_missing}). 
 If \code{NULL}, features with missing values are excluded.}
 
-\item{threshold_pca}{the percentile value of the minimum amount of the
+\item{pca_threshold}{the percentile value of the minimum amount of the
 variabilities that the selected principal components need to explain}
 
-\item{threshold_var}{the percentile value of weight each of the covariates
+\item{variance_threshold}{the percentile value of weight each of the covariates
 needs to explain (the rest will be lumped together)}
 
 \item{colors_for_bars}{four-item color vector, specifying colors for the
