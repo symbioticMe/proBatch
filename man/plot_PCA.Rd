@@ -7,7 +7,9 @@
 plot_PCA(data_matrix, sample_annotation,
   feature_id_col = "peptide_group_label", color_by = "MS_batch",
   PC_to_plot = c(1, 2), fill_the_missing = -1,
-  color_scheme = "brewer", theme = "classic", plot_title = NULL)
+  color_scheme = "brewer", filename = NULL, width = NA,
+  height = NA, units = c("cm", "in", "mm"), plot_title = NULL,
+  theme = "classic")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -34,10 +36,21 @@ If \code{NULL}, features with missing values are excluded.}
 
 \item{color_scheme}{a named vector of colors to map to \code{batch_col}}
 
-\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. Currently only 
+pdf and png format is supported}
+
+\item{width}{option  determining the output image width}
+
+\item{height}{option  determining the output image width}
+
+\item{units}{units: 'cm', 'in' or 'mm'}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
+
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 }
 \value{
 ggplot scatterplot colored by factor levels of column specified in
@@ -53,6 +66,12 @@ pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation,
 color_by = 'digestion_batch', plot_title = "PCA colored by digestion_batch")
 pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 color_by = 'DateTime', plot_title = "PCA colored by DateTime")
+
+\dontrun{
+pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+color_by = 'DateTime', plot_title = "PCA colored by DateTime",
+filename = 'test_PCA.png', width = 14, height = 9, units = 'cm')
+}
 
 }
 \seealso{

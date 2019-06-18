@@ -9,7 +9,8 @@ plot_PVCA(data_matrix, sample_annotation, sample_id_col = "FullRunName",
   technical_covariates = c("MS_batch", "instrument"),
   biological_covariates = c("cell_line", "drug_dose"),
   fill_the_missing = -1, threshold_pca = 0.6, threshold_var = 0.01,
-  colors_for_bars = NULL, theme = "classic", plot_title = NULL)
+  colors_for_bars = NULL, filename = NULL, width = NA, height = NA,
+  units = c("cm", "in", "mm"), plot_title = NULL, theme = "classic")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -49,11 +50,11 @@ needs to explain (the rest will be lumped together)}
 following categories: c('residual', 'biological', 'biol:techn',
 'technical')}
 
-\item{theme}{ggplot theme, by default \code{classic}. Can be easily overridden (see
-examples)}
-
 \item{plot_title}{Title of the plot (usually, processing step + representation
 level (fragments, transitions, proteins))}
+
+\item{theme}{ggplot theme, by default \code{classic}. Can be easily overridden (see
+examples)}
 }
 \value{
 list of two items: plot =gg, df = pvca_res
@@ -66,6 +67,13 @@ matrix_test <- example_proteome_matrix[1:50, ]
 pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
 technical_covariates = c('MS_batch', 'digestion_batch'),
 biological_covariates = c("Diet", "Sex", "Strain"))
+
+\dontrun{
+pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
+technical_covariates = c('MS_batch', 'digestion_batch'),
+biological_covariates = c("Diet", "Sex", "Strain"), 
+filename = 'test_PVCA.png', width = 28, height = 22, units = 'cm')
+}
 
 }
 \seealso{

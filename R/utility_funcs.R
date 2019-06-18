@@ -246,3 +246,30 @@ add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vlin
   }
   return(gg)
 }
+
+adjust_units <- function(units, width, height) {
+  if(length(units) > 1) units = units[1]
+  if (units == 'mm'){
+    units = 'cm'
+    width = width/10
+    height = height/10
+  }
+  if(units == 'cm'){
+    width  = width/2.54
+    height = height/2.54
+  }
+  return(list(unit = units,
+              width  = width,
+              height = height))
+}
+
+save_ggplot <- function(filename, units, width, height, gg) {
+  if(!is.null(filename)){
+    units_adjusted = adjust_units(units, width, height)
+    units = units_adjusted$unit
+    width  = units_adjusted$width
+    height = units_adjusted$height
+    
+    ggsave(filename, plot = gg, width = width, height = height, units = units)
+  }
+}

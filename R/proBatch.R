@@ -63,6 +63,13 @@
 #' @param plot_title title of the plot (e.g., processing step + representation
 #'   level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))
 #' @param theme ggplot theme, by default \code{classic}. Can be easily overriden 
+#' @param filename path where the results are saved. 
+#' If null the object is returned to the active window;
+#' otherwise, the object is save into the file. Currently only 
+#' pdf and png format is supported
+#' @param width option  determining the output image width
+#' @param height option  determining the output image width
+#' @param units units: 'cm', 'in' or 'mm'
 #'
 #' @import dplyr
 #' @import ggfortify
@@ -91,6 +98,7 @@
 #' @importFrom stats ksmooth loess median 
 #' @importFrom stats model.matrix prcomp predict reformulate setNames
 #' @importFrom tibble remove_rownames rownames_to_column column_to_rownames
+#' @importFrom tools file_ext
 #' @importFrom viridis viridis_pal
 #' @importFrom wesanderson wes_palettes
 #' @importFrom WGCNA plotDendroAndColors standardColors

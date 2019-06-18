@@ -7,10 +7,12 @@
 \usage{
 plot_peptide_corr_distribution(data_matrix, peptide_annotation,
   protein_col = "ProteinName", feature_id_col = "peptide_group_label",
-  plot_title = "Distribution of peptide correlation",
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = "Distribution of peptide correlation",
   theme = "classic")
 
-plot_peptide_corr_distribution.corrDF(corr_distribution,
+plot_peptide_corr_distribution.corrDF(corr_distribution, filename = NULL,
+  width = NA, height = NA, units = c("cm", "in", "mm"),
   plot_title = "Correlation of peptides", theme = "classic")
 }
 \arguments{
@@ -28,6 +30,17 @@ See "example_peptide_annotation" for more details (to call the description, use 
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
+
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. Currently only 
+pdf and png format is supported}
+
+\item{width}{option  determining the output image width}
+
+\item{height}{option  determining the output image width}
+
+\item{units}{units: 'cm', 'in' or 'mm'}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
@@ -57,6 +70,12 @@ pep_annotation_sel = example_peptide_annotation[gene_filter, ]
 corr_distribution = calculate_peptide_corr_distr(matrix_test, 
 pep_annotation_sel, protein_col = 'Gene')
 peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution)
+
+\dontrun{
+peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution, 
+filename = 'test_peptide.png', 
+width = 28, height = 28, units = 'cm')
+}
 
 }
 \seealso{

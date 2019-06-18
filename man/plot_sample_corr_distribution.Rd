@@ -8,10 +8,12 @@
 plot_sample_corr_distribution(data_matrix, sample_annotation,
   repeated_samples = NULL, sample_id_col = "FullRunName",
   batch_col = "MS_batch", biospecimen_id_col = "EarTag",
-  plot_title = "Sample correlation distribution",
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = "Sample correlation distribution",
   plot_param = "batch_replicate", theme = "classic")
 
-plot_sample_corr_distribution.corrDF(corr_distribution,
+plot_sample_corr_distribution.corrDF(corr_distribution, filename = NULL,
+  width = NA, height = NA, units = c("cm", "in", "mm"),
   plot_title = "Sample correlation distribution",
   plot_param = "batch_replicate", theme = "classic")
 }
@@ -38,6 +40,17 @@ that captures the biological sample,
 that (possibly) was profiled several times as technical replicates.
 Tip: if such ID is absent, but can be defined from several columns,
 create new \code{biospecimen_id} column}
+
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. Currently only 
+pdf and png format is supported}
+
+\item{width}{option  determining the output image width}
+
+\item{height}{option  determining the output image width}
+
+\item{units}{units: 'cm', 'in' or 'mm'}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
@@ -75,6 +88,13 @@ sample_annotation = example_sample_annotation,
 batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
 sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
 plot_param = 'batch_replicate')
+
+\dontrun{
+sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
+plot_param = 'batch_replicate', 
+filename = 'test_sampleCorr.png', 
+width = 28, height = 28, units = 'cm')
+}
 
 }
 \seealso{

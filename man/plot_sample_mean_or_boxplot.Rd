@@ -11,13 +11,15 @@ plot_sample_mean(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "grey", facet_col = NULL,
-  plot_title = NULL, theme = "classic", ylimits = NULL)
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = NULL, theme = "classic", ylimits = NULL)
 
 plot_boxplot(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
   batch_col = "MS_batch", color_by_batch = TRUE,
   color_scheme = "brewer", order_col = "order", facet_col = NULL,
-  plot_title = NULL, theme = "classic", ylimits = NULL,
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = NULL, theme = "classic", ylimits = NULL,
   outliers = TRUE)
 }
 \arguments{
@@ -57,6 +59,17 @@ MS experiments (where each instrument has its own order-associated effects, see 
 or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
 For single-instrument case should be set to `NULL`}
 
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. Currently only 
+pdf and png format is supported}
+
+\item{width}{option  determining the output image width}
+
+\item{height}{option  determining the output image width}
+
+\item{units}{units: 'cm', 'in' or 'mm'}
+
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
@@ -90,8 +103,23 @@ functions for quick visual assessment of trends associated, overall
 mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 order_col = 'order', batch_col = "MS_batch")
 
-boxplot <- plot_boxplot(example_proteome, example_sample_annotation, 
+\dontrun{
+mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+                              order_col = 'order', batch_col = "MS_batch", 
+                              filename = 'test_meanplot.png', 
+                              width = 28, height = 18, units = 'cm')
+}
+
+boxplot <- plot_boxplot(log_transform_df(example_proteome), 
+sample_annotation = example_sample_annotation, 
 batch_col = "MS_batch")
+
+\dontrun{
+boxplot <- plot_boxplot(log_transform_df(example_proteome), 
+sample_annotation = example_sample_annotation, 
+batch_col = "MS_batch", filename = 'test_boxplot.png', 
+width = 14, height = 9, units = 'in')
+}
 
 }
 \seealso{

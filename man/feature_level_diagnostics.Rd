@@ -15,7 +15,8 @@ plot_single_feature(feature_name, df_long, sample_annotation = NULL,
   qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
-  plot_title = NULL, theme = "classic", ylimits = NULL)
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = NULL, theme = "classic", ylimits = NULL)
 
 plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
@@ -24,7 +25,8 @@ plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
   qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
-  plot_title = sprintf("Peptides of \%s protein", protein_name),
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = sprintf("Peptides of \%s protein", protein_name),
   theme = "classic")
 
 plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
@@ -34,7 +36,9 @@ plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
-  plot_title = "Spike-in BOVINE protein peptides", theme = "classic")
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = "Spike-in BOVINE protein peptides",
+  theme = "classic")
 
 plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
@@ -43,7 +47,8 @@ plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
   qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
-  plot_title = "iRT peptide profile", theme = "classic")
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = "iRT peptide profile", theme = "classic")
 
 plot_with_fitting_curve(feature_name, fit_df, fit_value_col = "fit",
   df_long, sample_annotation = NULL, sample_id_col = "FullRunName",
@@ -51,7 +56,8 @@ plot_with_fitting_curve(feature_name, fit_df, fit_value_col = "fit",
   geom = c("point", "line"), qual_col = NULL, qual_value = NULL,
   batch_col = "MS_batch", color_by_batch = FALSE,
   color_scheme = "brewer", order_col = "order", vline_color = "grey",
-  facet_col = NULL,
+  facet_col = NULL, filename = NULL, width = NA, height = NA,
+  units = c("cm", "in", "mm"),
   plot_title = sprintf("Fitting curve of \%s peptide",
   paste(feature_name, collapse = " ")), theme = "classic")
 }
@@ -106,13 +112,24 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 
 \item{vline_color}{color of vertical lines, typically separating 
 different MS batches in ordered runs; 
-should be `NULL` for experiments without intrinsic order.}
+should be `NULL` for experiments without intrinsic order}
 
 \item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
 plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
 MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
 or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
 For single-instrument case should be set to `NULL`}
+
+\item{filename}{path where the results are saved. 
+If null the object is returned to the active window;
+otherwise, the object is save into the file. Currently only 
+pdf and png format is supported}
+
+\item{width}{option  determining the output image width}
+
+\item{height}{option  determining the output image width}
+
+\item{units}{units: 'cm', 'in' or 'mm'}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
@@ -156,6 +173,14 @@ single_feature_plot <- plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQ
 df_long = example_proteome, example_sample_annotation, 
 qual_col = NULL)
 
+#saving the plot
+\dontrun{
+single_feature_plot <- plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+df_long = example_proteome, example_sample_annotation, 
+qual_col = NULL, filename = 'test_peptide.png', 
+width = 28, height = 18, units = 'cm')
+}
+
 #to examine peptides of a single protein:
 peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
 protein_name = "Haao", peptide_annotation = example_peptide_annotation,
@@ -163,6 +188,16 @@ protein_col = "Gene", df_long = example_proteome,
 sample_annotation = example_sample_annotation, 
 order_col = 'order', sample_id_col = 'FullRunName', 
 batch_col = 'MS_batch')
+
+#saving the peptides of one protein
+\dontrun{
+ peptides_of_one_protein_plot <- plot_peptides_of_one_protein (
+protein_name = "Haao", peptide_annotation = example_peptide_annotation,
+protein_col = "Gene", df_long = example_proteome, 
+sample_annotation = example_sample_annotation, 
+order_col = 'order', sample_id_col = 'FullRunName', 
+batch_col = 'MS_batch',
+filename = 'test_protein.png', width = 14, height = 9, units = 'in')}
 
 #to illustrate spike-ins:
 spike_in_plot <- plot_spike_in(spike_ins = "BOVINE_A1ag", protein_col = 'Gene', 

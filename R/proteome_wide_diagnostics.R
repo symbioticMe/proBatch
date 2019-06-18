@@ -37,6 +37,9 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
                                           distance = "euclidean",
                                           agglomeration = 'complete',
                                           label_samples = TRUE, label_font = .2,
+                                          color_for_missing = 'black',
+                                          filename = NULL, width = 38, height = 25, 
+                                          units = c('cm','in','mm'), 
                                           plot_title = NULL,
                                           ...){
   if (any(is.na(as.vector(data_matrix)))){
@@ -66,12 +69,41 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
     cex.dendroLabels = 0.9
   }
   
-  plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
-                      main = plot_title,
-                      hang = -0.1, addGuide = TRUE, dendroLabels = FALSE, 
-                      cex.dendroLabels = cex.dendroLabels,
-                      ...)
-  
+  if (is.null(filename)){
+    plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
+                        main = plot_title,
+                        hang = -0.1, addGuide = TRUE, dendroLabels = FALSE, 
+                        cex.dendroLabels = cex.dendroLabels,
+                        ...)
+  } else {
+    
+    units_adjusted = adjust_units(units, width, height)
+    units = units_adjusted$unit
+    width = units_adjusted$width
+    height = units_adjusted$height
+    
+    if (is.na(width)){
+      width = 7
+    }
+    if (is.na(height)){
+      height = 7
+    }
+    if (file_ext(filename) == 'pdf'){
+      pdf(file = filename, width = width, height = height, title = plot_title)
+    } else if(file_ext(filename) == 'png'){
+      png(file = filename, width = width, height = height, units = units, res = 300)
+    } else{
+      stop('currently only pdf and png extensions for filename are implemented')
+    }
+    
+    plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
+                        main = plot_title,
+                        hang = -0.1, addGuide = TRUE, dendroLabels = FALSE, 
+                        cex.dendroLabels = cex.dendroLabels,
+                        ...)
+    
+    dev.off()
+  }
 }
 
 #' Plot the heatmap of samples
@@ -103,7 +135,6 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
 #' @param color_for_missing special color to make missing values. 
 #' Usually black or white, depending on \code{heatmap_color}
-#' @param filename filepath where to save the image
 #' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
 #' 
 #' @return object returned by \code{link[pheatmap]{pheatmap}}
@@ -132,7 +163,9 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
                          heatmap_color = colorRampPalette(
                            rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
                          color_for_missing = 'black',
-                         filename = NA, plot_title = NA,
+                         filename = NULL, width = 7, height = 7, 
+                         units = c('cm','in','mm'), 
+                         plot_title = NULL,
                          ...){
   
   df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
@@ -187,11 +220,23 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
     }
   }
   
-  p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
+  if(is.null(plot_title)){
+    plot_title = NA
+  }
+  if(is.null(filename)){
+    filename = NA
+  }
+  units_adjusted = adjust_units(units, width, height)
+  units = units_adjusted$unit
+  width = units_adjusted$width
+  height = units_adjusted$height
+  p <- pheatmap(data_matrix, 
+                cluster_rows = cluster_rows, cluster_cols = cluster_cols,
                 color = heatmap_color,
                 annotation_col = annotation_col, annotation_row = annotation_row, 
                 annotation_colors = annotation_color_list,
-                filename = filename, main = plot_title, ...)
+                filename = filename, width = width, height = height,
+                main = plot_title, ...)
   return(p)
 }
 
@@ -261,6 +306,13 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' technical_covariates = c('MS_batch', 'digestion_batch'),
 #' biological_covariates = c("Diet", "Sex", "Strain"))
 #' 
+#' \dontrun{
+#' pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
+#' technical_covariates = c('MS_batch', 'digestion_batch'),
+#' biological_covariates = c("Diet", "Sex", "Strain"), 
+#' filename = 'test_PVCA.png', width = 28, height = 22, units = 'cm')
+#' }
+#' 
 #' @seealso \code{\link{sample_annotation_to_colors}}, 
 #' \code{\link[ggplot2]{ggplot}}
 plot_PVCA <- function(data_matrix, sample_annotation,
@@ -271,7 +323,10 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                       fill_the_missing = -1,
                       threshold_pca = .6, threshold_var = .01,
                       colors_for_bars = NULL,
-                      theme = 'classic', plot_title = NULL){
+                      filename = NULL, width = NA, height = NA, 
+                      units = c('cm','in','mm'),
+                      plot_title = NULL,
+                      theme = 'classic'){
   factors_for_PVCA = c(technical_covariates, biological_covariates)
   
   if(!setequal(unique(sample_annotation[[sample_id_col]]), 
@@ -363,9 +418,8 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   gg  = ggplot(pvca_res, aes(x = label, y = weights, fill = category))+
     geom_bar(stat = 'identity', color = 'black', size = 1.5)+
     ylab(y_title)
-  if(theme == 'classic'){
-    gg = gg +theme_classic()
-  }
+  
+  
   if(is.null(colors_for_bars)){
     colors_for_bars = c('grey', wes_palettes$Rushmore[3:5])
     names(colors_for_bars) = c('residual', 'biological', 
@@ -383,6 +437,15 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   if (!is.null(plot_title)){
     gg = gg + ggtitle(plot_title)
   }
+  
+  #Change the theme
+  if(!is.null(theme) && theme == 'classic'){
+    gg = gg + theme_classic()
+  }else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
+  }
+  
+  save_ggplot(filename, units, width, height, gg)
   
   gg = gg +
     theme(axis.title.x = NULL, 
@@ -415,6 +478,12 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 #' color_by = 'DateTime', plot_title = "PCA colored by DateTime")
 #' 
+#' \dontrun{
+#' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+#' color_by = 'DateTime', plot_title = "PCA colored by DateTime",
+#' filename = 'test_PCA.png', width = 14, height = 9, units = 'cm')
+#' }
+#' 
 #' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, 
 #' \code{\link[ggplot2]{ggplot}}
 plot_PCA <- function(data_matrix, sample_annotation,
@@ -422,6 +491,8 @@ plot_PCA <- function(data_matrix, sample_annotation,
                      color_by = 'MS_batch',
                      PC_to_plot = c(1,2), fill_the_missing = -1,
                      color_scheme = 'brewer',
+                     filename = NULL, width = NA, height = NA, 
+                     units = c('cm','in','mm'),
                      plot_title = NULL,
                      theme = 'classic'){
   
@@ -481,7 +552,11 @@ plot_PCA <- function(data_matrix, sample_annotation,
   #Change the theme
   if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
+  }else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
+  
+  save_ggplot(filename, units, width, height, gg)
   
   return(gg)
 }
