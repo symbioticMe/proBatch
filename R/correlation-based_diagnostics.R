@@ -9,15 +9,6 @@
 #' @param corr_matrix square correlation matrix
 #' @param flavor either corrplot from 'corrplot' package or 
 #' heatmap, as in 'pheatmap'
-#' @param filename path where the results are saved. 
-#' If null the object is returned to the active window;
-#' otherwise, the object is save into the file. Currently only 
-#' pdf and png format is supported
-#' @param width option  determining the output image width
-#' @param height option  determining the output image width
-#' @param units units: 'cm', 'in' or 'mm'
-#' @param plot_title Title of the correlation plot (e.g., processing step + 
-#' representation level (fragments, transitions, proteins) or Protein Name)
 #' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 #' \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
 #'   help to corresponding functions
@@ -93,14 +84,6 @@ plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'),
 #' @param protein_name the name of the protein
 #' @param flavor either corrplot from 'corrplot' 
 #' package or heatmap, as in 'pheatmap'
-#' @param filename path where the results are saved. 
-#' If null the object is returned to the active window;
-#' otherwise, the object is save into the file. Currently 
-#' only pdf and png format is supported
-#' @param width option  determining the output image width
-#' @param height option  determining the output image width
-#' @param units units: 'cm', 'in' or 'mm'
-#' @param plot_title The title of the plot, e.g. protein name / processing step
 #' @param ... parameters for the corrplot visualisation
 #'
 #' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
@@ -144,17 +127,6 @@ plot_protein_corrplot <- function(data_matrix,
 #' @inheritParams proBatch
 #' @param samples_to_plot string vector of samples in 
 #' \code{data_matrix} to be used in the plot
-#' @param filename path where the results are saved. 
-#' If null the object is returned to the active window;
-#' otherwise, the object is save into the file. 
-#' Currently only pdf and png format is supported
-#' @param width option  determining the output image width
-#' @param height option  determining the output image width
-#' @param flavor either corrplot from 'corrplot' package or 
-#' heatmap, as in 'pheatmap'
-#' @param units units: 'cm', 'in' or 'mm'
-#' @param plot_title Title of the plot (usually, processing step + 
-#' representation level (fragments, transitions, proteins))
 #' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
 #' \code{\link[pheatmap]{pheatmap}} visualisation, for details see 
 #'   examples and help to corresponding functions
