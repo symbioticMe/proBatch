@@ -38,7 +38,7 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
                           optimize_span = FALSE, 
                           no_fit_imputed = FALSE, qual_col = 'm_score', qual_value = 2,
                           abs_threshold = 5, pct_threshold = 0.20, ...){
-  df_feature_batch <- df_feature_batch[sort.list(df_feature_batch[[order_col]]),]
+  #df_feature_batch <- df_feature_batch[sort.list(df_feature_batch[[order_col]]),]
   x_all = df_feature_batch[[order_col]]
   y = df_feature_batch[[measure_col]]
     
@@ -47,7 +47,7 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
       warning('imputed value column is in the data, fitting curve only to measured, non-imputed values')
       imputed_values <- df_feature_batch[[qual_col]] == qual_value
       x_to_fit = x_all[!imputed_values]
-      y = y[!imputed_values]
+      y[imputed_values] = NA
     } else {
       stop('imputed values are specified not to be used for curve fitting, however, 
            no flag for imputed values is specified')
@@ -87,6 +87,7 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
                       in the batch %s, leaving the original value", feature_id, batch_id))
       fit_res = y
     }
+  fit_res[is.na(y)] = NA
   return(fit_res)
 }
 

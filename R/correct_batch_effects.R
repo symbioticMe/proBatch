@@ -164,31 +164,66 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
                                fit_func = 'loess_regression', 
                                abs_threshold = 5, pct_threshold = 0.20, ...){
   
-  sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-  
-  sample_annotation = sample_annotation %>%
-    group_by(!!sym(batch_col)) %>%
-    mutate(batch_total = n()) %>%
-    ungroup() %>%
-    mutate(!!batch_col := as.character(!!sym(batch_col)))
-  
-  original_cols = names(df_long)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, order_col = NULL, 
                                      facet_col = NULL, merge = TRUE)
   
+  batch_size_df = NULL
+  if (is.null(sample_annotation) && (batch_col %in% names(df_long))) {
+    batch_size_df = df_long %>%
+      group_by(!!sym(batch_col)) %>%
+      summarise(batch_total = n()) %>%
+      ungroup() %>%
+      mutate(!!batch_col := as.character(!!sym(batch_col)))
+  } 
+  
+  if(!is.null(sample_annotation)){
+    batch_size_df = sample_annotation %>%
+      group_by(!!sym(batch_col)) %>%
+      summarise(batch_total = n()) %>%
+      ungroup() %>%
+      mutate(!!batch_col := as.character(!!sym(batch_col)))
+  } else {
+    warning('Assuming this is a single batch fit: no batches found')
+  }
+  
+  if(!is.null(batch_size_df)){
+    df_long = df_long %>% 
+      merge(batch_size_df, by = batch_col)
+  }
+  
+  original_cols = names(df_long)
+  
+  if (!is.null(batch_col)){
+    if (!(batch_col %in% union(names(df_long),names(sample_annotation)))){
+      stop('Batch column is neither in sample annotation nor in data matrix')
+    }
+    sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+    corrected_df = df_long %>%
+      #filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
+      group_nest(!!!syms(c(feature_id_col, batch_col, "batch_total"))) %>%  
+      mutate(fit = pmap(list(df_feature_batch = data,  batch_size = batch_total, 
+                             feature_id = !!sym(feature_id_col)), 
+                        batch_id = !!sym(batch_col),
+                        fit_nonlinear, 
+                        measure_col = measure_col,order_col = order_col, 
+                        fit_func = fit_func, 
+                        abs_threshold = abs_threshold,
+                        pct_threshold = pct_threshold, ...))
+  } else {
+    corrected_df = df_long %>%
+      #filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
+      nest(!!sym(feature_id_col)) %>%
+      mutate(fit = map(data, fit_nonlinear, 
+                        measure_col = measure_col,order_col = order_col, 
+                        fit_func = fit_func,
+                        abs_threshold = abs_threshold,
+                        pct_threshold = pct_threshold, ...))
+  }
+  
   old_measure_col = paste('preTrendFit', measure_col, sep = '_')
-  corrected_df = df_long %>%
-    filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
-    group_nest(!!!syms(c(feature_id_col, batch_col, "batch_total"))) %>%  
-    mutate(fit = pmap(list(df_feature_batch = data,  batch_size = batch_total, 
-                           feature_id = !!sym(feature_id_col)), 
-                      batch_id = !!sym(batch_col),
-                      fit_nonlinear, 
-                      measure_col = measure_col,order_col = order_col, 
-                      fit_func = fit_func, 
-                      abs_threshold = abs_threshold,
-                      pct_threshold = pct_threshold, ...)) %>%
+  
+  corrected_df = corrected_df %>%
     unnest() %>%
     group_by(!!!syms(c(feature_id_col, batch_col))) %>%
     mutate(mean_fit = mean(fit, na.rm = TRUE)) %>%
