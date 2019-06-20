@@ -33,7 +33,7 @@
 #' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
 #'   \code{\link[WGCNA]{plotDendroAndColors}}
 plot_hierarchical_clustering  <- function(data_matrix, color_df,
-                                          fill_the_missing = NULL,
+                                          fill_the_missing = 0,
                                           distance = "euclidean",
                                           agglomeration = 'complete',
                                           label_samples = TRUE, label_font = .2,
