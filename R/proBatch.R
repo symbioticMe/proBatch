@@ -84,7 +84,7 @@
 #' @importFrom pheatmap pheatmap
 #' @importFrom preprocessCore normalize.quantiles
 #' @importFrom pvca pvcaBatchAssess
-#' @importFrom purrr pmap negate
+#' @importFrom purrr pmap negate map
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom rlang :=
 #' @importFrom rlang !!
