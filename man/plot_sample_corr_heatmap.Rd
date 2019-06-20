@@ -8,8 +8,8 @@ plot_sample_corr_heatmap(data_matrix, samples_to_plot = NULL,
   sample_annotation = NULL, sample_id_col = "FullRunName",
   flavor = c("pheatmap", "corrplot"), filename = NULL, width = NA,
   height = NA, units = c("cm", "in", "mm"),
-  plot_title = sprintf("Correlation matrix of samples \%s",
-  paste(samples_to_plot, collapse = ";\\n")), ...)
+  plot_title = sprintf("Correlation matrix of\%s samples",
+  ifelse(is.null(samples_to_plot), "", " selected")), ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
