@@ -159,11 +159,11 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                      width = NA, height = NA, 
                                      units = c('cm','in','mm'),
                                      plot_title = sprintf(
-                                       'Correlation matrix of samples %s',
-                                       paste(samples_to_plot, collapse = ';\n')), ...){
+                                       'Correlation matrix of%s samples' ,
+                                       ifelse(is.null(samples_to_plot),'',' selected')), ...){
   flavor <- match.arg(flavor)    
   if(!is.null(samples_to_plot)){
-    if (!all(samples_to_plot) %in% colnames(data_matrix)){
+    if (!all(samples_to_plot %in% colnames(data_matrix))){
       missing_samples = setdiff(samples_to_plot, colnames(data_matrix))
       stop(sprintf('The following samples are not in data matrix and can not 
                     be used in sample correlation plotting %s', 
@@ -179,7 +179,7 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
         filter((!!sym(sample_id_col)) %in% samples_to_plot)
     }
     
-    if (!all(samples_to_plot) %in% sample_annotation[[sample_id_col]]){
+    if (!all(samples_to_plot %in% sample_annotation[[sample_id_col]])){
       missing_samples = setdiff(samples_to_plot,sample_annotation[[sample_id_col]])
       warning(sprintf('The following samples are not in sample annotation and can not 
                    be used in sample correlation plotting %s. 
