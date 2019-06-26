@@ -246,7 +246,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
                            pca_threshold, variance_threshold = Inf) {
   
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
-  expr_set = Biobase::ExpressionSet(data_matrix[,rownames(sample_annotation)], covrts.annodf)
+  expr_set = Biobase::ExpressionSet(data_matrix, covrts.annodf)
   pvcaAssess = pvcaBatchAssess(expr_set, factors_for_PVCA, threshold = pca_threshold)
   pvcaAssess_df = data.frame(weights = as.vector(pvcaAssess$dat),
                              label = pvcaAssess$label,
@@ -314,40 +314,19 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                       theme = 'classic'){
   factors_for_PVCA = c(technical_covariates, biological_covariates)
   
-  if(!setequal(unique(sample_annotation[[sample_id_col]]), 
-               unique(colnames(data_matrix)))){
-    warning('Sample IDs in sample annotation not 
-                consistent with samples in input data.')}
+  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col, order_col = NULL, 
+                                     facet_col = NULL, merge = FALSE)
+  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   
-  sample_names = sample_annotation[[sample_id_col]]
-  sample_annotation = sample_annotation %>% 
-    select(one_of(factors_for_PVCA)) %>%
-    mutate_if(is.POSIXct, as.numeric)
-  sample_annotation = as.data.frame(sample_annotation)
-  rownames(sample_annotation) = sample_names
+  sample_annotation = sample_annotation   %>% 
+    select(one_of(c(sample_id_col, factors_for_PVCA))) %>%
+    mutate_if(is.POSIXct, as.numeric) %>%
+    as.data.frame()%>%
+    column_to_rownames(var = sample_id_col)
   
-  if (!is.null(sample_id_col)){
-    if(sample_id_col %in% names(sample_annotation)){
-      rownames(sample_annotation) = sample_annotation[[sample_id_col]]
-    }
-    if(feature_id_col %in% colnames(data_matrix)){
-      if(is.data.frame(data_matrix)){
-        warning(sprintf('feature_id_col with name %s in data matrix instead of 
-                         rownames, this might cause errors in other diagnostic 
-                         functions, assign values of this column to rowname and 
-                        remove from the data frame!', 
-                        feature_id_col))
-        rownames(data_matrix) = data_matrix[[feature_id_col]]
-        data_matrix[[feature_id_col]] = NULL
-        data_matrix = as.matrix(data_matrix)
-      }
-      
-    }
-  } else {
-    if (!all(rownames(sample_annotation) %in% colnames(data_matrix))){
-      stop('sample names differ between data matrix and sample annotation')
-    }
-  }
+  data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
   
   if (any(is.na(as.vector(data_matrix)))){
     warning('PVCA cannot operate with missing values in the matrix')
@@ -481,19 +460,7 @@ plot_PCA <- function(data_matrix, sample_annotation,
                      plot_title = NULL,
                      theme = 'classic'){
   
-  if(!is.null(feature_id_col)){
-    if(feature_id_col %in% colnames(data_matrix)){
-      if(is.data.frame(data_matrix)){
-        warning(sprintf('feature_id_col with name %s in data matrix instead of rownames,
-                        this might cause errors in other diagnostic functions,
-                        assign values of this column to rowname and remove from the data frame!', 
-                        feature_id_col))
-      }
-      rownames(data_matrix) = data_matrix[[feature_id_col]]
-      data_matrix[[feature_id_col]] = NULL
-      data_matrix = as.matrix(data_matrix)
-    }
-  }
+  data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
   
   if (any(is.na(as.vector(data_matrix)))){
     warning('PCA cannot operate with missing values in the matrix')
