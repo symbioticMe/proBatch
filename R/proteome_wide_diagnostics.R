@@ -313,13 +313,14 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                       units = c('cm','in','mm'),
                       plot_title = NULL,
                       theme = 'classic'){
-  factors_for_PVCA = c(technical_covariates, biological_covariates)
   
   df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, order_col = NULL, 
                                      facet_col = NULL, merge = FALSE)
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
+  
+  factors_for_PVCA = c(technical_covariates, biological_covariates)
   
   sample_annotation = sample_annotation   %>% 
     select(one_of(c(sample_id_col, factors_for_PVCA))) %>%
