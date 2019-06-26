@@ -9,7 +9,7 @@ for selection of illustrative proteins}
 \usage{
 create_peptide_annotation(df_long,
   feature_id_col = "peptide_group_label",
-  protein_col = c("ProteinName"))
+  protein_col = c("ProteinName", "Gene"))
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
