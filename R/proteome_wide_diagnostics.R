@@ -241,12 +241,13 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
   return(p)
 }
 
-
+#' @export
 calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
                            pca_threshold, variance_threshold = Inf) {
   
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
-  expr_set = Biobase::ExpressionSet(data_matrix, covrts.annodf)
+  data_matrix = data_matrix[, rownames(sample_annotation)]
+  expr_set = Biobase::ExpressionSet(assayData = data_matrix, phenoData = covrts.annodf)
   pvcaAssess = pvcaBatchAssess(expr_set, factors_for_PVCA, threshold = pca_threshold)
   pvcaAssess_df = data.frame(weights = as.vector(pvcaAssess$dat),
                              label = pvcaAssess$label,
