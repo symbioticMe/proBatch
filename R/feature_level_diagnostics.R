@@ -317,22 +317,35 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                           plot_title = sprintf('Spike-in %s plots', spike_ins), 
                           theme = 'classic'){
   
-  if (!is.null(peptide_annotation)){
-    df_long = df_long %>%
-      merge(peptide_annotation, by = feature_id_col)
+  if(!is.null(protein_col)){
+    if(protein_col %in% names(df_long)){
+      spike_in_peptides = df_long %>%
+        filter(grepl(spike_ins, !!sym(protein_col))) %>%
+        pull(feature_id_col) %>% as.character() %>% unique()
+    } else{
+      if (!is.null(peptide_annotation)){
+        if(protein_col %in% names(peptide_annotation)){
+          spike_in_peptides = peptide_annotation %>%
+            filter(grepl(spike_ins, !!sym(protein_col))) %>%
+            pull(feature_id_col) %>% as.character() %>% unique()
+          df_long = df_long %>%
+            filter(!!sym(feature_id_col) %in% spike_in_peptides) %>%
+            inner_join(peptide_annotation, by = feature_id_col)
+        }
+        
+      }
+    }
+  } else {
+    spike_in_peptides = spike_ins
   }
+  
+  
   
   if(!is.null(protein_col) && !(protein_col %in% names(df_long))){
     stop('Protein column %s is not found in the data. Check peptide annotation or main data table', protein_col)
   }
   
-  if(!is.null(protein_col)){
-    spike_in_peptides = df_long %>%
-      filter(grepl(spike_ins, !!sym(protein_col))) %>%
-      pull(feature_id_col) %>% as.character() %>% unique()
-  } else {
-    spike_in_peptides = spike_ins
-  }
+  
   
   
   gg = plot_single_feature(feature_name = spike_in_peptides, 
