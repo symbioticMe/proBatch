@@ -92,7 +92,7 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #' \code{\link{plot_protein_corrplot}}
 create_peptide_annotation <- function(df_long, 
                                       feature_id_col = 'peptide_group_label',
-                                      protein_col = c("ProteinName" )){
+                                      protein_col = c("ProteinName", "Gene")){
   peptide_annotation = df_long %>%
     select(one_of(c(feature_id_col, protein_col))) %>%
     distinct()
