@@ -168,7 +168,8 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
                          ...){
   
   df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
-  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     merge = F)
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   rm(df_long)
   
