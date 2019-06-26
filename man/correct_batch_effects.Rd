@@ -7,6 +7,7 @@
 \alias{adjust_batch_trend_df}
 \alias{adjust_batch_trend_dm}
 \alias{correct_with_ComBat_df}
+\alias{correct_with_ComBat_dm}
 \alias{correct_batch_effects_df}
 \alias{correct_batch_effects_dm}
 \title{Batch correction of normalized data}
@@ -33,6 +34,11 @@ adjust_batch_trend_dm(data_matrix, sample_annotation,
   return_fit_df = TRUE, abs_threshold = 5, pct_threshold = 0.2, ...)
 
 correct_with_ComBat_df(df_long, sample_annotation = NULL,
+  feature_id_col = "peptide_group_label", measure_col = "Intensity",
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
+  par.prior = TRUE)
+
+correct_with_ComBat_dm(data_matrix, sample_annotation = NULL,
   feature_id_col = "peptide_group_label", measure_col = "Intensity",
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   par.prior = TRUE)
