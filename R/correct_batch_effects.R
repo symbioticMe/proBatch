@@ -329,6 +329,10 @@ correct_with_ComBat_df <- function(df_long, sample_annotation = NULL,
   return(corrected_df)
 }
 
+#' 
+#' @export
+#' @rdname correct_batch_effects
+#'
 correct_with_ComBat_dm <- function(data_matrix, sample_annotation = NULL,
                                    feature_id_col = 'peptide_group_label',
                                    measure_col = 'Intensity',
