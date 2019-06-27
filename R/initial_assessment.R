@@ -201,8 +201,6 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       stop('batches cannot be colored as the batch column or sample ID column
              is not defined, check sample_annotation and data matrix')
     }
-    #For proper plotting, batch column has to be a factor
-    df_long[, batch_col] <- as.factor(df_long[, batch_col])
   } else {
     if (color_by_batch){
       warning('batches cannot be colored as the batch column is defined as NULL, continuing without colors')
