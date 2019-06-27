@@ -412,7 +412,14 @@ color_fill_boxes_by_batch <- function(color_by_batch, batch_col, gg,
 
 color_discrete <- function(color_scheme, batch_col, n_batches, fill_or_color, gg) {
   
-  gg = gg + aes(color = as.factor(!!sym(batch_col)))
+  if(fill_or_color == 'color'){
+    gg = gg + aes(color = as.factor(!!sym(batch_col)))
+  } else {
+    if(fill_or_color == 'fill'){
+      gg = gg + aes(fill = as.factor(!!sym(batch_col)))
+    }
+  }
+  
   #Define the color scheme on the fly
   if(length(color_scheme) == 1 && color_scheme == 'brewer'){
     if (n_batches <= 9){
