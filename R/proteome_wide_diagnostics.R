@@ -41,20 +41,9 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
                                           units = c('cm','in','mm'), 
                                           plot_title = NULL,
                                           ...){
-  if (any(is.na(as.vector(data_matrix)))){
-    warning('Hierarchical clustering cannot operate with missing values in the matrix')
-    if(!is.null(fill_the_missing)){
-      if (!is.numeric(fill_the_missing)){
-        fill_the_missing = 0
-      } else{
-        warning(sprintf('filling missing value with %s', fill_the_missing))
-        data_matrix[is.na(data_matrix)] = fill_the_missing
-      }
-    } else {
-      warning('filling value is NULL, removing features with missing values')
-      data_matrix = data_matrix[complete.cases(data_matrix),]
-    }
-  }
+
+  warning_message <- 'Hierarchical clustering cannot operate with missing values in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
   
   dist_matrix = dist(t(as.matrix(data_matrix)), method = distance)
   hierarchical_clust = hclust(dist_matrix, method = agglomeration)
@@ -154,10 +143,12 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' show_rownames = FALSE, show_colnames = FALSE)
 #'
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
-plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 'FullRunName',
+plot_heatmap <- function(data_matrix, sample_annotation = NULL, 
+                         sample_id_col = 'FullRunName',
                          sample_annotation_col = NULL, 
                          sample_annotation_row = NULL, 
-                         fill_the_missing = -1, cluster_rows = TRUE, cluster_cols = FALSE,
+                         fill_the_missing = -1, 
+                         cluster_rows = TRUE, cluster_cols = FALSE,
                          annotation_color_list = NA,
                          heatmap_color = colorRampPalette(
                            rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
@@ -173,22 +164,8 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   rm(df_long)
   
-  if (any(is.na(as.vector(data_matrix)))){
-    warning('Heatmap cannot operate with missing values in the matrix')
-    if(!is.null(fill_the_missing)){
-      heatmap_color = c(color_for_missing, heatmap_color)
-      if (!is.numeric(fill_the_missing)){
-        fill_the_missing = 0
-      } else{
-        warning(sprintf('filling missing value with %s', fill_the_missing))
-        data_matrix[is.na(data_matrix)] = fill_the_missing
-      }
-    } else {
-      warning('filling value is NULL, removing features with missing values')
-      data_matrix = data_matrix[complete.cases(data_matrix),]
-    }
-  }
-  
+  warning_message <- 'Heatmap cannot operate with missing values in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
   
   if (is.null(sample_annotation)){
     annotation_col = NA
@@ -302,8 +279,8 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' @seealso \code{\link{sample_annotation_to_colors}}, 
 #' \code{\link[ggplot2]{ggplot}}
 plot_PVCA <- function(data_matrix, sample_annotation,
-                      sample_id_col = 'FullRunName',
                       feature_id_col = 'peptide_group_label',
+                      sample_id_col = 'FullRunName',
                       technical_covariates = c('MS_batch', 'instrument'),
                       biological_covariates = c('cell_line','drug_dose'),
                       fill_the_missing = -1,
@@ -330,20 +307,8 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   
   data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
   
-  if (any(is.na(as.vector(data_matrix)))){
-    warning('PVCA cannot operate with missing values in the matrix')
-    if(!is.null(fill_the_missing)){
-      if (!is.numeric(fill_the_missing)){
-        fill_the_missing = 0
-      } else{
-        warning(sprintf('filling missing value with %s', fill_the_missing))
-        data_matrix[is.na(data_matrix)] = fill_the_missing
-      }
-    } else {
-      warning('filling value is NULL, removing features with missing values')
-      data_matrix = data_matrix[complete.cases(data_matrix),]
-    }
-  }
+  warning_message <- 'PVCA cannot operate with missing values in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
   
   pvca_res = calculate_PVCA(data_matrix, sample_annotation, factors_for_PVCA,
                             pca_threshold, variance_threshold = variance_threshold)
@@ -454,6 +419,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #' \code{\link[ggplot2]{ggplot}}
 plot_PCA <- function(data_matrix, sample_annotation,
                      feature_id_col = 'peptide_group_label',
+                     sample_id_col = 'FullRunName',
                      color_by = 'MS_batch',
                      PC_to_plot = c(1,2), fill_the_missing = -1,
                      color_scheme = 'brewer',
@@ -462,23 +428,16 @@ plot_PCA <- function(data_matrix, sample_annotation,
                      plot_title = NULL,
                      theme = 'classic'){
   
+  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col, order_col = NULL, 
+                                     facet_col = NULL, merge = FALSE)
+  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
+  
   data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
   
-  if (any(is.na(as.vector(data_matrix)))){
-    warning('PCA cannot operate with missing values in the matrix')
-    if(!is.null(fill_the_missing)){
-      if (!is.numeric(fill_the_missing)){
-        fill_the_missing = 0
-      } else{
-        warning(sprintf('filling missing value with %s', fill_the_missing))
-        data_matrix[is.na(data_matrix)] = fill_the_missing
-      }
-    } else {
-      warning('filling value is NULL, removing features with missing values')
-      data_matrix = data_matrix[complete.cases(data_matrix),]
-    }
-  }
-  
+  warning_message <- 'PCA cannot operate with missing values in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
   
   pr_comp_res <- prcomp(t(data_matrix))
   gg = autoplot(pr_comp_res, data = sample_annotation,
