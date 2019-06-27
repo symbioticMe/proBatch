@@ -124,8 +124,6 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
       stop('batches cannot be colored as the batch column or sample ID column
            is not defined, check sample_annotation and data matrix')
     }
-    #For proper plotting, batch column has to be a factor
-    plot_df[, batch_col] <- as.factor(plot_df[, batch_col])
     } else {
       if (color_by_batch){
         warning('batches cannot be colored as the batch column is defined as NULL, continuing without colors')
@@ -141,6 +139,11 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
     }
   }
   
+  if (!is.null(batch_col)){
+    batch_vector <- sample_annotation[[batch_col]]
+    is_factor = is_batch_factor(batch_vector, color_scheme)
+  }
+  
   #Main plotting function
   gg = ggplot(plot_df,
               aes_string(x = order_col, y = measure_col))
@@ -151,9 +154,16 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
     gg = gg + geom_point()
   }
   if (identical(geom, c('point', 'line'))){
-    gg = gg + geom_point() +
-      geom_line(color = 'black', alpha = .7, linetype = 'dashed', 
-                aes_string(group = batch_col))
+    if (is.null(batch_col) || !is_factor){
+      gg = gg + geom_point() +
+        geom_line(color = 'black', alpha = .7, linetype = 'dashed')
+    } else {
+      if(is_factor){
+        gg = gg + geom_point() +
+          geom_line(color = 'black', alpha = .7, linetype = 'dashed', 
+                    aes_string(group = batch_col))
+      } 
+    }
   }
   
   #Add coloring for "inferred" measurements / imputed (requant) values, marked in `color_by_col` with `color_by_value` (e.g. `m_score` and `2`)
@@ -165,9 +175,14 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
                          color = 'red', size = 1.5, shape = 8)
   }
   
-  #add colors
   
-  gg = color_points_by_batch(color_by_batch, batch_col, gg, color_scheme, sample_annotation)
+  
+  #add colors
+  gg = color_by_factor(color_by_batch = color_by_batch, 
+                       batch_col = batch_col, gg = gg, 
+                       color_scheme = color_scheme, 
+                       sample_annotation = sample_annotation,
+                       fill_or_color = 'color')
   if(!is.null(qual_col) && !is.null(color_by_batch) && color_by_batch){
     warning('coloring both inferred values and batches may lead to confusing visualisation, consider plotting separately')
   }
@@ -188,17 +203,17 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
                            scales = 'free_y')
     }
   }
-   
-  #add vertical lines, if required (for order-related effects)
-  if (!is.null(sample_annotation)){
-    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
-                                    facet_col, sample_annotation, gg)
-  } else {
-    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
-                                    facet_col, df_long, gg)
-  }
   
-
+  #add vertical lines, if required (for order-related effects)
+  if (!is.null(batch_col) && is_factor){
+    if (!is.null(sample_annotation)){
+      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                      facet_col, sample_annotation, gg)
+    } else {
+      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                      facet_col, df_long, gg)
+    }
+  }
   
   #Add plot title
   if(!is.null(plot_title)){
@@ -229,7 +244,7 @@ plot_single_feature  <- function(feature_name, df_long, sample_annotation = NULL
   }
   
   #Move the legend to the upper part of the plot to save the horizontal space
-  if (length(unique(plot_df[[order_col]])) > 30){
+  if (length(unique(plot_df[[order_col]])) > 30 && color_by_batch && is_factor){
     gg = gg + theme(legend.position="top")
   }
   
