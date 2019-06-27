@@ -21,6 +21,16 @@
 #' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 #' order_col = 'order', batch_col = "MS_batch")
 #' 
+#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch'),
+#' date_columns = 'DateTime',
+#' numeric_columns = c('order'))
+#' 
+#' color_annotation <- color_scheme$list_of_colors
+#' plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+#' order_col = 'order', batch_col = "MS_batch", color_by_batch = T, 
+#' color_scheme = color_annotation[["MS_batch"]])
+#' 
 #' \dontrun{
 #' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 #'                               order_col = 'order', batch_col = "MS_batch", 
@@ -58,8 +68,6 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
       stop('batches cannot be colored as the batch column or sample ID column
              is not defined, check sample_annotation and data matrix')
     }
-    #For proper plotting, batch column has to be a factor
-    df_ave[, batch_col] <- as.factor(df_ave[, batch_col])
   } else {
     if (color_by_batch){
       warning('batches cannot be colored as the batch column is defined as NULL, continuing without colors')
@@ -86,17 +94,27 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     geom_point()
   
   #add colors
-  gg = color_points_by_batch(color_by_batch, batch_col, gg, color_scheme, sample_annotation)
+  gg = color_by_factor(color_by_batch = color_by_batch, 
+                       batch_col = batch_col, gg = gg, 
+                       color_scheme = color_scheme, 
+                       sample_annotation = sample_annotation,
+                       fill_or_color = 'color')
   
   #add vertical lines, if required (for order-related effects)
-  if (!is.null(sample_annotation)){
-    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
-                                    facet_col, sample_annotation, gg)
-  } else {
-    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
-                                    facet_col, df_ave, gg)
+  if (!is.null(batch_col)){
+    batch_vector <- sample_annotation[[batch_col]]
+    is_factor = is_batch_factor(batch_vector, color_scheme)
   }
   
+  if (!is.null(batch_col) && is_factor){
+    if (!is.null(sample_annotation)){
+      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                      facet_col, sample_annotation, gg)
+    } else {
+      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                      facet_col, df_ave, gg)
+    }
+  }
   
   #Plot each "facet factor" in it's own subplot
   if(!is.null(facet_col)){
@@ -134,7 +152,8 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   }
   
   #Move the legend to the upper part of the plot to save the horizontal space
-  if (length(unique(df_ave[[order_col]])) > 30){
+  
+  if (length(unique(df_ave[[order_col]])) > 30 && color_by_batch && is_factor){
     gg = gg + theme(legend.position="top")
   }
   
