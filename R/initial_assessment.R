@@ -25,7 +25,6 @@
 #' factor_columns = c('MS_batch'),
 #' date_columns = 'DateTime',
 #' numeric_columns = c('order'))
-#' 
 #' color_annotation <- color_scheme$list_of_colors
 #' plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 #' order_col = 'order', batch_col = "MS_batch", color_by_batch = T, 
