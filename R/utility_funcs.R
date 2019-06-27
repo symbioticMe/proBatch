@@ -208,6 +208,8 @@ add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vlin
      !(is.character(sample_annotation[[order_col]]) || is.factor(sample_annotation[[order_col]]))&
      !is.null(batch_col) & !is.null(vline_color)){
     #define the batch tipping points (positions of vertical lines)
+    warning('inferring order-related batch borders for a plot; 
+            if the batch factor is not related to order, set vline_color to NULL')
     if (!is.null(facet_col)){
       sample_annotation = sample_annotation %>%
         select(one_of(c(order_col, sample_id_col, batch_col, facet_col))) %>%
@@ -291,3 +293,11 @@ check_feature_id_col_in_dm <- function(feature_id_col, data_matrix) {
   return(data_matrix)
 }
 
+is_batch_factor <- function(batch_vector, color_scheme) {
+  n_batches <- length(unique(batch_vector))
+  is_factor = is.factor(batch_vector) || 
+    is.character(batch_vector) ||
+    ((n_batches == length(color_scheme)) && 
+       setequal(names(color_scheme), unique(batch_vector)))
+  return(is_factor)
+}

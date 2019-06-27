@@ -313,10 +313,9 @@ sample_annotation_to_colors <- function(sample_annotation,
   list_of_colors = c(list_of_col_for_factors, list_of_col_for_numeric)
   rownames(sample_annotation) = rownames_ann
   
-  color_df = color_list_to_df(list_of_colors, sample_annotation)
+  
   
   return(list(list_of_colors = list_of_colors,
-              color_df = color_df,
               sample_annotation = sample_annotation))
 }
 
@@ -347,7 +346,7 @@ color_list_to_df <- function(color_list, sample_annotation) {
 color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme, 
                                   sample_annotation) {
   if(color_by_batch & !is.null(batch_col)){
-    gg = gg + aes_string(color = batch_col)
+    gg = gg + aes(color = !!sym(batch_col))
     
     n_batches <- length(unique(sample_annotation[[batch_col]]))
     if (n_batches == length(color_scheme)){
@@ -384,8 +383,11 @@ color_points_by_batch <- function(color_by_batch, batch_col, gg, color_scheme,
 color_fill_boxes_by_batch <- function(color_by_batch, batch_col, gg, 
                                       color_scheme, df_long) {
   if(color_by_batch & !is.null(batch_col)){
-    gg = gg + aes_string(fill = batch_col)
+    gg = gg + aes(fill = !!sym(batch_col))
+    
+    
     if(length(color_scheme) == 1 && color_scheme == 'brewer'){
+      ##TODO: 1) check the type of the factor; 2) invoke discrete/continuous coloring
       n_batches <- length(unique(df_long[[batch_col]]))
       if(n_batches < 9){
         gg = gg + scale_fill_brewer(palette = 'Set1')
@@ -485,10 +487,16 @@ color_continuous <- function(color_scheme, batch_col, n_batches, fill_or_color, 
   } else {
     #color vector provided by "sample_annotation_to_colors"
     if(fill_or_color == 'color'){
-      gg = gg + scale_color_gradientn(colors = color_scheme)
+      gg = gg + scale_color_gradientn(colors = color_scheme,
+                                      breaks = as.numeric(lab_datetime), 
+                                      labels = lab_datetime)+
+        labs(color=batch_col)
     } else {
       if(fill_or_color == 'fill'){
-        gg = gg + scale_color_gradientn(colors = color_scheme)
+        gg = gg + scale_color_gradientn(colors = color_scheme,
+                                        breaks = as.numeric(lab_datetime), 
+                                        labels = lab_datetime)+
+          labs(fill=batch_col)
       }
     }
   }
@@ -501,10 +509,8 @@ color_by_factor <- function(color_by_batch, batch_col, gg, color_scheme,
     
     batch_vector <- sample_annotation[[batch_col]]
     n_batches <- length(unique(batch_vector))
-    is_factor = is.factor(batch_vector) || 
-      is.character(batch_vector) ||
-      ((n_batches == length(color_scheme)) && 
-         setequal(names(color_scheme), unique(batch_vector)))
+    
+    is_factor = is_batch_factor(batch_vector, color_scheme)
     
     is_numeric = (!is_factor) && 
       (is.numeric(batch_vector) || is.POSIXct(batch_vector))
