@@ -296,8 +296,11 @@ check_feature_id_col_in_dm <- function(feature_id_col, data_matrix) {
 is_batch_factor <- function(batch_vector, color_scheme) {
   n_batches <- length(unique(batch_vector))
   is_factor = is.factor(batch_vector) || 
-    is.character(batch_vector) ||
-    ((n_batches == length(color_scheme)) && 
+    is.character(batch_vector) 
+  if(!is.null(color_scheme)){
+    is_factor = is_factor ||
+      ((n_batches == length(color_scheme)) && 
        setequal(names(color_scheme), unique(batch_vector)))
+  }
   return(is_factor)
 }
