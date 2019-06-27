@@ -26,7 +26,7 @@ or simultaneous examination of two batch factors (e.g. preparation day and measu
 For single-instrument case should be set to `NULL`}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a

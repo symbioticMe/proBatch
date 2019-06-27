@@ -32,7 +32,7 @@ combination of conditions or groups.
 filenames (colnames of the data matrix are found).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+batch comparison (or other, non-batch factor to be mapped to color in plots).}
 }
 \value{
 dataframe with the following columns, that 

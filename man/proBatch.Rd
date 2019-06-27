@@ -34,7 +34,7 @@ formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 

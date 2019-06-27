@@ -4,10 +4,10 @@
 \alias{plot_PVCA}
 \title{Plot variance distribution by variable}
 \usage{
-plot_PVCA(data_matrix, sample_annotation, sample_id_col = "FullRunName",
+plot_PVCA(data_matrix, sample_annotation,
   feature_id_col = "peptide_group_label",
-  technical_covariates = c("MS_batch", "instrument"),
-  biological_covariates = c("cell_line", "drug_dose"),
+  sample_id_col = "FullRunName", technical_covariates = c("MS_batch",
+  "instrument"), biological_covariates = c("cell_line", "drug_dose"),
   fill_the_missing = -1, pca_threshold = 0.6,
   variance_threshold = 0.01, colors_for_bars = NULL, filename = NULL,
   width = NA, height = NA, units = c("cm", "in", "mm"),
@@ -23,13 +23,13 @@ See "example_proteome_matrix" for more details (to call the description, use \co
 technical covariates (batches etc) }. 
 See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
-
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
+
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{technical_covariates}{vector \code{sample_annotation} column names that are
 technical covariates}

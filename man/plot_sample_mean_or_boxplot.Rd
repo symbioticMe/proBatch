@@ -36,7 +36,7 @@ See "example_sample_annotation" for example with the detailed description (to ca
 filenames (colnames of the data matrix are found).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
 \item{color_by_batch}{(logical) whether to color points and connecting lines 
 by batch factor as defined by \code{batch_col}.}
@@ -103,6 +103,15 @@ functions for quick visual assessment of trends associated, overall
 mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 order_col = 'order', batch_col = "MS_batch")
 
+color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+factor_columns = c('MS_batch'),
+date_columns = 'DateTime',
+numeric_columns = c('order'))
+color_annotation <- color_scheme$list_of_colors
+plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+order_col = 'order', batch_col = "MS_batch", color_by_batch = T, 
+color_scheme = color_annotation[["MS_batch"]])
+
 \dontrun{
 mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
                               order_col = 'order', batch_col = "MS_batch", 
@@ -113,6 +122,15 @@ mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation
 boxplot <- plot_boxplot(log_transform_df(example_proteome), 
 sample_annotation = example_sample_annotation, 
 batch_col = "MS_batch")
+
+color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+factor_columns = c('MS_batch'),
+date_columns = 'DateTime',
+numeric_columns = c('order'))
+color_annotation <- color_scheme$list_of_colors
+plot_boxplot(log_transform_df(example_proteome), 
+sample_annotation = example_sample_annotation, 
+batch_col = "MS_batch", color_scheme = color_annotation[["MS_batch"]])
 
 \dontrun{
 boxplot <- plot_boxplot(log_transform_df(example_proteome), 
