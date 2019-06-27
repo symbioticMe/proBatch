@@ -33,7 +33,7 @@ See "example_sample_annotation" for example with the detailed description (to ca
 filenames (colnames of the data matrix are found).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
 \item{biospecimen_id_col}{column in \code{sample_annotation} 
 that captures the biological sample, 

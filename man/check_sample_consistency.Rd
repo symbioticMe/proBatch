@@ -23,7 +23,7 @@ sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 

@@ -97,7 +97,7 @@ which means argument value has to be set to \code{m_score}.}
 this argument value has to be set to \code{2} (this is an \code{m_score} value for imputed values (requant values).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
 \item{color_by_batch}{(logical) whether to color points and connecting lines 
 by batch factor as defined by \code{batch_col}.}

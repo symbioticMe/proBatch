@@ -4,19 +4,21 @@
 \alias{plot_hierarchical_clustering}
 \title{cluster the data matrix to visually inspect which confounder dominates}
 \usage{
-plot_hierarchical_clustering(data_matrix, color_df, fill_the_missing = 0,
-  distance = "euclidean", agglomeration = "complete",
-  label_samples = TRUE, label_font = 0.2, filename = NULL,
-  width = 38, height = 25, units = c("cm", "in", "mm"),
-  plot_title = NULL, ...)
+plot_hierarchical_clustering(data_matrix, sample_annotation, color_list,
+  fill_the_missing = 0, distance = "euclidean",
+  agglomeration = "complete", label_samples = TRUE, label_font = 0.2,
+  filename = NULL, width = 38, height = 25, units = c("cm", "in",
+  "mm"), plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
 See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
 
-\item{color_df}{data frame of colors, as created by 
-\code{sample_annotation_to_colors}}
+\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
+(this can be repeated as row names) \item biological covariates \item
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
 \item{fill_the_missing}{boolean value determining if  missing values 
 should be substituted with -1 (and colored with   \code{color_for_missing}). 
@@ -47,6 +49,9 @@ pdf and png format is supported}
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{...}{other parameters of \code{plotDendroAndColors} from \code{WGCNA} package}
+
+\item{color_df}{data frame of colors, as created by 
+\code{sample_annotation_to_colors}}
 }
 \value{
 No return
@@ -60,10 +65,10 @@ factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Se
 date_columns = 'DateTime',
 numeric_columns = c('order'))
 
-color_annotation <- color_scheme$color_df
+color_annotation <- color_scheme$list_of_colors
 
-hiarchical_clustering_plot <- plot_hierarchical_clustering(
-example_proteome_matrix, color_annotation,  
+hierarchical_clustering_plot <- plot_hierarchical_clustering(
+example_proteome_matrix, color_list = color_annotation,  
 distance = "euclidean", agglomeration = 'complete',
 label_samples = FALSE)
 
