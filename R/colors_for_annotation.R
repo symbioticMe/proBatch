@@ -522,6 +522,10 @@ color_by_factor <- function(color_by_batch, batch_col, gg, color_scheme,
                       \nThen modify it with as.factor() function', batch_col))
     }
     
+    if(is.null(color_scheme)){
+      color_scheme = 'brewer'
+    }
+    
     if(is_factor){
       gg = color_discrete(color_scheme, batch_col, n_batches, fill_or_color, gg)
     } else if(is_numeric) {
