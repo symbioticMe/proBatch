@@ -173,6 +173,16 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' sample_annotation = example_sample_annotation, 
 #' batch_col = "MS_batch")
 #' 
+#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch'),
+#' date_columns = 'DateTime',
+#' numeric_columns = c('order'))
+#' color_annotation <- color_scheme$list_of_colors
+#' plot_boxplot(log_transform_df(example_proteome), 
+#' sample_annotation = example_sample_annotation, 
+#' batch_col = "MS_batch", color_scheme = color_annotation[["MS_batch"]])
+
+#' 
 #' \dontrun{
 #' boxplot <- plot_boxplot(log_transform_df(example_proteome), 
 #' sample_annotation = example_sample_annotation, 
@@ -233,8 +243,12 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     
   
   #Define the color scheme, add colors
-  gg = color_fill_boxes_by_batch(color_by_batch, batch_col, gg, color_scheme, df_long)
-  
+  gg = color_by_factor(color_by_batch = color_by_batch, 
+                       batch_col = batch_col, gg = gg, 
+                       color_scheme = color_scheme, 
+                       sample_annotation = sample_annotation,
+                       fill_or_color = 'fill')
+
   #Plot each "facet factor" in it's own subplot
   if(!is.null(facet_col)){
     gg = gg + facet_wrap(as.formula(paste("~", facet_col)),
@@ -271,8 +285,13 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
   }
   
+  if (!is.null(batch_col)){
+    batch_vector <- sample_annotation[[batch_col]]
+    is_factor = is_batch_factor(batch_vector, color_scheme)
+  }
+  
   #Move the legend to the upper part of the plot to save the horizontal space
-  if (length(unique(df_long[[order_col]])) > 30){
+  if (length(unique(df_long[[order_col]])) > 30  && color_by_batch && is_factor){
     gg = gg + theme(legend.position="top")
   }
   
