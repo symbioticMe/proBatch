@@ -346,10 +346,10 @@ color_list_to_df <- function(color_list, sample_annotation) {
 color_discrete <- function(color_scheme, batch_col, n_batches, fill_or_color, gg) {
   
   if(fill_or_color == 'color'){
-    gg = gg + aes(color = as.factor(!!sym(batch_col)))
+    gg = gg + aes(color = !!sym(batch_col))
   } else {
     if(fill_or_color == 'fill'){
-      gg = gg + aes(fill = as.factor(!!sym(batch_col)))
+      gg = gg + aes(fill = !!sym(batch_col))
     }
   }
   
@@ -407,7 +407,14 @@ color_continuous <- function(color_scheme, batch_col, n_batches, fill_or_color, 
   batch_vector = gg$data[[batch_col]]
   lab_datetime <- pretty(batch_vector)
   
-  gg = gg + aes(color = as.numeric(!!sym(batch_col)))
+  if(fill_or_color == 'color'){
+    gg = gg + aes(color = as.numeric(!!sym(batch_col)))
+  } else {
+    if(fill_or_color == 'fill'){
+      gg = gg + aes(fill = as.numeric(!!sym(batch_col)))
+    }
+  }
+  
   #Define the color scheme on the fly
   if(length(color_scheme) == 1 && color_scheme == 'brewer'){
     
@@ -418,7 +425,7 @@ color_continuous <- function(color_scheme, batch_col, n_batches, fill_or_color, 
         labs(color=batch_col)
     } else {
       if(fill_or_color == 'fill'){
-        gg = gg + scale_color_distiller(palette = 'PiYG',
+        gg = gg + scale_fill_distiller(palette = 'PiYG',
                                         breaks = as.numeric(lab_datetime), 
                                         labels = lab_datetime)+
           labs(fill=batch_col)
@@ -433,7 +440,7 @@ color_continuous <- function(color_scheme, batch_col, n_batches, fill_or_color, 
         labs(color=batch_col)
     } else {
       if(fill_or_color == 'fill'){
-        gg = gg + scale_color_gradientn(colors = color_scheme,
+        gg = gg + scale_fill_gradientn(colors = color_scheme,
                                         breaks = as.numeric(lab_datetime), 
                                         labels = lab_datetime)+
           labs(fill=batch_col)
