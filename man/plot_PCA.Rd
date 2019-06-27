@@ -5,7 +5,8 @@
 \title{plot PCA plot}
 \usage{
 plot_PCA(data_matrix, sample_annotation,
-  feature_id_col = "peptide_group_label", color_by = "MS_batch",
+  feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName", color_by = "MS_batch",
   PC_to_plot = c(1, 2), fill_the_missing = -1,
   color_scheme = "brewer", filename = NULL, width = NA,
   height = NA, units = c("cm", "in", "mm"), plot_title = NULL,
@@ -25,6 +26,9 @@ See "example_sample_annotation" for example with the detailed description (to ca
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
+
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
+filenames (colnames of the data matrix are found).}
 
 \item{color_by}{column name (as in \code{sample_annotation}) to color by}
 
@@ -63,9 +67,15 @@ plot PCA plot
 pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
 pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
-color_by = 'digestion_batch', plot_title = "PCA colored by digestion_batch")
-pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 color_by = 'DateTime', plot_title = "PCA colored by DateTime")
+
+color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+factor_columns = c('MS_batch'),
+date_columns = 'DateTime',
+numeric_columns = c('order'))
+color_annotation <- color_scheme$list_of_colors
+pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+color_by = 'MS_batch', color_scheme = color_annotation[['DateTime']])
 
 \dontrun{
 pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
