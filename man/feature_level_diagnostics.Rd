@@ -102,7 +102,9 @@ batch comparison (or other, non-batch factor to be mapped to color in plots).}
 \item{color_by_batch}{(logical) whether to color points and connecting lines 
 by batch factor as defined by \code{batch_col}.}
 
-\item{color_scheme}{a named vector of colors to map to \code{batch_col}}
+\item{color_scheme}{a named vector of colors to map to \code{batch_col}, 
+names corresponding to the levels of the factor. For continous variables, 
+vector doesn't need to be named.}
 
 \item{order_col}{column in \code{sample_annotation} that determines sample order. It is
 used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
