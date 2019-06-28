@@ -138,8 +138,10 @@ merge_rare_levels <- function(column) {
 #' treated as continuous numeric values. 
 #' @param rare_categories_to_other if \code{True} rare categories 
 #' will be merged into the value \code{"other"}
+#' @param guess_factors whether attempt which of the \code{factor_columns}
+#'  are actually numeric
 #' @param numeric_palette_type palette to be used for 
-#' numeric values coloring
+#' numeric values coloring (can be \code{'brewer' and 'viridis'})
 #'
 #' @return list of three items: \enumerate{
 #'   \item list of colors; 
@@ -162,7 +164,7 @@ sample_annotation_to_colors <- function(sample_annotation,
                                                            "Strain", "Diet"),
                                         numeric_columns = c('DateTime', 'order'),
                                         rare_categories_to_other = TRUE,
-                                        guess_factors = TRUE,
+                                        guess_factors = FALSE,
                                         numeric_palette_type = 'brewer') {
   
   sample_annotation = as.data.frame(sample_annotation)
