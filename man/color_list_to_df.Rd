@@ -4,7 +4,8 @@
 \alias{color_list_to_df}
 \title{Color list to data frame}
 \usage{
-color_list_to_df(color_list, sample_annotation)
+color_list_to_df(color_list, sample_annotation,
+  sample_id_col = "FullRunName")
 }
 \arguments{
 \item{color_list}{list of colors}
@@ -16,6 +17,6 @@ of the sample annotation}
 a data frame representation of the input color list
 }
 \description{
-Turn color list to df (some plotting functions require the latter)
+Turn color list to df (to use in the hierarchical clustering)
 }
 \keyword{internal}

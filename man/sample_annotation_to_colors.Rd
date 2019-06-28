@@ -7,9 +7,9 @@
 sample_annotation_to_colors(sample_annotation,
   sample_id_col = "FullRunName", factor_columns = c("MS_batch",
   "EarTag", "digestion_batch", "Strain", "Diet"),
-  date_columns = "DateTime", numeric_columns = "order",
-  rare_categories_to_other = TRUE, numeric_palette_type = "brewer",
-  granularity = 10)
+  numeric_columns = c("DateTime", "order"),
+  rare_categories_to_other = TRUE, guess_factors = TRUE,
+  numeric_palette_type = "brewer", granularity = 10)
 }
 \arguments{
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
@@ -24,9 +24,6 @@ filenames (colnames of the data matrix are found).}
 treated as factors. Sometimes categorical variables are depicted as integers 
 (e.g. in column "Batch", values are 1, 2 and 3), specification here allows to
 map them correctly to qualitative palettes.}
-
-\item{date_columns}{columns of `POSIXct` class. These columns are mapped to 
-continuous palettes, as numeric columns, but require special treatment.}
 
 \item{numeric_columns}{columns of \code{sample_annotation} to be 
 treated as continuous numeric values.}
@@ -55,6 +52,5 @@ the list is named as columns included to use in plotting functions
 color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
 factor_columns = c('MS_batch','EarTag', "Strain", 
 "Diet", "digestion_batch", "Sex"),
-date_columns = 'DateTime',
-numeric_columns = c('order'))
+numeric_columns = c('DateTime', 'order'))
 }

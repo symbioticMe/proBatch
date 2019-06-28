@@ -21,14 +21,12 @@
 #' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 #' order_col = 'order', batch_col = "MS_batch")
 #' 
-#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch'),
-#' date_columns = 'DateTime',
-#' numeric_columns = c('order'))
-#' color_annotation <- color_scheme$list_of_colors
+#' numeric_columns = c('DateTime', 'order'))
 #' plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 #' order_col = 'order', batch_col = "MS_batch", color_by_batch = T, 
-#' color_scheme = color_annotation[["MS_batch"]])
+#' color_scheme = color_list[["MS_batch"]])
 #' 
 #' \dontrun{
 #' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
@@ -172,14 +170,12 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' sample_annotation = example_sample_annotation, 
 #' batch_col = "MS_batch")
 #' 
-#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch'),
-#' date_columns = 'DateTime',
-#' numeric_columns = c('order'))
-#' color_annotation <- color_scheme$list_of_colors
+#' numeric_columns = c('DateTime', 'order'))
 #' plot_boxplot(log_transform_df(example_proteome), 
 #' sample_annotation = example_sample_annotation, 
-#' batch_col = "MS_batch", color_scheme = color_annotation[["MS_batch"]])
+#' batch_col = "MS_batch", color_scheme = color_list[["MS_batch"]])
 
 #' 
 #' \dontrun{

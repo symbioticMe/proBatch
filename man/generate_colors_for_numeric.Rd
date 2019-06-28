@@ -4,17 +4,16 @@
 \alias{generate_colors_for_numeric}
 \title{Generates color list}
 \usage{
-generate_colors_for_numeric(num_col, palette_type = "brewer", i = 1,
-  granularity = 10)
+generate_colors_for_numeric(palette_type = "brewer", i = 1)
 }
 \arguments{
-\item{num_col}{a vector of type numeric of factor to generate colors for}
-
 \item{palette_type}{'brewer' or 'viridis'}
 
 \item{i}{if \code{palette_type} is 'brewer' the palette argument to
 \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument
 to \code{viridis_pal}}
+
+\item{num_col}{a vector of type numeric of factor to generate colors for}
 
 \item{granularity}{breaks to use when generating colors for \code{num_col}}
 }

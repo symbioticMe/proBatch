@@ -16,15 +16,13 @@
 #'
 #' @return No return
 #' @examples
-#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
-#' date_columns = 'DateTime',
-#' numeric_columns = c('order'))
+#' numeric_columns = c('DateTime', 'order'))
 #' 
-#' color_annotation <- color_scheme$color_df
-#' 
-#' hiarchical_clustering_plot <- plot_hierarchical_clustering(
-#' example_proteome_matrix, color_annotation,  
+#' hierarchical_clustering_plot <- plot_hierarchical_clustering(
+#' example_proteome_matrix, example_sample_annotation,
+#' color_list = color_list,  
 #' distance = "euclidean", agglomeration = 'complete',
 #' label_samples = FALSE)
 #' 
@@ -32,7 +30,11 @@
 #'
 #' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
 #'   \code{\link[WGCNA]{plotDendroAndColors}}
-plot_hierarchical_clustering  <- function(data_matrix, color_df,
+plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
+                                          sample_id_col = 'FullRunName',
+                                          color_list = NULL,
+                                          factor_columns = c('MS_batch', 'Diet'),
+                                          numeric_columns = c('DateTime','order'),
                                           fill_the_missing = 0,
                                           distance = "euclidean",
                                           agglomeration = 'complete',
@@ -56,6 +58,18 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
   } else{
     cex.dendroLabels = 0.9
   }
+  
+  if(is.null(color_list)){
+    warning('color scheme not provided, mapping sample annotation now; 
+            for uniform color scheme run sample_annotation_to_colors()')
+    color_list <- sample_annotation_to_colors(sample_annotation, 
+                                                sample_id_col = sample_id_col,
+                                                factor_columns = factor_columns,
+                                                numeric_columns = numeric_columns, ...)
+  }
+  
+  #transform color list to color_df
+  color_df = color_list_to_df(color_list, sample_annotation, sample_id_col)
   
   if (is.null(filename)){
     plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
@@ -129,22 +143,23 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
 #' @export
 #' 
 #' @examples 
-#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch','EarTag', "Strain", 
 #' "Diet", "digestion_batch", "Sex"),
-#' date_columns = 'DateTime',
-#' numeric_columns = c('order'))
+#' numeric_columns = c('DateTime', 'order'))
 #' 
 #' heatmap_plot <- plot_heatmap(log_transform_dm(example_proteome_matrix), 
 #' example_sample_annotation, 
 #' sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
 #' cluster_cols = TRUE, 
-#' annotation_color_list = color_scheme$list_of_colors,
+#' annotation_color_list = color_list,
 #' show_rownames = FALSE, show_colnames = FALSE)
 #'
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
 plot_heatmap <- function(data_matrix, sample_annotation = NULL, 
                          sample_id_col = 'FullRunName',
+                         factor_columns = c('MS_batch','Diet'),
+                         numeric_columns = c('DateTime','order'),
                          sample_annotation_col = NULL, 
                          sample_annotation_row = NULL, 
                          fill_the_missing = -1, 
@@ -166,6 +181,10 @@ plot_heatmap <- function(data_matrix, sample_annotation = NULL,
   
   warning_message <- 'Heatmap cannot operate with missing values in the matrix'
   data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
+  
+  if(!is.null(fill_the_missing)){
+    heatmap_color = c(color_for_missing, heatmap_color)
+  }
   
   if (is.null(sample_annotation)){
     annotation_col = NA
@@ -405,9 +424,13 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 #' color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
 #' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
-#' color_by = 'digestion_batch', plot_title = "PCA colored by digestion_batch")
-#' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 #' color_by = 'DateTime', plot_title = "PCA colored by DateTime")
+#' 
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch'),
+#' numeric_columns = c('DateTime','order'))
+#' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+#' color_by = 'MS_batch', color_scheme = color_list[['DateTime']])
 #' 
 #' \dontrun{
 #' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
