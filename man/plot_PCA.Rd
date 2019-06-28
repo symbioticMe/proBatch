@@ -38,7 +38,9 @@ filenames (colnames of the data matrix are found).}
 should be substituted with -1 (and colored with   \code{color_for_missing}). 
 If \code{NULL}, features with missing values are excluded.}
 
-\item{color_scheme}{a named vector of colors to map to \code{batch_col}}
+\item{color_scheme}{a named vector of colors to map to \code{batch_col}, 
+names corresponding to the levels of the factor. For continous variables, 
+vector doesn't need to be named.}
 
 \item{filename}{path where the results are saved. 
 If null the object is returned to the active window;

@@ -6,8 +6,8 @@
 \usage{
 plot_PVCA(data_matrix, sample_annotation,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName", technical_covariates = c("MS_batch",
-  "instrument"), biological_covariates = c("cell_line", "drug_dose"),
+  sample_id_col = "FullRunName", technical_factors = c("MS_batch",
+  "instrument"), biological_factors = c("cell_line", "drug_dose"),
   fill_the_missing = -1, pca_threshold = 0.6,
   variance_threshold = 0.01, colors_for_bars = NULL, filename = NULL,
   width = NA, height = NA, units = c("cm", "in", "mm"),
@@ -30,12 +30,6 @@ names.}
 
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
-
-\item{technical_covariates}{vector \code{sample_annotation} column names that are
-technical covariates}
-
-\item{biological_covariates}{vector \code{sample_annotation} column names, that
-are biologically meaningful covariates}
 
 \item{fill_the_missing}{boolean value determining if  missing values 
 should be substituted with -1 (and colored with   \code{color_for_missing}). 
@@ -66,6 +60,12 @@ pdf and png format is supported}
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
+
+\item{technical_covariates}{vector \code{sample_annotation} column names that are
+technical covariates}
+
+\item{biological_covariates}{vector \code{sample_annotation} column names, that
+are biologically meaningful covariates}
 }
 \value{
 list of two items: plot =gg, df = pvca_res
