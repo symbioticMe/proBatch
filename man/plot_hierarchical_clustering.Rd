@@ -6,12 +6,11 @@
 \usage{
 plot_hierarchical_clustering(data_matrix, sample_annotation,
   sample_id_col = "FullRunName", color_list = NULL,
-  factor_columns = c("MS_batch", "Diet"),
-  numeric_columns = c("DateTime", "order"), fill_the_missing = 0,
-  distance = "euclidean", agglomeration = "complete",
-  label_samples = TRUE, label_font = 0.2, filename = NULL,
-  width = 38, height = 25, units = c("cm", "in", "mm"),
-  plot_title = NULL, ...)
+  factors_to_plot = c("MS_batch", "Diet", "DateTime"),
+  fill_the_missing = 0, distance = "euclidean",
+  agglomeration = "complete", label_samples = TRUE, label_font = 0.2,
+  filename = NULL, width = 38, height = 25, units = c("cm", "in",
+  "mm"), plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -26,9 +25,11 @@ See "example_sample_annotation" for example with the detailed description (to ca
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
-\item{fill_the_missing}{boolean value determining if  missing values 
-should be substituted with -1 (and colored with   \code{color_for_missing}). 
-If \code{NULL}, features with missing values are excluded.}
+\item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
+where each item contains a color vector for each factor to be mapped to the color.}
+
+\item{fill_the_missing}{numeric value determining how  missing values 
+should be substituted. If \code{NULL}, features with missing values are excluded.}
 
 \item{distance}{distance metric used for clustering}
 
@@ -55,9 +56,6 @@ pdf and png format is supported}
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{...}{other parameters of \code{plotDendroAndColors} from \code{WGCNA} package}
-
-\item{color_df}{data frame of colors, as created by 
-\code{sample_annotation_to_colors}}
 }
 \value{
 No return
@@ -66,10 +64,22 @@ No return
 cluster the data matrix to visually inspect which confounder dominates
 }
 \examples{
-color_list <- sample_annotation_to_colors (example_sample_annotation, 
-factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
-numeric_columns = c('DateTime', 'order'))
 
+selected_batches = example_sample_annotation$MS_batch \%in\% c('Batch_1', 'Batch_2')
+selected_samples = example_proteome_matrix$FullRunName[selected_batches]
+test_matrix = example_proteome_matrix[,selected_samples]
+
+hierarchical_clustering_plot <- plot_hierarchical_clustering(
+example_proteome_matrix, example_sample_annotation,
+factors_to_plot = c('MS_batch', 'Diet', 'DateTime'),
+color_list = NULL,  
+distance = "euclidean", agglomeration = 'complete',
+label_samples = FALSE)
+
+#with defined color scheme:
+color_list <- sample_annotation_to_colors (example_sample_annotation, 
+factor_columns = c('MS_batch', "Strain", "Diet", "digestion_batch"),
+numeric_columns = c('DateTime', 'order'))
 hierarchical_clustering_plot <- plot_hierarchical_clustering(
 example_proteome_matrix, example_sample_annotation,
 color_list = color_list,  
