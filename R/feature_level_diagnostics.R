@@ -68,12 +68,19 @@
 #' protein_col = 'Gene')
 #'
 #' #illustrate the fitting curve:
-#' loess_fit_70 <- adjust_batch_trend_df(example_proteome, 
+#' special_peptide = example_proteome$peptide_group_label == "10231_QDVDVWLWQQEGSSK_2"
+#' loess_fit_70 <- adjust_batch_trend_df(example_proteome[special_peptide,], 
 #' example_sample_annotation, span = 0.7)
 #' 
 #' fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
 #' df_long = example_proteome, sample_annotation = example_sample_annotation, 
 #' fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70% span")
+#' 
+#' #with curves colored by the corresponding batch:
+#' fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
+#' df_long = example_proteome, sample_annotation = example_sample_annotation, 
+#' fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70% span", 
+#' color_by_batch = T, batch_col = 'MS_batch')
 #'
 #' @name feature_level_diagnostics
 NULL
@@ -491,20 +498,29 @@ plot_with_fitting_curve <- function(feature_name,
                                  color_by_batch = color_by_batch)$df_long
   }
    
-  if(identical(color_by_batch, FALSE)){
-    gg = gg + geom_line(data = fit_df,
-                        aes_string(y = fit_value_col, x = order_col, 
-                                   group = batch_col), 
-                        color = 'red')
-  } else {
+  if(color_by_batch && !is.null(batch_col)){
+    
+    batch_vector <- sample_annotation[[batch_col]]
+    n_batches <- length(unique(batch_vector))
+    is_factor = is_batch_factor(batch_vector, color_scheme)
+    if(!is_factor){
+      stop('coloring by fitting curve possible only for the batch factors 
+           corresponding to curve-fitting batches. Change color_by_batch = F 
+           to see the curves without colors or batch_col to the right batch factor')
+    }
+    
     gg = gg + geom_line(data = fit_df,
                         aes_string(y = fit_value_col, x = order_col,
                                    group = batch_col, 
                                    color = batch_col), size = 1.25)
-    #TODO: add coloring scheme as in other functions here, too
-    if(color_by_batch & length(color_scheme) == length(unique(fit_df[[batch_col]]))){
-      gg = gg + scale_color_manual(values = color_scheme)
-    }
+    
+    gg = add_color_scheme_discrete(color_scheme, n_batches, fill_or_color = 'color', 
+                                   gg = gg, batch_col = batch_col)
+  } else {
+    gg = gg + geom_line(data = fit_df,
+                        aes_string(y = fit_value_col, x = order_col, 
+                                   group = batch_col), 
+                        color = 'red', size = 1.25)
   }
   
   #save the plot

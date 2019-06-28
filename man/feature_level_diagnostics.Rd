@@ -211,11 +211,18 @@ df_long = example_proteome, sample_annotation = example_sample_annotation,
 protein_col = 'Gene')
 
 #illustrate the fitting curve:
-loess_fit_70 <- adjust_batch_trend_df(example_proteome, 
+special_peptide = example_proteome$peptide_group_label == "10231_QDVDVWLWQQEGSSK_2"
+loess_fit_70 <- adjust_batch_trend_df(example_proteome[special_peptide,], 
 example_sample_annotation, span = 0.7)
 
 fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
 df_long = example_proteome, sample_annotation = example_sample_annotation, 
 fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span")
+
+#with curves colored by the corresponding batch:
+fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
+df_long = example_proteome, sample_annotation = example_sample_annotation, 
+fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span", 
+color_by_batch = T, batch_col = 'MS_batch')
 
 }
