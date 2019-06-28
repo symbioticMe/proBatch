@@ -9,7 +9,7 @@ sample_annotation_to_colors(sample_annotation,
   "EarTag", "digestion_batch", "Strain", "Diet"),
   numeric_columns = c("DateTime", "order"),
   rare_categories_to_other = TRUE, guess_factors = TRUE,
-  numeric_palette_type = "brewer", granularity = 10)
+  numeric_palette_type = "brewer")
 }
 \arguments{
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
@@ -33,9 +33,6 @@ will be merged into the value \code{"other"}}
 
 \item{numeric_palette_type}{palette to be used for 
 numeric values coloring}
-
-\item{granularity}{number of colors to map to the number 
-vector (equally spaced between minimum and maximum)}
 }
 \value{
 list of three items: \enumerate{
