@@ -15,7 +15,6 @@ map_factors_to_colors <- function(annotation_df_factors) {
   }
   
   nlev_covariate = mapply(nlevels, annotation_df_factors)
-  n_colors_total = sum(nlev_covariate)
   
   if (any(nlev_covariate > 20)) {
     warning('Some colors will be hard to distinguish\n')
@@ -25,7 +24,7 @@ map_factors_to_colors <- function(annotation_df_factors) {
                 values for better visualisation\n')
   }
 
-  colors = standardColors(n_colors_total)
+  colors = grep('(white|(gr(a|e)y)', standardColors(), value = T, invert = T)
   start_indxs = c(1, 1 + cumsum(nlev_covariate[-length(nlev_covariate)]))
   end_indx = cumsum(nlev_covariate)
   ann_colors_covariate = lapply(seq_len(length(nlev_covariate)),
@@ -62,7 +61,7 @@ map_numbers_to_colors <- function(annotation_df_numbers,
                        function(i)
                          generate_colors_for_numeric(i = i,
                                                      palette_type = palette_type))
-  
+  names(color_list) = names(annotation_df_numbers)
   return(color_list)
 }
 
@@ -222,7 +221,7 @@ sample_annotation_to_colors <- function(sample_annotation,
   }
 
   message('converting columns to corresponding classes 
-          (factor, POSIXct date, numeric)')
+          (factor, numeric)')
   sample_annotation <- sample_annotation %>%
     mutate_at(vars(factor_columns), as.factor) %>%
     mutate_at(vars(numeric_columns), as.numeric)
@@ -285,17 +284,17 @@ color_list_to_df <- function(color_list, sample_annotation,
             using only intersection in color scheme!')
   }
   list_df = lapply(factors_to_map, function(col_name) {
-    #TODO: write a separate function for mapping the numeric columns
     
     col_values = sample_annotation[[col_name]]
-    is_factor = is_batch_factor(col_values, color_scheme=NULL)
+    color_scheme <- color_list[[col_name]]
+    is_factor = is_batch_factor(col_values, color_scheme=color_scheme)
     if(is_factor){
-      col_colors = color_list[[col_name]][col_values]
+      col_colors = color_scheme[col_values]
     } else{
-      col_colors = map_numeric_colors_to_intervals(color_list[[col_name]], col_values)
+      col_colors = map_numeric_colors_to_intervals(color_scheme, col_values)
     }
-    if(any(is.na(col_colors))){
-      col_colors[is.na(col_colors)] = 'white'
+    if(any(is.na(col_values))){
+      col_colors[is.na(col_values)] = 'white'
     }
     return(col_colors)
   })
@@ -359,10 +358,10 @@ add_color_scheme_discrete <- function(color_scheme, n_batches, fill_or_color,
 color_discrete <- function(color_scheme, batch_col, n_batches, fill_or_color, gg) {
   
   if(fill_or_color == 'color'){
-    gg = gg + aes(color = !!sym(batch_col))
+    gg = gg + aes(color = as.factor(!!sym(batch_col)))
   } else {
     if(fill_or_color == 'fill'){
-      gg = gg + aes(fill = !!sym(batch_col))
+      gg = gg + aes(fill = as.factor(!!sym(batch_col)))
     }
   }
   
