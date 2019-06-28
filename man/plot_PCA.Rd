@@ -69,13 +69,11 @@ color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
 pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 color_by = 'DateTime', plot_title = "PCA colored by DateTime")
 
-color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+color_list <- sample_annotation_to_colors (example_sample_annotation, 
 factor_columns = c('MS_batch'),
-date_columns = 'DateTime',
-numeric_columns = c('order'))
-color_annotation <- color_scheme$list_of_colors
+numeric_columns = c('DateTime','order'))
 pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
-color_by = 'MS_batch', color_scheme = color_annotation[['DateTime']])
+color_by = 'MS_batch', color_scheme = color_list[['DateTime']])
 
 \dontrun{
 pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
