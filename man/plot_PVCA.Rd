@@ -31,6 +31,12 @@ names.}
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
+\item{technical_factors}{vector \code{sample_annotation} column names that are
+technical covariates}
+
+\item{biological_factors}{vector \code{sample_annotation} column names, that
+are biologically meaningful covariates}
+
 \item{fill_the_missing}{boolean value determining if  missing values 
 should be substituted with -1 (and colored with   \code{color_for_missing}). 
 If \code{NULL}, features with missing values are excluded.}
@@ -60,12 +66,6 @@ pdf and png format is supported}
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
-
-\item{technical_covariates}{vector \code{sample_annotation} column names that are
-technical covariates}
-
-\item{biological_covariates}{vector \code{sample_annotation} column names, that
-are biologically meaningful covariates}
 }
 \value{
 list of two items: plot =gg, df = pvca_res
@@ -76,13 +76,13 @@ Plot variance distribution by variable
 \examples{
 matrix_test <- example_proteome_matrix[1:50, ]
 pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
-technical_covariates = c('MS_batch', 'digestion_batch'),
+technical_factors = c('MS_batch', 'digestion_batch'),
 biological_covariates = c("Diet", "Sex", "Strain"))
 
 \dontrun{
 pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
-technical_covariates = c('MS_batch', 'digestion_batch'),
-biological_covariates = c("Diet", "Sex", "Strain"), 
+technical_factors = c('MS_batch', 'digestion_batch'),
+biological_factors = c("Diet", "Sex", "Strain"), 
 filename = 'test_PVCA.png', width = 28, height = 22, units = 'cm')
 }
 

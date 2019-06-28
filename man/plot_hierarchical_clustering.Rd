@@ -28,6 +28,9 @@ filenames (colnames of the data matrix are found).}
 \item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
 where each item contains a color vector for each factor to be mapped to the color.}
 
+\item{factors_to_plot}{vector of technical and biological covariates to be 
+plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})}
+
 \item{fill_the_missing}{numeric value determining how  missing values 
 should be substituted. If \code{NULL}, features with missing values are excluded.}
 
