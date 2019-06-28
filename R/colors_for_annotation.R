@@ -67,24 +67,17 @@ map_numbers_to_colors <- function(annotation_df_numbers,
 }
 
 
-#' Generates color list
+#' Generates color vector from continous palette
 #'
-#' Generates a list of colors for a vector of numeric, POSIXct (i.e. the
+#' Generates a vector of colors for a vector of numeric, POSIXct (i.e. the
 #' (signed) number of seconds since the beginning of 1970 , or factors
 #'
-#' @param num_col a vector of type numeric of factor to generate colors for
 #' @param palette_type 'brewer' or 'viridis'
 #' @param i if \code{palette_type} is 'brewer' the palette argument to
 #'   \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument
 #'   to \code{viridis_pal}
-#' @param granularity breaks to use when generating colors for \code{num_col}
 #'
-#' @return list, containing the following items:
-#' \enumerate{
-#' \item \code{color_vector} - string-like vector of colors
-#' \item \code{new_annotation} - factor representation of numeric vector 
-#' (factor with number of levels equal to "granularity")
-#' }
+#' @return vector of colors
 #' @keywords internal
 #' 
 generate_colors_for_numeric <- function(palette_type = 'brewer',
@@ -146,8 +139,6 @@ merge_rare_levels <- function(column) {
 #' treated as continuous numeric values. 
 #' @param rare_categories_to_other if \code{True} rare categories 
 #' will be merged into the value \code{"other"}
-#' @param granularity number of colors to map to the number 
-#' vector (equally spaced between minimum and maximum)
 #' @param numeric_palette_type palette to be used for 
 #' numeric values coloring
 #'
@@ -173,8 +164,7 @@ sample_annotation_to_colors <- function(sample_annotation,
                                         numeric_columns = c('DateTime', 'order'),
                                         rare_categories_to_other = TRUE,
                                         guess_factors = TRUE,
-                                        numeric_palette_type = 'brewer',
-                                        granularity = 10) {
+                                        numeric_palette_type = 'brewer') {
   
   sample_annotation = as.data.frame(sample_annotation)
   
