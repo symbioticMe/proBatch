@@ -442,6 +442,12 @@ color_by_factor <- function(color_by_batch, batch_col, gg, color_scheme,
       color_scheme = 'brewer'
     }
     
+    if(color_scheme == 'brewer'){
+      warning('color_scheme will be inferred automatically.
+              Numeric/factor columns are guessed, for more controlled color mapping use 
+              sample_annotation_to_colors()')
+    }
+    
     if(is_factor){
       gg = color_discrete(color_scheme, batch_col, n_batches, fill_or_color, gg)
     } else if(is_numeric) {
