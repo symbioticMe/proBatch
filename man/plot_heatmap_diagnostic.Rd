@@ -29,7 +29,7 @@ See "example_sample_annotation" for example with the detailed description (to ca
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
-\item{factors_to_plot}{vector of technical and biological covariates to be 
+\item{factors_to_plot}{vector of technical and biological factors to be 
 plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})}
 
 \item{fill_the_missing}{numeric value that the missing values are

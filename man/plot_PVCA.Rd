@@ -77,7 +77,7 @@ Plot variance distribution by variable
 matrix_test <- example_proteome_matrix[1:50, ]
 pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
 technical_factors = c('MS_batch', 'digestion_batch'),
-biological_covariates = c("Diet", "Sex", "Strain"))
+biological_factors = c("Diet", "Sex", "Strain"))
 
 \dontrun{
 pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 

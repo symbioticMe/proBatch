@@ -23,7 +23,7 @@ are used in PVCA analysis}
 \item{pca_threshold}{the percentile value of the minimum amount of the
 variabilities that the selected principal components need to explain}
 
-\item{variance_threshold}{the percentile value of weight each of the covariates
+\item{variance_threshold}{the percentile value of weight each of the factors
 needs to explain (the rest will be lumped together)}
 }
 \description{

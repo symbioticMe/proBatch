@@ -17,7 +17,7 @@
 #' @examples
 #' 
 #' selected_batches = example_sample_annotation$MS_batch %in% c('Batch_1', 'Batch_2')
-#' selected_samples = example_proteome_matrix$FullRunName[selected_batches]
+#' selected_samples = example_sample_annotation$FullRunName[selected_batches]
 #' test_matrix = example_proteome_matrix[,selected_samples]
 #' 
 #' hierarchical_clustering_plot <- plot_hierarchical_clustering(
@@ -136,7 +136,7 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 #' Plot the heatmap of samples (cols) vs features (rows)
 #'
 #' @inheritParams proBatch
-#' @param factors_to_plot vector of technical and biological covariates to be 
+#' @param factors_to_plot vector of technical and biological factors to be 
 #' plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})
 #' @param fill_the_missing numeric value that the missing values are
 #'   substituted with, or \code{NULL} if features with missing values are to be excluded.
@@ -364,7 +364,7 @@ plot_heatmap_generic <- function(data_matrix,
 #'   are used in PVCA analysis
 #' @param pca_threshold the percentile value of the minimum amount of the
 #'   variabilities that the selected principal components need to explain
-#' @param variance_threshold the percentile value of weight each of the covariates
+#' @param variance_threshold the percentile value of weight each of the factors
 #'   needs to explain (the rest will be lumped together)
 #' @export
 calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
@@ -415,7 +415,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #' matrix_test <- example_proteome_matrix[1:50, ]
 #' pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
 #' technical_factors = c('MS_batch', 'digestion_batch'),
-#' biological_covariates = c("Diet", "Sex", "Strain"))
+#' biological_factors = c("Diet", "Sex", "Strain"))
 #' 
 #' \dontrun{
 #' pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
