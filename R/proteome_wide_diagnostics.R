@@ -205,6 +205,7 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
     color_list = sample_annotation_to_colors(sample_annotation = sample_annotation, 
                                              sample_id_col = sample_id_col, 
                                              factor_columns = factors_to_plot,
+                                             numeric_columns = NULL,
                                              guess_factors = T)
   }
   
@@ -216,6 +217,7 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
     color_list_features = sample_annotation_to_colors(peptide_annotation, 
                                                       sample_id_col = feature_id_col, 
                                                       factor_columns = factors_of_feature_ann,
+                                                      numeric_columns = NULL,
                                                       guess_factors = T)
   }
   
