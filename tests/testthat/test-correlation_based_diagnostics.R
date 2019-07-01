@@ -7,7 +7,7 @@ test_that("corr_matrix_plots", {
   
   matrix_test = example_proteome_matrix[peptides,]
   corr_matrix = cor(t(matrix_test), use = 'complete.obs')
-  corr_matrix_func <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
+  corr_matrix_func <- plot_corr_matrix(corr_matrix)
   
   expect_equivalent(corr_matrix_func[1], 1)
   expect_equivalent(corr_matrix_func[2], 0.9096027)
@@ -21,7 +21,7 @@ test_that("protein_corrplot_plots", {
 
   corrplot <- plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
                         peptide_annotation = example_peptide_annotation, 
-                        protein_col = 'Gene', flavor = "pheatmap")
+                        protein_col = 'Gene')
   
   expect_equivalent(corrplot$tree_row$method, "complete")
   expect_equivalent(corrplot$tree_row$dist.method, "euclidean")
@@ -42,7 +42,7 @@ test_that("sample_corr_heatmap", {
   
   expect_warning(sample_heatmap <- plot_sample_corr_heatmap(example_proteome_matrix, 
                            samples_to_plot = specified_samples, 
-                           flavor = 'pheatmap',  cluster_rows= TRUE, cluster_cols=TRUE,
+                           cluster_rows= TRUE, cluster_cols=TRUE,
                            annotation_names_col = TRUE, annotation_legend = FALSE, 
                            show_colnames = FALSE))
   

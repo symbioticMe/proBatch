@@ -764,8 +764,7 @@ correlation of these peptides should improve after batch correction.
 In this study, 10 samples were run in the same order before and after
 the tuning of the mass-spectrometer, which marks the boundary between
 batches 2 and 3. The correlation between these replicates can be
-illustrated by corrplot (`flavor = 'corrplot'`) or by 'pretty
-heatmap', of 'pheatmap' (`flavor = 'pheatmap'`)
+illustrated by correlation plot heatmap.
 
 First, we specify, which samples we want to correlate
 ```{r setup_corr_heatmap, fig.show='hold', fig.height=5, fig.width=8}
@@ -782,24 +781,7 @@ We plot the 'exploratory' correlation matrix, which can be further beautified, s
 ```{r, fig.show='hold', fig.width=10, fig.height=11}
 p1_exp = plot_sample_corr_heatmap(log_transformed_matrix, 
                                   samples_to_plot = replicate_filenames, 
-                                  flavor = 'pheatmap')
-p2_exp = plot_sample_corr_heatmap(log_transformed_matrix, 
-                                  samples_to_plot = replicate_filenames, 
-                                  flavor = 'corrplot', 
                                   plot_title = 'Correlation of selected samples')
-```
-
-
-Aesthetically more pleasing version, specifying parameters for the `corrplot`:
-```{r, fig.show='hold', fig.width=10, fig.height=11}
-p2_exp = plot_sample_corr_heatmap(log_transformed_matrix, samples_to_plot = replicate_filenames, 
-                         flavor = 'corrplot', 
-                         plot_title = 'Correlation of selected samples', 
-                         tl.col = 'black', mar = c(0,0,5,0), number.cex=0.75, 
-                         tl.cex = 0.8, cl.lim=c(0.7,1), 
-                         upper.col=colorRampPalette(c('blue','white','lightpink', 'red','brown'))(20), 
-                         lower.col = colorRampPalette(c('blue','white','lightpink', 'red','brown'))(20), 
-                         is.corr = FALSE)
 ```
 
 To ensure the color scale for correlation is consistent between two plots, we create a color vector and breaks
@@ -814,7 +796,6 @@ heatmap_colors = colorRampPalette(
 factors_to_show = c(batch_col, biospecimen_id_col)
 
 p1 = plot_sample_corr_heatmap(log_transformed_matrix, samples_to_plot = replicate_filenames,
-                              flavor = 'pheatmap', 
                               sample_annotation = example_sample_annotation %>% 
                                 select(c(factors_to_show, 'FullRunName')), 
                               plot_title = 'Log transformed correlation matrix of 
@@ -827,7 +808,6 @@ p1 = plot_sample_corr_heatmap(log_transformed_matrix, samples_to_plot = replicat
 
 p2 = plot_sample_corr_heatmap(batch_corrected_matrix, 
                               samples_to_plot = replicate_filenames, 
-                              flavor = 'pheatmap', 
                               sample_annotation = example_sample_annotation %>% 
                                 select(c(factors_to_show, 'FullRunName')), 
                               plot_title = 'Batch Corrected',
