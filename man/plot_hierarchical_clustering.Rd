@@ -69,7 +69,7 @@ cluster the data matrix to visually inspect which confounder dominates
 \examples{
 
 selected_batches = example_sample_annotation$MS_batch \%in\% c('Batch_1', 'Batch_2')
-selected_samples = example_proteome_matrix$FullRunName[selected_batches]
+selected_samples = example_sample_annotation$FullRunName[selected_batches]
 test_matrix = example_proteome_matrix[,selected_samples]
 
 hierarchical_clustering_plot <- plot_hierarchical_clustering(
