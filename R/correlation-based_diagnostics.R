@@ -15,7 +15,6 @@
 #' @export
 #'
 #' @seealso \code{\link[pheatmap]{pheatmap}}, 
-#' \code{\link[corrplot]{corrplot.mixed}},
 #' \code{\link{plot_sample_corr_distribution}}, 
 #' \code{\link{plot_peptide_corr_distribution}}
 #' 
@@ -26,40 +25,50 @@
 #' corr_matrix_plot <- plot_corr_matrix(corr_matrix)
 #' 
 plot_corr_matrix <- function(corr_matrix,
+                             annotation = NULL, 
+                             annotation_id_col = 'FullRunName',
+                             factors_to_plot = c('MS_batch','Diet', 'DateTime'), 
+                             cluster_rows = FALSE, cluster_cols = FALSE,
+                             heatmap_color = heatmap_color,
+                             color_list = color_list,
                              filename = NULL, width = 7, height = 7, 
                              units = c('cm','in','mm'),
                              plot_title = NULL, ...) {
   
-  units_adjusted = adjust_units(units, width, height)
-  units = units_adjusted$unit
-  width = units_adjusted$width
-  height = units_adjusted$height
+  #infer the color scheme for annotation (cols & rows)
+  if(is.null(color_list) && !is.null(annotation)){
+    warning('color_list for annotation (cols & rows) not defined, inferring automatically.
+            Numeric/factor columns are guessed, for more controlled color mapping use 
+            sample_annotation_to_colors()')
+    color_list = sample_annotation_to_colors(sample_annotation = annotation, 
+                                             sample_id_col = annotation_id_col, 
+                                             factor_columns = factors_to_plot,
+                                             numeric_columns = NULL,
+                                             guess_factors = T)
+  }
   
-  if(is.null(filename)){
-    filename = NA
+  if(cluster_rows != cluster_cols){
+    warning('different arguments for clustering of rows and columns, this will make
+            correlation matrix heatmap assimmetrical!')
   }
-  if(is.null(plot_title)){
-    plot_title = NA
-  }
-  pheatmap(corr_matrix, filename = filename,
-           width = width, height = height, main = plot_title, ...)
-  # p <- plot_heatmap_generic(data_matrix, 
-  #                           column_annotation_df = sample_annotation,
-  #                           row_annotation_df = peptide_annotation, 
-  #                           fill_the_missing = fill_the_missing, 
-  #                           col_ann_id_col = sample_id_col,
-  #                           row_ann_id_col = feature_id_col,
-  #                           columns_for_cols = factors_to_plot,
-  #                           columns_for_rows = factors_of_feature_ann,
-  #                           cluster_rows = cluster_cols, cluster_cols = cluster_cols,
-  #                           annotation_color_cols = color_list,
-  #                           annotation_color_rows = color_list_features,
-  #                           heatmap_color = heatmap_color,
-  #                           color_for_missing = color_for_missing,
-  #                           filename = filename, width = width, height = width, 
-  #                           units = units, 
-  #                           plot_title = plot_title,
-  #                           ...)
+  p <- plot_heatmap_generic(corr_matrix, 
+                            column_annotation_df = annotation,
+                            row_annotation_df = annotation, 
+                            fill_the_missing = NULL, 
+                            col_ann_id_col = annotation_id_col,
+                            row_ann_id_col = annotation_id_col,
+                            columns_for_cols = factors_to_plot,
+                            columns_for_rows = factors_to_plot,
+                            cluster_rows = cluster_rows, cluster_cols = cluster_cols,
+                            annotation_color_cols = color_list,
+                            annotation_color_rows = color_list,
+                            heatmap_color = heatmap_color,
+                            filename = filename, width = width, height = width, 
+                            units = units, 
+                            plot_title = plot_title,
+                            ...)
+  return(p)
+  
 }
 
 #' Peptide correlation matrix (heatmap)
@@ -83,6 +92,11 @@ plot_protein_corrplot <- function(data_matrix,
                                   peptide_annotation = NULL,
                                   protein_col = 'ProteinName',
                                   feature_id_col = 'peptide_group_label',
+                                  factors_to_plot = c('ProteinName','pathway'),
+                                  cluster_rows = FALSE, cluster_cols = FALSE,
+                                  heatmap_color = colorRampPalette(
+                                    rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
+                                  color_list = NULL,
                                   filename = NULL,
                                   width = NA, height = NA, 
                                   units = c('cm','in','mm'),
@@ -92,12 +106,27 @@ plot_protein_corrplot <- function(data_matrix,
   
   peptides = peptide_annotation %>%
     filter(!!(sym(feature_id_col)) %in% rownames(data_matrix)) %>%
-    filter(!!(sym(protein_col)) == protein_name) %>%
+    filter(!!(sym(protein_col)) %in% protein_name) %>%
     pull(feature_id_col) %>% as.character()
   
   data_matrix_sub = data_matrix[peptides,]
-  corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
-  plot_corr_matrix(corr_matrix, plot_title = plot_title,
+  corr_matrix = cor(t(data_matrix_sub), use = "pairwise.complete.obs")
+  
+  peptide_annotation = peptide_annotation %>%
+    filter(!!(sym(protein_col)) %in% protein_name) %>%
+    arrange(!!sym(protein_col))
+  
+  corr_matrix = corr_matrix[peptide_annotation[[feature_id_col]],
+                            peptide_annotation[[feature_id_col]]]
+  
+  plot_corr_matrix(corr_matrix, 
+                   annotation = peptide_annotation, 
+                   annotation_id_col = feature_id_col,
+                   factors_to_plot = factors_to_plot,
+                   cluster_rows = cluster_rows, cluster_cols = cluster_cols,
+                   heatmap_color = heatmap_color,
+                   color_list = color_list,
+                   plot_title = plot_title,
                    filename = filename, width = width, 
                    height = height, units = units, ...)
 }
@@ -126,12 +155,16 @@ plot_protein_corrplot <- function(data_matrix,
 #'  annotation_names_col = TRUE, annotation_legend = FALSE, 
 #'  show_colnames = FALSE)
 #'
-#' @seealso \code{\link[pheatmap]{pheatmap}}, 
-#' \code{\link[corrplot]{corrplot.mixed}}
+#' @seealso \code{\link[pheatmap]{pheatmap}}
 #' 
 plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                      sample_annotation = NULL, 
                                      sample_id_col = 'FullRunName',
+                                     factors_to_plot = c('MS_batch','Diet', 'DateTime', 'digestion_batch'),
+                                     cluster_rows = FALSE, cluster_cols = FALSE,
+                                     heatmap_color = colorRampPalette(
+                                       rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
+                                     color_list = NULL,
                                      filename = NULL,
                                      width = NA, height = NA, 
                                      units = c('cm','in','mm'),
@@ -149,9 +182,24 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
   } else {
     corr_matrix = cor(data_matrix, use = 'complete.obs')
   }
-  plot_corr_matrix(corr_matrix, plot_title = plot_title,
-                   filename = filename, width = width, 
-                   height = height, units = units, ...)
+  
+  if(!is.null(sample_annotation)){
+    if (!all(samples_to_plot %in% sample_annotation[[sample_id_col]])){
+      warning('some of the samples are not in annotation, this may lead to problems in color annotation')
+    }
+  }
+  
+  p <- plot_corr_matrix(corr_matrix, 
+                        annotation = sample_annotation, 
+                        annotation_id_col = sample_id_col,
+                        factors_to_plot = factors_to_plot,
+                        cluster_rows = cluster_rows, cluster_cols = cluster_cols,
+                        heatmap_color = heatmap_color,
+                        color_list = color_list,
+                        plot_title = plot_title,
+                        filename = filename, width = width, 
+                        height = height, units = units, ...)
+  return(p)
 }
 
 get_sample_corr_df <- function(cor_proteome, sample_annotation,
