@@ -7,13 +7,10 @@
 #'
 #' @inheritParams proBatch
 #' @param corr_matrix square correlation matrix
-#' @param flavor either corrplot from 'corrplot' package or 
-#' heatmap, as in 'pheatmap'
-#' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
-#' \code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
-#'   help to corresponding functions
+#' @param ... parameters for the \code{\link[pheatmap]{pheatmap}} visualisation,
+#'  for details see examples and help to corresponding functions
 #'
-#' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
+#' @return \code{pheatmap} object
 #' 
 #' @export
 #'
@@ -26,54 +23,43 @@
 #' peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2")
 #' data_matrix_sub = example_proteome_matrix[peptides,]
 #' corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
-#' corr_matrix_plot <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
+#' corr_matrix_plot <- plot_corr_matrix(corr_matrix)
 #' 
-plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'), 
+plot_corr_matrix <- function(corr_matrix,
                              filename = NULL, width = 7, height = 7, 
                              units = c('cm','in','mm'),
                              plot_title = NULL, ...) {
   
-  flavor <- match.arg(flavor)    
+  units_adjusted = adjust_units(units, width, height)
+  units = units_adjusted$unit
+  width = units_adjusted$width
+  height = units_adjusted$height
   
-  if (!(flavor %in% c('pheatmap','corrplot'))){
-    stop('only pheatmap or corrplot can be produced to illustrate sample 
-          correlation, choose one of these two options')
+  if(is.null(filename)){
+    filename = NA
   }
-  if (is.null(filename)){
-    switch(flavor,
-           corrplot = corrplot.mixed(corr_matrix, title = plot_title, 
-                                     tl.pos ="lt", ...),
-           pheatmap = pheatmap(corr_matrix, main = plot_title, ...))
-  } else {
-    
-    units_adjusted = adjust_units(units, width, height)
-    units = units_adjusted$unit
-    width = units_adjusted$width
-    height = units_adjusted$height
-    
-    if (flavor == 'corrplot'){
-      if (is.na(width)){
-        width = 7
-      }
-      if (is.na(height)){
-        height = 7
-      }
-      if (file_ext(filename) == 'pdf'){
-        pdf(file = filename, width = width, height = height, title = plot_title)
-      } else if(file_ext(filename) == 'png'){
-        png(file = filename, width = width, height = height, units = units, res = 300)
-      } else{
-        stop('currently only pdf and png extensions for filename are implemented')
-      }
-      #pdf(file = filename, width = width, height = height)
-      corrplot.mixed(corr_matrix, title = plot_title, tl.pos ="lt", ...)
-      dev.off()
-    } else{
-      pheatmap(corr_matrix, filename = filename,
-               width = width, height = height, main = plot_title, ...)
-    }
-    
+  if(is.null(plot_title)){
+    plot_title = NA
   }
+  pheatmap(corr_matrix, filename = filename,
+           width = width, height = height, main = plot_title, ...)
+  # p <- plot_heatmap_generic(data_matrix, 
+  #                           column_annotation_df = sample_annotation,
+  #                           row_annotation_df = peptide_annotation, 
+  #                           fill_the_missing = fill_the_missing, 
+  #                           col_ann_id_col = sample_id_col,
+  #                           row_ann_id_col = feature_id_col,
+  #                           columns_for_cols = factors_to_plot,
+  #                           columns_for_rows = factors_of_feature_ann,
+  #                           cluster_rows = cluster_cols, cluster_cols = cluster_cols,
+  #                           annotation_color_cols = color_list,
+  #                           annotation_color_rows = color_list_features,
+  #                           heatmap_color = heatmap_color,
+  #                           color_for_missing = color_for_missing,
+  #                           filename = filename, width = width, height = width, 
+  #                           units = units, 
+  #                           plot_title = plot_title,
+  #                           ...)
 }
 
 #' Peptide correlation matrix (heatmap)
@@ -82,24 +68,21 @@ plot_corr_matrix <- function(corr_matrix, flavor = c('pheatmap','corrplot'),
 #'
 #' @inheritParams proBatch
 #' @param protein_name the name of the protein
-#' @param flavor either corrplot from 'corrplot' 
-#' package or heatmap, as in 'pheatmap'
 #' @param ... parameters for the corrplot visualisation
 #'
-#' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
+#' @return \code{pheatmap} object
 #'
 #' @export
 #' @examples 
 #' protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, 
 #' protein_name = 'Haao', peptide_annotation = example_peptide_annotation, 
-#' protein_col = 'Gene', flavor = "pheatmap")
+#' protein_col = 'Gene')
 #'
 plot_protein_corrplot <- function(data_matrix,
                                   protein_name,
                                   peptide_annotation = NULL,
                                   protein_col = 'ProteinName',
                                   feature_id_col = 'peptide_group_label',
-                                  flavor = c('pheatmap','corrplot'),
                                   filename = NULL,
                                   width = NA, height = NA, 
                                   units = c('cm','in','mm'),
@@ -107,7 +90,6 @@ plot_protein_corrplot <- function(data_matrix,
                                     'Peptide correlation matrix of %s protein', 
                                     protein_name), ...) {
   
-  flavor <- match.arg(flavor)    
   peptides = peptide_annotation %>%
     filter(!!(sym(feature_id_col)) %in% rownames(data_matrix)) %>%
     filter(!!(sym(protein_col)) == protein_name) %>%
@@ -115,7 +97,7 @@ plot_protein_corrplot <- function(data_matrix,
   
   data_matrix_sub = data_matrix[peptides,]
   corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
-  plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = flavor,
+  plot_corr_matrix(corr_matrix, plot_title = plot_title,
                    filename = filename, width = width, 
                    height = height, units = units, ...)
 }
@@ -127,13 +109,10 @@ plot_protein_corrplot <- function(data_matrix,
 #' @inheritParams proBatch
 #' @param samples_to_plot string vector of samples in 
 #' \code{data_matrix} to be used in the plot
-#' @param flavor either corrplot from 'corrplot' package or 
-#' heatmap, as in 'pheatmap'
-#' @param ... parameters for the \code{\link[corrplot]{corrplot.mixed}} or
-#' \code{\link[pheatmap]{pheatmap}} visualisation, for details see 
+#' @param ... parameters for the \code{\link[pheatmap]{pheatmap}} visualisation, for details see 
 #'   examples and help to corresponding functions
 #'
-#' @return \code{corrplot} or \code{pheatmap} object depending on \code{flavor}
+#' @return \code{pheatmap} object
 #' 
 #' @export
 #'
@@ -143,7 +122,6 @@ plot_protein_corrplot <- function(data_matrix,
 #' 
 #' sample_corr_heatmap <- plot_sample_corr_heatmap(example_proteome_matrix, 
 #' samples_to_plot = specified_samples, 
-#'  flavor = 'pheatmap', 
 #'  cluster_rows= FALSE, cluster_cols=FALSE,
 #'  annotation_names_col = TRUE, annotation_legend = FALSE, 
 #'  show_colnames = FALSE)
@@ -154,14 +132,12 @@ plot_protein_corrplot <- function(data_matrix,
 plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                      sample_annotation = NULL, 
                                      sample_id_col = 'FullRunName',
-                                     flavor = c('pheatmap','corrplot'), 
                                      filename = NULL,
                                      width = NA, height = NA, 
                                      units = c('cm','in','mm'),
                                      plot_title = sprintf(
                                        'Correlation matrix of%s samples' ,
                                        ifelse(is.null(samples_to_plot),'',' selected')), ...){
-  flavor <- match.arg(flavor)    
   if(!is.null(samples_to_plot)){
     if (!all(samples_to_plot %in% colnames(data_matrix))){
       missing_samples = setdiff(samples_to_plot, colnames(data_matrix))
@@ -173,37 +149,9 @@ plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
   } else {
     corr_matrix = cor(data_matrix, use = 'complete.obs')
   }
-  if (flavor == 'pheatmap' && !is.null(sample_annotation)){
-    if (!is.null(samples_to_plot)){
-      sample_annotation <- sample_annotation %>%
-        filter((!!sym(sample_id_col)) %in% samples_to_plot)
-    }
-    
-    if (!all(samples_to_plot %in% sample_annotation[[sample_id_col]])){
-      missing_samples = setdiff(samples_to_plot,sample_annotation[[sample_id_col]])
-      warning(sprintf('The following samples are not in sample annotation and can not 
-                   be used in sample correlation plotting %s. 
-                      Plotting correlation heatmap without sample annotation', 
-                   paste(missing_samples, collapse = ';\n')))
-      sample_annotation = NULL
-    }
-    sample_annotation <- sample_annotation %>%
-      remove_rownames() %>% 
-      column_to_rownames(var=sample_id_col)
-    
-    #TODO: check that this doesn't contain the DateTime 
-    #TODO: understand where is the legend
-    
-    plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = 'pheatmap',
-                     filename = filename, width = width,
-                     annotation_col = sample_annotation,
-                     height = height, units = units, ...)
-    
-  } else {
-    plot_corr_matrix(corr_matrix, plot_title = plot_title, flavor = flavor,
-                     filename = filename, width = width, 
-                     height = height, units = units, ...)
-  }
+  plot_corr_matrix(corr_matrix, plot_title = plot_title,
+                   filename = filename, width = width, 
+                   height = height, units = units, ...)
 }
 
 get_sample_corr_df <- function(cor_proteome, sample_annotation,
