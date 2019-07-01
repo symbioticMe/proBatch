@@ -27,10 +27,11 @@
 plot_corr_matrix <- function(corr_matrix,
                              annotation = NULL, 
                              annotation_id_col = 'FullRunName',
-                             factors_to_plot = c('MS_batch','Diet', 'DateTime'), 
+                             factors_to_plot = NULL, 
                              cluster_rows = FALSE, cluster_cols = FALSE,
-                             heatmap_color = heatmap_color,
-                             color_list = color_list,
+                             heatmap_color = colorRampPalette(
+                               rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
+                             color_list = NULL,
                              filename = NULL, width = 7, height = 7, 
                              units = c('cm','in','mm'),
                              plot_title = NULL, ...) {
@@ -86,6 +87,11 @@ plot_corr_matrix <- function(corr_matrix,
 #' protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, 
 #' protein_name = 'Haao', peptide_annotation = example_peptide_annotation, 
 #' protein_col = 'Gene')
+#' 
+#' protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, 
+#'  protein_name = c('Haao', 'Dhtkd1'), 
+#'  peptide_annotation = example_peptide_annotation,
+#'  protein_col = 'Gene', factors_to_plot = 'Gene')
 #'
 plot_protein_corrplot <- function(data_matrix,
                                   protein_name,
@@ -154,6 +160,17 @@ plot_protein_corrplot <- function(data_matrix,
 #'  cluster_rows= FALSE, cluster_cols=FALSE,
 #'  annotation_names_col = TRUE, annotation_legend = FALSE, 
 #'  show_colnames = FALSE)
+#'  
+#'  
+#'  color_list <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch','EarTag', "Strain", 
+#' "Diet", "digestion_batch", "Sex"),
+#' numeric_columns = c('DateTime', 'order'))
+#'  sample_corr_heatmap_annotated <- plot_sample_corr_heatmap(log_transform_dm(example_proteome_matrix), 
+#'  sample_annotation = example_sample_annotation,
+#'  cluster_rows= FALSE, cluster_cols=FALSE,
+#'  annotation_names_col = TRUE, 
+#'  show_colnames = FALSE, color_list = color_list)
 #'
 #' @seealso \code{\link[pheatmap]{pheatmap}}
 #' 
