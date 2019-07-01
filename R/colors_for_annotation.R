@@ -24,7 +24,7 @@ map_factors_to_colors <- function(annotation_df_factors) {
                 values for better visualisation\n')
   }
 
-  colors = grep('(white|(gr(a|e)y)', standardColors(), value = T, invert = T)
+  colors = grep('(white|(gr(a|e)y))', standardColors(), value = T, invert = T)
   start_indxs = c(1, 1 + cumsum(nlev_covariate[-length(nlev_covariate)]))
   end_indx = cumsum(nlev_covariate)
   ann_colors_covariate = lapply(seq_len(length(nlev_covariate)),
