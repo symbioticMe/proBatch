@@ -88,6 +88,13 @@ object returned by \code{link[pheatmap]{pheatmap}}
 Plot the heatmap of samples (cols) vs features (rows)
 }
 \examples{
+
+heatmap_plot <- plot_heatmap_diagnostic(log_transform_dm(example_proteome_matrix), 
+example_sample_annotation, 
+factors_to_plot = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'), 
+cluster_cols = TRUE, cluster_rows = FALSE,u
+show_rownames = FALSE, show_colnames = FALSE)
+
 color_list <- sample_annotation_to_colors (example_sample_annotation, 
 factor_columns = c('MS_batch','EarTag', "Strain", 
 "Diet", "digestion_batch", "Sex"),
