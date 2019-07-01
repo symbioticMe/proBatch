@@ -23,8 +23,26 @@ map_factors_to_colors <- function(annotation_df_factors) {
     warning('Too many colors, consider merging some covariate 
                 values for better visualisation\n')
   }
-
-  colors = grep('(white|(gr(a|e)y))', standardColors(), value = T, invert = T)
+  
+  number_colors_for_factors = sum(nlev_covariate)
+  standard_colors_base = grep('(white|(gr(a|e)y))', standardColors(45), value = T, invert = T)
+  
+  qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+  brewer_colors = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+  if(number_colors_for_factors <= 45){
+    colors = standard_colors_base
+  } else 
+    if(number_colors_for_factors <= length(brewer_colors)){
+      colors = brewer_colors
+    } else if (number_colors_for_factors <= sum(length(brewer_colors), 45)){
+      colors = c(standard_colors_base, brewer_colors)
+    } else {
+      set.seed(1)
+      standard_colors_all = sample(grep('(white|(gr(a|e)y))', standardColors(), 
+                                        value = T, invert = T))
+      colors = standard_colors_all
+  }
+  
   start_indxs = c(1, 1 + cumsum(nlev_covariate[-length(nlev_covariate)]))
   end_indx = cumsum(nlev_covariate)
   ann_colors_covariate = lapply(seq_len(length(nlev_covariate)),

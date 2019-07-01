@@ -89,7 +89,7 @@
 #' @importFrom preprocessCore normalize.quantiles
 #' @importFrom pvca pvcaBatchAssess
 #' @importFrom purrr pmap negate map
-#' @importFrom RColorBrewer brewer.pal
+#' @importFrom RColorBrewer brewer.pal brewer.pal.info
 #' @importFrom rlang :=
 #' @importFrom rlang !!
 #' @importFrom rlang !!!
