@@ -6,7 +6,10 @@
 \usage{
 plot_sample_corr_heatmap(data_matrix, samples_to_plot = NULL,
   sample_annotation = NULL, sample_id_col = "FullRunName",
-  flavor = c("pheatmap", "corrplot"), filename = NULL, width = NA,
+  factors_to_plot = c("MS_batch", "Diet", "DateTime", "digestion_batch"),
+  cluster_rows = FALSE, cluster_cols = FALSE,
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
+  "RdYlBu")))(100), color_list = NULL, filename = NULL, width = NA,
   height = NA, units = c("cm", "in", "mm"),
   plot_title = sprintf("Correlation matrix of\%s samples",
   ifelse(is.null(samples_to_plot), "", " selected")), ...)
@@ -27,8 +30,8 @@ See "example_sample_annotation" for example with the detailed description (to ca
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
 
-\item{flavor}{either corrplot from 'corrplot' package or 
-heatmap, as in 'pheatmap'}
+\item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
+where each item contains a color vector for each factor to be mapped to the color.}
 
 \item{filename}{path where the results are saved. 
 If null the object is returned to the active window;
@@ -44,12 +47,11 @@ pdf and png format is supported}
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
-\item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
-\code{\link[pheatmap]{pheatmap}} visualisation, for details see 
-  examples and help to corresponding functions}
+\item{...}{parameters for the \code{\link[pheatmap]{pheatmap}} visualisation, for details see 
+examples and help to corresponding functions}
 }
 \value{
-\code{corrplot} or \code{pheatmap} object depending on \code{flavor}
+\code{pheatmap} object
 }
 \description{
 Plot correlation of selected samples
@@ -60,13 +62,11 @@ which(example_sample_annotation$order \%in\% 110:115)]
 
 sample_corr_heatmap <- plot_sample_corr_heatmap(example_proteome_matrix, 
 samples_to_plot = specified_samples, 
- flavor = 'pheatmap', 
  cluster_rows= FALSE, cluster_cols=FALSE,
  annotation_names_col = TRUE, annotation_legend = FALSE, 
  show_colnames = FALSE)
 
 }
 \seealso{
-\code{\link[pheatmap]{pheatmap}}, 
-\code{\link[corrplot]{corrplot.mixed}}
+\code{\link[pheatmap]{pheatmap}}
 }
