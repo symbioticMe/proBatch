@@ -6,9 +6,8 @@
 \usage{
 plot_protein_corrplot(data_matrix, protein_name,
   peptide_annotation = NULL, protein_col = "ProteinName",
-  feature_id_col = "peptide_group_label", flavor = c("pheatmap",
-  "corrplot"), filename = NULL, width = NA, height = NA,
-  units = c("cm", "in", "mm"),
+  feature_id_col = "peptide_group_label", filename = NULL,
+  width = NA, height = NA, units = c("cm", "in", "mm"),
   plot_title = sprintf("Peptide correlation matrix of \%s protein",
   protein_name), ...)
 }
@@ -30,9 +29,6 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{flavor}{either corrplot from 'corrplot' 
-package or heatmap, as in 'pheatmap'}
-
 \item{filename}{path where the results are saved. 
 If null the object is returned to the active window;
 otherwise, the object is save into the file. Currently only 
@@ -50,7 +46,7 @@ level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 \item{...}{parameters for the corrplot visualisation}
 }
 \value{
-\code{corrplot} or \code{pheatmap} object depending on \code{flavor}
+\code{pheatmap} object
 }
 \description{
 Plots correlation plot of peptides from a single protein
@@ -58,6 +54,6 @@ Plots correlation plot of peptides from a single protein
 \examples{
 protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, 
 protein_name = 'Haao', peptide_annotation = example_peptide_annotation, 
-protein_col = 'Gene', flavor = "pheatmap")
+protein_col = 'Gene')
 
 }
