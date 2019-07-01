@@ -6,8 +6,12 @@
 \usage{
 plot_protein_corrplot(data_matrix, protein_name,
   peptide_annotation = NULL, protein_col = "ProteinName",
-  feature_id_col = "peptide_group_label", filename = NULL,
-  width = NA, height = NA, units = c("cm", "in", "mm"),
+  feature_id_col = "peptide_group_label",
+  factors_to_plot = c("ProteinName", "pathway"), cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
+  "RdYlBu")))(100), color_list = NULL, filename = NULL, width = NA,
+  height = NA, units = c("cm", "in", "mm"),
   plot_title = sprintf("Peptide correlation matrix of \%s protein",
   protein_name), ...)
 }
@@ -28,6 +32,9 @@ See "example_peptide_annotation" for more details (to call the description, use 
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
+
+\item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
+where each item contains a color vector for each factor to be mapped to the color.}
 
 \item{filename}{path where the results are saved. 
 If null the object is returned to the active window;
@@ -55,5 +62,10 @@ Plots correlation plot of peptides from a single protein
 protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, 
 protein_name = 'Haao', peptide_annotation = example_peptide_annotation, 
 protein_col = 'Gene')
+
+protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, 
+ protein_name = c('Haao', 'Dhtkd1'), 
+ peptide_annotation = example_peptide_annotation,
+ protein_col = 'Gene', factors_to_plot = 'Gene')
 
 }
