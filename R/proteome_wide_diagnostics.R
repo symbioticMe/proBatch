@@ -315,13 +315,13 @@ plot_heatmap_generic <- function(data_matrix,
   if(!is.null(row_annotation_df)){
     if(!is.null(columns_for_rows)){
       annotation_row = row_annotation_df %>% 
-        select(one_of(sample_id_col, columns_for_rows))
+        select(one_of(row_ann_id_col, columns_for_rows))
     }
     
     annotation_row = annotation_row %>%
       mutate_if(is.POSIXct, as.numeric) %>%
       remove_rownames %>% 
-      column_to_rownames(var=sample_id_col)
+      column_to_rownames(var=row_ann_id_col)
   }
   
   if(is.null(column_annotation_df) && is.null(row_annotation_df)){
