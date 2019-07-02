@@ -461,7 +461,7 @@ color_by_factor <- function(color_by_batch, batch_col, gg, color_scheme,
       color_scheme = 'brewer'
     }
     
-    if(color_scheme == 'brewer'){
+    if((length(color_scheme) == 1) && color_scheme == 'brewer'){
       warning('color_scheme will be inferred automatically.
               Numeric/factor columns are guessed, for more controlled color mapping use 
               sample_annotation_to_colors()')
