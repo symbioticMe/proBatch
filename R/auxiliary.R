@@ -63,11 +63,13 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
       mutate(Step = step)
   }
   
-  df_long = check_sample_consistency(sample_annotation = sample_annotation, 
-                                     sample_id_col = sample_id_col, 
-                                     df_long = df_long, 
-                                     batch_col = NULL, order_col = NULL, 
-                                     facet_col = NULL, merge = FALSE)
+  if(!is.null(sample_annotation)){
+    df_long = check_sample_consistency(sample_annotation = sample_annotation, 
+                                       sample_id_col = sample_id_col, 
+                                       df_long = df_long, 
+                                       batch_col = NULL, order_col = NULL, 
+                                       facet_col = NULL, merge = FALSE)
+  }
   
   return(df_long)
 }
