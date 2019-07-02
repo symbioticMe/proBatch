@@ -5,9 +5,8 @@
 \title{Plot the heatmap of samples (cols) vs features (rows)}
 \usage{
 plot_heatmap_diagnostic(data_matrix, sample_annotation = NULL,
-  sample_id_col = "FullRunName", factors_to_plot = c("MS_batch",
-  "Diet", "DateTime", "digestion_batch"), fill_the_missing = -1,
-  color_for_missing = "black",
+  sample_id_col = "FullRunName", factors_to_plot = NULL,
+  fill_the_missing = -1, color_for_missing = "black",
   heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
   "RdYlBu")))(100), cluster_rows = TRUE, cluster_cols = FALSE,
   color_list = NULL, peptide_annotation = NULL,

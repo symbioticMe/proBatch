@@ -6,11 +6,11 @@
 \usage{
 plot_hierarchical_clustering(data_matrix, sample_annotation,
   sample_id_col = "FullRunName", color_list = NULL,
-  factors_to_plot = c("MS_batch", "Diet", "DateTime"),
-  fill_the_missing = 0, distance = "euclidean",
-  agglomeration = "complete", label_samples = TRUE, label_font = 0.2,
-  filename = NULL, width = 38, height = 25, units = c("cm", "in",
-  "mm"), plot_title = NULL, ...)
+  factors_to_plot = NULL, fill_the_missing = 0,
+  distance = "euclidean", agglomeration = "complete",
+  label_samples = TRUE, label_font = 0.2, filename = NULL,
+  width = 38, height = 25, units = c("cm", "in", "mm"),
+  plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -85,6 +85,7 @@ factor_columns = c('MS_batch', "Strain", "Diet", "digestion_batch"),
 numeric_columns = c('DateTime', 'order'))
 hierarchical_clustering_plot <- plot_hierarchical_clustering(
 example_proteome_matrix, example_sample_annotation,
+factors_to_plot = c('MS_batch', "Strain", 'DateTime', "digestion_batch"),
 color_list = color_list,  
 distance = "euclidean", agglomeration = 'complete',
 label_samples = FALSE)

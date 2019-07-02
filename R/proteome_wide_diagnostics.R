@@ -33,6 +33,7 @@
 #' numeric_columns = c('DateTime', 'order'))
 #' hierarchical_clustering_plot <- plot_hierarchical_clustering(
 #' example_proteome_matrix, example_sample_annotation,
+#' factors_to_plot = c('MS_batch', "Strain", 'DateTime', "digestion_batch"),
 #' color_list = color_list,  
 #' distance = "euclidean", agglomeration = 'complete',
 #' label_samples = FALSE)
@@ -44,7 +45,7 @@
 plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
                                           sample_id_col = 'FullRunName',
                                           color_list = NULL,
-                                          factors_to_plot = c('MS_batch', 'Diet', 'DateTime'),
+                                          factors_to_plot = NULL,
                                           fill_the_missing = 0,
                                           distance = "euclidean",
                                           agglomeration = 'complete',
@@ -182,7 +183,7 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 #' @name plot_heatmap_diagnostic
 plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL, 
                                     sample_id_col = 'FullRunName',
-                                    factors_to_plot = c('MS_batch','Diet', 'DateTime', 'digestion_batch'),
+                                    factors_to_plot = NULL,
                                     fill_the_missing = -1, 
                                     color_for_missing = 'black',
                                     heatmap_color = colorRampPalette(
