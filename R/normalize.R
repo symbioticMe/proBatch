@@ -126,12 +126,12 @@ normalize_sample_medians_df <- function(df_long,
     mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE),
            
            !!(old_measure_col) := !!(sym(measure_col))) %>%
-    mutate(diff = median_global - median_run) %>%
-    mutate(!!(sym(measure_col)) := !!(sym(measure_col))+diff)
+    mutate(diff_norm = median_global - median_run) %>%
+    mutate(!!(sym(measure_col)) := !!(sym(measure_col))+diff_norm)
   
-  if (keep_all){
+  if (!keep_all){
     normalized_df = normalized_df %>%
-      merge(df_long, by = c(feature_id_col, sample_id_col))
+      select(!!!syms(c(feature_id_col, sample_id_col, measure_col)))
   }
   
   return(normalized_df)
@@ -184,18 +184,20 @@ normalize_data_df <- function(df_long,
     normalized_df = quantile_normalize_df(df_long, 
                                           feature_id_col = feature_id_col, 
                                           measure_col = measure_col,
-                                          sample_id_col = sample_id_col)
+                                          sample_id_col = sample_id_col,
+                                          keep_all = keep_all)
   } else if(normalize_func == "medianCentering"){
     normalized_df = normalize_sample_medians_df(df_long, 
                                                 sample_id_col = sample_id_col, 
-                                                measure_col = measure_col)
+                                                measure_col = measure_col,
+                                                keep_all = keep_all)
   } else {
     stop("Only quantile and median centering normalization methods are available")
   }
   
-  if (keep_all){
+  if (!keep_all){
     normalized_df = normalized_df %>%
-      merge(df_long, by = c(feature_id_col, sample_id_col))
+      select(!!!syms(c(feature_id_col, measure_col, sample_id_col)))
   }
   
   return(normalized_df)
