@@ -88,7 +88,7 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
   }
   
   
-  if (length(setdiff(names(color_list), factors_to_plot)) > 0){
+  if (length(setdiff(names(color_list), factors_to_plot)) > 0 && !is.null(factors_to_plot)){
     color_list = color_list[factors_to_plot]
   }
   
@@ -315,6 +315,8 @@ plot_heatmap_generic <- function(data_matrix,
     if(!is.null(columns_for_cols)){
       annotation_col = column_annotation_df %>% 
         select(one_of(col_ann_id_col, columns_for_cols))
+    } else {
+      annotation_col = column_annotation_df
     }
     annotation_col = annotation_col %>%
       mutate_if(is.POSIXct, as.numeric) %>%
@@ -326,6 +328,8 @@ plot_heatmap_generic <- function(data_matrix,
     if(!is.null(columns_for_rows)){
       annotation_row = row_annotation_df %>% 
         select(one_of(row_ann_id_col, columns_for_rows))
+    } else {
+      annotation_row = row_annotation_df
     }
     
     annotation_row = annotation_row %>%

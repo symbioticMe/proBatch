@@ -157,6 +157,7 @@ plot_protein_corrplot <- function(data_matrix,
 #' 
 #' sample_corr_heatmap <- plot_sample_corr_heatmap(example_proteome_matrix, 
 #' samples_to_plot = specified_samples, 
+#' factors_to_plot = c('MS_batch','Diet', 'DateTime', 'digestion_batch'),
 #'  cluster_rows= FALSE, cluster_cols=FALSE,
 #'  annotation_names_col = TRUE, annotation_legend = FALSE, 
 #'  show_colnames = FALSE)
@@ -168,6 +169,7 @@ plot_protein_corrplot <- function(data_matrix,
 #' numeric_columns = c('DateTime', 'order'))
 #'  sample_corr_heatmap_annotated <- plot_sample_corr_heatmap(log_transform_dm(example_proteome_matrix), 
 #'  sample_annotation = example_sample_annotation,
+#'  factors_to_plot = c('MS_batch','Diet', 'DateTime', 'digestion_batch'),
 #'  cluster_rows= FALSE, cluster_cols=FALSE,
 #'  annotation_names_col = TRUE, 
 #'  show_colnames = FALSE, color_list = color_list)
@@ -177,7 +179,7 @@ plot_protein_corrplot <- function(data_matrix,
 plot_sample_corr_heatmap <- function(data_matrix, samples_to_plot = NULL,
                                      sample_annotation = NULL, 
                                      sample_id_col = 'FullRunName',
-                                     factors_to_plot = c('MS_batch','Diet', 'DateTime', 'digestion_batch'),
+                                     factors_to_plot = NULL,
                                      cluster_rows = FALSE, cluster_cols = FALSE,
                                      heatmap_color = colorRampPalette(
                                        rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
