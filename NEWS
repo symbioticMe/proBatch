@@ -18,5 +18,10 @@ old column as:
 * renamed functions: 
   - "center_peptide_batch_medians" to "center_feature_batch_medians"
   - "normalize_custom_fit" into "adjust_batch_trend";
+* harmonised arguments in plotting functions, all of them now take sample annotation and color_list/color_scheme.
+* simplified color scheme definition and usage, which is now consistent over all plotting functions (check updated argument definitions!)
+* Added internal automated definition of color scheme (useful when single plotting functions are used, and color scheme consistency is not critical);
 * consistent handling of missing values by proteome-wide diagnostic functions;
+* renamed "plot_heatmap" into "plot_heatmap_diagnostic" as now "plot_heatmap_generic" is added for non-standard cases of heatmap plotting;
+* better legend for DateTime color mapping in meanplots, boxplots and feature-level plots.
 
