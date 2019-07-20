@@ -9,7 +9,8 @@
   \item{peptide_group_label}{peptide group label ID, identical to 
   \code{peptide_group_label} in \code{example_proteome}}
   \item{Gene}{HUGO gene ID}
-  \item{ProteinName}{protein group name as specified in \code{example_proteome}}
+  \item{ProteinName}{protein group name as specified in 
+  \code{example_proteome}}
   }}
 \usage{
 example_peptide_annotation

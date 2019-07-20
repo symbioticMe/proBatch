@@ -2,32 +2,22 @@
 % Please edit documentation in R/colors_for_annotation.R
 \name{generate_colors_for_numeric}
 \alias{generate_colors_for_numeric}
-\title{Generates color list}
+\title{Generates color vector from continous palette}
 \usage{
-generate_colors_for_numeric(num_col, palette_type = "brewer", i = 1,
-  granularity = 10)
+generate_colors_for_numeric(palette_type = "brewer", i = 1)
 }
 \arguments{
-\item{num_col}{a vector of type numeric of factor to generate colors for}
-
 \item{palette_type}{'brewer' or 'viridis'}
 
 \item{i}{if \code{palette_type} is 'brewer' the palette argument to
 \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument
-to virids_pal ()}
-
-\item{granularity}{the breaks to use when generating colors for num_col}
+to \code{viridis_pal}}
 }
 \value{
-list, containing the following items:
-\enumerate{
-\item \code{color_vector} - string-like vector of colors
-\item \code{new_annotation} - factor representation of numeric vector 
-(factor with number of levels equal to "granularity")
-}
+vector of colors
 }
 \description{
-Generates a list of colors for a vector of numeric, POSIXct (i.e. the
+Generates a vector of colors for a vector of numeric, POSIXct (i.e. the
 (signed) number of seconds since the beginning of 1970 , or factors
 }
 \keyword{internal}

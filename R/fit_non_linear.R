@@ -12,21 +12,22 @@
 #' @param fit_func function to use for the fit, e.g. \code{loess_regression}
 #' @param optimize_span logical, whether to specify span or optimize it 
 #' (specific entirely for LOESS regression)
-#' @param no_fit_imputed (logical) whether to fit requanted values
+#' @param no_fit_imputed (logical) whether to fit the imputed (requant) values
 #' @param abs_threshold the absolute threshold to filter 
 #' data for curve fitting 
 #' @param pct_threshold the percentage threshold to filter 
-#' data for curve fitting 
-#' @param ... additional paramters to be passed to the fitting function
+#' data for curve fitting
+#' 
+#' @param ... additional parameters to be passed to the fitting function
 #'
 #' @return vector of fitted response values
 #' 
-#' @example 
-#' df_selected = example_proteome %>% 
-#' merge(example_sample_annotation, by = 'FullRunName') %>%
-#' filter(peptide_group_label == example_proteome$peptide_group_label[1] &&
-#' MS_batch == 'Batch_1')
-#' fit_values = fit_nonlinear(df_selected)
+#' @examples 
+#' test_peptide = example_proteome$peptide_group_label[1] 
+#' df_selected = example_proteome[example_proteome$peptide_group_label == test_peptide,]
+#' batch_selected_df = example_sample_annotation[example_sample_annotation$MS_batch == 'Batch_1',]
+#' df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
+#' fit_values = fit_nonlinear(df_for_test)
 #' 
 #' @export
 #' 
@@ -37,24 +38,23 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
                           optimize_span = FALSE, 
                           no_fit_imputed = FALSE, qual_col = 'm_score', qual_value = 2,
                           abs_threshold = 5, pct_threshold = 0.20, ...){
-    message(sprintf("fitting curve for %s in batch %s\n", feature_id, batch_id))
-    df_feature_batch <- df_feature_batch[sort.list(df_feature_batch[[order_col]]),]
-    x_all = df_feature_batch[[order_col]]
-    y = df_feature_batch[[measure_col]]
+  #df_feature_batch <- df_feature_batch[sort.list(df_feature_batch[[order_col]]),]
+  x_all = df_feature_batch[[order_col]]
+  y = df_feature_batch[[measure_col]]
     
-    if(no_fit_imputed){
-      if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
-        warning('imputed value column is in the data, fitting curve only to measured, non-imputed values')
-        imputed_values <- df_feature_batch[[qual_col]] == qual_value
-        x_to_fit = x_all[!imputed_values]
-        y = y[!imputed_values]
-      } else {
-        stop('imputed values are specified not to be used for curve fitting, however, no flag for imputed values is specified')
+  if(no_fit_imputed){
+    if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
+      warning('imputed value column is in the data, fitting curve only to measured, non-imputed values')
+      imputed_values <- df_feature_batch[[qual_col]] == qual_value
+      x_to_fit = x_all[!imputed_values]
+      y[imputed_values] = NA
+    } else {
+      stop('imputed values are specified not to be used for curve fitting, however, 
+           no flag for imputed values is specified')
       }
-      
     } else {
       if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
-        warning('requant column is in the data, are you sure you want to fit non-linear curve to these values, too?')
+        warning('imputed value (requant) column is in the data, are you sure you want to fit non-linear curve to these values, too?')
       }
       x_to_fit = x_all
     }
@@ -87,6 +87,7 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
                       in the batch %s, leaving the original value", feature_id, batch_id))
       fit_res = y
     }
+  fit_res[is.na(y)] = NA
   return(fit_res)
 }
 
@@ -131,14 +132,17 @@ loocv.nw <- function(x, y, bw = 1.5, kernel = "normal"){
   ## Calculate LOO regression values using the help function above
   
   n <- max(length(x), length(y))
-  loo.values.bw <- sapply(1:n, loo.reg.value.bw, x, y, bw, kernel)
+  loo.values.bw <- vapply(seq_len(n), FUN = loo.reg.value.bw, 
+                          FUN.VALUE = numeric(1),
+                          x, y, bw, kernel)
   ## Calculate and return MSE
   return(mean((y - loo.values.bw)^2))
 }
 
 optimise_bw <- function(x, y, kernel = 'normal',
                         bws = c(0.01, 0.5, 1, 1.5, 2, 5, 10)){
-  cv.nw_mult = sapply(bws, function(bw) loocv.nw(x, y, bw, kernel))
+  cv.nw_mult = vapply(bws, FUN = function(bw) loocv.nw(x, y, bw, kernel), 
+                      FUN.VALUE = numeric(1))
   bw_best = bws[which.min(cv.nw_mult)]
   return(bw_best)
 }
@@ -152,7 +156,7 @@ optimise_df <- function(x, bw){
   n <- length(x)
   Id <- diag(n)
   S.nw <- matrix(0, n, n)
-  for (j in 1:n)
+  for (j in seq_len(n))
       S.nw[, j] <- reg.fcn.nw(x, Id[,j],x, bw = bw)
     df.nw <- sum(diag(S.nw))
     return(df.nw)

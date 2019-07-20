@@ -10,7 +10,7 @@
 #' @param ylimits range of y-axis to compare two plots side by side, if required.
 #' @param outliers keep (default) or remove the boxplot outliers
 #' 
-#' @return ggplot2 class object. Thus, all aesthetics can be overriden
+#' @return ggplot2 class object. Thus, all aesthetics can be overridden
 #'
 #' @seealso \code{\link[ggplot2]{ggplot}}, \link{date_to_sample_order}
 #' @name plot_sample_mean_or_boxplot
@@ -21,6 +21,20 @@
 #' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 #' order_col = 'order', batch_col = "MS_batch")
 #' 
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch'),
+#' numeric_columns = c('DateTime', 'order'))
+#' plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+#' order_col = 'order', batch_col = "MS_batch", color_by_batch = T, 
+#' color_scheme = color_list[["MS_batch"]])
+#' 
+#' \dontrun{
+#' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+#'                               order_col = 'order', batch_col = "MS_batch", 
+#'                               filename = 'test_meanplot.png', 
+#'                               width = 28, height = 18, units = 'cm')
+#' }
+#' 
 plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              sample_id_col = 'FullRunName',
                              batch_col = "MS_batch",
@@ -28,6 +42,8 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              order_col = 'order',
                              vline_color = 'grey',
                              facet_col = NULL,
+                             filename = NULL, width = NA, height = NA, 
+                             units = c('cm','in','mm'),
                              plot_title = NULL,
                              theme = 'classic',
                              ylimits = NULL){
@@ -36,13 +52,12 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   sample_average = colMeans(data_matrix, na.rm = TRUE)
   #names(sample_average) = colnames(data_matrix)
   
-  df_ave = data.frame(Average_Intensity = sample_average,
-                      order_temp_col = 1:length(sample_average),
+  df_ave = data.frame(Mean_Intensity = sample_average,
                       sample_id_col = colnames(data_matrix))
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
-  df_ave = check_sample_consistency(sample_annotation, sample_id_col, df_ave)
+  df_ave = check_sample_consistency(sample_annotation, sample_id_col, df_ave, batch_col, order_col, facet_col)
   
   #Ensure that batch-coloring-related arguments are defined properly
   if(!is.null(batch_col)){
@@ -50,8 +65,6 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
       stop('batches cannot be colored as the batch column or sample ID column
              is not defined, check sample_annotation and data matrix')
     }
-    #For proper plotting, batch column has to be a factor
-    df_ave[, batch_col] <- as.factor(df_ave[, batch_col])
   } else {
     if (color_by_batch){
       warning('batches cannot be colored as the batch column is defined as NULL, continuing without colors')
@@ -78,17 +91,27 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     geom_point()
   
   #add colors
-  gg = color_points_by_batch(color_by_batch, batch_col, gg, color_scheme, sample_annotation)
+  gg = color_by_factor(color_by_batch = color_by_batch, 
+                       batch_col = batch_col, gg = gg, 
+                       color_scheme = color_scheme, 
+                       sample_annotation = sample_annotation,
+                       fill_or_color = 'color')
   
   #add vertical lines, if required (for order-related effects)
-  if (!is.null(sample_annotation)){
-    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
-                                    facet_col, sample_annotation, gg)
-  } else {
-    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
-                                    facet_col, df_ave, gg)
+  if (!is.null(batch_col)){
+    batch_vector <- sample_annotation[[batch_col]]
+    is_factor = is_batch_factor(batch_vector, color_scheme)
   }
   
+  if (!is.null(batch_col) && is_factor){
+    if (!is.null(sample_annotation)){
+      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                      facet_col, sample_annotation, gg)
+    } else {
+      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+                                      facet_col, df_ave, gg)
+    }
+  }
   
   #Plot each "facet factor" in it's own subplot
   if(!is.null(facet_col)){
@@ -105,6 +128,8 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   #Change the theme
   if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
+  } else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
   
   #Change the limits of vertical axes
@@ -124,9 +149,13 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   }
   
   #Move the legend to the upper part of the plot to save the horizontal space
-  if (length(unique(df_ave[[order_col]])) > 30){
+  
+  if (length(unique(df_ave[[order_col]])) > 30 && color_by_batch && is_factor){
     gg = gg + theme(legend.position="top")
   }
+  
+  #save the plot
+  save_ggplot(filename, units, width, height, gg)
   
   return(gg)
 }
@@ -137,8 +166,24 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' @export
 #'
 #' @examples
-#' boxplot <- plot_boxplot(example_proteome, example_sample_annotation, 
+#' boxplot <- plot_boxplot(log_transform_df(example_proteome), 
+#' sample_annotation = example_sample_annotation, 
 #' batch_col = "MS_batch")
+#' 
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch'),
+#' numeric_columns = c('DateTime', 'order'))
+#' plot_boxplot(log_transform_df(example_proteome), 
+#' sample_annotation = example_sample_annotation, 
+#' batch_col = "MS_batch", color_scheme = color_list[["MS_batch"]])
+
+#' 
+#' \dontrun{
+#' boxplot <- plot_boxplot(log_transform_df(example_proteome), 
+#' sample_annotation = example_sample_annotation, 
+#' batch_col = "MS_batch", filename = 'test_boxplot.png', 
+#' width = 14, height = 9, units = 'in')
+#' }
 #' 
 plot_boxplot <- function(df_long, sample_annotation = NULL,
                          sample_id_col = 'FullRunName',
@@ -147,11 +192,13 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                          color_by_batch = TRUE, color_scheme = 'brewer',
                          order_col = 'order',
                          facet_col = NULL,
+                         filename = NULL, width = NA, height = NA, 
+                         units = c('cm','in','mm'),
                          plot_title = NULL, theme = 'classic',
                          ylimits = NULL, outliers = TRUE){
   
   #Check the consistency of sample annotation sample IDs and measurement table sample IDs
-  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, batch_col, order_col, facet_col)
   
   #Ensure that batch-coloring-related arguments are defined properly
   if(!is.null(batch_col)){
@@ -159,8 +206,6 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       stop('batches cannot be colored as the batch column or sample ID column
              is not defined, check sample_annotation and data matrix')
     }
-    #For proper plotting, batch column has to be a factor
-    df_long[, batch_col] <- as.factor(df_long[, batch_col])
   } else {
     if (color_by_batch){
       warning('batches cannot be colored as the batch column is defined as NULL, continuing without colors')
@@ -176,7 +221,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     }
   }
   
-  #Defining sample order for plotting
+  #Defining sample order for plotting (even if order_col NULL, it will re-arrange df_long levels as required for plotting)
   sample_order = define_sample_order(order_col, sample_annotation, facet_col, batch_col, df_long, 
                                      sample_id_col, color_by_batch)
   order_col = sample_order$order_col
@@ -193,8 +238,12 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     
   
   #Define the color scheme, add colors
-  gg = color_fill_boxes_by_batch(color_by_batch, batch_col, gg, color_scheme, df_long)
-  
+  gg = color_by_factor(color_by_batch = color_by_batch, 
+                       batch_col = batch_col, gg = gg, 
+                       color_scheme = color_scheme, 
+                       sample_annotation = sample_annotation,
+                       fill_or_color = 'fill')
+
   #Plot each "facet factor" in it's own subplot
   if(!is.null(facet_col)){
     gg = gg + facet_wrap(as.formula(paste("~", facet_col)),
@@ -211,6 +260,8 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   #Change the plot theme
   if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
+  } else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
   
   #Change the limits of vertical axes
@@ -229,10 +280,18 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
   }
   
+  if (!is.null(batch_col)){
+    batch_vector <- sample_annotation[[batch_col]]
+    is_factor = is_batch_factor(batch_vector, color_scheme)
+  }
+  
   #Move the legend to the upper part of the plot to save the horizontal space
-  if (length(unique(df_long[[order_col]])) > 30){
+  if (length(unique(df_long[[order_col]])) > 30  && color_by_batch && is_factor){
     gg = gg + theme(legend.position="top")
   }
+  
+  #save the plot
+  save_ggplot(filename, units, width, height, gg)
   
   return(gg)
 }

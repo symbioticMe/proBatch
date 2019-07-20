@@ -16,7 +16,8 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }}
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
 \item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
 plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
@@ -25,12 +26,12 @@ or simultaneous examination of two batch factors (e.g. preparation day and measu
 For single-instrument case should be set to `NULL`}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
-batch comparison}
+batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
 \item{df_long}{data frame where each row is a single feature in a single
 sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
 \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file)}
+file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
 
 \item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
 filenames (colnames of the data matrix are found).}
@@ -45,8 +46,10 @@ list of two items: \code{order_col} new name and new \code{df_long}
 Defining sample order internally
 }
 \examples{
-sample_order = define_sample_order(order_col, sample_annotation, 
-facet_col, batch_col, df_long, sample_id_col, color_by_batch)
+sample_order = define_sample_order(order_col = 'order', 
+sample_annotation = example_sample_annotation, 
+facet_col = NULL, batch_col = 'MS_batch', df_long = example_proteome, 
+sample_id_col = 'FullRunName', color_by_batch = TRUE)
 new_order_col = sample_order$order_col
 df_long = sample_order$df_long
 

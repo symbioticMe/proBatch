@@ -5,13 +5,13 @@ test_that("corr_matrix_plots", {
   data(example_proteome_matrix, package="proBatch")
   peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2")
   
-  matrix = example_proteome_matrix[peptides,]
-  corr_matrix = cor(t(matrix), use = 'complete.obs')
-  cor_matrix <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
+  matrix_test = example_proteome_matrix[peptides,]
+  corr_matrix = cor(t(matrix_test), use = 'complete.obs')
+  corr_matrix_func <- plot_corr_matrix(corr_matrix)
   
-  expect_equivalent(cor_matrix[1], 1)
-  expect_equivalent(cor_matrix[2], 0.9111542373)
-  expect_equivalent(cor_matrix[4], 1)
+  expect_equivalent(corr_matrix_func[1], 1)
+  expect_equivalent(corr_matrix_func[2], 0.9096027)
+  expect_equivalent(corr_matrix_func[4], 1)
 })
 
 
@@ -21,7 +21,7 @@ test_that("protein_corrplot_plots", {
 
   corrplot <- plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
                         peptide_annotation = example_peptide_annotation, 
-                        protein_col = 'Gene', flavor = "pheatmap")
+                        protein_col = 'Gene')
   
   expect_equivalent(corrplot$tree_row$method, "complete")
   expect_equivalent(corrplot$tree_row$dist.method, "euclidean")
@@ -33,7 +33,7 @@ test_that("protein_corrplot_plots", {
 })
 
 
-test_that("sample_corr_heatmaps", {
+test_that("sample_corr_heatmap", {
   data(example_proteome_matrix, package="proBatch")
   data(example_sample_annotation, package = "proBatch")
   
@@ -42,7 +42,7 @@ test_that("sample_corr_heatmaps", {
   
   expect_warning(sample_heatmap <- plot_sample_corr_heatmap(example_proteome_matrix, 
                            samples_to_plot = specified_samples, 
-                           flavor = 'pheatmap',  cluster_rows= TRUE, cluster_cols=TRUE,
+                           cluster_rows= TRUE, cluster_cols=TRUE,
                            annotation_names_col = TRUE, annotation_legend = FALSE, 
                            show_colnames = FALSE))
   
@@ -62,12 +62,12 @@ test_that("sample_corr_heatmaps", {
 })
 
 
-test_that("sample_distribution_plots", {
+test_that("sample_distribution_plot", {
   data(example_proteome_matrix, package="proBatch")
   data(example_sample_annotation, package = "proBatch")
   
-  matrix <- example_proteome_matrix[1:20, ]
-  sample_dist <- plot_sample_corr_distribution(matrix,
+  matrix_test <- example_proteome_matrix[1:20, ]
+  sample_dist <- plot_sample_corr_distribution(matrix_test,
                                 example_sample_annotation, batch_col = 'MS_batch', 
                                 biospecimen_id_col = "EarTag", 
                                 plot_param = 'batch_replicate')
@@ -75,11 +75,34 @@ test_that("sample_distribution_plots", {
   expect_equivalent(sample_dist$labels$x, "batch_replicate")
   expect_equivalent(sample_dist$labels$y, "correlation")
   
-  expect_equivalent(sample_dist$plot_env$batch_col, "MS_batch")
-  expect_equivalent(sample_dist$plot_env$biospecimen_id_col, "EarTag")
+  expect_is(sample_dist$plot_env$corr_distribution, "data.frame")
   expect_equivalent(sample_dist$plot_env$plot_param,  "batch_replicate")
-  expect_equivalent(sample_dist$plot_env$repeated_samples, NULL)
+  expect_is(sample_dist$plot_env$gg, 'ggplot')
 
+})
+
+test_that("calculate_sample_corr_distribution", {
+  data(example_proteome_matrix, package="proBatch")
+  data(example_sample_annotation, package = "proBatch")
+  
+  matrix_test <- example_proteome_matrix[1:20, ]
+  corr_distribution = calculate_sample_corr_distr(data_matrix = matrix_test, 
+                                                  repeated_samples = NULL,
+                                                  sample_annotation = example_sample_annotation,
+                                                  biospecimen_id_col = "EarTag", 
+                                                  sample_id_col = 'FullRunName', 
+                                                  batch_col = 'MS_batch')
+  
+  expect_is(corr_distribution, "data.frame")
+  
+  sample_cols = paste('FullRunName', seq_len(2), sep = "_")
+  
+  expect_equivalent("batch_replicate" %in% names(corr_distribution), TRUE)
+  expect_equivalent("correlation" %in% names(corr_distribution), TRUE)
+  expect_equivalent("replicate" %in% names(corr_distribution), TRUE)
+  expect_equivalent(all(sample_cols %in% names(corr_distribution)), TRUE)
+  
+  
 })
 
 
@@ -87,14 +110,15 @@ test_that("peptide_distribution_plots", {
   data(example_proteome_matrix, package="proBatch")
   data(example_peptide_annotation, package = "proBatch")
 
-  matrix <- example_proteome_matrix[1:20, ]
-  peptide_dist <- plot_peptide_corr_distribution(matrix, 
-                                      example_peptide_annotation, protein_col = 'Gene')
+  matrix_test <- example_proteome_matrix[1:20, ]
+  peptide_dist <- plot_peptide_corr_distribution(data_matrix = matrix_test, 
+                                                 peptide_annotation = example_peptide_annotation, 
+                                                 protein_col = 'Gene')
   
-  expect_equivalent(peptide_dist$labels$x, "same_protein")
+  expect_equivalent(peptide_dist$labels$x, NULL)
   expect_equivalent(peptide_dist$labels$y, "correlation")
   
-  expect_equivalent(peptide_dist$plot_env$protein_col, "Gene")
-  expect_equivalent(peptide_dist$plot_env$feature_id_col, "peptide_group_label")
+  expect_is(peptide_dist$plot_env$corr_distribution, "data.frame")
+  expect_equal(peptide_dist$plot_env$median_same_prot, 0.8010358, tolerance=1e-6)
   
 })

@@ -7,26 +7,30 @@
 \format{A data frame with 124655 rows and 5 variables:
 \describe{
   \item{peptide_group_label}{peptide ID, which is regular feature level. 
-  This column is mostly used as \code{feature_id_col}}
+  This column is mostly used as \code{feature_id_col}} used for merging with 
+  \code{"example_peptide_annotation"}
   \item{Intensity}{peptide group intensity in given sample. 
   Used in function as \code{measure_col}}
   \item{ProteinName}{Protein group ID, specified as 
   N/UniProtID1|UniProtID2|...,
   where N is number of protein peptide group maps to. If 
-  1/UniProtID, then this is proteotypic peptide}
-  \item{Gene}{conventional gene name of corresponding ProteinName}
-  \item{FullRunName}{name of the file, in most functions used for \code{sample_id_col}}
+  1/UniProtID, then this is proteotypic peptide, in functions used as 
+  \code{protein_col}}
+  \item{Gene}{conventional gene name of corresponding \code{ProteinName}, 
+  in functions used as \code{protein_col}}
+  \item{FullRunName}{name of the file, in most functions used for 
+  \code{sample_id_col}}
 ...
 }}
 \source{
-PRIDE ID will be added in future
+PRIDE ID will be added upon the publication of the dataset
 }
 \usage{
 example_proteome
 }
 \description{
-This is data from Aging study with all iRT, spike-in peptides,
-few random peptides and QTL proteins for biological 
-signal improvement demonstration
+This is OpenSWATH-output data from Aging study with all iRT, spike-in peptides,
+few representative peptides and proteins for signal improvement demonstration.
+Using \code{matrix_to_long} can be converted to \code{example_proteome_matrix}
 }
 \keyword{datasets}

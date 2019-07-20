@@ -6,12 +6,13 @@
 \usage{
 dates_to_posix(sample_annotation, time_column = c("RunDate", "RunTime"),
   new_time_column = "DateTime", dateTimeFormat = c("\%b_\%d",
-  "\%H:\%M:\%S"))
+  "\%H:\%M:\%S"), tz = "GMT")
 }
 \arguments{
 \item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
 (this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }}
+technical covariates (batches etc) }. 
+See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
 
 \item{time_column}{name of the column(s) where run date & time are specified.
 These will be used to determine the run order}
@@ -21,6 +22,8 @@ converted to}
 
 \item{dateTimeFormat}{POSIX format of the date and time. 
 See \code{\link{as.POSIXct}} from base R for details}
+
+\item{tz}{for time zone}
 }
 \value{
 sample annotation file with a new column \code{new_time_column} with
@@ -28,7 +31,7 @@ sample annotation file with a new column \code{new_time_column} with
 }
 \description{
 convert date/time column of sample_annotation to POSIX format required to
-keep number-like behaviour
+keep number-like behavior
 }
 \examples{
 date_to_posix <- dates_to_posix(example_sample_annotation, 
