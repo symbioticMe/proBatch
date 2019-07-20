@@ -9,5 +9,6 @@ Meta
 *.Rapp.history
 #inst/doc
 #vignettes/
-#/.Rd2pdf*
+/.Rd2pdf*
 #NAMESPACE
+doc

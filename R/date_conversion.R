@@ -1,7 +1,7 @@
 #' Convert data/time to POSIXct
 #'
 #' convert date/time column of sample_annotation to POSIX format required to
-#' keep number-like behaviour
+#' keep number-like behavior
 #'
 #' @inheritParams proBatch
 #' @param time_column name of the column(s) where run date & time are specified.
@@ -10,6 +10,7 @@
 #'   converted to
 #' @param dateTimeFormat POSIX format of the date and time. 
 #'   See \code{\link{as.POSIXct}} from base R for details
+#' @param tz for time zone
 #'
 #' @return sample annotation file with a new column \code{new_time_column} with
 #'   POSIX-formatted date
@@ -26,12 +27,12 @@
 dates_to_posix <- function(sample_annotation,
                            time_column = c('RunDate','RunTime'),
                            new_time_column = 'DateTime',
-                           dateTimeFormat = c("%b_%d", "%H:%M:%S")){
+                           dateTimeFormat = c("%b_%d", "%H:%M:%S"), tz = 'GMT'){
   if (length(time_column) == 1){
     if(is.null(new_time_column)) new_time_column = time_column
     time_col = as.character(sample_annotation[[time_column]])
     sample_annotation[[new_time_column]] = as.POSIXct(time_col ,
-                                                      format=dateTimeFormat)
+                                                      format=dateTimeFormat, tz = tz)
   }
   else {
     sample_annotation = sample_annotation %>%
@@ -83,11 +84,11 @@ date_to_sample_order <- function(sample_annotation,
                                      time_column = time_column,
                                      new_time_column = new_time_column,
                                      dateTimeFormat = dateTimeFormat)
-  sample_annotation = sample_annotation %>% arrange(UQ(sym(new_time_column)))
+  sample_annotation = sample_annotation %>% arrange(!!(sym(new_time_column)))
   if (!is.null(instrument_col)){
     sample_annotation = sample_annotation %>%
       group_by_at(vars(one_of(instrument_col))) %>%
-      mutate(UQ(sym(new_order_col)) := rank(!!sym(new_time_column))) %>%
+      mutate(!!(sym(new_order_col)) := rank(!!sym(new_time_column))) %>%
       ungroup()
   } else {
     sample_annotation[[new_order_col]] = rank(sample_annotation[[new_time_column]])

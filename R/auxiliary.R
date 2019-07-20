@@ -1,4 +1,4 @@
-#' Long to wide conversion
+#' Long to wide data format conversion
 #'
 #' Convert from a long data frame representation to a wide matrix representation
 #'
@@ -33,8 +33,8 @@ long_to_matrix <- function(df_long,
 #'
 #' @inheritParams proBatch
 #'
-#' @param step normalization step (e.g. \code{Raw} or \code{Quantile_normalized} or
-#'   \code{qNorm_ComBat}). Useful if consecutive steps are compared in plots. Note
+#' @param step normalization step (e.g. \code{Raw} or \code{Normalized}.
+#' Useful if consecutive steps are compared in plots. Note
 #'   that in plots these are usually ordered alphabetically, so it's worth
 #'   naming with numbers, e.g. \code{1_raw}, \code{2_quantile}
 #'
@@ -52,12 +52,6 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
                            measure_col = 'Intensity',
                            sample_id_col = 'FullRunName',
                            step = NULL){
-  if(!is.null(sample_annotation)){
-    if(!setequal(unique(sample_annotation[[sample_id_col]]), 
-                 unique(colnames(data_matrix)))){
-      warning('Sample IDs in sample annotation not 
-                    consistent with samples in input data.')}
-  }
   
   df_long = data_matrix %>%
     as.data.frame() %>%
@@ -68,9 +62,15 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
     df_long = df_long %>%
       mutate(Step = step)
   }
-  if(!is.null(sample_annotation))
-    df_long = df_long %>%
-    merge(sample_annotation, by = sample_id_col)
+  
+  if(!is.null(sample_annotation)){
+    df_long = check_sample_consistency(sample_annotation = sample_annotation, 
+                                       sample_id_col = sample_id_col, 
+                                       df_long = df_long, 
+                                       batch_col = NULL, order_col = NULL, 
+                                       facet_col = NULL, merge = FALSE)
+  }
+  
   return(df_long)
 }
 
@@ -82,22 +82,21 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #' for selection of illustrative proteins
 #'
 #' @inheritParams proBatch
-#' 
-#' @param annotation_col one or more columns contatining protein ID
 #'
 #' @return data frame containing petpide annotations 
 #' @export
 #' @examples 
 #' generated_peptide_annotation <- create_peptide_annotation(
 #' example_proteome, feature_id_col = "peptide_group_label",
-#' annotation_col = c("ProteinName" ))
+#' protein_col = c("ProteinName" ))
 #' 
 #' @seealso \code{\link{plot_peptides_of_one_protein}}, 
 #' \code{\link{plot_protein_corrplot}}
-create_peptide_annotation <- function(df_long, feature_id_col = 'peptide_group_label',
-                                      annotation_col = c("ProteinName" )){
+create_peptide_annotation <- function(df_long, 
+                                      feature_id_col = 'peptide_group_label',
+                                      protein_col = c("ProteinName", "Gene")){
   peptide_annotation = df_long %>%
-    select(one_of(c(feature_id_col, annotation_col))) %>%
+    select(one_of(c(feature_id_col, protein_col))) %>%
     distinct()
   return(peptide_annotation)
 }
