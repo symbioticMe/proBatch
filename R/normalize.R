@@ -70,7 +70,6 @@ quantile_normalize <- function(data_matrix){
 #'
 #' @return
 #' @export
-#' @import tidyverse
 #' @import lazyeval
 #'
 #' @examples
@@ -103,7 +102,6 @@ median_normalization <- function(data_matrix, sample_annotation,
 #'
 #' @return
 #' @export
-#' @import tidyverse
 #' @import reshape2
 #' @import lazyeval
 #'
