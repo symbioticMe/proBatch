@@ -43,121 +43,162 @@
 #' @name normalize
 NULL
 
-
-
-#' Quantile normalization of the data, ensuring that the row and column names are retained
-#'
-#' @param data_matrix log transformed data matrix (features in rows and samples in columns)
-#'
-#' @return
+#' 
 #' @export
-#' @import preprocessCore
+#' @rdname normalize
 #'
-#' @examples
-quantile_normalize <- function(data_matrix){
+quantile_normalize_dm <- function(data_matrix){
   q_norm_proteome = normalize.quantiles(data_matrix)
   colnames(q_norm_proteome) = colnames(data_matrix)
   rownames(q_norm_proteome) = rownames(data_matrix)
   return(q_norm_proteome)
 }
 
-#' Median normalization of the data
-#'
-#' @param sample_annotation
-#' @param batch_column
-#' @param measure_column
-#' @param data_matrix
-#'
-#' @return
+#' 
 #' @export
-#' @import lazyeval
+#' @rdname normalize
 #'
-#' @examples
-median_normalization <- function(data_matrix, sample_annotation,
-                                 batch_column, measure_column)
-  {
-  data_matrix = data_matrix %>% merge(sample_annotation) %>%
-    group_by_at(vars(one_of(batch_column))) %>%
-    mutate_(median = interp(~median(measurement),
-            measurement = as.name(measure_column))) %>%
-    ungroup() %>%
-    mutate_(median_overall = interp(~median(measurement),
-            measurement = as.name(measure_column))) %>%
-    mutate(diff = median - median_overall) %>%
-    mutate()
+quantile_normalize_df <- function(df_long,
+                                  feature_id_col = 'peptide_group_label',
+                                  sample_id_col = 'FullRunName', 
+                                  measure_col = 'Intensity',
+                                  keep_all = FALSE){
+  
+  
+  data_matrix = long_to_matrix(df_long, 
+                               feature_id_col = feature_id_col, 
+                               measure_col = measure_col,
+                               sample_id_col = sample_id_col)
+  q_norm_proteome = normalize.quantiles(data_matrix)
+  colnames(q_norm_proteome) = colnames(data_matrix)
+  rownames(q_norm_proteome) = rownames(data_matrix)
+  normalized_df = matrix_to_long(q_norm_proteome,
+                                 feature_id_col = feature_id_col, 
+                                 measure_col = measure_col,
+                                 sample_id_col = sample_id_col)
+  
+  old_measure_col = paste('preNorm', measure_col, sep = '_')
+  
+  df_long = df_long %>% 
+    rename(!!(old_measure_col) := !!(sym(measure_col))) 
+  
+  if (keep_all){
+    normalized_df = normalized_df %>%
+      merge(df_long, by = c(feature_id_col, sample_id_col))
+  }
+  
+  return(normalized_df)
 }
 
-#' normalize with the custom (continuous) fit
-#'
-#' @param data_matrix
-#' @param sample_annotation
-#' @param batch_col
-#' @param feature_id_col
-#' @param sample_id_column
-#' @param measure_col
-#' @param sample_order_col
-#' @param fit_func
-#' @param return_long
-#' @param ... other parameters, usually those of the `fit_func`
-#'
-#' @return
+#' 
 #' @export
-#' @import reshape2
-#' @import lazyeval
+#' @rdname normalize
 #'
-#' @examples
-normalize_custom_fit <- function(data_matrix, sample_annotation, batch_col,
-                                 feature_id_col, sample_id_column, measure_col,
-                                 sample_order_col, fit_func, return_long = F, ...){
-  data_matrix = as.data.frame(data_matrix)
-  data_matrix[[feature_id_col]] = rownames(data_matrix)
-  df_long = data_matrix %>%
-    melt(id.vars = feature_id_col)
-  names(df_long) = c(feature_id_col, sample_id_column, measure_col)
-
-  df_normalized = df_long %>%
-    merge(sample_annotation) %>%
-    arrange_(feature_id_col, sample_order_col) %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
-    nest() %>%
-    mutate(fit = map(data, fit_func, response.var = measure_col,
-                     expl.var = sample_order_col, ...)) %>%
-    unnest() %>%
-    #change the fit to the corrected data
-    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
-    mutate(mean_fit = mean(fit)) %>%
-    mutate(diff = mean_fit - fit) %>%
-    mutate_(Intensity_normalized = interp(~`+`(x, y),
-                                          x = as.name('diff'),
-                                          y = as.name(measure_col)))
-    #if only the fitted data table is required (not recommended)
-    if(!return_long){
-      casting_formula =  as.formula(paste(feature_id_col, sample_id_column,
-                                          sep =  " ~ "))
-      df_normalized = dcast(df_normalized, formula=casting_formula,
-                            value.var = 'Intensity_normalized')
-                     }
-  return(df_normalized)
+normalize_sample_medians_dm <- function(data_matrix){
+  df_long = matrix_to_long(data_matrix, 
+                           feature_id_col = 'peptide_group_label',
+                           measure_col = 'Intensity', 
+                           sample_id_col = 'FullRunName')
+  normalized_df = normalize_sample_medians_df(df_long, 
+                                              sample_id_col = 'FullRunName', 
+                                              measure_col = 'Intensity')
+  normalized_matrix = long_to_matrix(normalized_df)
+  return(normalized_matrix)
 }
 
-
-#' Standardized input-output ComBat normalization
-#'
-#' @param sample_annotation
-#' @param batch_column
-#' @param par.prior
-#' @param data_matrix
-#'
-#' @return
+#' 
 #' @export
-#' @import sva
+#' @rdname normalize
 #'
-#' @examples
-correct_with_ComBat <- function(data_matrix, sample_annotation,
-                                batch_column = 'MS_batch.final', par.prior = TRUE){
-  batches = sample_annotation[[batch_column]]
-  modCombat = model.matrix(~1, data = sample_annotation)
-  corrected_proteome = ComBat(dat = data_matrix, batch = batches,
-                              mod = modCombat, par.prior = par.prior)
-  return(corrected_proteome)
+normalize_sample_medians_df <- function(df_long,
+                                        feature_id_col = 'peptide_group_label',
+                                        sample_id_col = 'FullRunName',
+                                        measure_col = 'Intensity',
+                                        keep_all = FALSE){
+  normalized_df = df_long  %>%
+    group_by_at(vars(one_of(sample_id_col))) %>%
+    mutate(median_run = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
+    ungroup()
+  
+  old_measure_col = paste('preNorm', measure_col, sep = '_')
+  
+  normalized_df = normalized_df %>%
+    mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE),
+           
+           !!(old_measure_col) := !!(sym(measure_col))) %>%
+    mutate(diff_norm = median_global - median_run) %>%
+    mutate(!!(sym(measure_col)) := !!(sym(measure_col))+diff_norm)
+  
+  if (!keep_all){
+    normalized_df = normalized_df %>%
+      select(!!!syms(c(feature_id_col, sample_id_col, measure_col)))
+  }
+  
+  return(normalized_df)
+}
+
+#' 
+#' @export
+#' @rdname normalize
+#' 
+#' 
+normalize_data_dm <- function(data_matrix, normalize_func = c("quantile", "medianCentering"), 
+                           log_base = NULL, offset = 1){
+  
+  normalize_func <- match.arg(normalize_func)    
+  if(!is.null(log_base)){
+    data_matrix = log_transform_dm(data_matrix, log_base = log_base)
+  }
+  
+  if(normalize_func == "quantile"){
+    normalized_matrix = quantile_normalize_dm(data_matrix)
+  } else if(normalize_func == "medianCentering"){
+    normalized_matrix = normalize_sample_medians_dm(data_matrix)
+  } else {
+    stop("Only quantile and median centering normalization methods are available")
+  }
+  
+  return(normalized_matrix)
+}
+
+#' @export
+#' @rdname normalize
+#' 
+#' 
+normalize_data_df <- function(df_long, 
+                              normalize_func = c("quantile", "medianCentering"), 
+                              log_base = NULL, offset = 1,
+                              feature_id_col = 'peptide_group_label',
+                              sample_id_col = 'FullRunName',
+                              measure_col = 'Intensity',
+                              keep_all = FALSE){
+  
+  normalize_func <- match.arg(normalize_func)
+  
+  
+  if(!is.null(log_base)){
+    df_long = log_transform_df(df_long, log_base = log_base, offset = offset)
+  }
+  
+  if(normalize_func == "quantile"){
+    normalized_df = quantile_normalize_df(df_long, 
+                                          feature_id_col = feature_id_col, 
+                                          measure_col = measure_col,
+                                          sample_id_col = sample_id_col,
+                                          keep_all = keep_all)
+  } else if(normalize_func == "medianCentering"){
+    normalized_df = normalize_sample_medians_df(df_long, 
+                                                sample_id_col = sample_id_col, 
+                                                measure_col = measure_col,
+                                                keep_all = keep_all)
+  } else {
+    stop("Only quantile and median centering normalization methods are available")
+  }
+  
+  if (!keep_all){
+    normalized_df = normalized_df %>%
+      select(!!!syms(c(feature_id_col, measure_col, sample_id_col)))
+  }
+  
+  return(normalized_df)
 }
