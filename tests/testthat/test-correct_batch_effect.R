@@ -31,7 +31,7 @@ test_that("adjust_batch_trend", {
   
   expect_equal(adjusted$corrected_df[['peptide_group_label']][1],"10062_NVGVSFYADKPEVTQEQK_3")
   expect_equal(length(unique(adjusted$fit_df$MS_batch)), n_batch)
-  expect_equal(adjusted$fit_df$fit[1],2342360.4917360563)
+  expect_equivalent(adjusted$fit_df$fit[1], 1830358, tolerance=1)
 
 })
 
