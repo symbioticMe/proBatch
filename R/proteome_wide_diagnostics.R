@@ -117,7 +117,7 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
     if (file_ext(filename) == 'pdf'){
       pdf(file = filename, width = width, height = height, title = plot_title)
     } else if(file_ext(filename) == 'png'){
-      png(file = filename, width = width, height = height, units = units, res = 300)
+      png(filename = filename, width = width, height = height, units = units, res = 300)
     } else{
       stop('currently only pdf and png extensions for filename are implemented')
     }
