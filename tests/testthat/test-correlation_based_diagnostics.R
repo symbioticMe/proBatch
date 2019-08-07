@@ -10,7 +10,7 @@ test_that("corr_matrix_plots", {
   corr_matrix_pheatmap <- plot_corr_matrix(corr_matrix)
   
   expect_is(corr_matrix_pheatmap, 'pheatmap')
-  expect_equivalent(corr_matrix_func$gtable$layout$name[4], "legend")
+  expect_equivalent(corr_matrix_pheatmap$gtable$layout$name[4], "legend")
 })
 
 
