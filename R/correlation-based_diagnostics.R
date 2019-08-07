@@ -7,6 +7,13 @@
 #'
 #' @inheritParams proBatch
 #' @param corr_matrix square correlation matrix
+#' @param cluster_rows boolean values determining if rows should be clustered or \code{hclust} object
+#' @param cluster_cols boolean values determining if columns should be clustered or \code{hclust} object
+#' @param heatmap_color vector of colors used in heatmap.
+#' @param annotation data frame with \code{peptide_annotation} for protein 
+#' correlation heatmap or \code{sample_annotation} for sample correlation heatmap
+#' @param annotation_id_col \code{feature_id_col} for protein correlation heatmap 
+#' or \code{sample_id_col} for sample correlation heatmap
 #' @param ... parameters for the \code{\link[pheatmap]{pheatmap}} visualisation,
 #'  for details see examples and help to corresponding functions
 #'

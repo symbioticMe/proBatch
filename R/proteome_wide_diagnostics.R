@@ -1,8 +1,6 @@
 #' cluster the data matrix to visually inspect which confounder dominates
 #'
 #' @inheritParams proBatch
-#' @param factors_to_plot vector of technical and biological covariates to be 
-#' plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})
 #' @param distance distance metric used for clustering
 #' @param agglomeration agglomeration methods as used by \code{hclust}
 #' @param label_samples if \code{TRUE} sample IDs (column names of 

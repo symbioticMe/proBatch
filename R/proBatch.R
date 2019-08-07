@@ -58,6 +58,8 @@
 #' vector doesn't need to be named.
 #' @param color_list list, as returned by \code{sample_annotation_to_colors}, 
 #' where each item contains a color vector for each factor to be mapped to the color.
+#' @param factors_to_plot vector of technical and biological covariates to be 
+#' plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})
 #' @param protein_col column where protein names are specified
 #' @param qual_col column to color point by certain value denoted 
 #' by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
