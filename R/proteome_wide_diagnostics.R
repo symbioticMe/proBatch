@@ -161,7 +161,7 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 #' heatmap_plot <- plot_heatmap_diagnostic(log_transform_dm(example_proteome_matrix), 
 #' example_sample_annotation, 
 #' factors_to_plot = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'), 
-#' cluster_cols = TRUE, cluster_rows = FALSE,u
+#' cluster_cols = TRUE, cluster_rows = FALSE,
 #' show_rownames = FALSE, show_colnames = FALSE)
 #' 
 #' color_list <- sample_annotation_to_colors (example_sample_annotation, 
