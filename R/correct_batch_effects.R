@@ -1,4 +1,4 @@
-#' Batch correction of normalized data
+#' @title Batch correction of normalized data
 #' 
 #' @description Batch correction of normalized data. Batch correction 
 #' brings each feature in each batch to the comparable shape.

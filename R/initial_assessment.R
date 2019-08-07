@@ -1,4 +1,5 @@
-#' Plot per-sample mean or boxplots (showing median and quantiles). In ordered samples,
+#' @title Plot per-sample mean or boxplots for initial assessment
+#' @description Plot per-sample mean or boxplots (showing median and quantiles). In ordered samples,
 #' e.g. consecutive MS runs, order-associated effects are visualised.
 #' @details functions for quick visual assessment of trends associated, overall
 #'   or specific covariate-associated (see \code{batch_col} and \code{facet_col})

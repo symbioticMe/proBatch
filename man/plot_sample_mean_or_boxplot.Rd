@@ -4,8 +4,7 @@
 \alias{plot_sample_mean_or_boxplot}
 \alias{plot_sample_mean}
 \alias{plot_boxplot}
-\title{Plot per-sample mean or boxplots (showing median and quantiles). In ordered samples,
-e.g. consecutive MS runs, order-associated effects are visualised.}
+\title{Plot per-sample mean or boxplots for initial assessment}
 \usage{
 plot_sample_mean(data_matrix, sample_annotation = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch",

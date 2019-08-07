@@ -1,6 +1,6 @@
-#' Ploting peptide measurements
+#' @title Ploting peptide measurements
 #'
-#' Creates a peptide faceted ggplot2 plot of the value in \code{measure_col}
+#' @description Creates a peptide faceted ggplot2 plot of the value in \code{measure_col}
 #' vs \code{order_col} (if `NULL`, x-axis is simply a sample name order). 
 #' Additionally, the resulting plot can also be colored either by batch factor, 
 #' by quality factor (e.g. imputated/non-imputed) and, if needed, faceted by another
