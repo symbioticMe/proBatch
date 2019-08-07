@@ -178,12 +178,12 @@ qual_col = NULL)
 #color measurements by factor, related to order (MS_batch)
 plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
 df_long = example_proteome, example_sample_annotation, 
-qual_col = NULL, color_by_batch = T, batch_col = 'MS_batch')
+qual_col = NULL, color_by_batch = TRUE, batch_col = 'MS_batch')
 
 #color measurements by factor, with order-unrelated factor
 single_feature_plot <- plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
 df_long = example_proteome, example_sample_annotation, 
-qual_col = NULL, color_by_batch = T, batch_col = 'Diet', geom = 'point', vline_color = NULL)
+qual_col = NULL, color_by_batch = TRUE, batch_col = 'Diet', geom = 'point', vline_color = NULL)
 
 #saving the plot
 \dontrun{
