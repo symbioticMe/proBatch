@@ -7,11 +7,10 @@ test_that("corr_matrix_plots", {
   
   matrix_test = example_proteome_matrix[peptides,]
   corr_matrix = cor(t(matrix_test), use = 'complete.obs')
-  corr_matrix_func <- plot_corr_matrix(corr_matrix)
+  corr_matrix_pheatmap <- plot_corr_matrix(corr_matrix)
   
-  expect_equivalent(corr_matrix_func[1], 1)
-  expect_equivalent(corr_matrix_func[2], 0.9096027)
-  expect_equivalent(corr_matrix_func[4], 1)
+  expect_is(corr_matrix_pheatmap, 'pheatmap')
+  expect_equivalent(corr_matrix_func$gtable$layout$name[4], "legend")
 })
 
 
@@ -21,7 +20,8 @@ test_that("protein_corrplot_plots", {
 
   corrplot <- plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
                         peptide_annotation = example_peptide_annotation, 
-                        protein_col = 'Gene')
+                        protein_col = 'Gene', 
+                        cluster_rows = T, cluster_cols = T)
   
   expect_equivalent(corrplot$tree_row$method, "complete")
   expect_equivalent(corrplot$tree_row$dist.method, "euclidean")

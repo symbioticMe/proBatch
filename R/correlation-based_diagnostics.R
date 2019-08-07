@@ -105,7 +105,7 @@ plot_protein_corrplot <- function(data_matrix,
                                   peptide_annotation = NULL,
                                   protein_col = 'ProteinName',
                                   feature_id_col = 'peptide_group_label',
-                                  factors_to_plot = c('ProteinName','pathway'),
+                                  factors_to_plot = c('ProteinName'),
                                   cluster_rows = FALSE, cluster_cols = FALSE,
                                   heatmap_color = colorRampPalette(
                                     rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
