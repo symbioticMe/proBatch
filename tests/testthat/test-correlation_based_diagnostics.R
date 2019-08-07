@@ -21,7 +21,7 @@ test_that("protein_corrplot_plots", {
   corrplot <- plot_protein_corrplot(example_proteome_matrix, protein_name = 'Haao',
                         peptide_annotation = example_peptide_annotation, 
                         protein_col = 'Gene', 
-                        cluster_rows = T, cluster_cols = T)
+                        cluster_rows = TRUE, cluster_cols = TRUE)
   
   expect_equivalent(corrplot$tree_row$method, "complete")
   expect_equivalent(corrplot$tree_row$dist.method, "euclidean")

@@ -114,7 +114,7 @@
 if(getRversion() >= "2.15.1")  utils::globalVariables(c( "batch_size", "tipping.points", 
                                                          "min_order_value", 
   "data", "batch_total", "fit",  "mean_fit",
-  "median_global", "median_batch",
+  "median_global", "median_batch", "diff_norm",
   "dateTime", 
   "same_protein", "batch_the_same", 
   "median_run",

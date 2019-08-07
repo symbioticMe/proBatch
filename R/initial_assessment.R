@@ -26,7 +26,7 @@
 #' factor_columns = c('MS_batch'),
 #' numeric_columns = c('DateTime', 'order'))
 #' plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
-#' order_col = 'order', batch_col = "MS_batch", color_by_batch = T, 
+#' order_col = 'order', batch_col = "MS_batch", color_by_batch = TRUE, 
 #' color_scheme = color_list[["MS_batch"]])
 #' 
 #' \dontrun{

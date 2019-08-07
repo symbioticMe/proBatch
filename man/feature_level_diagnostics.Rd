@@ -235,6 +235,6 @@ fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span")
 fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
 df_long = example_proteome, sample_annotation = example_sample_annotation, 
 fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span", 
-color_by_batch = T, batch_col = 'MS_batch')
+color_by_batch = TRUE, batch_col = 'MS_batch')
 
 }
