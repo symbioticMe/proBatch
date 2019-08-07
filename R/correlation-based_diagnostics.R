@@ -85,6 +85,9 @@ plot_corr_matrix <- function(corr_matrix,
 #'
 #' @inheritParams proBatch
 #' @param protein_name the name of the protein
+#' @param cluster_rows boolean values determining if rows should be clustered or \code{hclust} object
+#' @param cluster_cols boolean values determining if columns should be clustered or \code{hclust} object
+#' @param heatmap_color vector of colors used in heatmap.
 #' @param ... parameters for the corrplot visualisation
 #'
 #' @return \code{pheatmap} object
@@ -151,6 +154,9 @@ plot_protein_corrplot <- function(data_matrix,
 #' @inheritParams proBatch
 #' @param samples_to_plot string vector of samples in 
 #' \code{data_matrix} to be used in the plot
+#' @param cluster_rows boolean values determining if rows should be clustered or \code{hclust} object
+#' @param cluster_cols boolean values determining if columns should be clustered or \code{hclust} object
+#' @param heatmap_color vector of colors used in heatmap.
 #' @param ... parameters for the \code{\link[pheatmap]{pheatmap}} visualisation, for details see 
 #'   examples and help to corresponding functions
 #'

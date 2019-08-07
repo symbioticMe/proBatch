@@ -36,6 +36,12 @@ names.}
 \item{factors_to_plot}{vector of technical and biological covariates to be 
 plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})}
 
+\item{cluster_rows}{boolean values determining if rows should be clustered or \code{hclust} object}
+
+\item{cluster_cols}{boolean values determining if columns should be clustered or \code{hclust} object}
+
+\item{heatmap_color}{vector of colors used in heatmap.}
+
 \item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
 where each item contains a color vector for each factor to be mapped to the color.}
 
