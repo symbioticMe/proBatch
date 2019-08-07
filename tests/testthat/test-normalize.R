@@ -24,12 +24,13 @@ test_that("normalize_sample_medians", {
                     54782, 46463, 67231, 66593, 23441, 50172, 24628, 72037, 
                     49198)
   sample_df <- example_proteome[sampled_rows, ]
-  median_centered_data <- normalize_sample_medians_df(sample_df)
+  median_centered_data <- normalize_sample_medians_df(sample_df, keep_all = TRUE)
 
   expect_equivalent(median_centered_data$median_global[1], 32298.40)
-  expect_equivalent(median_centered_data$median_global[2], 32298.40)
+  expect_equivalent(median_centered_data$median_run[2], 58461.5, tolerance = 1e-2)
   
   expect_equivalent(median_centered_data$Intensity[1], 32298.4)
-  expect_equivalent(median_centered_data$Intensity[2], 32298.4)
+  expect_equivalent(median_centered_data$Intensity[20], -297966.4)
+  expect_equivalent(median_centered_data$preNorm_Intensity[20], 45693.2)
   
 })
