@@ -1,14 +1,15 @@
 context("proteome_wide_diagnostics")
 
 
-test_that("pca_heatmap", {
+test_that("hierarchical_clustering", {
   data(example_proteome_matrix, package="proBatch")
   data(sample_color_scheme, package="proBatch")
   
   matrix_test <- example_proteome_matrix[1:10, ]
-  color_annotation <- sample_color_scheme$color_df[,c("MS_batch", "Diet")]
  
-  hiearchical <- plot_hierarchical_clustering(matrix_test, color_annotation,  
+  hiearchical <- plot_hierarchical_clustering(matrix_test, 
+                                              sample_annotation = example_sample_annotation,
+                                              factors_to_plot = c('MS_batch', "Diet"),  
                                distance = "euclidean", agglomeration = 'complete',
                                label_samples = FALSE)
   
@@ -27,10 +28,11 @@ test_that("heatmap_plot", {
   
   matrix_test <- example_proteome_matrix[1:20, ]
   
-  expect_warning(heatmap <- plot_heatmap(matrix_test, sample_annotation = example_sample_annotation, 
-                      sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
-                      cluster_cols = TRUE, annotation_color_list = sample_color_scheme$list_of_colors,
-                      show_rownames = TRUE, show_colnames = FALSE))
+  expect_warning(heatmap <- plot_heatmap_diagnostic(matrix_test, 
+                                         sample_annotation = example_sample_annotation, 
+                                         factors_to_plot = c("MS_batch",  "digestion_batch", "Diet"), 
+                                         cluster_cols = TRUE, 
+                                         show_rownames = TRUE, show_colnames = FALSE))
   
   expect_equal(heatmap$tree_row$method, "complete")
   expect_equal(heatmap$tree_row$dist.method , "euclidean")
@@ -54,8 +56,8 @@ test_that("pvca_plot", {
   
   matrix_test <- example_proteome_matrix[1:50, ]
   pvca <- plot_PVCA(matrix_test, example_sample_annotation, 
-                   technical_covariates = c('MS_batch', 'digestion_batch'),
-                   biological_covariates = c("Diet", "Sex", "Strain"))
+                   technical_factors = c('MS_batch', 'digestion_batch'),
+                   biological_factors = c("Diet", "Sex", "Strain"))
   
   expect_equivalent(pvca$plot$data$label[1], factor("Strain"))
   expect_equivalent(pvca$plot$data$label[2], factor("Sex:Strain"))
