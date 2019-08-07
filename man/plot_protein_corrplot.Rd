@@ -7,7 +7,7 @@
 plot_protein_corrplot(data_matrix, protein_name,
   peptide_annotation = NULL, protein_col = "ProteinName",
   feature_id_col = "peptide_group_label",
-  factors_to_plot = c("ProteinName", "pathway"), cluster_rows = FALSE,
+  factors_to_plot = c("ProteinName"), cluster_rows = FALSE,
   cluster_cols = FALSE,
   heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
   "RdYlBu")))(100), color_list = NULL, filename = NULL, width = NA,
