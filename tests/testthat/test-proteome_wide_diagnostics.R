@@ -3,7 +3,6 @@ context("proteome_wide_diagnostics")
 
 test_that("hierarchical_clustering", {
   data(example_proteome_matrix, package="proBatch")
-  data(sample_color_scheme, package="proBatch")
   
   matrix_test <- example_proteome_matrix[1:10, ]
  
@@ -24,7 +23,6 @@ test_that("hierarchical_clustering", {
 test_that("heatmap_plot", {
   data(example_proteome_matrix, package="proBatch")
   data(example_sample_annotation, package="proBatch")
-  data(sample_color_scheme, package="proBatch")
   
   matrix_test <- example_proteome_matrix[1:20, ]
   
@@ -54,18 +52,18 @@ test_that("pvca_plot", {
   data(example_proteome_matrix, package="proBatch")
   data(example_sample_annotation, package="proBatch")
   
-  matrix_test <- example_proteome_matrix[1:50, ]
+  matrix_test <- example_proteome_matrix[1:150, ]
   pvca <- plot_PVCA(matrix_test, example_sample_annotation, 
                    technical_factors = c('MS_batch', 'digestion_batch'),
                    biological_factors = c("Diet", "Sex", "Strain"))
   
-  expect_equivalent(pvca$plot$data$label[1], factor("Strain"))
-  expect_equivalent(pvca$plot$data$label[2], factor("Sex:Strain"))
-  expect_equivalent(pvca$plot$data$label[3], factor("digestion_batch"))
-  expect_equivalent(pvca$plot$data$label[4], factor("MS_batch"))
+  expect_equivalent(pvca$df$weights[1], 0.39166175, tolerance = 1e-2)
+  expect_equivalent(as.character(pvca$plot$data$label[2]), "MS_batch")
+  expect_equivalent(as.character(pvca$plot$data$label[3]), "Sex:Strain")
+  expect_equivalent(as.character(pvca$df$label[2]), "MS_batch")
   
   expect_equal(pvca$plot$data$category[1], "biological")
-  expect_equal(pvca$plot$data$category[3], "technical")
+  expect_equal(pvca$plot$data$category[2], "technical")
   
 })
 
