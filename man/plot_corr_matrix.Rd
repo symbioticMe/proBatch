@@ -4,15 +4,33 @@
 \alias{plot_corr_matrix}
 \title{Visualise correlation matrix}
 \usage{
-plot_corr_matrix(corr_matrix, flavor = c("pheatmap", "corrplot"),
-  filename = NULL, width = NA, height = NA, unit = c("cm", "in",
-  "mm"), plot_title = NULL, ...)
+plot_corr_matrix(corr_matrix, annotation = NULL,
+  annotation_id_col = "FullRunName", factors_to_plot = NULL,
+  cluster_rows = FALSE, cluster_cols = FALSE,
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
+  "RdYlBu")))(100), color_list = NULL, filename = NULL, width = 7,
+  height = 7, units = c("cm", "in", "mm"), plot_title = NULL, ...)
 }
 \arguments{
 \item{corr_matrix}{square correlation matrix}
 
-\item{flavor}{either corrplot from 'corrplot' package or 
-heatmap, as in 'pheatmap'}
+\item{annotation}{data frame with \code{peptide_annotation} for protein 
+correlation heatmap or \code{sample_annotation} for sample correlation heatmap}
+
+\item{annotation_id_col}{\code{feature_id_col} for protein correlation heatmap 
+or \code{sample_id_col} for sample correlation heatmap}
+
+\item{factors_to_plot}{vector of technical and biological covariates to be 
+plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})}
+
+\item{cluster_rows}{boolean values determining if rows should be clustered or \code{hclust} object}
+
+\item{cluster_cols}{boolean values determining if columns should be clustered or \code{hclust} object}
+
+\item{heatmap_color}{vector of colors used in heatmap.}
+
+\item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
+where each item contains a color vector for each factor to be mapped to the color.}
 
 \item{filename}{path where the results are saved. 
 If null the object is returned to the active window;
@@ -23,29 +41,34 @@ pdf and png format is supported}
 
 \item{height}{option  determining the output image width}
 
-\item{unit}{units: 'cm', 'in' or 'mm'}
+\item{units}{units: 'cm', 'in' or 'mm'}
 
-\item{plot_title}{Title of the plot (usually, processing step + 
-representation level (fragments, transitions, proteins))}
+\item{plot_title}{title of the plot (e.g., processing step + representation
+level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
-\item{...}{parameters for the \code{\link[corrplot]{corrplot.mixed}} or
-\code{\link[pheatmap]{pheatmap}} visualisation, for details see examples and
-  help to corresponding functions}
+\item{...}{parameters for the \code{\link[pheatmap]{pheatmap}} visualisation,
+for details see examples and help to corresponding functions}
 }
 \value{
-\code{corrplot} or \code{pheatmap} object depending on \code{flavor}
+\code{pheatmap} object
 }
 \description{
+recommended for heatmap-type visualisation of correlation matrix 
+with <100 items. With >50 samples and ~10 replicate pairs distribution plots 
+may be more informative.
+}
+\details{
 Plot correlation of selected  samples or peptides
 }
 \examples{
 peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2")
-
 data_matrix_sub = example_proteome_matrix[peptides,]
 corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
-corr_matrix_plot <- plot_corr_matrix(corr_matrix,  flavor = "corrplot")
+corr_matrix_plot <- plot_corr_matrix(corr_matrix)
+
 }
 \seealso{
-\code{\link[pheatmap]{pheatmap}}, \code{\link[corrplot]{corrplot.mixed}}
+\code{\link[pheatmap]{pheatmap}}, 
+\code{\link{plot_sample_corr_distribution}}, 
+\code{\link{plot_peptide_corr_distribution}}
 }
-\keyword{internal}

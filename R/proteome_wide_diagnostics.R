@@ -1,32 +1,38 @@
 #' cluster the data matrix to visually inspect which confounder dominates
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. in most
-#'   function, it is assumed that this is the log transformed version of the
-#'   original data
-#' @param color_df data frame of colors, as created by \code{sample_annotation_to_colors}
-#'   
+#' @inheritParams proBatch
 #' @param distance distance metric used for clustering
 #' @param agglomeration agglomeration methods as used by \code{hclust}
 #' @param label_samples if \code{TRUE} sample IDs (column names of 
 #' \code{data_matrix}) will be printed
 #' @param label_font size of the font. Is active if \code{label_samples} is 
 #' \code{TRUE}, ignored otherwise
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
+#' @param fill_the_missing numeric value determining how  missing values 
+#' should be substituted. If \code{NULL}, features with missing values are excluded.
 #' @param ... other parameters of \code{plotDendroAndColors} from \code{WGCNA} package
 #'
 #' @return No return
 #' @examples
-#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
-#' factor_columns = c('MS_batch','EarTag', "Strain", "Diet", "digestion_batch", "Sex"),
-#' not_factor_columns = 'DateTime',
-#' numeric_columns = c('order'))
 #' 
-#' color_annotation <- color_scheme$color_df
+#' selected_batches = example_sample_annotation$MS_batch %in% c('Batch_1', 'Batch_2')
+#' selected_samples = example_sample_annotation$FullRunName[selected_batches]
+#' test_matrix = example_proteome_matrix[,selected_samples]
 #' 
-#' hiarchical_clustering_plot <- plot_hierarchical_clustering(
-#' example_proteome_matrix, color_annotation,  
+#' hierarchical_clustering_plot <- plot_hierarchical_clustering(
+#' example_proteome_matrix, example_sample_annotation,
+#' factors_to_plot = c('MS_batch', 'Diet', 'DateTime'),
+#' color_list = NULL,  
+#' distance = "euclidean", agglomeration = 'complete',
+#' label_samples = FALSE)
+#' 
+#' #with defined color scheme:
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch', "Strain", "Diet", "digestion_batch"),
+#' numeric_columns = c('DateTime', 'order'))
+#' hierarchical_clustering_plot <- plot_hierarchical_clustering(
+#' example_proteome_matrix, example_sample_annotation,
+#' factors_to_plot = c('MS_batch', "Strain", 'DateTime', "digestion_batch"),
+#' color_list = color_list,  
 #' distance = "euclidean", agglomeration = 'complete',
 #' label_samples = FALSE)
 #' 
@@ -34,12 +40,28 @@
 #'
 #' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
 #'   \code{\link[WGCNA]{plotDendroAndColors}}
-plot_hierarchical_clustering  <- function(data_matrix, color_df,
+plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
+                                          sample_id_col = 'FullRunName',
+                                          color_list = NULL,
+                                          factors_to_plot = NULL,
+                                          fill_the_missing = 0,
                                           distance = "euclidean",
                                           agglomeration = 'complete',
                                           label_samples = TRUE, label_font = .2,
+                                          filename = NULL, width = 38, height = 25, 
+                                          units = c('cm','in','mm'), 
                                           plot_title = NULL,
                                           ...){
+
+  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     merge = FALSE)
+  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
+  rm(df_long)
+  
+  warning_message <- 'Hierarchical clustering cannot operate with missing values in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
+  
   dist_matrix = dist(t(as.matrix(data_matrix)), method = distance)
   hierarchical_clust = hclust(dist_matrix, method = agglomeration)
   if (label_samples){
@@ -52,139 +74,364 @@ plot_hierarchical_clustering  <- function(data_matrix, color_df,
     cex.dendroLabels = 0.9
   }
   
-  WGCNA::plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
-                             main = plot_title,
-                             hang = -0.1, addGuide = TRUE, dendroLabels = FALSE, 
-                             cex.dendroLabels = cex.dendroLabels,
-                             ...)
+  factors_without_colors = setdiff(factors_to_plot, names(color_list))
+  if(length(factors_without_colors) > 0){
+    warning('color_list for samples annotation not defined, inferring automatically.
+            Numeric/factor columns are guessed, for more controlled color mapping use 
+            sample_annotation_to_colors()')
+    color_list_new <- sample_annotation_to_colors(sample_annotation, 
+                                                sample_id_col = sample_id_col,
+                                                factor_columns = factors_without_colors)
+    color_list = c(color_list, color_list_new)
+  }
   
+  
+  if (length(setdiff(names(color_list), factors_to_plot)) > 0 && !is.null(factors_to_plot)){
+    color_list = color_list[factors_to_plot]
+  }
+  
+  #transform color list to color_df
+  sample_annotation = sample_annotation %>% 
+    filter(!!sym(sample_id_col) %in% colnames(data_matrix))
+  color_df = color_list_to_df(color_list, sample_annotation, sample_id_col)
+  
+  if (is.null(filename)){
+    plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
+                        main = plot_title,
+                        hang = -0.1, addGuide = TRUE, dendroLabels = FALSE, 
+                        cex.dendroLabels = cex.dendroLabels,
+                        ...)
+  } else {
+    
+    units_adjusted = adjust_units(units, width, height)
+    units = units_adjusted$unit
+    width = units_adjusted$width
+    height = units_adjusted$height
+    
+    if (is.na(width)){
+      width = 7
+    }
+    if (is.na(height)){
+      height = 7
+    }
+    if (file_ext(filename) == 'pdf'){
+      pdf(file = filename, width = width, height = height, title = plot_title)
+    } else if(file_ext(filename) == 'png'){
+      png(filename = filename, width = width, height = height, units = units, res = 300)
+    } else{
+      stop('currently only pdf and png extensions for filename are implemented')
+    }
+    
+    plotDendroAndColors(hierarchical_clust, color_df, rowTextAlignment = 'left',
+                        main = plot_title,
+                        hang = -0.1, addGuide = TRUE, dendroLabels = FALSE, 
+                        cex.dendroLabels = cex.dendroLabels,
+                        ...)
+    
+    dev.off()
+  }
 }
 
-#' Plot the heatmap of samples
+#' Plot the heatmap of samples (cols) vs features (rows)
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. in most
-#'   function, it is assumed that this is the log transformed version of the
-#'   original data
-#' @param sample_annotation data matrix with \enumerate{
-#' \item  \code{sample_id_col} (this can be repeated as row names)
-#'   \item  biological and
-#'   \item  technical covariates (batches etc)
-#' }; each column of sample annotation will get it's own row. 
-#' If \code{cluster_cols = T} this will indicate,
-#' whether sample proximity is driven by one of 
-#' biolical or technical factors
-#' @param sample_id_col name of the column in 
-#' sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param fill_the_missing boolean value determining if 
-#' missing values should be
-#'   substituted with -1 (and colored with black)
+#' @inheritParams proBatch
+#' @param factors_to_plot vector of technical and biological factors to be 
+#' plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})
+#' @param fill_the_missing numeric value that the missing values are
+#'   substituted with, or \code{NULL} if features with missing values are to be excluded.
+#' @param color_for_missing special color to make missing values. 
+#' Usually black or white, depending on \code{heatmap_color}
+#' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
 #' @param cluster_rows boolean value determining if rows 
 #' should be clustered
 #' @param cluster_cols boolean value determining if columns 
 #' should be clustered
-#' @param sample_annotation_col biological or technical 
-#' factors to be annotated in heatmap columns
-#' @param sample_annotation_row biological or technical 
-#' factors to be annotated in heatmap rows 
-#' @param annotation_color_list list specifying colors 
-#' for columns (samples). Best created by \code{sample_annotation_to_colors}
-#' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
-#' @param color_for_missing special color to make missing values. 
-#' Usually black or white, depending on \code{heatmap_color}
-#' @param filename filepath where to save the image
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
+#' @param factors_of_feature_ann vector of factors that characterize features, 
+#' as listed in \code{peptide_annotation}
+#' @param color_list_features list, as returned by \code{sample_annotation_to_colors}, 
+#' but mapping \code{peptide_annotation} where each item contains a color vector 
+#' for each factor to be mapped to the color.
 #' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
 #' 
 #' @return object returned by \code{link[pheatmap]{pheatmap}}
 #' @export
 #' 
 #' @examples 
-#' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
+#' 
+#' heatmap_plot <- plot_heatmap_diagnostic(log_transform_dm(example_proteome_matrix), 
+#' example_sample_annotation, 
+#' factors_to_plot = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'), 
+#' cluster_cols = TRUE, cluster_rows = FALSE,
+#' show_rownames = FALSE, show_colnames = FALSE)
+#' 
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch','EarTag', "Strain", 
 #' "Diet", "digestion_batch", "Sex"),
-#' not_factor_columns = 'DateTime',
-#' numeric_columns = c('order'))
+#' numeric_columns = c('DateTime', 'order'))
 #' 
-#' heatmap_plot <- plot_heatmap(example_proteome_matrix, 
+#' heatmap_plot <- plot_heatmap_diagnostic(log_transform_dm(example_proteome_matrix), 
 #' example_sample_annotation, 
-#' sample_annotation_col = c("MS_batch",  "digestion_batch", "Diet"), 
-#' cluster_cols = TRUE, 
-#' annotation_color_list = color_scheme$list_of_colors,
+#' factors_to_plot = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'), 
+#' cluster_cols = TRUE, cluster_rows = FALSE,
+#' color_list = color_list,
 #' show_rownames = FALSE, show_colnames = FALSE)
 #'
 #' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
-plot_heatmap <- function(data_matrix, sample_annotation = NULL, sample_id_col = 'FullRunName',
-                         sample_annotation_col = NULL, 
-                         sample_annotation_row = NULL, 
-                         fill_the_missing = TRUE, cluster_rows = TRUE, cluster_cols = FALSE,
-                         annotation_color_list = NA,
-                         heatmap_color = colorRampPalette(
-                           rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(100),
-                         color_for_missing = 'black',
-                         filename = NA, plot_title = NA,
-                         ...){
-  if(fill_the_missing) {
-    data_matrix[is.na(data_matrix)] = 0
-    warning('substituting missing values with 0, 
-                this might affect the clustering!')
-    heatmap_color = c(color_for_missing, heatmap_color)
+#' 
+#' @name plot_heatmap_diagnostic
+plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL, 
+                                    sample_id_col = 'FullRunName',
+                                    factors_to_plot = NULL,
+                                    fill_the_missing = -1, 
+                                    color_for_missing = 'black',
+                                    heatmap_color = colorRampPalette(
+                                      rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
+                                    cluster_rows = TRUE, cluster_cols = FALSE,
+                                    color_list = NULL,
+                                    peptide_annotation = NULL,
+                                    feature_id_col = 'peptide_group_label',
+                                    factors_of_feature_ann = c('KEGG_pathway','evolutionary_distance'),
+                                    color_list_features = NULL,
+                                    filename = NULL, width = 7, height = 7, 
+                                    units = c('cm','in','mm'), 
+                                    plot_title = NULL,
+                                    ...){
+  
+  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     merge = FALSE)
+  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
+  rm(df_long)
+  
+  #infer the color scheme for sample annotation (cols)
+  if(is.null(color_list) && !is.null(sample_annotation)){
+    warning('color_list for samples (cols) not defined, inferring automatically.
+            Numeric/factor columns are guessed, for more controlled color mapping use 
+            sample_annotation_to_colors()')
+    color_list = sample_annotation_to_colors(sample_annotation = sample_annotation, 
+                                             sample_id_col = sample_id_col, 
+                                             factor_columns = factors_to_plot,
+                                             numeric_columns = NULL,
+                                             guess_factors = TRUE)
   }
   
-  if (is.null(sample_annotation)){
-    annotation_col = NA
-    annotation_row = NA
+  #infer the color scheme for feature annotation (rows)
+  if(is.null(color_list_features) && !is.null(peptide_annotation)){
+    warning('color_list_features for features (rows) not defined, inferring automatically.
+            Numeric/factor columns are guessed, for more controlled color mapping use 
+            sample_annotation_to_colors()')
+    color_list_features = sample_annotation_to_colors(peptide_annotation, 
+                                                      sample_id_col = feature_id_col, 
+                                                      factor_columns = factors_of_feature_ann,
+                                                      numeric_columns = NULL,
+                                                      guess_factors = TRUE)
   }
   
-  if(!is.null(sample_annotation)){
-    if(!is.null(sample_annotation_col) && is.null(sample_annotation_row)){
-      annotation_row = NA
-      annotation_col = sample_annotation %>% 
-        select(one_of(sample_id_col, sample_annotation_col)) %>%
-        remove_rownames %>% 
-        column_to_rownames(var=sample_id_col)  
-      
-    }
-    if(!is.null(sample_annotation_row) && is.null(sample_annotatation_col)){
-      annotation_col = NA
-      annotation_row = sample_annotation %>% 
-        select(one_of(sample_id_col, sample_annotation_row)) %>%
-        remove_rownames %>% 
-        column_to_rownames(var=sample_id_col)
-    }
-    if(is.null(sample_annotation_col) && is.null(sample_annotation_row)){
-      warning("Sample annotation columns and rows are not specified for heatmap.")
-      annotation_col = sample_annotation %>% 
-        remove_rownames %>% 
-        column_to_rownames(var=sample_id_col)
-    }
-  }
-  
-  p <- pheatmap(data_matrix, cluster_rows = cluster_rows, cluster_cols = cluster_cols,
-                color = heatmap_color,
-                annotation_col = annotation_col, annotation_row = annotation_row, 
-                annotation_colors = annotation_color_list,
-                filename = filename, main = plot_title, ...)
+  p <- plot_heatmap_generic(data_matrix, 
+                            column_annotation_df = sample_annotation,
+                            row_annotation_df = peptide_annotation, 
+                            fill_the_missing = fill_the_missing, 
+                            col_ann_id_col = sample_id_col,
+                            row_ann_id_col = feature_id_col,
+                            columns_for_cols = factors_to_plot,
+                            columns_for_rows = factors_of_feature_ann,
+                            cluster_rows = cluster_cols, cluster_cols = cluster_cols,
+                            annotation_color_cols = color_list,
+                            annotation_color_rows = color_list_features,
+                            heatmap_color = heatmap_color,
+                            color_for_missing = color_for_missing,
+                            filename = filename, width = width, height = width, 
+                            units = units, 
+                            plot_title = plot_title,
+                            ...)
   return(p)
 }
 
+#' Plot the heatmap
+#'
+#' @inheritParams proBatch
+#' @param data_matrix the matrix of data to be plotted
+#' @param column_annotation_df data frame annotating columns of \code{data_matrix}
+#' @param row_annotation_df data frame annotating rows of \code{data_matrix}
+#' @param col_ann_id_col column of \code{column_annotation_df} whose values are 
+#' unique identifiers of columns in \code{data_matrix}
+#' @param row_ann_id_col column of \code{row_annotation_df} whose values are 
+#' unique identifiers of rows in \code{data_matrix}
+#' @param columns_for_cols vector of factors (columns) of \code{column_annotation_df}
+#' that will be mapped to color annotation of heatmap columns
+#' @param columns_for_rows vector of factors (columns) of \code{row_annotation_df}
+#' that will be mapped to color annotation of heatmap rows
+#' @param cluster_rows boolean: whether the rows should be clustered
+#' @param cluster_cols boolean: whether the rows should be clustered
+#' @param annotation_color_cols list of color vectors for column annotation,
+#' for each factor to be plotted; for factor-like variables a named vector 
+#' (names should correspond to the levels of factors). Advisable to supply here 
+#' color list returned by \code{sample_annotation_to_colors}
+#' @param annotation_color_rows list of color vectors for row annotation,
+#' for each factor to be plotted; for factor-like variables a named vector 
+#' (names should correspond to the levels of factors). Advisable to supply here 
+#' color list returned by \code{sample_annotation_to_colors}
+#' @param fill_the_missing numeric value that the missing values are
+#'   substituted with, or \code{NULL} if features with missing values are to be excluded.
+#' @param color_for_missing special color to make missing values. 
+#' Usually black or white, depending on \code{heatmap_color}
+#' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
+#' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
+#'
+#' @return pheatmap-type object
+#' @export
+#' 
+#' @examples 
+#' 
+#' p <- plot_heatmap_generic(log_transform_dm(example_proteome_matrix), 
+#' column_annotation_df = example_sample_annotation,
+#' columns_for_cols = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'),
+#' plot_title = 'test_heatmap',
+#' show_rownames = FALSE, show_colnames = FALSE)
+#' 
+plot_heatmap_generic <- function(data_matrix, 
+                                 column_annotation_df = NULL,
+                                 row_annotation_df = NULL, 
+                                 col_ann_id_col = 'FullRunName',
+                                 row_ann_id_col = 'peptide_group_label',
+                                 columns_for_cols = c('MS_batch','Diet', 'DateTime','order'),
+                                 columns_for_rows = c('KEGG_pathway','WGCNA_module','evolutionary_distance'),
+                                 cluster_rows = FALSE, cluster_cols = TRUE,
+                                 annotation_color_cols = NULL,
+                                 annotation_color_rows = NULL,
+                                 fill_the_missing = -1, 
+                                 color_for_missing = 'black',
+                                 heatmap_color = colorRampPalette(
+                                   rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
+                                 filename = NULL, width = 7, height = 7, 
+                                 units = c('cm','in','mm'), 
+                                 plot_title = NULL,
+                                 ...){
+  
+  #deal with the missing values
+  warning_message <- 'Heatmap cannot operate with missing values in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
+  
+  if(!is.null(fill_the_missing)){
+    heatmap_color = c(color_for_missing, heatmap_color)
+  }
+  
+  annotation_col = NA
+  annotation_row = NA
+  if(!is.null(column_annotation_df)){
+    if(!is.null(columns_for_cols)){
+      annotation_col = column_annotation_df %>% 
+        select(one_of(col_ann_id_col, columns_for_cols))
+    } else {
+      annotation_col = column_annotation_df
+    }
+    annotation_col = annotation_col %>%
+      mutate_if(is.POSIXct, as.numeric) %>%
+      remove_rownames %>% 
+      column_to_rownames(var=col_ann_id_col)  
+  }
+  
+  if(!is.null(row_annotation_df)){
+    if(!is.null(columns_for_rows)){
+      annotation_row = row_annotation_df %>% 
+        select(one_of(row_ann_id_col, columns_for_rows))
+    } else {
+      annotation_row = row_annotation_df
+    }
+    
+    annotation_row = annotation_row %>%
+      mutate_if(is.POSIXct, as.numeric) %>%
+      remove_rownames %>% 
+      column_to_rownames(var=row_ann_id_col)
+  }
+  
+  if(is.null(column_annotation_df) && is.null(row_annotation_df)){
+    warning("annotation_row and annotation_col are not specified for heatmap.")
+  }
+  
+  if(is.null(plot_title)){
+    plot_title = NA
+  }
+  if(is.null(filename)){
+    filename = NA
+  }
+  units_adjusted = adjust_units(units, width, height)
+  units = units_adjusted$unit
+  width = units_adjusted$width
+  height = units_adjusted$height
+  
+  if(is.null(annotation_color_cols) && is.null(annotation_color_rows)){
+    annotation_color_list = NA
+  } else {
+    annotation_color_list = c(annotation_color_cols, annotation_color_rows)
+  }
+  
+  p <- pheatmap(data_matrix, 
+                cluster_rows = cluster_rows, cluster_cols = cluster_cols,
+                color = heatmap_color,
+                annotation_col = annotation_col, annotation_row = annotation_row, 
+                annotation_colors = annotation_color_list,
+                filename = filename, width = width, height = height,
+                main = plot_title, ...)
+  return(p)
+}
 
-calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
-                           threshold_pca, threshold_var = Inf) {
+#' Calculate variance distribution by variable
+#' 
+#' @inheritParams proBatch
+#' @param factors_for_PVCA vector of factors from \code{sample_annotation}, that
+#'   are used in PVCA analysis
+#' @param pca_threshold the percentile value of the minimum amount of the
+#'   variabilities that the selected principal components need to explain
+#' @param variance_threshold the percentile value of weight each of the factors
+#'   needs to explain (the rest will be lumped together)
+#' @param fill_the_missing numeric value determining how  missing values 
+#' should be substituted. If \code{NULL}, features with missing values are excluded.
+#' @return data frame of weights of Principal Variance Components
+#' @export
+#' 
+#' @examples
+#' 
+#' matrix_test <- example_proteome_matrix[1:150, ]
+#' pvca_df <- calculate_PVCA(matrix_test, example_sample_annotation, 
+#' factors_for_PVCA = c('MS_batch', 'digestion_batch',"Diet", "Sex", "Strain"),
+#' pca_threshold = .6, variance_threshold = .01, fill_the_missing = -1)
+calculate_PVCA <- function(data_matrix, sample_annotation, 
+                           feature_id_col = 'peptide_group_label',
+                           sample_id_col = 'FullRunName',
+                           factors_for_PVCA = c('MS_batch', 'digestion_batch',"Diet", "Sex", "Strain"),
+                           pca_threshold = .6, variance_threshold = .01,
+                           fill_the_missing = -1) {
+  
+  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col = NULL, order_col = NULL, 
+                                     facet_col = NULL, merge = FALSE)
+  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
+  
+  sample_annotation = sample_annotation   %>% 
+    select(one_of(c(sample_id_col, factors_for_PVCA))) %>%
+    mutate_if(is.POSIXct, as.numeric) %>%
+    as.data.frame()%>%
+    column_to_rownames(var = sample_id_col)
+  
+  data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
+  
+  warning_message <- 'PVCA cannot operate with missing values in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
   
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
-  expr_set = Biobase::ExpressionSet(data_matrix[,rownames(sample_annotation)], covrts.annodf)
-  pvcaAssess = pvca::pvcaBatchAssess (expr_set, factors_for_PVCA, threshold = threshold_pca)
+  data_matrix = data_matrix[, rownames(sample_annotation)]
+  expr_set = Biobase::ExpressionSet(assayData = data_matrix, phenoData = covrts.annodf)
+  pvcaAssess = pvcaBatchAssess(expr_set, factors_for_PVCA, threshold = pca_threshold)
   pvcaAssess_df = data.frame(weights = as.vector(pvcaAssess$dat),
                              label = pvcaAssess$label,
                              stringsAsFactors = FALSE)
   
-  label_of_small = sprintf('Below %1.0f%%', 100*threshold_var)
-  if (sum(pvcaAssess_df$weights < threshold_var) > 1){
-    pvca_res_small = sum(pvcaAssess_df$weights[pvcaAssess_df$weights < threshold_var])
-    pvca_res = pvcaAssess_df[pvcaAssess_df$weights >= threshold_var, ]
+  label_of_small = sprintf('Below %1.0f%%', 100*variance_threshold)
+  if (sum(pvcaAssess_df$weights < variance_threshold) > 1){
+    pvca_res_small = sum(pvcaAssess_df$weights[pvcaAssess_df$weights < variance_threshold])
+    pvca_res = pvcaAssess_df[pvcaAssess_df$weights >= variance_threshold, ]
     pvca_res_add = data.frame(weights = pvca_res_small, label = label_of_small)
     pvca_res = rbind(pvca_res, pvca_res_add)
   } else {
@@ -194,123 +441,79 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 }
 
 #' Plot variance distribution by variable
-#'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. in most
-#'   function, it is assumed that this is the log transformed version of the
-#'   original data
-#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param feature_id_col name of the column with feature/gene/peptide/protein
-#'   ID used in the long format representation \code{df_long}. In the wide
-#'   formatted representation \code{data_matrix} this corresponds to the row
-#'   names.
-#' @param technical_covariates vector \code{sample_annotation} column names that are
+#' 
+#' @inheritParams proBatch
+#' @param technical_factors vector \code{sample_annotation} column names that are
 #'   technical covariates
-#' @param biological_covariates vector \code{sample_annotation} column names, that
+#' @param biological_factors vector \code{sample_annotation} column names, that
 #'   are biologically meaningful covariates
 #' @param colors_for_bars four-item color vector, specifying colors for the
 #'   following categories: c('residual', 'biological', 'biol:techn',
 #'   'technical')
-#' @param threshold_pca the percentile value of the minimum amount of the
+#' @param pca_threshold the percentile value of the minimum amount of the
 #'   variabilities that the selected principal components need to explain
-#' @param threshold_var the percentile value of weight each of the covariates
+#' @param variance_threshold the percentile value of weight each of the covariates
 #'   needs to explain (the rest will be lumped together)
-#' @param fill_the_missing numeric value that the missing values are
-#'   substituted with
-#' @param theme ggplot theme, by default \code{classic}. Can be easily overriden (see
-#'   examples)
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
+#' @param fill_the_missing numeric value determining how  missing values 
+#' should be substituted. If \code{NULL}, features with missing values are excluded.
+#' If \code{NULL}, features with missing values are excluded.
 #'
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
 #'
 #' @examples 
-#' matrix <- example_proteome_matrix[1:50, ]
-#' pvca_plot <- plot_PVCA(matrix, example_sample_annotation, 
-#' technical_covariates = c('MS_batch', 'digestion_batch'),
-#' biological_covariates = c("Diet", "Sex", "Strain"))
+#' matrix_test <- example_proteome_matrix[1:150, ]
+#' pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
+#' technical_factors = c('MS_batch', 'digestion_batch'),
+#' biological_factors = c("Diet", "Sex", "Strain"))
 #' 
-#' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[ggplot2]{ggplot}}
+#' \dontrun{
+#' pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
+#' technical_factors = c('MS_batch', 'digestion_batch'),
+#' biological_factors = c("Diet", "Sex", "Strain"), 
+#' filename = 'test_PVCA.png', width = 28, height = 22, units = 'cm')
+#' }
+#' 
+#' @seealso \code{\link{sample_annotation_to_colors}}, 
+#' \code{\link[ggplot2]{ggplot}}
 plot_PVCA <- function(data_matrix, sample_annotation,
-                      sample_id_col = 'FullRunName',
                       feature_id_col = 'peptide_group_label',
-                      technical_covariates = c('MS_batch', 'instrument'),
-                      biological_covariates = c('cell_line','drug_dose'),
-                      fill_the_missing = 0,
-                      threshold_pca = .6, threshold_var = .01,
+                      sample_id_col = 'FullRunName',
+                      technical_factors = c('MS_batch', 'instrument'),
+                      biological_factors = c('cell_line','drug_dose'),
+                      fill_the_missing = -1,
+                      pca_threshold = .6, variance_threshold = .01,
                       colors_for_bars = NULL,
-                      theme = 'classic', plot_title = NULL){
-  factors_for_PVCA = c(technical_covariates, biological_covariates)
+                      filename = NULL, width = NA, height = NA, 
+                      units = c('cm','in','mm'),
+                      plot_title = NULL,
+                      theme = 'classic'){
   
-  if(!setequal(unique(sample_annotation[[sample_id_col]]), 
-               unique(colnames(data_matrix)))){
-    warning('Sample IDs in sample annotation not 
-                consistent with samples in input data.')}
+  factors_for_PVCA = c(technical_factors, biological_factors)
   
-  sample_names = sample_annotation[[sample_id_col]]
-  sample_annotation = sample_annotation %>% 
-    select(one_of(factors_for_PVCA)) %>%
-    mutate_if(lubridate::is.POSIXct, as.numeric)
-  sample_annotation = as.data.frame(sample_annotation)
-  rownames(sample_annotation) = sample_names
+  pvca_res = calculate_PVCA(data_matrix, sample_annotation, 
+                            feature_id_col = feature_id_col,
+                            sample_id_col = sample_id_col,
+                            factors_for_PVCA = factors_for_PVCA,
+                            pca_threshold, variance_threshold = variance_threshold,
+                            fill_the_missing = fill_the_missing)
   
-  if (!is.null(sample_id_col)){
-    if(sample_id_col %in% names(sample_annotation)){
-      rownames(sample_annotation) = sample_annotation[[sample_id_col]]
-    }
-    if(feature_id_col %in% colnames(data_matrix)){
-      if(is.data.frame(data_matrix)){
-        warning(sprintf('feature_id_col with name %s in data matrix instead of rownames,
-                        this might cause errors in other diagnostic functions,
-                        assign values of this column to rowname and remove from the data frame!', 
-                        feature_id_col))
-        rownames(data_matrix) = data_matrix[[feature_id_col]]
-        data_matrix[[feature_id_col]] = NULL
-        data_matrix = as.matrix(data_matrix)
-      }
-      
-    }
-  } else {
-    if (!all(rownames(sample_annotation) %in% colnames(data_matrix))){
-      stop('sample names differ between data matrix and sample annotation')
-    }
-  }
-  
-  if (any(is.na(as.vector(data_matrix)))){
-    warning('PVCA cannot operate with missing values in the matrix')
-    if(!is.null(fill_the_missing)){
-      warning(sprintf('filling missing value with %s', fill_the_missing))
-      data_matrix[is.na(data_matrix)] = fill_the_missing
-    } else {
-      warning('filling value is NULL, removing features with missing values')
-      data_matrix = data_matrix[complete.cases(data_matrix),]
-    }
-  }
-  
-  pvca_res = calculate_PVCA(data_matrix, sample_annotation, factors_for_PVCA,
-                            threshold_pca, threshold_var = threshold_var)
-  
-  tech_interactions = expand.grid(technical_covariates, technical_covariates) %>%
+  tech_interactions = expand.grid(technical_factors, 
+                                  technical_factors) %>%
     mutate(tech_interactions = paste(Var1, Var2, sep = ':')) %>%
     pull(tech_interactions)
-  biol_interactions = expand.grid(biological_covariates, biological_covariates) %>%
+  biol_interactions = expand.grid(biological_factors, 
+                                  biological_factors) %>%
     mutate(biol_interactions = paste(Var1, Var2, sep = ':')) %>%
     pull(biol_interactions)
   
-  if(!(all(rownames(sample_annotation) %in% colnames(data_matrix)))){
-    stop('check data matrix column names or these in sample annotation')
-  }
-  
-  label_of_small = sprintf('Below %1.0f%%', 100*threshold_var)
-  technical_covariates = c(technical_covariates, tech_interactions)
-  biological_covariates = c(biological_covariates, biol_interactions)
-  pvca_res = pvca_res %>% mutate(category = ifelse(label %in% technical_covariates, 'technical',
-                                                   ifelse(label %in% biological_covariates, 'biological',
+  label_of_small = sprintf('Below %1.0f%%', 100*variance_threshold)
+  technical_factors = c(technical_factors, tech_interactions)
+  biological_factors = c(biological_factors, biol_interactions)
+  pvca_res = pvca_res %>% mutate(category = ifelse(label %in% technical_factors, 
+                                                   'technical',
+                                                   ifelse(label %in% biological_factors, 
+                                                          'biological',
                                                           ifelse(label %in% c(label_of_small, 'resid'), 
                                                                  'residual', 'biol:techn'))))
   
@@ -327,11 +530,10 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   gg  = ggplot(pvca_res, aes(x = label, y = weights, fill = category))+
     geom_bar(stat = 'identity', color = 'black', size = 1.5)+
     ylab(y_title)
-  if(theme == 'classic'){
-    gg = gg +theme_classic()
-  }
+  
+  
   if(is.null(colors_for_bars)){
-    colors_for_bars = c('grey', wesanderson::wes_palettes$Rushmore[3:5])
+    colors_for_bars = c('grey', wes_palettes$Rushmore[3:5])
     names(colors_for_bars) = c('residual', 'biological', 
                                'biol:techn', 'technical')
     
@@ -348,6 +550,15 @@ plot_PVCA <- function(data_matrix, sample_annotation,
     gg = gg + ggtitle(plot_title)
   }
   
+  #Change the theme
+  if(!is.null(theme) && theme == 'classic'){
+    gg = gg + theme_classic()
+  }else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
+  }
+  
+  save_ggplot(filename, units, width, height, gg)
+  
   gg = gg +
     theme(axis.title.x = NULL, 
           axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))+
@@ -360,26 +571,12 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 
 #' plot PCA plot
 #'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. in most
-#'   function, it is assumed that this is the log transformed version of the
-#'   original data
-#' @param sample_annotation data matrix with 1) \code{sample_id_col} (this can be
-#'   repeated as row names) 2) biological and 3) technical covariates (batches
-#'   etc)
-#' @param feature_id_col name of the column with feature/gene/peptide/protein
-#'   ID used in the long format representation \code{df_long}. In the wide
-#'   formatted representation \code{data_matrix} this corresponds to the row
-#'   names.
+#' @inheritParams proBatch
 #' @param color_by column name (as in \code{sample_annotation}) to color by
 #' @param PC_to_plot principal component numbers for x and y axis
-#' @param colors_for_factor named vector of colors for the \code{color_by} variable
-#' @param fill_the_missing boolean value determining if missing values should be
-#'   substituted with -1 (and colored with black)
-#' @param theme ggplot theme, by default \code{classic}. Can be easily overriden (see
-#'   examples)
-#' @param plot_title Title of the plot (usually, processing step + representation
-#'   level (fragments, transitions, proteins))
+#' @param fill_the_missing numeric value determining how  missing values 
+#' should be substituted. If \code{NULL}, features with missing values are excluded.
+#' If \code{NULL}, features with missing values are excluded.
 #'
 #' @return ggplot scatterplot colored by factor levels of column specified in
 #'   \code{factor_to_color}
@@ -388,62 +585,77 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #' @examples 
 #' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 #' color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
+#' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+#' color_by = 'DateTime', plot_title = "PCA colored by DateTime")
+#' 
+#' color_list <- sample_annotation_to_colors (example_sample_annotation, 
+#' factor_columns = c('MS_batch', 'digestion_batch'),
+#' numeric_columns = c('DateTime','order'))
+#' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+#' color_by = 'DateTime', color_scheme = color_list[['DateTime']])
+#' 
+#' \dontrun{
+#' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
+#' color_by = 'DateTime', plot_title = "PCA colored by DateTime",
+#' filename = 'test_PCA.png', width = 14, height = 9, units = 'cm')
+#' }
 #' 
 #' @seealso \code{\link[ggfortify]{autoplot.pca_common}}, 
 #' \code{\link[ggplot2]{ggplot}}
 plot_PCA <- function(data_matrix, sample_annotation,
                      feature_id_col = 'peptide_group_label',
+                     sample_id_col = 'FullRunName',
                      color_by = 'MS_batch',
-                     PC_to_plot = c(1,2), fill_the_missing = 0,
-                     colors_for_factor = NULL,
-                     theme = 'classic',
-                     plot_title = NULL){
+                     PC_to_plot = c(1,2), fill_the_missing = -1,
+                     color_scheme = 'brewer',
+                     filename = NULL, width = NA, height = NA, 
+                     units = c('cm','in','mm'),
+                     plot_title = NULL,
+                     theme = 'classic'){
   
-  if(!is.null(feature_id_col)){
-    if(feature_id_col %in% colnames(data_matrix)){
-      if(is.data.frame(data_matrix)){
-        warning(sprintf('feature_id_col with name %s in data matrix instead of rownames,
-                        this might cause errors in other diagnostic functions,
-                        assign values of this column to rowname and remove from the data frame!', 
-                        feature_id_col))
-      }
-      rownames(data_matrix) = data_matrix[[feature_id_col]]
-      data_matrix[[feature_id_col]] = NULL
-      data_matrix = as.matrix(data_matrix)
-    }
-  }
+  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col = color_by, order_col = NULL, 
+                                     facet_col = NULL, merge = FALSE)
+  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   
-  if (any(is.na(as.vector(data_matrix)))){
-    warning('PCA cannot operate with missing values in the matrix')
-    if(!is.null(fill_the_missing)){
-      if (!is.numeric(fill_the_missing)){
-        fill_the_missing = 0
-      }
-      warning(sprintf('filling missing value with %s', fill_the_missing))
-      data_matrix[is.na(data_matrix)] = fill_the_missing
-    } else {
-      warning('filling value is NULL, removing features with missing values')
-      data_matrix = data_matrix[complete.cases(data_matrix),]
-    }
-  }
+  data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
+  
+  warning_message <- 'PCA cannot operate with missing values in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
+  
+  pr_comp_res <- prcomp(t(data_matrix))
+  gg = autoplot(pr_comp_res, data = sample_annotation,
+                x = PC_to_plot[1], y = PC_to_plot[2])
+  
+  
+  #add colors
   
   if(length(color_by) > 1){
     warning('Coloring by the first column specified')
     color_by = color_by[1]
+  } #TODO: create the ggpubr graph with multiple panels, colored by factors
+  gg = color_by_factor(color_by_batch = TRUE, 
+                       batch_col = color_by, gg = gg, 
+                       color_scheme = color_scheme, 
+                       sample_annotation = sample_annotation,
+                       fill_or_color = 'color')
+  
+  #Add the title
+  if(!is.null(plot_title)) {
+    gg = gg + ggtitle(plot_title)+
+      theme(plot.title = element_text(face = 'bold',hjust = .5))
   }
-  pr_comp_res <- prcomp(t(data_matrix))
-  gg = autoplot(pr_comp_res, data = sample_annotation,
-                colour = color_by,
-                x = PC_to_plot[1], y = PC_to_plot[2])
-  if (theme == 'classic'){
+  
+  #Change the theme
+  if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
+  }else{
+    message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
-  if(!is.null(colors_for_factor)){
-    gg = gg + aes_string(color = color_by) + scale_color_manual(values = colors_for_factor)
-  }
-  if(!is.null(plot_title)){
-    gg = gg + ggtitle(plot_title)
-  }
+  
+  save_ggplot(filename, units, width, height, gg)
+  
   return(gg)
 }
 

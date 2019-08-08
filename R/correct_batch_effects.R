@@ -1,308 +1,456 @@
-#' Median centering of the peptides (per batch median)
-#'
-#' @param df_long data frame where each row is a single feature in a single
-#'   sample. It minimally has a \code{sample_id_col}, a 
-#'   \code{feature_id_col} and a \code{measure_col}, but 
-#'   usually also an \code{m_score} (in OpenSWATH output result file)
-#' @param sample_annotation data frame with sample ID, technical (e.g. MS batches) 
-#'  and biological (e.g. Diet) covariates 
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param measure_col if \code{df_long} is among the parameters, it is the column
-#'   with expression/abundance/intensity, otherwise, it is used internally for
-#'   consistency
-#' @param batch_col column in \code{sample_annotation} that should be 
-#'  used for batch comparison
-#' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
-#' used in the long format representation df_long. In the wide formatted 
-#' representation data_matrix this corresponds to the row names.
+#' @title Batch correction of normalized data
 #' 
-#' @return \code{df_long}-size long format data with batch-effect corrected with
-#'   per-feature batch median centering in Intensity_normalized column
-#'   
+#' @description Batch correction of normalized data. Batch correction 
+#' brings each feature in each batch to the comparable shape.
+#' Currently the following batch correction functions are implemented:
+#' \enumerate{
+#'   \item Per-feature median centering: \code{center_feature_batch_medians_df()}. 
+#'   Median centering of the features (per batch median).
+#'   \item correction with ComBat:  \code{correct_with_ComBat_df()}. 
+#' Adjusts for discrete batch effects using ComBat. ComBat, described in 
+#' Johnson et al. 2007. It uses either parametric or
+#' non-parametric empirical Bayes frameworks for adjusting data for batch
+#' effects. Users are returned an expression matrix that has been corrected for
+#' batch effects. The input data are assumed to be free of missing values
+#' and normalized before batch effect removal. Please note that missing values 
+#' are common in proteomics, which is why in some cases corrections like 
+#' \code{center_peptide_batch_medians_df} are more appropriate.
+#'   \item Continuous drift correction:  \code{adjust_batch_trend_df()}. 
+#' Adjust batch signal trend with the custom (continuous) fit.
+#' Should be followed by discrete corrections,
+#' e.g. \code{center_feature_batch_medians_df()} or  \code{correct_with_ComBat_df()}.
+#' }
+#' Alternatively, one can call the correction function with  
+#' \code{correct_batch_effects_df()} wrapper. 
+#' Batch correction method allows correction of 
+#' continuous signal drift within batch (if required) and adjustment for
+#' discrete difference across batches. 
+#' 
+#' 
+#' @inheritParams proBatch
+#' @param keep_all whether all columns from \code{df_long} should be kept
+#' @param return_fit_df (logical) whether to return the \code{fit_df} from 
+#' \code{adjust_batch_trend_dm} or only the data matrix
+#' @param fit_func function to fit the (non)-linear trend
+#' @param abs_threshold the absolute threshold (number of samples in a batch) to 
+#' filter data for curve fitting.
+#' @param pct_threshold the percentage threshold (fraction of samples in the 
+#' batch) to filter data for curve fitting.
+#' @param par.prior use parametrical or non-parametrical prior 
+#' @param continuous_func function to use for the fit (currently 
+#' only \code{loess_regression} available); if order-associated fix is not 
+#' required, should be \code{NULL}.
+#' @param discrete_func function to use for adjustment of discrete batch effects
+#' (\code{MedianCentering} or \code{ComBat}).
+#' @param ... other parameters, usually of \code{adjust_batch_trend}, 
+#' and \code{fit_func}.
+
+#' 
+#' @return the data in the same format as input (\code{data_matrix} or 
+#' \code{df_long}).
+#' For \code{df_long} the data frame stores the original values of 
+#' \code{measure_col}
+#' in another column called "preBatchCorr_[measure_col]", and the normalized values
+#' in \code{measure_col} column.
+#' 
+#' The function \code{adjust_batch_trend_df()} returns list of two items: 
+#' \enumerate{
+#'   \item \code{data_matrix}
+#'   \item \code{fit_df}, used to examine the fitting curves
+#'}
+
+#' 
 #' @examples 
-#' median_centered_proteome <- center_peptide_batch_medians(
+#' 
+#' #Median centering per feature per batch:
+#' median_centered_df <- center_feature_batch_medians_df(
 #' example_proteome, example_sample_annotation)
 #' 
+#' #Correct with ComBat: 
+#' combat_corrected_df <- correct_with_ComBat_df(example_proteome, 
+#' example_sample_annotation)
+#' 
+#' #Adjust the MS signal drift:
+#' test_peptides = unique(example_proteome$peptide_group_label)[1:3]
+#' test_peptide_filter = example_proteome$peptide_group_label %in% test_peptides
+#' test_proteome = example_proteome[test_peptide_filter,]
+#' adjusted_data <- adjust_batch_trend_df(test_proteome, 
+#' example_sample_annotation, span = 0.7, 
+#' abs_threshold = 5, pct_threshold = 0.20)
+#' fit_df <- adjusted_data$fit_df
+#' adjusted_df <- adjusted_data$corrected_df
+#' plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label), 
+#' df_long = adjusted_df, fit_df = fit_df, 
+#' sample_annotation = example_sample_annotation)
+#' 
+#' #Correct the data in one go:
+#' batch_corrected_matrix <- correct_batch_effects_df(example_proteome, 
+#' example_sample_annotation, 
+#' continuous_func = 'loess_regression',
+#' discrete_func = 'MedianCentering', 
+#' batch_col = 'MS_batch',  
+#' span = 0.7,
+#' abs_threshold = 5, pct_threshold = 0.20)
+#' 
+#' @seealso \code{\link{fit_nonlinear}}
+#' @name correct_batch_effects
+NULL
+
+#' 
 #' @export
-#'
-center_peptide_batch_medians <- function(df_long, sample_annotation = NULL,
+#' @rdname correct_batch_effects
+#' 
+center_feature_batch_medians_df <- function(df_long, sample_annotation = NULL,
                                          sample_id_col = 'FullRunName',
                                          batch_col = 'MS_batch',
                                          feature_id_col = 'peptide_group_label',
                                          measure_col = 'Intensity'){
   
-  if(!setequal(unique(sample_annotation[[sample_id_col]]), 
-               unique(df_long[[sample_id_col]]))){
-    warning('Sample IDs in sample annotation not 
-                consistent with samples in input data.')}
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col, 
+                                     order_col = NULL, 
+                                     facet_col = NULL, merge = TRUE)
   
-  if (!(sample_id_col %in% names(df_long) & batch_col %in% names(df_long)) &
-      !is.null(sample_annotation)){
-    df_long = df_long %>% merge(sample_annotation, by = sample_id_col)
-  }
-  df_normalized = df_long %>%
+  old_measure_col = paste('preBatchCorr', measure_col, sep = '_')
+  corrected_df = df_long %>%
     group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
-    mutate(median_batch = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+    mutate(median_batch = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
     ungroup() %>%
     group_by_at(vars(one_of(feature_id_col))) %>%
-    mutate(median_global = median(UQ(sym(measure_col)), na.rm = TRUE)) %>%
+    mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
     ungroup() %>%
     mutate(diff = median_global - median_batch) %>%
-    mutate(Intensity_normalized = UQ(sym(measure_col))+diff)
+    rename(!!(old_measure_col) := !!(sym(measure_col))) %>%
+    mutate(!!(sym(measure_col)) := !!(sym(old_measure_col))+diff)
   
-  return(df_normalized)
+  return(corrected_df)
+}
+
+#' @export
+#' @rdname correct_batch_effects
+#' 
+center_feature_batch_medians_dm <- function(data_matrix, sample_annotation,
+                                            sample_id_col = 'FullRunName',
+                                            batch_col = 'MS_batch',
+                                            feature_id_col = 'peptide_group_label',
+                                            measure_col = 'Intensity'){
+  
+  df_long = matrix_to_long(data_matrix, feature_id_col = feature_id_col,
+                           measure_col = measure_col, 
+                           sample_id_col = sample_id_col)
+  
+  corrected_df = center_feature_batch_medians_df(df_long, sample_annotation,
+                                                 sample_id_col = sample_id_col,
+                                                 batch_col = batch_col, 
+                                                 feature_id_col = feature_id_col,
+                                                 measure_col = measure_col)
+  
+  return(corrected_df)
 }
 
 
-#' adjust batch signal trend with the custom (continuous) fit
-#'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. Usually the log
-#'   transformed version of the original data
-#' @param sample_annotation data frame with sample ID, technical (e.g. MS batches) 
-#'  and biological (e.g. Diet) covariates 
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param measure_col if \code{df_long} is among the parameters, it is the column
-#'   with expression/abundance/intensity, otherwise, it is used internally for
-#'   consistency
-#' @param batch_col column in \code{sample_annotation} that should be 
-#'  used for batch comparison
-#' @param sample_order_col column, determining the order of sample MS run, used
-#'   as covariate to fit the non-linear fit
-#' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
-#'  used in the long format representation df_long. In the wide formatted 
-#'  representation data_matrix this corresponds to the row names.
-#' @param fit_func function to fit the (non)-linear trend
-#' @param abs_threshold the absolute threshold to filter data for curve fitting 
-#' @param pct_threshold the percentage threshold to filter data for curve fitting 
-#' @param ... other parameters, usually those of the \code{fit_func}
-#'
-#' @return list of two items: 1) \code{data_matrix}, adjusted with continious fit; 
-#' 2) fit_df, used to examine the fitting curves
-#' 
-#' @examples trend_corrected_matrix <- adjust_batch_trend(example_proteome_matrix, 
-#' example_sample_annotation, span = 0.7, 
-#' abs_threshold = 5, pct_threshold = 0.20)
 #' 
 #' @export
+#' @rdname correct_batch_effects
 #'
-#' @seealso \code{\link{fit_nonlinear}}
-adjust_batch_trend <- function(data_matrix, sample_annotation,
+#' @seealso \code{\link{fit_nonlinear}}, \code{\link{plot_with_fitting_curve}}
+adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
                                batch_col = 'MS_batch',
                                feature_id_col = 'peptide_group_label',
                                sample_id_col = 'FullRunName',
                                measure_col = 'Intensity',
-                               sample_order_col = 'order',
-                               fit_func = fit_nonlinear, 
+                               order_col = 'order',
+                               keep_all = FALSE,
+                               fit_func = 'loess_regression', 
                                abs_threshold = 5, pct_threshold = 0.20, ...){
   
-  sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-  sampleNames <- colnames(data_matrix)
-  s_a <- sample_annotation[[sample_id_col]]
-  all <- union(sampleNames, s_a)
-  non_matched <- all[!all %in% intersect(sampleNames, s_a)]
-  if(length(non_matched)!=0){warning("Sample ID in data matrix 
-                                     and sample annotation don't match. 
-                                     Non-matching elements are removed for analysis")}
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col, order_col = NULL, 
+                                     facet_col = NULL, merge = TRUE)
   
-  sample_annotation = sample_annotation %>%
-    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
-    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
-    droplevels()
+  batch_size_df = NULL
+  if (is.null(sample_annotation) && (batch_col %in% names(df_long))) {
+    batch_size_df = df_long %>%
+      group_by(!!sym(batch_col)) %>%
+      summarise(batch_total = n()) %>%
+      ungroup() %>%
+      mutate(!!batch_col := as.character(!!sym(batch_col)))
+  } 
   
-  data_matrix = as.data.frame(data_matrix)
-  data_matrix[[feature_id_col]] = rownames(data_matrix)
+  if(!is.null(sample_annotation)){
+    batch_size_df = sample_annotation %>%
+      group_by(!!sym(batch_col)) %>%
+      summarise(batch_total = n()) %>%
+      ungroup() %>%
+      mutate(!!batch_col := as.character(!!sym(batch_col)))
+  } else {
+    warning('Assuming this is a single batch fit: no batches found')
+  }
   
-  df_long = data_matrix %>%
-    melt(id.vars = feature_id_col)
-  names(df_long) = c(feature_id_col, sample_id_col, measure_col)
-  batch_table <- as.data.frame(table(sample_annotation[[batch_col]], 
-                                     dnn = list(batch_col)), 
-                               responseName = "batch_total")
-  sample_annotation = sample_annotation %>%
-    full_join(batch_table, by = batch_col)
+  if(!is.null(batch_size_df)){
+    df_long = df_long %>% 
+      merge(batch_size_df, by = batch_col)
+  }
   
-  df_normalized = df_long %>%
-    filter(!is.na(UQ(as.name(measure_col)))) %>% #filter(!is.na(Intensity))
-    merge(sample_annotation, by = sample_id_col) %>%
-    arrange_(feature_id_col, sample_order_col) %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col, "batch_total")))) %>%  
-    nest() %>%
-    mutate(fit = map2(data, batch_total, fit_func, response.var = measure_col, 
-                      expl.var = sample_order_col, 
-                      abs_threshold = abs_threshold, 
-                      pct_threshold = pct_threshold, ...)) %>%
+  original_cols = names(df_long)
+  
+  if (!is.null(batch_col)){
+    if (!(batch_col %in% union(names(df_long),names(sample_annotation)))){
+      stop('Batch column is neither in sample annotation nor in data matrix')
+    }
+    sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+    corrected_df = df_long %>%
+      #filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
+      group_nest(!!!syms(c(feature_id_col, batch_col, "batch_total"))) %>%  
+      mutate(fit = pmap(list(df_feature_batch = data,  batch_size = batch_total, 
+                             feature_id = !!sym(feature_id_col)), 
+                        batch_id = !!sym(batch_col),
+                        fit_nonlinear, 
+                        measure_col = measure_col,order_col = order_col, 
+                        fit_func = fit_func, 
+                        abs_threshold = abs_threshold,
+                        pct_threshold = pct_threshold, ...))
+  } else {
+    corrected_df = df_long %>%
+      #filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
+      nest(!!sym(feature_id_col)) %>%
+      mutate(fit = map(data, fit_nonlinear, 
+                        measure_col = measure_col,order_col = order_col, 
+                        fit_func = fit_func,
+                        abs_threshold = abs_threshold,
+                        pct_threshold = pct_threshold, ...))
+  }
+  
+  old_measure_col = paste('preTrendFit', measure_col, sep = '_')
+  
+  corrected_df = corrected_df %>%
     unnest() %>%
-    group_by_at(vars(one_of(c(feature_id_col, batch_col)))) %>%
-    mutate(mean_fit = mean(fit)) %>%
+    group_by(!!!syms(c(feature_id_col, batch_col))) %>%
+    mutate(mean_fit = mean(fit, na.rm = TRUE)) %>%
+    ungroup() %>%
     mutate(diff = mean_fit - fit) %>%
-    mutate_(Intensity_normalized = interp(~`+`(x, y),
-                                          x = as.name('diff'),
-                                          y = as.name(measure_col)))
+    mutate(diff.na = ifelse(is.na(diff), 0, diff)) %>%
+    rename(!!(old_measure_col) := !!(sym(measure_col))) %>%
+    mutate(!!(sym(measure_col)) := !!sym('diff.na') + !!sym(old_measure_col))
   
-  fit_df = df_normalized %>% dplyr::select(one_of(c('fit', feature_id_col,
-                                                    sample_id_col, batch_col)))
+  fit_df = corrected_df %>% dplyr::select(one_of(c('fit', 'diff', 'diff.na', 
+                                                   feature_id_col,
+                                                   sample_id_col, measure_col, 
+                                                   batch_col)))
   
-  casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
-                                      sep =  " ~ "))
-  df_normalized = dcast(df_normalized, formula = casting_formula,
-                        value.var = 'Intensity_normalized')
-  df_normalized_matrix = as.matrix(df_normalized[,2:ncol(df_normalized)])
-  rownames(df_normalized_matrix) = df_normalized[,1]
   
-  return(list(data_matrix = df_normalized_matrix,
+  corrected_df = corrected_df %>%
+    dplyr::select(c(sample_id_col, feature_id_col, measure_col, old_measure_col))
+  
+  if(keep_all){
+    corrected_df = corrected_df %>%
+      dplyr::select(c(original_cols, old_measure_col))
+    
+  }
+  
+  return(list(corrected_df = corrected_df,
               fit_df = fit_df))
-}
+  }
 
-
-#' Adjusts for discrete batch effects using ComBat
-#'
-#' @description Standardized input-output ComBat normalization ComBat allows users to adjust
-#' for batch effects in datasets where the batch covariate is known, using
-#' methodology described in Johnson et al. 2007. It uses either parametric or
-#' non-parametric empirical Bayes frameworks for adjusting data for batch
-#' effects. Users are returned an expression matrix that has been corrected for
-#' batch effects. The input data are assumed to be cleaned and normalized before
-#' batch effect removal.
-#'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. Usually the log
-#'   transformed version of the original data
-#' @param sample_annotation data frame with sample ID, technical (e.g. MS batches) 
-#'  and biological (e.g. Diet) covariates 
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param batch_col column in \code{sample_annotation} that should be 
-#'  used for batch comparison
-#' @param par.prior whether parametrical or non-parametrical prior should be used
-#'
-#' @return \code{data_matrix}-size data matrix with batch-effect corrected by
-#'   \code{ComBat}
-#'
-#' @examples 
-#' combat_corrected_matrix <- correct_with_ComBat(
-#' example_proteome_matrix, example_sample_annotation)
 #' 
 #' @export
+#' @rdname correct_batch_effects
 #'
-correct_with_ComBat <- function(data_matrix, sample_annotation, 
-                                sample_id_col = 'FullRunName',
-                                batch_col = 'MS_batch', 
-                                par.prior = TRUE){
+#' @seealso \code{\link{fit_nonlinear}}, \code{\link{plot_with_fitting_curve}}
+adjust_batch_trend_dm <- function(data_matrix, sample_annotation,
+                                  batch_col = 'MS_batch',
+                                  feature_id_col = 'peptide_group_label',
+                                  sample_id_col = 'FullRunName',
+                                  measure_col = 'Intensity',
+                                  order_col = 'order',
+                                  fit_func = 'loess_regression', 
+                                  return_fit_df = TRUE,
+                                  abs_threshold = 5, pct_threshold = 0.20, ...){
+  df_long = matrix_to_long(data_matrix, feature_id_col = feature_id_col,
+                           measure_col = measure_col, 
+                           sample_id_col = sample_id_col)
   
-  sampleNames = colnames(data_matrix)
-  s_a <- sample_annotation[[sample_id_col]]
-  all <- union(sampleNames, s_a)
-  non_matched <- all[!all %in% intersect(sampleNames, s_a)]
-  if(length(non_matched)!=0){warning("Sample ID in data matrix and 
-                                       sample annotation don't match. 
-                                       Non-matching elements are removed for analysis")}
+  corrected_data = adjust_batch_trend_df(df_long, sample_annotation,
+                                       sample_id_col = sample_id_col,
+                                       batch_col = batch_col, 
+                                       feature_id_col = feature_id_col,
+                                       measure_col = measure_col)
   
-  sample_annotation = sample_annotation %>%
-    filter(UQ(as.name(sample_id_col)) %in% sampleNames) %>%
-    arrange(match(UQ(as.name(sample_id_col)), sampleNames)) %>%
-    droplevels()
+  corrected_df = corrected_data$corrected_df
+  corrected_dm = long_to_matrix(corrected_df, feature_id_col = feature_id_col,
+                                measure_col = measure_col, 
+                                sample_id_col = sample_id_col)
+  if (return_fit_df){
+    
+    fit_df = corrected_data$fit_df
+    return(list(corrected_dm = corrected_dm,
+                fit_df = fit_df))
+  } else {
+    return(corrected_dm)
+  }
   
+}
+
+#' 
+#' @export
+#' @rdname correct_batch_effects
+#'
+correct_with_ComBat_df <- function(df_long, sample_annotation = NULL, 
+                                   feature_id_col = 'peptide_group_label',
+                                   measure_col = 'Intensity',
+                                   sample_id_col = 'FullRunName',
+                                   batch_col = 'MS_batch', 
+                                   par.prior = TRUE){
+  
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col, order_col = NULL, 
+                                     facet_col = NULL, merge = FALSE)
+  
+  data_matrix = long_to_matrix(df_long, feature_id_col = feature_id_col,
+                               measure_col = measure_col, 
+                               sample_id_col = sample_id_col)
+  
+  corrected_matrix = run_ComBat_core(sample_annotation, batch_col, data_matrix, 
+                                     par.prior)
+  
+  corrected_df = matrix_to_long(corrected_matrix, 
+                                feature_id_col = feature_id_col,
+                                measure_col = measure_col, 
+                                sample_id_col = sample_id_col)
+  
+  old_measure_col = paste('preBatchCorr', measure_col, sep = '_')
+  
+  df_long = df_long %>% 
+    rename(!!(old_measure_col) := !!(sym(measure_col))) 
+  
+  corrected_df = corrected_df %>%
+    merge(df_long, by = c(feature_id_col, sample_id_col))
+  
+  return(corrected_df)
+}
+
+#' 
+#' @export
+#' @rdname correct_batch_effects
+#'
+correct_with_ComBat_dm <- function(data_matrix, sample_annotation = NULL,
+                                   feature_id_col = 'peptide_group_label',
+                                   measure_col = 'Intensity',
+                                   sample_id_col = 'FullRunName',
+                                   batch_col = 'MS_batch', 
+                                   par.prior = TRUE){
+  
+  df_long = matrix_to_long(data_matrix, feature_id_col = feature_id_col,
+                           measure_col = measure_col, 
+                           sample_id_col = sample_id_col)
+  
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col, order_col = NULL, 
+                                     facet_col = NULL, merge = FALSE)
+  
+  data_matrix = long_to_matrix(df_long, feature_id_col = feature_id_col,
+                               measure_col = measure_col, 
+                               sample_id_col = sample_id_col)
+  
+  corrected_matrix = run_ComBat_core(sample_annotation, batch_col, data_matrix, 
+                                     par.prior)
+  
+  return(corrected_matrix)
+}
+
+run_ComBat_core <- function(sample_annotation, batch_col, data_matrix, 
+                            par.prior) {
+  #TODO: program for the case of multiple batch factors - "SuperBatch"
   batches = sample_annotation[[batch_col]]
   modCombat = model.matrix(~1, data = sample_annotation)
-  corrected_proteome = sva::ComBat(dat = data_matrix, batch = batches,
-                                   mod = modCombat, par.prior = par.prior)
-  return(corrected_proteome)
+  corrected_matrix = ComBat(dat = data_matrix, batch = batches,
+                            mod = modCombat, par.prior = par.prior)
+  return(corrected_matrix)
 }
 
-
-#' Batch correction method allows correction of 
-#' continuous sigal drift within batch and 
-#' discrete difference across batches. 
-#'
-#' @param data_matrix features (in rows) vs samples (in columns) matrix, with
-#'   feature IDs in rownames and file/sample names as colnames. Usually the log
-#'   transformed version of the original data
-#' @param sample_annotation data frame with sample ID, technical (e.g. MS batches) 
-#'  and biological (e.g. Diet) covariates 
-#' @param sample_id_col name of the column in sample_annotation file, where the
-#'   filenames (colnames of the data matrix are found)
-#' @param measure_col if \code{df_long} is among the parameters, it is the column
-#'   with expression/abundance/intensity, otherwise, it is used internally for
-#'   consistency
-#' @param batch_col column in \code{sample_annotation} that should be 
-#'  used for batch comparison
-#' @param feature_id_col name of the column with feature/gene/peptide/protein ID 
-#' used in the long format representation df_long. In the wide formatted 
-#' representation data_matrix this corresponds to the row names. 
-#' @param sample_order_col column, determining the order of sample MS run, used
-#'   as covariate to fit the non-linear fit
-#' @param fitFunc function to use for the fit (currently 
-#' only \code{loess_regression} available)
-#' @param discreteFunc function to use for discrete 
-#' batch correction (\code{MedianCentering} or \code{ComBat})
-#' @param abs_threshold the absolute threshold to filter data for curve fitting 
-#' @param pct_threshold the percentage threshold to filter data for curve fitting 
-#' @param ... other parameters, usually of \code{normalize_custom_fit}, and \code{fit_func}
-#'
-#' @return \code{data_matrix}-size data matrix with batch-effect 
-#' corrected by fit and discrete functions
-#' 
-#' @examples 
-#' batch_corrected_matrix <- correct_batch_effects(
-#' example_proteome_matrix, example_sample_annotation, 
-#' discreteFunc = 'MedianCentering', 
-#' batch_col = 'MS_batch',  
-#' span = 0.7,
-#' abs_threshold = 5, pct_threshold = 0.20)
 #' 
 #' @export
-#'                                                 
-correct_batch_effects <- function(data_matrix, sample_annotation, 
-                                  fitFunc = 'loess_regression', 
-                                  discreteFunc = c("MedianCentering", "ComBat"), 
+#' @rdname correct_batch_effects
+#' 
+correct_batch_effects_df <- function(df_long, sample_annotation, 
+                                  continuous_func = NULL, 
+                                  discrete_func = c("MedianCentering", "ComBat"),
                                   batch_col = 'MS_batch',  
                                   feature_id_col = 'peptide_group_label', 
                                   sample_id_col = 'FullRunName',
                                   measure_col = 'Intensity',  
-                                  sample_order_col = 'order', 
+                                  order_col = 'order', 
                                   abs_threshold = 5, pct_threshold = 0.20, ...){
   
-  discreteFunc <- match.arg(discreteFunc)
+  discrete_func <- match.arg(discrete_func)
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
-  fit_list = adjust_batch_trend(data_matrix, 
-                                sample_annotation = sample_annotation,
-                                batch_col = batch_col,
-                                feature_id_col = feature_id_col,
-                                sample_id_col = sample_id_col,
-                                measure_col = measure_col,
-                                sample_order_col = sample_order_col,
-                                fit_func = fit_nonlinear,
-                                fitFunc = fitFunc, 
-                                abs_threshold = abs_threshold, 
-                                pct_threshold = pct_threshold, ...)
-  fit_matrix = fit_list$data_matrix
-  fit_long = matrix_to_long(fit_matrix, feature_id_col = feature_id_col,
-                            measure_col = measure_col, sample_id_col = sample_id_col)
   
-  if(discreteFunc == 'MedianCentering'){
-    median_long = center_peptide_batch_medians(df_long = fit_long, 
+  if(!is.null(continuous_func)){
+    fit_list = adjust_batch_trend_df(df_long, 
+                                  sample_annotation = sample_annotation,
+                                  batch_col = batch_col,
+                                  feature_id_col = feature_id_col,
+                                  sample_id_col = sample_id_col,
+                                  measure_col = measure_col,
+                                  order_col = order_col,
+                                  fit_func = continuous_func, 
+                                  abs_threshold = abs_threshold, 
+                                  pct_threshold = pct_threshold, ...)
+    adjusted_df = fit_list$corrected_df
+  }
+  
+  #TODO: re-implement in a functional programming
+  if(discrete_func == 'MedianCentering'){
+    corrected_df = center_feature_batch_medians_df(df_long = adjusted_df, 
                                                sample_annotation = sample_annotation,
                                                sample_id_col = sample_id_col,
                                                batch_col = batch_col,
                                                feature_id_col = feature_id_col,
                                                measure_col = measure_col)
-    normalized_matrix = long_to_matrix(median_long, feature_id_col = feature_id_col,
-                                       measure_col = measure_col, 
-                                       sample_id_col = sample_id_col)
   }
   
-  if(discreteFunc == 'ComBat'){
-    fit_matrix = long_to_matrix(fit_long, feature_id_col = feature_id_col,
-                                measure_col = measure_col, sample_id_col = sample_id_col)
-    normalized_matrix = correct_with_ComBat(fit_matrix, 
-                                            sample_annotation = sample_annotation,
-                                            batch_col = batch_col, par.prior = TRUE)
+  if(discrete_func == 'ComBat'){
+    #TODO: pick up the functional programming argument borrowing
+    corrected_df = correct_with_ComBat_df(df_long = adjusted_df, 
+                                          sample_annotation = sample_annotation,
+                                          feature_id_col = feature_id_col, 
+                                          measure_col = measure_col,
+                                          sample_id_col = sample_id_col,
+                                          batch_col = batch_col, 
+                                          par.prior = TRUE)
   }
   
-  return(normalized_matrix)
+  return(corrected_df)
 }
 
+#' 
+#' @export
+#' @rdname correct_batch_effects
+#' 
+correct_batch_effects_dm <- function(data_matrix, sample_annotation, 
+                                     continuous_func = NULL, 
+                                     discrete_func = c("MedianCentering", "ComBat"),
+                                     batch_col = 'MS_batch',  
+                                     feature_id_col = 'peptide_group_label', 
+                                     sample_id_col = 'FullRunName',
+                                     measure_col = 'Intensity',  
+                                     order_col = 'order', 
+                                     abs_threshold = 5, pct_threshold = 0.20, ...){
+  
+  df_long = matrix_to_long(data_matrix, feature_id_col = feature_id_col,
+                           measure_col = measure_col, 
+                           sample_id_col = sample_id_col)
+  corrected_df = correct_batch_effects_df(df_long, sample_annotation, 
+                                          continuous_func = continuous_func, 
+                                          discrete_func = discrete_func,
+                                          batch_col = batch_col,  
+                                          feature_id_col = feature_id_col, 
+                                          sample_id_col = sample_id_col,
+                                          measure_col = measure_col, 
+                                          order_col = order_col,
+                                          abs_threshold = abs_threshold, 
+                                          pct_threshold = pct_threshold, ...)
+  
+  return(corrected_df)
+}

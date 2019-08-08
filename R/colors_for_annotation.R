@@ -1,7 +1,20 @@
 map_factors_to_colors <- function(annotation_df_factors) {
   #calculate number of colors to create
+  col_class = vapply(annotation_df_factors, 
+                     FUN = function(x) paste(class(x), collapse = "; "),
+                     FUN.VALUE = character(1))
+  non_factor_cols = names(annotation_df_factors)[col_class != 'factor']
+  wrong_classes = col_class[col_class != 'factor']
+  if (length(non_factor_cols) > 0){
+    col_string = paste(non_factor_cols, collapse = ', ')
+    col_classes = paste(wrong_classes, collapse = ', ')
+    warning(sprintf('Columns %s are non factors, but %s, they will be converted 
+                    to factors for mapping to colors', col_string, col_classes))
+    annotation_df_factors = annotation_df_factors %>% 
+      mutate_if(negate(is.factor), as.factor)
+  }
+  
   nlev_covariate = mapply(nlevels, annotation_df_factors)
-  n_colors_total = sum(nlev_covariate)
   
   if (any(nlev_covariate > 20)) {
     warning('Some colors will be hard to distinguish\n')
@@ -11,92 +24,83 @@ map_factors_to_colors <- function(annotation_df_factors) {
                 values for better visualisation\n')
   }
   
-  colors = WGCNA::standardColors(n_colors_total)
+  number_colors_for_factors = sum(nlev_covariate)
+  standard_colors_base = grep('(white|(gr(a|e)y))', standardColors(45), 
+                              value = TRUE, invert = TRUE)
+  
+  qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+  brewer_colors = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, 
+                                rownames(qual_col_pals)))
+  if(number_colors_for_factors <= 45){
+    colors = standard_colors_base
+  } else 
+    if(number_colors_for_factors <= length(brewer_colors)){
+      colors = brewer_colors
+    } else if (number_colors_for_factors <= sum(length(brewer_colors), 45)){
+      colors = c(standard_colors_base, brewer_colors)
+    } else {
+      set.seed(1)
+      standard_colors_all = sample(grep('(white|(gr(a|e)y))', standardColors(), 
+                                        value = TRUE, invert = TRUE))
+      colors = standard_colors_all
+  }
+  
   start_indxs = c(1, 1 + cumsum(nlev_covariate[-length(nlev_covariate)]))
   end_indx = cumsum(nlev_covariate)
   ann_colors_covariate = lapply(seq_len(length(nlev_covariate)),
                                 function(i)
                                   colors[start_indxs[i]:end_indx[i]])
-  
+
   names(ann_colors_covariate) = names(nlev_covariate)
   ann_colors_covariate <-
-    Map(setNames,
-        ann_colors_covariate,
-        lapply(annotation_df_factors, levels))
+      Map(setNames,
+          ann_colors_covariate,
+          lapply(annotation_df_factors, levels))
+  change_other_to_grey <- function(x) { 
+    if ('other' %in% names(x)){
+      x['other'] <- 'grey'
+    }
+      return(x)
+  }
+  ann_colors_covariate = lapply(ann_colors_covariate, change_other_to_grey)
   return(ann_colors_covariate)
 }
 
-map_numbers_to_colors <-
-  function(annotation_df_numbers,
-           palette_type = 'brewer',
-           granularity = 10) {
-    n_colors_to_create <- ncol(annotation_df_numbers)
-    if ((n_colors_to_create > 4 & palette_type == 'viridis')) {
-      warning('Too many colors for viridis palette, 
-                    switching to Brewer palettes')
-    }
-    if ((n_colors_to_create > 18)) {
-      stop('Not enough color paletters to visualize the annotation')
-    }
-    
-    if (length(granularity) > 1 &
-        length(granularity) != ncol(annotation_df_numbers)) {
-      warning(
-        'Either specify universal color granularity or 
-                granularity for each of numeric vectors!'
-      )
-      granularity = granularity[1]
-    }
-    
-    if (length(granularity) == 1) {
-      granularity <- rep(granularity, ncol(annotation_df_numbers))}
-    
-    ann_col_covariate <- lapply(seq_len(ncol(annotation_df_numbers)),
-                                function(i)
-                                  generate_colors_for_numeric(
-                                    annotation_df_numbers[, i],
-                                    i = i,
-                                    palette_type = palette_type,
-                                    granularity = granularity[i]
-                                  ))
-    
-    color_list = lapply(ann_col_covariate, function(item)
-      item$color_vector)
-    names(color_list) = names(annotation_df_numbers)
-    new_sample_annotation = data.frame(lapply(
-      ann_col_covariate, function(item)item$new_annotation))
-    names(new_sample_annotation) = names(annotation_df_numbers)
-    
-    return(list(color_list = color_list,
-                new_sample_annotation = new_sample_annotation))
-    
+map_numbers_to_colors <- function(annotation_df_numbers,
+                                  palette_type = 'brewer') {
+  n_colors_to_create <- ncol(annotation_df_numbers)
+  if ((n_colors_to_create > 4 & palette_type == 'viridis')) {
+    warning('Too many colors for viridis palette, 
+            switching to Brewer palettes')
   }
+  if ((n_colors_to_create > 18)) {
+    stop('Not enough color paletters to visualize the annotation')
+  }
+  
+  color_list <- lapply(seq_len(ncol(annotation_df_numbers)),
+                       function(i)
+                         generate_colors_for_numeric(i = i,
+                                                     palette_type = palette_type))
+  names(color_list) = names(annotation_df_numbers)
+  return(color_list)
+}
 
 
-#' Generates color list
+#' Generates color vector from continous palette
 #'
-#' Generates a list of colors for a vector of numeric, POSIXct (i.e. the
+#' Generates a vector of colors for a vector of numeric, POSIXct (i.e. the
 #' (signed) number of seconds since the beginning of 1970 , or factors
 #'
-#' @param num_col a vector of type numeric of factor to generate colors for
 #' @param palette_type 'brewer' or 'viridis'
 #' @param i if \code{palette_type} is 'brewer' the palette argument to
 #'   \code{brewer_pal}. If \code{palette_type} is 'viridis' the option argument
-#'   to virids_pal ()
-#' @param granularity the breaks to use when generating colors for num_col
+#'   to \code{viridis_pal}
 #'
-#' @return list, containing the following items:
-#' \enumerate{
-#' \item \code{color_vector} - string-like vector of colors
-#' \item \code{new_annotation} - factor representation of numeric vector 
-#' (factor with number of levels equal to "granularity")
-#' }
+#' @return vector of colors
 #' @keywords internal
 #' 
-generate_colors_for_numeric <- function(num_col,
-                                        palette_type = 'brewer',
-                                        i = 1,
-                                        granularity = 10) {
+generate_colors_for_numeric <- function(palette_type = 'brewer',
+                                        i = 1) {
   if ((palette_type == 'viridis') && (i > 4 || i < 1)) {
     warning('When using viridis palette i 
                 must be >= 1 and <= 4. Setting it to 1.')
@@ -105,48 +109,11 @@ generate_colors_for_numeric <- function(num_col,
   
   color_for_column = switch(
     palette_type,
-    brewer = scales::brewer_pal(type = "div", i)(5)[seq_len(5)],
-    viridis = viridis::viridis_pal(option = LETTERS[5 - i])(5)
+    brewer = brewer_pal(type = "div", i)(5)[seq_len(5)],
+    viridis = viridis_pal(option = LETTERS[5 - i])(5)
   )
   
-  non_numeric_values = NULL
-  if (is.factor(num_col)) {
-    num_col_temp = as.character(num_col)
-    if (all(is.na(as.numeric(num_col_temp)))) {
-      warning('This column is not a numeric')
-    }
-    num_col = as.numeric(num_col_temp)
-    non_numeric_values = unique(num_col_temp[is.na(num_col)])
-    n_non_numeric = length(non_numeric_values)
-    factor_colors = scales::brewer_pal(palette = 'Set1')(n_non_numeric)
-    names(factor_colors) = non_numeric_values
-  }
-  
-  if (is.numeric(num_col)) {
-    num_vec = cut(num_col, breaks = granularity)
-  } else if (lubridate::is.POSIXct(num_col)) {
-    interval = (max(num_col, na.rm = TRUE) - 
-                  min(num_col, na.rm = TRUE)) / granularity
-    if (any(is.na(num_col))) {
-      warning('NAs in the numeric vector')
-    }
-    interval_char = paste(as.integer(interval), units(interval), sep = ' ')
-    num_vec = cut(num_col, breaks = interval_char)
-  }
-  
-  color_to_plot = colorRampPalette(color_for_column)(
-    nlevels(num_vec))[seq_len(nlevels(num_vec))]
-  names(color_to_plot) = levels(num_vec)
-  
-  if (!is.null(non_numeric_values)) {
-    num_vec = as.character(num_vec)
-    num_vec[is.na(num_vec)] = num_col_temp[is.na(num_vec)]
-    num_vec = as.factor(num_vec)
-    color_to_plot = c(color_to_plot, factor_colors)
-  }
-  
-  return(list(color_vector = color_to_plot,
-              new_annotation = num_vec))
+  return(color_for_column)
 }
 
 check_rare_levels <- function(column) {
@@ -160,11 +127,11 @@ check_rare_levels <- function(column) {
 
 #' Replaces rare levels with other
 #'
-#' Replaces levels with a maximal occurence of 1 with other
+#' Replaces levels with a maximal occurrence of 1 with \code{other}
 #'
 #' @keywords internal
 #'
-#' @return column with rare occurences replaced by other
+#' @return column with rare occurrences replaced by other
 merge_rare_levels <- function(column) {
   is_factor_col = is.factor(column)
   tb_col = table(column)
@@ -180,124 +147,151 @@ merge_rare_levels <- function(column) {
 #' Generate colors for sample annotation
 #'
 #' Convert the sample annotation data frame to list of colors
-#' the list is named as columns included to use in potting functions
+#' the list is named as columns included to use in plotting functions
 #'
 #' @inheritParams proBatch
-#' @param columns_for_plotting only consider these 
-#' columns from sample_annotation
-#' @param factor_columns columns of sample_annotation to be 
-#' treated as factors. Note that 
-#' factor and character columns are treated as factors by default.
-#' @param not_factor_columns don't treat these columns as factors. 
-#' This can be used to override the default behaviour of 
-#' considering factors and 
-#' character columns as factors.
-#' @param numeric_columns columns of sample_annotation to be 
+#' @param factor_columns columns of \code{sample_annotation} to be 
+#' treated as factors. Sometimes categorical variables are depicted as integers 
+#' (e.g. in column "Batch", values are 1, 2 and 3), specification here allows to
+#' map them correctly to qualitative palettes.
+#' @param numeric_columns columns of \code{sample_annotation} to be 
 #' treated as continuous numeric values. 
-#' @param rare_categories_to_other if True rare categories 
-#' will be merged as 'other'
-#' @param granularity number of colors to map to the number 
-#' vector (equally spaced between minimum and maximum)
+#' @param rare_categories_to_other if \code{True} rare categories 
+#' will be merged into the value \code{"other"}
+#' @param guess_factors whether attempt which of the \code{factor_columns}
+#'  are actually numeric
 #' @param numeric_palette_type palette to be used for 
-#' numeric values coloring
+#' numeric values coloring (can be \code{'brewer' and 'viridis'})
 #'
-#' @return list of colors
+#' @return list of three items: \enumerate{
+#'   \item list of colors; 
+#'   \item data frame of colors; 
+#'   \item new sample annotation (e.g. rare factor levels merged into "other")
+#'   }
 #' 
 #' @examples 
 #' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch','EarTag', "Strain", 
 #' "Diet", "digestion_batch", "Sex"),
-#' not_factor_columns = 'DateTime',
-#' numeric_columns = c('order'))
+#' numeric_columns = c('DateTime', 'order'))
 #' @export
-#'
+#' 
+#' @name sample_annotation_to_colors
 sample_annotation_to_colors <- function(sample_annotation,
-                                        columns_for_plotting = NULL,
                                         sample_id_col = 'FullRunName',
                                         factor_columns = c('MS_batch','EarTag', 
-                                                           "Strain", "Diet", "Sex"),
-                                        not_factor_columns = 'DateTime',
-                                        numeric_columns = 'order',
+                                                           'digestion_batch',
+                                                           "Strain", "Diet"),
+                                        numeric_columns = c('DateTime', 'order'),
                                         rare_categories_to_other = TRUE,
-                                        numeric_palette_type = 'brewer',
-                                        granularity = 10) {
+                                        guess_factors = FALSE,
+                                        numeric_palette_type = 'brewer') {
   
   sample_annotation = as.data.frame(sample_annotation)
+  
+  columns_for_color_mapping = union(factor_columns, numeric_columns)
+  undefined_cols <- setdiff(names(sample_annotation), 
+                            c(columns_for_color_mapping, sample_id_col))
+  if (length(undefined_cols) > 0){
+    warning(paste(c('The following columns will not be mapped to colors:',
+                    undefined_cols, 'if these have to be mapped, please assign 
+                    them to factor, date or numeric'), collapse = ' '))
+  }
+  
+  sample_annotation = sample_annotation %>%
+    select(one_of(columns_for_color_mapping))
+  
+  if (!is.null(numeric_columns)) {
+    factor_columns = setdiff(factor_columns, numeric_columns)
+    column_intersection <- intersect(factor_columns, numeric_columns)
+    if (length(column_intersection) > 0) {
+      warning(paste(c('The following columns are repeatedly listed among factors
+                      and numeric-like variables:', column_intersection, 
+                      '; they will be excluded from factors and mapped to 
+                      continuous palettes'), 
+                    collapse = ' '))
+    }
+  }
+  
+  if(is.null(numeric_columns) && guess_factors){
+    warning('numeric columns not specified, 
+            extracting numeric columns from factors')
+    which_factors = vapply(factor_columns, function(col) {
+      batch_vector = sample_annotation[[col]]
+      is_factor = is_batch_factor(batch_vector, color_scheme = NULL)
+      return(is_factor)
+    }, FUN.VALUE = logical(1))
+    factor_candidates = factor_columns[which_factors]
+    
+    which_dates = vapply(factor_columns, 
+                         function(col) is.POSIXct(sample_annotation[[col]]), 
+                         FUN.VALUE = logical(1))
+    date_columns = factor_columns[which_dates]
+    is_not_factor <- vapply(factor_columns, 
+                            function(col) is.numeric(sample_annotation[[col]]),
+                            FUN.VALUE = logical(1))
+    numeric_columns = factor_columns[is_not_factor]
+    numeric_columns = c(numeric_columns, date_columns)
+    for (numcol in numeric_columns){
+      batch_vector = sample_annotation[[numcol]]
+      n_batches = length(unique(batch_vector))
+      if (n_batches <= 10 || n_batches < 0.1*nrow(sample_annotation)){
+        warning(sprintf('%s column has very few values, but is numeric-like,
+                        should it be treated as factor? 
+                        \nuse both factor_columns and 
+                        numeric_columns parameters', numcol))
+      }
+    }
+    factor_columns = factor_candidates
+  }
+
+  message('converting columns to corresponding classes 
+          (factor, numeric)')
   sample_annotation <- sample_annotation %>%
     mutate_at(vars(factor_columns), as.factor) %>%
     mutate_at(vars(numeric_columns), as.numeric)
   
-  rownames_ann = as.character(sample_annotation[[sample_id_col]])
-  if (!is.null(columns_for_plotting)) {
-    sample_annotation = sample_annotation %>%
-      select(one_of(setdiff(
-        columns_for_plotting, sample_id_col
-      )))
-  }
-  
-  factor_or_not <- intersect(factor_columns, not_factor_columns)
-  if (length(factor_or_not) > 1) {
-    stop(sprintf(
-      'Columns %s are defined as both factors and not factors',
-      paste(factor_or_not, collapse = ', ')
-    ))
-  }
-  
-  factor_like_columns = names(sample_annotation)[
-    vapply(sample_annotation, function(column)
-      is.factor(column) |is.character(column), logical(1))]
-  if (!is.null(factor_columns)) {
-    factor_columns = union(factor_columns, factor_like_columns)
-  } else {
-    factor_columns = factor_like_columns
-  }
-  if (!is.null(not_factor_columns) || !is.null(numeric_columns)) {
-    factor_columns = setdiff(factor_columns, c(not_factor_columns, numeric_columns))
-  }
-  
-  list_of_col_for_factors = list()
-  if (!is.null(factor_columns)) {
+  if (!is.null(factor_columns) || length(factor_columns) != 0) {
     factor_df = sample_annotation %>%
-      select(one_of(factor_columns)) %>%
-      mutate_at(names(.), funs(as.factor))
-    
+      select(one_of(factor_columns))
     if (rare_categories_to_other) {
       factor_df = factor_df %>%
         mutate_if(check_rare_levels, funs(merge_rare_levels(.)))
     }
-    
     list_of_col_for_factors = map_factors_to_colors(factor_df)
+  } else {
+    list_of_col_for_factors = list()
   }
   
-  non_factor_cols = setdiff(names(sample_annotation), factor_columns)
+  non_factor_cols = setdiff(columns_for_color_mapping, factor_columns)
   
-  list_of_col_for_numeric = list()
   if (!is.null(non_factor_cols) &
       !identical(non_factor_cols, character(0))) {
     numeric_df = sample_annotation %>%
       select(one_of(non_factor_cols))
-    map_of_colors_to_num_vec = map_numbers_to_colors(
-      numeric_df,palette_type = numeric_palette_type,
-      granularity = granularity)
-    list_of_col_for_numeric = map_of_colors_to_num_vec$color_list
-    numeric_factor_df = map_of_colors_to_num_vec$new_sample_annotation
-    sample_annotation = cbind(factor_df, numeric_factor_df)
+    list_of_col_for_numeric = map_numbers_to_colors(
+      numeric_df, palette_type = numeric_palette_type)
+  } else {
+    list_of_col_for_numeric = list()
   }
   
-  list_of_colors = c(list_of_col_for_factors, list_of_col_for_numeric)
-  rownames(sample_annotation) = rownames_ann
+  color_list = c(list_of_col_for_factors, list_of_col_for_numeric)
   
-  color_df = color_list_to_df(list_of_colors, sample_annotation)
-  
-  return(list(list_of_colors = list_of_colors,
-              color_df = color_df,
-              sample_annotation = sample_annotation))
+  return(color_list)
 }
 
+map_numeric_colors_to_intervals <- function(color_vector, col_values){
+  breaks = pretty(col_values)
+  col_intervals =cut(col_values, breaks = breaks)
+  col_for_colors = colorRampPalette(color_vector)(nlevels(col_intervals))
+  names(col_for_colors) = levels(col_intervals)
+  col_colors = col_for_colors[col_intervals]
+  return(col_colors)
+}
 
 #' Color list to data frame
 #'
-#' Turn color list to df (some plotting functions require the latter)
+#' Turn color list to df (to use in the hierarchical clustering)
 #'
 #' @param color_list list of colors
 #' @param sample_annotation factor-based configuration 
@@ -307,14 +301,195 @@ sample_annotation_to_colors <- function(sample_annotation,
 #' 
 #' @keywords internal
 #'
-color_list_to_df <- function(color_list, sample_annotation) {
-  list_df = lapply(names(sample_annotation), function(col_name) {
+color_list_to_df <- function(color_list, sample_annotation, 
+                             sample_id_col = 'FullRunName') {
+  factors_to_map = intersect(names(sample_annotation), names(color_list))
+  if(!setequal(names(sample_annotation), names(color_list))){
+    warning('color list and sample annotation have different factors, 
+            using only intersection in color scheme!')
+  }
+  list_df = lapply(factors_to_map, function(col_name) {
+    
     col_values = sample_annotation[[col_name]]
-    col_colors = color_list[[col_name]][col_values]
+    color_scheme <- color_list[[col_name]]
+    is_factor = is_batch_factor(col_values, color_scheme=color_scheme)
+    if(is_factor){
+      col_colors = color_scheme[col_values]
+    } else{
+      col_colors = map_numeric_colors_to_intervals(color_scheme, col_values)
+    }
+    if(any(is.na(col_values))){
+      col_colors[is.na(col_values)] = 'white'
+    }
+    return(col_colors)
   })
-  names(list_df) = names(sample_annotation)
+  names(list_df) = factors_to_map
   color_df = as.data.frame(do.call(cbind, list_df))
-  rownames(color_df) = rownames(sample_annotation)
+  rownames(color_df) = sample_annotation[[sample_id_col]]
   return(color_df)
 }
 
+add_color_scheme_discrete <- function(color_scheme, n_batches, fill_or_color, 
+                                      gg, batch_col) {
+  if(length(color_scheme) == 1 && color_scheme == 'brewer'){
+    if (n_batches <= 9){
+      if(fill_or_color == 'color'){
+        gg = gg + scale_color_brewer(palette = 'Set1')
+      } else {
+        if(fill_or_color == 'fill'){
+          gg = gg + scale_fill_brewer(palette = 'Set1')
+        }
+      }
+      
+    } else {
+      if (n_batches <= 12){
+        if(fill_or_color == 'color'){
+          gg = gg + scale_color_brewer(palette = 'Set3')
+        } else {
+          if(fill_or_color == 'fill'){
+            gg = gg + scale_fill_brewer(palette = 'Set3')
+          }
+        }
+        
+      } else {
+        warning(sprintf('brewer palettes have maximally 12 colors, 
+                        %s batches are specified,
+                        consider defining color scheme with 
+                        sample_annotation_to_colors function', 
+                        n_batches))
+      }
+    }
+    } else {
+      #color vector provided by "sample_annotation_to_colors"
+      if(fill_or_color == 'color'){
+        gg = gg + scale_color_manual(values = color_scheme)
+      } else {
+        if(fill_or_color == 'fill'){
+          gg = gg + scale_fill_manual(values = color_scheme)
+        }
+      }
+    }
+  if(fill_or_color == 'color'){
+    gg = gg + labs(color = batch_col)
+  } else {
+    if(fill_or_color == 'fill'){
+      gg = gg + labs(fill = batch_col)
+    }
+  }
+  return(gg)
+}
+
+
+color_discrete <- function(color_scheme, batch_col, n_batches, fill_or_color, gg) {
+  
+  if(fill_or_color == 'color'){
+    gg = gg + aes(color = as.factor(!!sym(batch_col)))
+  } else {
+    if(fill_or_color == 'fill'){
+      gg = gg + aes(fill = as.factor(!!sym(batch_col)))
+    }
+  }
+  
+  #Define the color scheme on the fly
+  gg = add_color_scheme_discrete(color_scheme, n_batches, fill_or_color, 
+                                 gg, batch_col)
+  
+  return(gg)
+}
+
+color_continuous <- function(color_scheme, batch_col, n_batches, 
+                             fill_or_color, gg) {
+  batch_vector = gg$data[[batch_col]]
+  lab_datetime <- pretty(batch_vector)
+  
+  if(fill_or_color == 'color'){
+    gg = gg + aes(color = as.numeric(!!sym(batch_col)))
+  } else {
+    if(fill_or_color == 'fill'){
+      gg = gg + aes(fill = as.numeric(!!sym(batch_col)))
+    }
+  }
+  
+  #Define the color scheme on the fly
+  if(length(color_scheme) == 1 && color_scheme == 'brewer'){
+    
+    if(fill_or_color == 'color'){
+      gg = gg + scale_color_distiller(palette = 'PiYG',
+                                      breaks = as.numeric(lab_datetime), 
+                                      labels = lab_datetime)+
+        labs(color=batch_col)
+    } else {
+      if(fill_or_color == 'fill'){
+        gg = gg + scale_fill_distiller(palette = 'PiYG',
+                                        breaks = as.numeric(lab_datetime), 
+                                        labels = lab_datetime)+
+          labs(fill=batch_col)
+      }
+    }
+  } else {
+    #color vector provided by "sample_annotation_to_colors"
+    if(fill_or_color == 'color'){
+      gg = gg + scale_color_gradientn(colors = color_scheme,
+                                      breaks = as.numeric(lab_datetime), 
+                                      labels = lab_datetime)+
+        labs(color=batch_col)
+    } else {
+      if(fill_or_color == 'fill'){
+        gg = gg + scale_fill_gradientn(colors = color_scheme,
+                                        breaks = as.numeric(lab_datetime), 
+                                        labels = lab_datetime)+
+          labs(fill=batch_col)
+      }
+    }
+  }
+  return(gg)
+}
+
+color_by_factor <- function(color_by_batch, batch_col, gg, color_scheme, 
+                            sample_annotation, fill_or_color = 'color') {
+  if(color_by_batch & !is.null(batch_col)){
+    
+    batch_vector <- sample_annotation[[batch_col]]
+    n_batches <- length(unique(batch_vector))
+    
+    is_factor = is_batch_factor(batch_vector, color_scheme)
+    
+    is_numeric = (!is_factor) && 
+      (is.numeric(batch_vector) || is.POSIXct(batch_vector))
+    
+    if (is_numeric && 
+        (n_batches <= 10 || n_batches < 0.1*nrow(sample_annotation))){
+      warning(sprintf('%s column has very few values, but is numeric-like,
+                      should it be treated as factor? 
+                      \nThen modify it with as.factor() function', batch_col))
+    }
+    
+    if(is.null(color_scheme)){
+      color_scheme = 'brewer'
+    }
+    
+    if((length(color_scheme) == 1) && color_scheme == 'brewer'){
+      warning('color_scheme will be inferred automatically.
+              Numeric/factor columns are guessed, for more controlled color 
+              mapping use sample_annotation_to_colors()')
+    }
+    
+    if(is_factor){
+      gg = color_discrete(color_scheme, batch_col, n_batches, fill_or_color, gg)
+    } else if(is_numeric) {
+      gg = color_continuous(color_scheme, batch_col, n_batches, fill_or_color, 
+                            gg)
+    } else{
+      stop('batch_col class is neither factor-like, nor numeric-like,  
+           check sample_annotation and/or color_scheme')
+    }
+    
+    
+    
+    } else {
+      if (is.null(batch_col)){
+        stop('Coloring column not defined, please define the color column!')
+      }
+  }
+  return(gg)
+}
