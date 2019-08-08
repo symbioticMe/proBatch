@@ -79,3 +79,12 @@ pheatmap-type object
 \description{
 Plot the heatmap
 }
+\examples{
+
+p <- plot_heatmap_generic(log_transform_dm(example_proteome_matrix), 
+column_annotation_df = example_sample_annotation,
+columns_for_cols = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'),
+plot_title = 'test_heatmap',
+show_rownames = FALSE, show_colnames = FALSE)
+
+}

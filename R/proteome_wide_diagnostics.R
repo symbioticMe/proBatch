@@ -280,6 +280,15 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
 #'
 #' @return pheatmap-type object
 #' @export
+#' 
+#' @examples 
+#' 
+#' p <- plot_heatmap_generic(log_transform_dm(example_proteome_matrix), 
+#' column_annotation_df = example_sample_annotation,
+#' columns_for_cols = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'),
+#' plot_title = 'test_heatmap',
+#' show_rownames = FALSE, show_colnames = FALSE)
+#' 
 plot_heatmap_generic <- function(data_matrix, 
                                  column_annotation_df = NULL,
                                  row_annotation_df = NULL, 
