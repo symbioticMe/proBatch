@@ -3,8 +3,8 @@
 #'
 #' @inheritParams proBatch
 #' @param df_feature_batch data frame containing response variable e.g. 
-#' samples in order and explanatory 
-#'   variable e.g. measurement for a specific feature (peptide) in a specific batch
+#' samples in order and explanatory variable e.g. measurement for a 
+#' specific feature (peptide) in a specific batch
 #' @param batch_size the total number of samples in the batch to 
 #' compute for percentage threshold 
 #' @param feature_id the name of the feature, required for warnings
@@ -24,8 +24,10 @@
 #' 
 #' @examples 
 #' test_peptide = example_proteome$peptide_group_label[1] 
-#' df_selected = example_proteome[example_proteome$peptide_group_label == test_peptide,]
-#' batch_selected_df = example_sample_annotation[example_sample_annotation$MS_batch == 'Batch_1',]
+#' selected_peptide = example_proteome$peptide_group_label == test_peptide
+#' df_selected = example_proteome[selected_peptide,]
+#' selected_batch = example_sample_annotation$MS_batch == 'Batch_1'
+#' batch_selected_df = example_sample_annotation[selected_batch,]
 #' df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
 #' fit_values = fit_nonlinear(df_for_test)
 #' 
@@ -36,55 +38,62 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
                           feature_id = NULL, batch_id = NULL,
                           fit_func = 'loess_regression',
                           optimize_span = FALSE, 
-                          no_fit_imputed = FALSE, qual_col = 'm_score', qual_value = 2,
+                          no_fit_imputed = FALSE, qual_col = 'm_score', 
+                          qual_value = 2,
                           abs_threshold = 5, pct_threshold = 0.20, ...){
-  #df_feature_batch <- df_feature_batch[sort.list(df_feature_batch[[order_col]]),]
   x_all = df_feature_batch[[order_col]]
   y = df_feature_batch[[measure_col]]
     
   if(no_fit_imputed){
     if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
-      warning('imputed value column is in the data, fitting curve only to measured, non-imputed values')
+      warning('imputed value column is in the data, fitting curve only to 
+              measured, non-imputed values')
       imputed_values <- df_feature_batch[[qual_col]] == qual_value
       x_to_fit = x_all[!imputed_values]
       y[imputed_values] = NA
     } else {
-      stop('imputed values are specified not to be used for curve fitting, however, 
+      stop('imputed values are specified not to be used for curve fitting, 
+however, 
            no flag for imputed values is specified')
       }
     } else {
       if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
-        warning('imputed value (requant) column is in the data, are you sure you want to fit non-linear curve to these values, too?')
+        warning('imputed value (requant) column is in the data, are you sure you
+                want to fit non-linear curve to these values, too?')
       }
       x_to_fit = x_all
     }
     
-    #checking if there is a reasonable number of values to fit any sensible curve
+    #checking if there is a reasonable number of values to fit a sensible curve
     if (is.null(batch_size)){
       warning("Batch size is not specified, assuming number of entries for this 
               batch and feature is the total batch size. Maybe erroneous,
-              if missing values are not NAs, but removed from data frame completely")
+              if missing values are not NAs, but removed from data frame")
       batch_size = nrow(df_feature_batch)
     }
     
     pct_threshold = batch_size*pct_threshold
     if(length(x_to_fit) >= abs_threshold & length(x_to_fit) >= pct_threshold){
       #fitting the curve
-      #TODO: re-write in the functional programming paradigm (e.g. arguments - function, x_all, y, x_to_fit)
+      #TODO: re-write in the functional programming paradigm (e.g. arguments - 
+      #       function, x_all, y, x_to_fit)
       if(fit_func == 'loess_regression'){
         if(!optimize_span){
           fit_res = loess_regression(x_to_fit, y, x_all, 
-                                     feature_id = feature_id, batch_id = batch_id, ...)
+                                     feature_id = feature_id, 
+                                     batch_id = batch_id, ...)
         } else {
           fit_res = loess_regression_opt(x_to_fit, y, x_all, 
-                                         feature_id = feature_id, batch_id = batch_id, ...)
+                                         feature_id = feature_id, 
+                                         batch_id = batch_id, ...)
         }
       } else{
         stop("Only loess regression fitting is available for current version")
       }
     }else{
-      warning(sprintf("Curve fitting didn't have enough points to fit for the feature %s
-                      in the batch %s, leaving the original value", feature_id, batch_id))
+      warning(sprintf("Curve fitting didn't have enough points to fit for the 
+                       feature %s in the batch %s, leaving the original value", 
+                      feature_id, batch_id))
       fit_res = y
     }
   fit_res[is.na(y)] = NA
@@ -99,7 +108,8 @@ loess_regression <- function(x_to_fit, y, x_all,
     pred
   },
     warning=function(cond) {
-      message(sprintf("Feature %s in batch %s caused a warning:", feature_id, batch_id))
+      message(sprintf("Feature %s in batch %s caused a warning:", 
+                      feature_id, batch_id))
       message("Here's the original warning message:")
       message(cond)
       # Choose a return value in case of warning

@@ -142,7 +142,8 @@ normalize_sample_medians_df <- function(df_long,
 #' @rdname normalize
 #' 
 #' 
-normalize_data_dm <- function(data_matrix, normalize_func = c("quantile", "medianCentering"), 
+normalize_data_dm <- function(data_matrix, 
+                              normalize_func = c("quantile", "medianCentering"), 
                            log_base = NULL, offset = 1){
   
   normalize_func <- match.arg(normalize_func)    
@@ -155,7 +156,7 @@ normalize_data_dm <- function(data_matrix, normalize_func = c("quantile", "media
   } else if(normalize_func == "medianCentering"){
     normalized_matrix = normalize_sample_medians_dm(data_matrix)
   } else {
-    stop("Only quantile and median centering normalization methods are available")
+    stop("Only quantile and median centering normalization methods implemented")
   }
   
   return(normalized_matrix)
@@ -192,7 +193,7 @@ normalize_data_df <- function(df_long,
                                                 measure_col = measure_col,
                                                 keep_all = keep_all)
   } else {
-    stop("Only quantile and median centering normalization methods are available")
+    stop("Only quantile and median centering normalization methods implemented")
   }
   
   if (!keep_all){

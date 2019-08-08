@@ -32,13 +32,15 @@ dates_to_posix <- function(sample_annotation,
     if(is.null(new_time_column)) new_time_column = time_column
     time_col = as.character(sample_annotation[[time_column]])
     sample_annotation[[new_time_column]] = as.POSIXct(time_col ,
-                                                      format=dateTimeFormat, tz = tz)
+                                                      format=dateTimeFormat, 
+                                                      tz = tz)
   }
   else {
     sample_annotation = sample_annotation %>%
       mutate(dateTime = paste(!!!syms(time_column), sep=" ")) %>%
       mutate(dateTime = as.POSIXct(dateTime,
-                                   format = paste(dateTimeFormat, collapse = ' '))) %>%
+                                   format = paste(dateTimeFormat, 
+                                                  collapse = ' '))) %>%
       rename(!!new_time_column := dateTime)
   }
   return(sample_annotation)
@@ -91,7 +93,8 @@ date_to_sample_order <- function(sample_annotation,
       mutate(!!(sym(new_order_col)) := rank(!!sym(new_time_column))) %>%
       ungroup()
   } else {
-    sample_annotation[[new_order_col]] = rank(sample_annotation[[new_time_column]])
+    sample_annotation[[new_order_col]] = 
+      rank(sample_annotation[[new_time_column]])
   }
   return(sample_annotation)
 }

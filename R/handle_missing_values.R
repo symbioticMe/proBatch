@@ -1,4 +1,5 @@
-handle_missing_values <- function(data_matrix, warning_message, fill_the_missing = NULL) {
+handle_missing_values <- function(data_matrix, warning_message, 
+                                  fill_the_missing = NULL) {
   if (any(is.na(as.vector(data_matrix)))){
     warning(warning_message)
     if(!is.null(fill_the_missing)){

@@ -30,7 +30,8 @@
 #' color_scheme = color_list[["MS_batch"]])
 #' 
 #' \dontrun{
-#' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+#' mean_plot <- plot_sample_mean(example_proteome_matrix, 
+#'                               example_sample_annotation, 
 #'                               order_col = 'order', batch_col = "MS_batch", 
 #'                               filename = 'test_meanplot.png', 
 #'                               width = 28, height = 18, units = 'cm')
@@ -57,8 +58,9 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                       sample_id_col = colnames(data_matrix))
   names(df_ave)[names(df_ave) == "sample_id_col"] <- sample_id_col
   
-  #Check the consistency of sample annotation sample IDs and measurement table sample IDs
-  df_ave = check_sample_consistency(sample_annotation, sample_id_col, df_ave, batch_col, order_col, facet_col)
+  #Check the consistency of sample ann. sample IDs and measur. table sample IDs
+  df_ave = check_sample_consistency(sample_annotation, sample_id_col, df_ave, 
+                                    batch_col, order_col, facet_col)
   
   #Ensure that batch-coloring-related arguments are defined properly
   if(!is.null(batch_col)){
@@ -68,21 +70,25 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
     }
   } else {
     if (color_by_batch){
-      warning('batches cannot be colored as the batch column is defined as NULL, continuing without colors')
+      warning('batches cannot be colored as the batch column is defined as NULL,
+              continuing without colors')
       color_by_batch = FALSE
     }
   }
   
-  #For order definition and subsequent faceting, facet column has to be in the data frame
+  #For order definition and subsequent faceting, facet column has to be in the 
+  #data frame
   if(!is.null(facet_col)){
     if ( !(facet_col %in% names(df_ave))){
-      stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
-                 check sample annotation data frame', facet_col))
+      stop(sprintf('"%s" is specified as column for faceting, but is not present
+                    in the data, check sample annotation data frame', 
+                   facet_col))
     }
   }
   
   #Defining sample order for plotting
-  sample_order = define_sample_order(order_col, sample_annotation, facet_col, batch_col, df_ave, 
+  sample_order = define_sample_order(order_col, sample_annotation, facet_col, 
+                                     batch_col, df_ave, 
                       sample_id_col, color_by_batch)
   order_col = sample_order$order_col
   df_ave = sample_order$df_long
@@ -106,10 +112,12 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   
   if (!is.null(batch_col) && is_factor){
     if (!is.null(sample_annotation)){
-      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, 
+                                      vline_color, 
                                       facet_col, sample_annotation, gg)
     } else {
-      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, vline_color, 
+      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, 
+                                      vline_color, 
                                       facet_col, df_ave, gg)
     }
   }
@@ -130,7 +138,8 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
   } else{
-    message("plotting with default ggplot theme, only theme = 'classic' implemented")
+    message("plotting with default ggplot theme, only theme = 'classic' 
+            implemented")
   }
   
   #Change the limits of vertical axes
@@ -198,8 +207,9 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                          plot_title = NULL, theme = 'classic',
                          ylimits = NULL, outliers = TRUE){
   
-  #Check the consistency of sample annotation sample IDs and measurement table sample IDs
-  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, batch_col, order_col, facet_col)
+  #Check the consistency of sample ann. sample IDs and measur. table sample IDs
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col, order_col, facet_col)
   
   #Ensure that batch-coloring-related arguments are defined properly
   if(!is.null(batch_col)){
@@ -209,21 +219,26 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
     }
   } else {
     if (color_by_batch){
-      warning('batches cannot be colored as the batch column is defined as NULL, continuing without colors')
+      warning('batches cannot be colored as the batch column is defined as NULL, 
+              continuing without colors')
       color_by_batch = FALSE
     }
   }
   
-  #For order definition and subsequent faceting, facet column has to be in the data frame
+  #For order definition and subsequent faceting, facet column has to be in the 
+  #data frame
   if(!is.null(facet_col)){
     if ( !(facet_col %in% names(df_long))){
-      stop(sprintf('"%s" is specified as column for faceting, but is not present in the data,
-                 check sample annotation data frame', facet_col))
+      stop(sprintf('"%s" is specified as column for faceting, but is not present
+                    in the data, check sample annotation data frame', 
+                   facet_col))
     }
   }
   
-  #Defining sample order for plotting (even if order_col NULL, it will re-arrange df_long levels as required for plotting)
-  sample_order = define_sample_order(order_col, sample_annotation, facet_col, batch_col, df_long, 
+  #Defining sample order for plotting (even if order_col NULL, 
+  #it will re-arrange df_long levels as required for plotting)
+  sample_order = define_sample_order(order_col, sample_annotation, facet_col, 
+                                     batch_col, df_long, 
                                      sample_id_col, color_by_batch)
   order_col = sample_order$order_col
   df_long = sample_order$df_long
@@ -262,7 +277,8 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
   } else{
-    message("plotting with default ggplot theme, only theme = 'classic' implemented")
+    message("plotting with default ggplot theme, only theme = 'classic' 
+            implemented")
   }
   
   #Change the limits of vertical axes
@@ -287,7 +303,8 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   }
   
   #Move the legend to the upper part of the plot to save the horizontal space
-  if (length(unique(df_long[[order_col]])) > 30  && color_by_batch && is_factor){
+  if (length(unique(df_long[[order_col]])) > 30  && 
+      color_by_batch && is_factor){
     gg = gg + theme(legend.position="top")
   }
   

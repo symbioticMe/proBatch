@@ -4,7 +4,8 @@
 #' brings each feature in each batch to the comparable shape.
 #' Currently the following batch correction functions are implemented:
 #' \enumerate{
-#'   \item Per-feature median centering: \code{center_feature_batch_medians_df()}. 
+#'   \item Per-feature median centering: 
+#'   \code{center_feature_batch_medians_df()}. 
 #'   Median centering of the features (per batch median).
 #'   \item correction with ComBat:  \code{correct_with_ComBat_df()}. 
 #' Adjusts for discrete batch effects using ComBat. ComBat, described in 
@@ -18,7 +19,8 @@
 #'   \item Continuous drift correction:  \code{adjust_batch_trend_df()}. 
 #' Adjust batch signal trend with the custom (continuous) fit.
 #' Should be followed by discrete corrections,
-#' e.g. \code{center_feature_batch_medians_df()} or  \code{correct_with_ComBat_df()}.
+#' e.g. \code{center_feature_batch_medians_df()} or 
+#' \code{correct_with_ComBat_df()}.
 #' }
 #' Alternatively, one can call the correction function with  
 #' \code{correct_batch_effects_df()} wrapper. 
@@ -50,8 +52,8 @@
 #' \code{df_long}).
 #' For \code{df_long} the data frame stores the original values of 
 #' \code{measure_col}
-#' in another column called "preBatchCorr_[measure_col]", and the normalized values
-#' in \code{measure_col} column.
+#' in another column called "preBatchCorr_[measure_col]", and the normalized 
+#' values in \code{measure_col} column.
 #' 
 #' The function \code{adjust_batch_trend_df()} returns list of two items: 
 #' \enumerate{
@@ -240,7 +242,8 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
   
   
   corrected_df = corrected_df %>%
-    dplyr::select(c(sample_id_col, feature_id_col, measure_col, old_measure_col))
+    dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                    old_measure_col))
   
   if(keep_all){
     corrected_df = corrected_df %>%
@@ -374,7 +377,7 @@ run_ComBat_core <- function(sample_annotation, batch_col, data_matrix,
 #' 
 correct_batch_effects_df <- function(df_long, sample_annotation, 
                                   continuous_func = NULL, 
-                                  discrete_func = c("MedianCentering", "ComBat"),
+                                  discrete_func = c("MedianCentering","ComBat"),
                                   batch_col = 'MS_batch',  
                                   feature_id_col = 'peptide_group_label', 
                                   sample_id_col = 'FullRunName',
@@ -430,13 +433,15 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
 #' 
 correct_batch_effects_dm <- function(data_matrix, sample_annotation, 
                                      continuous_func = NULL, 
-                                     discrete_func = c("MedianCentering", "ComBat"),
+                                     discrete_func = c("MedianCentering", 
+                                                       "ComBat"),
                                      batch_col = 'MS_batch',  
                                      feature_id_col = 'peptide_group_label', 
                                      sample_id_col = 'FullRunName',
                                      measure_col = 'Intensity',  
                                      order_col = 'order', 
-                                     abs_threshold = 5, pct_threshold = 0.20, ...){
+                                     abs_threshold = 5, pct_threshold = 0.20, 
+                                     ...){
   
   df_long = matrix_to_long(data_matrix, feature_id_col = feature_id_col,
                            measure_col = measure_col, 
