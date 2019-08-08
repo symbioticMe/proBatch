@@ -55,7 +55,7 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 
   df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
-                                     merge = F)
+                                     merge = FALSE)
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   rm(df_long)
   
@@ -199,7 +199,7 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
   
   df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
-                                     merge = F)
+                                     merge = FALSE)
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   rm(df_long)
   
@@ -212,7 +212,7 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
                                              sample_id_col = sample_id_col, 
                                              factor_columns = factors_to_plot,
                                              numeric_columns = NULL,
-                                             guess_factors = T)
+                                             guess_factors = TRUE)
   }
   
   #infer the color scheme for feature annotation (rows)
@@ -224,7 +224,7 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
                                                       sample_id_col = feature_id_col, 
                                                       factor_columns = factors_of_feature_ann,
                                                       numeric_columns = NULL,
-                                                      guess_factors = T)
+                                                      guess_factors = TRUE)
   }
   
   p <- plot_heatmap_generic(data_matrix, 
