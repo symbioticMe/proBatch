@@ -9,10 +9,11 @@ dates_to_posix(sample_annotation, time_column = c("RunDate", "RunTime"),
   "\%H:\%M:\%S"), tz = "GMT")
 }
 \arguments{
-\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }. 
-See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+\item{sample_annotation}{data frame with: 
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
+  \item biological covariates 
+  \item technical covariates (batches etc) }. 
+  See \code{help("example_sample_annotation")}}
 
 \item{time_column}{name of the column(s) where run date & time are specified.
 These will be used to determine the run order}

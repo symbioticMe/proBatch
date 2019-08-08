@@ -8,13 +8,16 @@
 #' @param label_font size of the font. Is active if \code{label_samples} is 
 #' \code{TRUE}, ignored otherwise
 #' @param fill_the_missing numeric value determining how  missing values 
-#' should be substituted. If \code{NULL}, features with missing values are excluded.
-#' @param ... other parameters of \code{plotDendroAndColors} from \code{WGCNA} package
+#' should be substituted. If \code{NULL}, features with missing values are 
+#' excluded.
+#' @param ... other parameters of \code{plotDendroAndColors} from 
+#' \code{WGCNA} package
 #'
 #' @return No return
 #' @examples
 #' 
-#' selected_batches = example_sample_annotation$MS_batch %in% c('Batch_1', 'Batch_2')
+#' selected_batches = example_sample_annotation$MS_batch %in% 
+#'                                               c('Batch_1', 'Batch_2')
 #' selected_samples = example_sample_annotation$FullRunName[selected_batches]
 #' test_matrix = example_proteome_matrix[,selected_samples]
 #' 
@@ -38,7 +41,8 @@
 #' 
 #' @export
 #'
-#' @seealso \code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
+#' @seealso \code{\link[stats]{hclust}}, 
+#'   \code{\link{sample_annotation_to_colors}},
 #'   \code{\link[WGCNA]{plotDendroAndColors}}
 plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
                                           sample_id_col = 'FullRunName',
@@ -48,7 +52,8 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
                                           distance = "euclidean",
                                           agglomeration = 'complete',
                                           label_samples = TRUE, label_font = .2,
-                                          filename = NULL, width = 38, height = 25, 
+                                          filename = NULL, 
+                                          width = 38, height = 25, 
                                           units = c('cm','in','mm'), 
                                           plot_title = NULL,
                                           ...){
@@ -59,8 +64,10 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   rm(df_long)
   
-  warning_message <- 'Hierarchical clustering cannot operate with missing values in the matrix'
-  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
+  warning_message <- 'Hierarchical clustering cannot operate with missing values
+                      in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, 
+                                      fill_the_missing)
   
   dist_matrix = dist(t(as.matrix(data_matrix)), method = distance)
   hierarchical_clust = hclust(dist_matrix, method = agglomeration)
@@ -68,7 +75,8 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
     cex.dendroLabels = label_font
     if (ncol(data_matrix) > 80){
       warning('Too many samples, adjust the font with `label_font` argument or
-              remove labels by setting `label_samples = FALSE` in function call')
+              remove labels by setting `label_samples = FALSE` in 
+              function call')
     }
   } else{
     cex.dendroLabels = 0.9
@@ -76,9 +84,9 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
   
   factors_without_colors = setdiff(factors_to_plot, names(color_list))
   if(length(factors_without_colors) > 0){
-    warning('color_list for samples annotation not defined, inferring automatically.
-            Numeric/factor columns are guessed, for more controlled color mapping use 
-            sample_annotation_to_colors()')
+    warning('color_list for samples annotation not defined, inferring 
+             automatically. Numeric/factor columns are guessed, for more 
+            controlled color mapping use sample_annotation_to_colors()')
     color_list_new <- sample_annotation_to_colors(sample_annotation, 
                                                 sample_id_col = sample_id_col,
                                                 factor_columns = factors_without_colors)
@@ -86,7 +94,8 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
   }
   
   
-  if (length(setdiff(names(color_list), factors_to_plot)) > 0 && !is.null(factors_to_plot)){
+  if (length(setdiff(names(color_list), factors_to_plot)) > 0 && 
+      !is.null(factors_to_plot)){
     color_list = color_list[factors_to_plot]
   }
   
@@ -117,7 +126,8 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
     if (file_ext(filename) == 'pdf'){
       pdf(file = filename, width = width, height = height, title = plot_title)
     } else if(file_ext(filename) == 'png'){
-      png(filename = filename, width = width, height = height, units = units, res = 300)
+      png(filename = filename, width = width, height = height, units = units, 
+          res = 300)
     } else{
       stop('currently only pdf and png extensions for filename are implemented')
     }
@@ -136,9 +146,11 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 #'
 #' @inheritParams proBatch
 #' @param factors_to_plot vector of technical and biological factors to be 
-#' plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})
+#' plotted in this diagnostic plot (assumed to be present in 
+#' \code{sample_annotation})
 #' @param fill_the_missing numeric value that the missing values are
-#'   substituted with, or \code{NULL} if features with missing values are to be excluded.
+#'   substituted with, or \code{NULL} if features with missing values are to be 
+#'   excluded.
 #' @param color_for_missing special color to make missing values. 
 #' Usually black or white, depending on \code{heatmap_color}
 #' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
@@ -148,7 +160,8 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 #' should be clustered
 #' @param factors_of_feature_ann vector of factors that characterize features, 
 #' as listed in \code{peptide_annotation}
-#' @param color_list_features list, as returned by \code{sample_annotation_to_colors}, 
+#' @param color_list_features list, as returned by 
+#' \code{sample_annotation_to_colors}, 
 #' but mapping \code{peptide_annotation} where each item contains a color vector 
 #' for each factor to be mapped to the color.
 #' @param ... other parameters of \code{link[pheatmap]{pheatmap}}
@@ -158,7 +171,8 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 #' 
 #' @examples 
 #' 
-#' heatmap_plot <- plot_heatmap_diagnostic(log_transform_dm(example_proteome_matrix), 
+#' log_transformed_matrix = log_transform_dm(example_proteome_matrix)
+#' heatmap_plot <- plot_heatmap_diagnostic(log_transformed_matrix, 
 #' example_sample_annotation, 
 #' factors_to_plot = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'), 
 #' cluster_cols = TRUE, cluster_rows = FALSE,
@@ -169,14 +183,16 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 #' "Diet", "digestion_batch", "Sex"),
 #' numeric_columns = c('DateTime', 'order'))
 #' 
-#' heatmap_plot <- plot_heatmap_diagnostic(log_transform_dm(example_proteome_matrix), 
+#' log_transformed_matrix = log_transform_dm(example_proteome_matrix)
+#' heatmap_plot <- plot_heatmap_diagnostic(log_transformed_matrix, 
 #' example_sample_annotation, 
 #' factors_to_plot = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'), 
 #' cluster_cols = TRUE, cluster_rows = FALSE,
 #' color_list = color_list,
 #' show_rownames = FALSE, show_colnames = FALSE)
 #'
-#' @seealso \code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
+#' @seealso \code{\link{sample_annotation_to_colors}}, 
+#' \code{\link[pheatmap]{pheatmap}}
 #' 
 #' @name plot_heatmap_diagnostic
 plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL, 
@@ -185,12 +201,14 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
                                     fill_the_missing = -1, 
                                     color_for_missing = 'black',
                                     heatmap_color = colorRampPalette(
-                                      rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
+                                      rev(brewer.pal(n = 7, 
+                                                     name = "RdYlBu")))(100),
                                     cluster_rows = TRUE, cluster_cols = FALSE,
                                     color_list = NULL,
                                     peptide_annotation = NULL,
                                     feature_id_col = 'peptide_group_label',
-                                    factors_of_feature_ann = c('KEGG_pathway','evolutionary_distance'),
+                                    factors_of_feature_ann = c('KEGG_pathway',
+                                                               'evolutionary_distance'),
                                     color_list_features = NULL,
                                     filename = NULL, width = 7, height = 7, 
                                     units = c('cm','in','mm'), 
@@ -206,8 +224,8 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
   #infer the color scheme for sample annotation (cols)
   if(is.null(color_list) && !is.null(sample_annotation)){
     warning('color_list for samples (cols) not defined, inferring automatically.
-            Numeric/factor columns are guessed, for more controlled color mapping use 
-            sample_annotation_to_colors()')
+            Numeric/factor columns are guessed, for more controlled color 
+            mapping use sample_annotation_to_colors()')
     color_list = sample_annotation_to_colors(sample_annotation = sample_annotation, 
                                              sample_id_col = sample_id_col, 
                                              factor_columns = factors_to_plot,
@@ -217,9 +235,9 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
   
   #infer the color scheme for feature annotation (rows)
   if(is.null(color_list_features) && !is.null(peptide_annotation)){
-    warning('color_list_features for features (rows) not defined, inferring automatically.
-            Numeric/factor columns are guessed, for more controlled color mapping use 
-            sample_annotation_to_colors()')
+    warning('color_list_features for features (rows) not defined, inferring 
+            automatically. Numeric/factor columns are guessed, for more 
+            controlled color mapping use sample_annotation_to_colors()')
     color_list_features = sample_annotation_to_colors(peptide_annotation, 
                                                       sample_id_col = feature_id_col, 
                                                       factor_columns = factors_of_feature_ann,
@@ -235,7 +253,8 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
                             row_ann_id_col = feature_id_col,
                             columns_for_cols = factors_to_plot,
                             columns_for_rows = factors_of_feature_ann,
-                            cluster_rows = cluster_cols, cluster_cols = cluster_cols,
+                            cluster_rows = cluster_cols, 
+                            cluster_cols = cluster_cols,
                             annotation_color_cols = color_list,
                             annotation_color_rows = color_list_features,
                             heatmap_color = heatmap_color,
@@ -251,28 +270,32 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
 #'
 #' @inheritParams proBatch
 #' @param data_matrix the matrix of data to be plotted
-#' @param column_annotation_df data frame annotating columns of \code{data_matrix}
+#' @param column_annotation_df data frame annotating columns of 
+#' \code{data_matrix}
 #' @param row_annotation_df data frame annotating rows of \code{data_matrix}
-#' @param col_ann_id_col column of \code{column_annotation_df} whose values are 
+#' @param col_ann_id_col column of \code{column_annotation_df} whose values are
 #' unique identifiers of columns in \code{data_matrix}
 #' @param row_ann_id_col column of \code{row_annotation_df} whose values are 
 #' unique identifiers of rows in \code{data_matrix}
-#' @param columns_for_cols vector of factors (columns) of \code{column_annotation_df}
+#' @param columns_for_cols vector of factors (columns) of 
+#' \code{column_annotation_df}
 #' that will be mapped to color annotation of heatmap columns
-#' @param columns_for_rows vector of factors (columns) of \code{row_annotation_df}
+#' @param columns_for_rows vector of factors (columns) of 
+#' \code{row_annotation_df}
 #' that will be mapped to color annotation of heatmap rows
 #' @param cluster_rows boolean: whether the rows should be clustered
 #' @param cluster_cols boolean: whether the rows should be clustered
 #' @param annotation_color_cols list of color vectors for column annotation,
 #' for each factor to be plotted; for factor-like variables a named vector 
-#' (names should correspond to the levels of factors). Advisable to supply here 
+#' (names should correspond to the levels of factors). Advisable to supply here
 #' color list returned by \code{sample_annotation_to_colors}
 #' @param annotation_color_rows list of color vectors for row annotation,
 #' for each factor to be plotted; for factor-like variables a named vector 
-#' (names should correspond to the levels of factors). Advisable to supply here 
+#' (names should correspond to the levels of factors). Advisable to supply here
 #' color list returned by \code{sample_annotation_to_colors}
 #' @param fill_the_missing numeric value that the missing values are
-#'   substituted with, or \code{NULL} if features with missing values are to be excluded.
+#'   substituted with, or \code{NULL} if features with missing values are to be 
+#'   excluded.
 #' @param color_for_missing special color to make missing values. 
 #' Usually black or white, depending on \code{heatmap_color}
 #' @param heatmap_color vector of colors used in heatmap (typicall a gradient)
@@ -294,15 +317,19 @@ plot_heatmap_generic <- function(data_matrix,
                                  row_annotation_df = NULL, 
                                  col_ann_id_col = 'FullRunName',
                                  row_ann_id_col = 'peptide_group_label',
-                                 columns_for_cols = c('MS_batch','Diet', 'DateTime','order'),
-                                 columns_for_rows = c('KEGG_pathway','WGCNA_module','evolutionary_distance'),
+                                 columns_for_cols = c('MS_batch','Diet', 
+                                                      'DateTime','order'),
+                                 columns_for_rows = c('KEGG_pathway',
+                                                      'WGCNA_module',
+                                                      'evolutionary_distance'),
                                  cluster_rows = FALSE, cluster_cols = TRUE,
                                  annotation_color_cols = NULL,
                                  annotation_color_rows = NULL,
                                  fill_the_missing = -1, 
                                  color_for_missing = 'black',
                                  heatmap_color = colorRampPalette(
-                                   rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
+                                   rev(brewer.pal(n = 7, 
+                                                  name = "RdYlBu")))(100),
                                  filename = NULL, width = 7, height = 7, 
                                  units = c('cm','in','mm'), 
                                  plot_title = NULL,
@@ -310,7 +337,8 @@ plot_heatmap_generic <- function(data_matrix,
   
   #deal with the missing values
   warning_message <- 'Heatmap cannot operate with missing values in the matrix'
-  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
+  data_matrix = handle_missing_values(data_matrix, warning_message, 
+                                      fill_the_missing)
   
   if(!is.null(fill_the_missing)){
     heatmap_color = c(color_for_missing, heatmap_color)
@@ -369,7 +397,8 @@ plot_heatmap_generic <- function(data_matrix,
   p <- pheatmap(data_matrix, 
                 cluster_rows = cluster_rows, cluster_cols = cluster_cols,
                 color = heatmap_color,
-                annotation_col = annotation_col, annotation_row = annotation_row, 
+                annotation_col = annotation_col, 
+                annotation_row = annotation_row, 
                 annotation_colors = annotation_color_list,
                 filename = filename, width = width, height = height,
                 main = plot_title, ...)
@@ -386,7 +415,8 @@ plot_heatmap_generic <- function(data_matrix,
 #' @param variance_threshold the percentile value of weight each of the factors
 #'   needs to explain (the rest will be lumped together)
 #' @param fill_the_missing numeric value determining how  missing values 
-#' should be substituted. If \code{NULL}, features with missing values are excluded.
+#' should be substituted. If \code{NULL}, features with missing values are 
+#' excluded.
 #' @return data frame of weights of Principal Variance Components
 #' @export
 #' 
@@ -399,12 +429,13 @@ plot_heatmap_generic <- function(data_matrix,
 calculate_PVCA <- function(data_matrix, sample_annotation, 
                            feature_id_col = 'peptide_group_label',
                            sample_id_col = 'FullRunName',
-                           factors_for_PVCA = c('MS_batch', 'digestion_batch',"Diet", "Sex", "Strain"),
+                           factors_for_PVCA = c('MS_batch', 'digestion_batch',
+                                                "Diet", "Sex", "Strain"),
                            pca_threshold = .6, variance_threshold = .01,
                            fill_the_missing = -1) {
   
   df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
-  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long,
                                      batch_col = NULL, order_col = NULL, 
                                      facet_col = NULL, merge = FALSE)
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
@@ -418,19 +449,23 @@ calculate_PVCA <- function(data_matrix, sample_annotation,
   data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
   
   warning_message <- 'PVCA cannot operate with missing values in the matrix'
-  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
+  data_matrix = handle_missing_values(data_matrix, warning_message, 
+                                      fill_the_missing)
   
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
   data_matrix = data_matrix[, rownames(sample_annotation)]
-  expr_set = Biobase::ExpressionSet(assayData = data_matrix, phenoData = covrts.annodf)
-  pvcaAssess = pvcaBatchAssess(expr_set, factors_for_PVCA, threshold = pca_threshold)
+  expr_set = Biobase::ExpressionSet(assayData = data_matrix, 
+                                    phenoData = covrts.annodf)
+  pvcaAssess = pvcaBatchAssess(expr_set, factors_for_PVCA, 
+                               threshold = pca_threshold)
   pvcaAssess_df = data.frame(weights = as.vector(pvcaAssess$dat),
                              label = pvcaAssess$label,
                              stringsAsFactors = FALSE)
   
   label_of_small = sprintf('Below %1.0f%%', 100*variance_threshold)
   if (sum(pvcaAssess_df$weights < variance_threshold) > 1){
-    pvca_res_small = sum(pvcaAssess_df$weights[pvcaAssess_df$weights < variance_threshold])
+    small_weights <- pvcaAssess_df$weights < variance_threshold
+    pvca_res_small = sum(pvcaAssess_df$weights[small_weights])
     pvca_res = pvcaAssess_df[pvcaAssess_df$weights >= variance_threshold, ]
     pvca_res_add = data.frame(weights = pvca_res_small, label = label_of_small)
     pvca_res = rbind(pvca_res, pvca_res_add)
@@ -443,7 +478,8 @@ calculate_PVCA <- function(data_matrix, sample_annotation,
 #' Plot variance distribution by variable
 #' 
 #' @inheritParams proBatch
-#' @param technical_factors vector \code{sample_annotation} column names that are
+#' @param technical_factors vector \code{sample_annotation} column names that 
+#' are
 #'   technical covariates
 #' @param biological_factors vector \code{sample_annotation} column names, that
 #'   are biologically meaningful covariates
@@ -452,10 +488,11 @@ calculate_PVCA <- function(data_matrix, sample_annotation,
 #'   'technical')
 #' @param pca_threshold the percentile value of the minimum amount of the
 #'   variabilities that the selected principal components need to explain
-#' @param variance_threshold the percentile value of weight each of the covariates
-#'   needs to explain (the rest will be lumped together)
+#' @param variance_threshold the percentile value of weight each of the 
+#'  covariates needs to explain (the rest will be lumped together)
 #' @param fill_the_missing numeric value determining how  missing values 
-#' should be substituted. If \code{NULL}, features with missing values are excluded.
+#' should be substituted. If \code{NULL}, features with missing values are 
+#' excluded.
 #' If \code{NULL}, features with missing values are excluded.
 #'
 #' @return list of two items: plot =gg, df = pvca_res
@@ -495,7 +532,8 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                             feature_id_col = feature_id_col,
                             sample_id_col = sample_id_col,
                             factors_for_PVCA = factors_for_PVCA,
-                            pca_threshold, variance_threshold = variance_threshold,
+                            pca_threshold = pca_threshold, 
+                            variance_threshold = variance_threshold,
                             fill_the_missing = fill_the_missing)
   
   tech_interactions = expand.grid(technical_factors, 
@@ -554,7 +592,8 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
   }else{
-    message("plotting with default ggplot theme, only theme = 'classic' implemented")
+    message("plotting with default ggplot theme, only theme = 'classic' 
+            implemented")
   }
   
   save_ggplot(filename, units, width, height, gg)
@@ -575,7 +614,8 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #' @param color_by column name (as in \code{sample_annotation}) to color by
 #' @param PC_to_plot principal component numbers for x and y axis
 #' @param fill_the_missing numeric value determining how  missing values 
-#' should be substituted. If \code{NULL}, features with missing values are excluded.
+#' should be substituted. If \code{NULL}, features with missing values are 
+#' excluded.
 #' If \code{NULL}, features with missing values are excluded.
 #'
 #' @return ggplot scatterplot colored by factor levels of column specified in
@@ -622,7 +662,8 @@ plot_PCA <- function(data_matrix, sample_annotation,
   data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
   
   warning_message <- 'PCA cannot operate with missing values in the matrix'
-  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
+  data_matrix = handle_missing_values(data_matrix, warning_message, 
+                                      fill_the_missing)
   
   pr_comp_res <- prcomp(t(data_matrix))
   gg = autoplot(pr_comp_res, data = sample_annotation,
@@ -651,7 +692,8 @@ plot_PCA <- function(data_matrix, sample_annotation,
   if(!is.null(theme) && theme == 'classic'){
     gg = gg + theme_classic()
   }else{
-    message("plotting with default ggplot theme, only theme = 'classic' implemented")
+    message("plotting with default ggplot theme, only theme = 'classic' 
+            implemented")
   }
   
   save_ggplot(filename, units, width, height, gg)

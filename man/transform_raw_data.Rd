@@ -13,9 +13,9 @@ log_transform_dm(data_matrix, log_base = 2, offset = 1)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
-\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+output result file). See \code{help("example_proteome")} for more details.}
 
 \item{log_base}{base of the logarithm for transformation}
 
@@ -27,7 +27,8 @@ internally for consistency.}
 
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
+See "example_proteome_matrix" for more details (to call the description, 
+use \code{help("example_proteome_matrix")})}
 }
 \value{
 `log_transform_df()` returns \code{df_long}-size data frame, with 

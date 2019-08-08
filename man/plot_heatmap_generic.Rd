@@ -19,20 +19,23 @@ plot_heatmap_generic(data_matrix, column_annotation_df = NULL,
 \arguments{
 \item{data_matrix}{the matrix of data to be plotted}
 
-\item{column_annotation_df}{data frame annotating columns of \code{data_matrix}}
+\item{column_annotation_df}{data frame annotating columns of 
+\code{data_matrix}}
 
 \item{row_annotation_df}{data frame annotating rows of \code{data_matrix}}
 
-\item{col_ann_id_col}{column of \code{column_annotation_df} whose values are 
+\item{col_ann_id_col}{column of \code{column_annotation_df} whose values are
 unique identifiers of columns in \code{data_matrix}}
 
 \item{row_ann_id_col}{column of \code{row_annotation_df} whose values are 
 unique identifiers of rows in \code{data_matrix}}
 
-\item{columns_for_cols}{vector of factors (columns) of \code{column_annotation_df}
+\item{columns_for_cols}{vector of factors (columns) of 
+\code{column_annotation_df}
 that will be mapped to color annotation of heatmap columns}
 
-\item{columns_for_rows}{vector of factors (columns) of \code{row_annotation_df}
+\item{columns_for_rows}{vector of factors (columns) of 
+\code{row_annotation_df}
 that will be mapped to color annotation of heatmap rows}
 
 \item{cluster_rows}{boolean: whether the rows should be clustered}
@@ -41,16 +44,17 @@ that will be mapped to color annotation of heatmap rows}
 
 \item{annotation_color_cols}{list of color vectors for column annotation,
 for each factor to be plotted; for factor-like variables a named vector 
-(names should correspond to the levels of factors). Advisable to supply here 
+(names should correspond to the levels of factors). Advisable to supply here
 color list returned by \code{sample_annotation_to_colors}}
 
 \item{annotation_color_rows}{list of color vectors for row annotation,
 for each factor to be plotted; for factor-like variables a named vector 
-(names should correspond to the levels of factors). Advisable to supply here 
+(names should correspond to the levels of factors). Advisable to supply here
 color list returned by \code{sample_annotation_to_colors}}
 
 \item{fill_the_missing}{numeric value that the missing values are
-substituted with, or \code{NULL} if features with missing values are to be excluded.}
+substituted with, or \code{NULL} if features with missing values are to be 
+excluded.}
 
 \item{color_for_missing}{special color to make missing values. 
 Usually black or white, depending on \code{heatmap_color}}

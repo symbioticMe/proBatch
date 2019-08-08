@@ -59,17 +59,18 @@ correct_batch_effects_dm(data_matrix, sample_annotation,
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
-\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+output result file). See \code{help("example_proteome")} for more details.}
 
-\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }. 
-See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+\item{sample_annotation}{data frame with: 
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
+  \item biological covariates 
+  \item technical covariates (batches etc) }. 
+  See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
@@ -85,19 +86,23 @@ internally for consistency.}
 
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
+See "example_proteome_matrix" for more details (to call the description, 
+use \code{help("example_proteome_matrix")})}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
-used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
-feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
-if sample order is irrelevant (e.g. in genomic experiments). For more details,
-order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
+\item{order_col}{column in \code{sample_annotation} that determines sample 
+order. It is used for in initial assessment plots 
+(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics 
+(\link{feature_level_diagnostics}). Can be `NULL` 
+   if sample order is irrelevant (e.g. in genomic experiments). For more 
+   details,
+   order definition/inference, see \link{define_sample_order} and 
+   \link{date_to_sample_order}}
 
 \item{keep_all}{whether all columns from \code{df_long} should be kept}
 
 \item{fit_func}{function to fit the (non)-linear trend}
 
-\item{abs_threshold}{the absolute threshold (number of samples in a batch) to 
+\item{abs_threshold}{the absolute threshold (number of samples in a batch) to
 filter data for curve fitting.}
 
 \item{pct_threshold}{the percentage threshold (fraction of samples in the 
@@ -123,8 +128,8 @@ the data in the same format as input (\code{data_matrix} or
 \code{df_long}).
 For \code{df_long} the data frame stores the original values of 
 \code{measure_col}
-in another column called "preBatchCorr_[measure_col]", and the normalized values
-in \code{measure_col} column.
+in another column called "preBatchCorr_[measure_col]", and the normalized 
+values in \code{measure_col} column.
 
 The function \code{adjust_batch_trend_df()} returns list of two items: 
 \enumerate{
@@ -137,7 +142,8 @@ Batch correction of normalized data. Batch correction
 brings each feature in each batch to the comparable shape.
 Currently the following batch correction functions are implemented:
 \enumerate{
-  \item Per-feature median centering: \code{center_feature_batch_medians_df()}. 
+  \item Per-feature median centering: 
+  \code{center_feature_batch_medians_df()}. 
   Median centering of the features (per batch median).
   \item correction with ComBat:  \code{correct_with_ComBat_df()}. 
 Adjusts for discrete batch effects using ComBat. ComBat, described in 
@@ -151,7 +157,8 @@ are common in proteomics, which is why in some cases corrections like
   \item Continuous drift correction:  \code{adjust_batch_trend_df()}. 
 Adjust batch signal trend with the custom (continuous) fit.
 Should be followed by discrete corrections,
-e.g. \code{center_feature_batch_medians_df()} or  \code{correct_with_ComBat_df()}.
+e.g. \code{center_feature_batch_medians_df()} or 
+\code{correct_with_ComBat_df()}.
 }
 Alternatively, one can call the correction function with  
 \code{correct_batch_effects_df()} wrapper. 

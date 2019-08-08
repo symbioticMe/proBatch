@@ -13,8 +13,8 @@ fit_nonlinear(df_feature_batch, batch_size = NULL,
 }
 \arguments{
 \item{df_feature_batch}{data frame containing response variable e.g. 
-samples in order and explanatory 
-  variable e.g. measurement for a specific feature (peptide) in a specific batch}
+samples in order and explanatory variable e.g. measurement for a 
+specific feature (peptide) in a specific batch}
 
 \item{batch_size}{the total number of samples in the batch to 
 compute for percentage threshold}
@@ -23,11 +23,14 @@ compute for percentage threshold}
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
-used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
-feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
-if sample order is irrelevant (e.g. in genomic experiments). For more details,
-order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
+\item{order_col}{column in \code{sample_annotation} that determines sample 
+order. It is used for in initial assessment plots 
+(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics 
+(\link{feature_level_diagnostics}). Can be `NULL` 
+   if sample order is irrelevant (e.g. in genomic experiments). For more 
+   details,
+   order definition/inference, see \link{define_sample_order} and 
+   \link{date_to_sample_order}}
 
 \item{feature_id}{the name of the feature, required for warnings}
 
@@ -41,11 +44,13 @@ order definition/inference, see \link{define_sample_order} and \link{date_to_sam
 \item{no_fit_imputed}{(logical) whether to fit the imputed (requant) values}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
+by \code{color_by_qual_value}. Design with inferred/requant values in 
+OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
-this argument value has to be set to \code{2} (this is an \code{m_score} value for imputed values (requant values).}
+this argument value has to be set to \code{2} (this is an \code{m_score} 
+value for imputed values (requant values).}
 
 \item{abs_threshold}{the absolute threshold to filter 
 data for curve fitting}
@@ -63,8 +68,10 @@ Fit a non-linear trend (currently optimized for LOESS)
 }
 \examples{
 test_peptide = example_proteome$peptide_group_label[1] 
-df_selected = example_proteome[example_proteome$peptide_group_label == test_peptide,]
-batch_selected_df = example_sample_annotation[example_sample_annotation$MS_batch == 'Batch_1',]
+selected_peptide = example_proteome$peptide_group_label == test_peptide
+df_selected = example_proteome[selected_peptide,]
+selected_batch = example_sample_annotation$MS_batch == 'Batch_1'
+batch_selected_df = example_sample_annotation[selected_batch,]
 df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
 fit_values = fit_nonlinear(df_for_test)
 

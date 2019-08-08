@@ -12,13 +12,14 @@ sample_annotation_to_colors(sample_annotation,
   numeric_palette_type = "brewer")
 }
 \arguments{
-\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }. 
-See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+\item{sample_annotation}{data frame with: 
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
+  \item biological covariates 
+  \item technical covariates (batches etc) }. 
+  See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{factor_columns}{columns of \code{sample_annotation} to be 
 treated as factors. Sometimes categorical variables are depicted as integers 

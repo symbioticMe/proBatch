@@ -18,21 +18,25 @@ plot_heatmap_diagnostic(data_matrix, sample_annotation = NULL,
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
+See "example_proteome_matrix" for more details (to call the description, 
+use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }. 
-See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+\item{sample_annotation}{data frame with: 
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
+  \item biological covariates 
+  \item technical covariates (batches etc) }. 
+  See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{factors_to_plot}{vector of technical and biological factors to be 
-plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})}
+plotted in this diagnostic plot (assumed to be present in 
+\code{sample_annotation})}
 
 \item{fill_the_missing}{numeric value that the missing values are
-substituted with, or \code{NULL} if features with missing values are to be excluded.}
+substituted with, or \code{NULL} if features with missing values are to be 
+excluded.}
 
 \item{color_for_missing}{special color to make missing values. 
 Usually black or white, depending on \code{heatmap_color}}
@@ -46,11 +50,12 @@ should be clustered}
 should be clustered}
 
 \item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
-where each item contains a color vector for each factor to be mapped to the color.}
+where each item contains a color vector for each factor to be mapped to the 
+color.}
 
-\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
-protein and/or gene annotations. 
-See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
+\item{peptide_annotation}{long format data frame with peptide ID and their 
+corresponding protein and/or gene annotations. 
+See \code{help("example_peptide_annotation")}.}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
@@ -60,7 +65,8 @@ names.}
 \item{factors_of_feature_ann}{vector of factors that characterize features, 
 as listed in \code{peptide_annotation}}
 
-\item{color_list_features}{list, as returned by \code{sample_annotation_to_colors}, 
+\item{color_list_features}{list, as returned by 
+\code{sample_annotation_to_colors}, 
 but mapping \code{peptide_annotation} where each item contains a color vector 
 for each factor to be mapped to the color.}
 
@@ -88,7 +94,8 @@ Plot the heatmap of samples (cols) vs features (rows)
 }
 \examples{
 
-heatmap_plot <- plot_heatmap_diagnostic(log_transform_dm(example_proteome_matrix), 
+log_transformed_matrix = log_transform_dm(example_proteome_matrix)
+heatmap_plot <- plot_heatmap_diagnostic(log_transformed_matrix, 
 example_sample_annotation, 
 factors_to_plot = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'), 
 cluster_cols = TRUE, cluster_rows = FALSE,
@@ -99,7 +106,8 @@ factor_columns = c('MS_batch','EarTag', "Strain",
 "Diet", "digestion_batch", "Sex"),
 numeric_columns = c('DateTime', 'order'))
 
-heatmap_plot <- plot_heatmap_diagnostic(log_transform_dm(example_proteome_matrix), 
+log_transformed_matrix = log_transform_dm(example_proteome_matrix)
+heatmap_plot <- plot_heatmap_diagnostic(log_transformed_matrix, 
 example_sample_annotation, 
 factors_to_plot = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'), 
 cluster_cols = TRUE, cluster_rows = FALSE,
@@ -108,5 +116,6 @@ show_rownames = FALSE, show_colnames = FALSE)
 
 }
 \seealso{
-\code{\link{sample_annotation_to_colors}}, \code{\link[pheatmap]{pheatmap}}
+\code{\link{sample_annotation_to_colors}}, 
+\code{\link[pheatmap]{pheatmap}}
 }

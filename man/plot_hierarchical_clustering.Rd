@@ -15,24 +15,29 @@ plot_hierarchical_clustering(data_matrix, sample_annotation,
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
+See "example_proteome_matrix" for more details (to call the description, 
+use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }. 
-See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+\item{sample_annotation}{data frame with: 
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
+  \item biological covariates 
+  \item technical covariates (batches etc) }. 
+  See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
-where each item contains a color vector for each factor to be mapped to the color.}
+where each item contains a color vector for each factor to be mapped to the 
+color.}
 
 \item{factors_to_plot}{vector of technical and biological covariates to be 
-plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})}
+plotted in this diagnostic plot (assumed to be present in 
+\code{sample_annotation})}
 
 \item{fill_the_missing}{numeric value determining how  missing values 
-should be substituted. If \code{NULL}, features with missing values are excluded.}
+should be substituted. If \code{NULL}, features with missing values are 
+excluded.}
 
 \item{distance}{distance metric used for clustering}
 
@@ -58,7 +63,8 @@ pdf and png format is supported}
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
-\item{...}{other parameters of \code{plotDendroAndColors} from \code{WGCNA} package}
+\item{...}{other parameters of \code{plotDendroAndColors} from 
+\code{WGCNA} package}
 }
 \value{
 No return
@@ -68,7 +74,8 @@ cluster the data matrix to visually inspect which confounder dominates
 }
 \examples{
 
-selected_batches = example_sample_annotation$MS_batch \%in\% c('Batch_1', 'Batch_2')
+selected_batches = example_sample_annotation$MS_batch \%in\% 
+                                              c('Batch_1', 'Batch_2')
 selected_samples = example_sample_annotation$FullRunName[selected_batches]
 test_matrix = example_proteome_matrix[,selected_samples]
 
@@ -92,6 +99,7 @@ label_samples = FALSE)
 
 }
 \seealso{
-\code{\link[stats]{hclust}}, \code{\link{sample_annotation_to_colors}},
+\code{\link[stats]{hclust}}, 
+  \code{\link{sample_annotation_to_colors}},
   \code{\link[WGCNA]{plotDendroAndColors}}
 }

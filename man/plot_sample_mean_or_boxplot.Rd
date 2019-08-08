@@ -24,15 +24,17 @@ plot_boxplot(df_long, sample_annotation = NULL,
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
+See "example_proteome_matrix" for more details (to call the description, 
+use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }. 
-See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+\item{sample_annotation}{data frame with: 
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
+  \item biological covariates 
+  \item technical covariates (batches etc) }. 
+  See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
@@ -43,19 +45,23 @@ by batch factor as defined by \code{batch_col}.}
 \item{color_scheme}{named vector, names corresponding to unique batch values of 
 \code{batch_col} in \code{sample_annotation}. Best created with \link{sample_annotation_to_colors}}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
-used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
-feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
-if sample order is irrelevant (e.g. in genomic experiments). For more details,
-order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
+\item{order_col}{column in \code{sample_annotation} that determines sample 
+order. It is used for in initial assessment plots 
+(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics 
+(\link{feature_level_diagnostics}). Can be `NULL` 
+   if sample order is irrelevant (e.g. in genomic experiments). For more 
+   details,
+   order definition/inference, see \link{define_sample_order} and 
+   \link{date_to_sample_order}}
 
 \item{vline_color}{color of vertical lines, typically denoting 
 different MS batches in ordered runs; should be \code{NULL} for experiments without intrinsic order}
 
-\item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
-plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
-MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
-or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+\item{facet_col}{column  in \code{sample_annotation} with a batch factor to 
+separate plots into facets; usually 2nd to \code{batch_col}. Most meaningful 
+for multi-instrument MS experiments (where each instrument has its own 
+order-associated effects (see \code{order_col}) or simultaneous examination 
+of two batch factors (e.g. preparation day and measurement day).
 For single-instrument case should be set to `NULL`}
 
 \item{filename}{path where the results are saved. 
@@ -77,9 +83,9 @@ level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 \item{ylimits}{range of y-axis to compare two plots side by side, if required.}
 
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
-\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+output result file). See \code{help("example_proteome")} for more details.}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
@@ -110,7 +116,8 @@ order_col = 'order', batch_col = "MS_batch", color_by_batch = TRUE,
 color_scheme = color_list[["MS_batch"]])
 
 \dontrun{
-mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
+mean_plot <- plot_sample_mean(example_proteome_matrix, 
+                              example_sample_annotation, 
                               order_col = 'order', batch_col = "MS_batch", 
                               filename = 'test_meanplot.png', 
                               width = 28, height = 18, units = 'cm')

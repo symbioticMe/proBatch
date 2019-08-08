@@ -18,13 +18,14 @@ plot_protein_corrplot(data_matrix, protein_name,
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
+See "example_proteome_matrix" for more details (to call the description, 
+use \code{help("example_proteome_matrix")})}
 
 \item{protein_name}{the name of the protein}
 
-\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
-protein and/or gene annotations. 
-See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
+\item{peptide_annotation}{long format data frame with peptide ID and their 
+corresponding protein and/or gene annotations. 
+See \code{help("example_peptide_annotation")}.}
 
 \item{protein_col}{column where protein names are specified}
 
@@ -34,7 +35,8 @@ formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
 \item{factors_to_plot}{vector of technical and biological covariates to be 
-plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})}
+plotted in this diagnostic plot (assumed to be present in 
+\code{sample_annotation})}
 
 \item{cluster_rows}{boolean values determining if rows should be clustered or \code{hclust} object}
 
@@ -43,7 +45,8 @@ plotted in this diagnostic plot (assumed to be present in \code{sample_annotatio
 \item{heatmap_color}{vector of colors used in heatmap.}
 
 \item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
-where each item contains a color vector for each factor to be mapped to the color.}
+where each item contains a color vector for each factor to be mapped to the 
+color.}
 
 \item{filename}{path where the results are saved. 
 If null the object is returned to the active window;

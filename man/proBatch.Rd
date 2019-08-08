@@ -8,21 +8,23 @@
 primarily in proteomics}
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
-\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+output result file). See \code{help("example_proteome")} for more details.}
 
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
+See "example_proteome_matrix" for more details (to call the description, 
+use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }. 
-See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+\item{sample_annotation}{data frame with: 
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
+  \item biological covariates 
+  \item technical covariates (batches etc) }. 
+  See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
@@ -36,43 +38,51 @@ names.}
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
-used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
-feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
-if sample order is irrelevant (e.g. in genomic experiments). For more details,
-order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
+\item{order_col}{column in \code{sample_annotation} that determines sample 
+order. It is used for in initial assessment plots 
+(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics 
+(\link{feature_level_diagnostics}). Can be `NULL` 
+   if sample order is irrelevant (e.g. in genomic experiments). For more 
+   details,
+   order definition/inference, see \link{define_sample_order} and 
+   \link{date_to_sample_order}}
 
-\item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
-plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
-MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
-or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+\item{facet_col}{column  in \code{sample_annotation} with a batch factor to 
+separate plots into facets; usually 2nd to \code{batch_col}. Most meaningful 
+for multi-instrument MS experiments (where each instrument has its own 
+order-associated effects (see \code{order_col}) or simultaneous examination 
+of two batch factors (e.g. preparation day and measurement day).
 For single-instrument case should be set to `NULL`}
 
 \item{color_by_batch}{(logical) whether to color points and connecting lines 
 by batch factor as defined by \code{batch_col}.}
 
-\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
-protein and/or gene annotations. 
-See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
+\item{peptide_annotation}{long format data frame with peptide ID and their 
+corresponding protein and/or gene annotations. 
+See \code{help("example_peptide_annotation")}.}
 
 \item{color_scheme}{a named vector of colors to map to \code{batch_col}, 
 names corresponding to the levels of the factor. For continous variables, 
 vector doesn't need to be named.}
 
 \item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
-where each item contains a color vector for each factor to be mapped to the color.}
+where each item contains a color vector for each factor to be mapped to the 
+color.}
 
 \item{factors_to_plot}{vector of technical and biological covariates to be 
-plotted in this diagnostic plot (assumed to be present in \code{sample_annotation})}
+plotted in this diagnostic plot (assumed to be present in 
+\code{sample_annotation})}
 
 \item{protein_col}{column where protein names are specified}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
+by \code{color_by_qual_value}. Design with inferred/requant values in 
+OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
-this argument value has to be set to \code{2} (this is an \code{m_score} value for imputed values (requant values).}
+this argument value has to be set to \code{2} (this is an \code{m_score} 
+value for imputed values (requant values).}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
@@ -91,11 +101,13 @@ pdf and png format is supported}
 \item{units}{units: 'cm', 'in' or 'mm'}
 }
 \description{
-The proBatch package contains functions for analyzing and correcting batch effects 
-and other unwanted technical variation from high-thoughput experiments. Although 
-the package has primarily been developed for mass spectrometry proteomics (DIA/SWATH),
-it should also be applicable to most omic data with minor adaptations.
-It addresses the following needs: \itemize{ \item prepare the data for analysis
+The proBatch package contains functions for analyzing and correcting batch 
+effects (aunwanted technical variation) from high-thoughput experiments. 
+Although the package has primarily been developed for mass spectrometry 
+proteomics (DIA/SWATH), it has been desinged be applicable to most omic data 
+with minor adaptations.
+It addresses the following needs: 
+\itemize{ \item prepare the data for analysis
 \item Visualize batch effects in sample-wide and feature-level;
 \item Normalize and correct for batch effects.
 }

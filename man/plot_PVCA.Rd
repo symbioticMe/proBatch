@@ -16,36 +16,40 @@ plot_PVCA(data_matrix, sample_annotation,
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
+See "example_proteome_matrix" for more details (to call the description, 
+use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }. 
-See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+\item{sample_annotation}{data frame with: 
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
+  \item biological covariates 
+  \item technical covariates (batches etc) }. 
+  See \code{help("example_sample_annotation")}}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+where the filenames (colnames of the \code{data_matrix} are found).}
 
-\item{technical_factors}{vector \code{sample_annotation} column names that are
-technical covariates}
+\item{technical_factors}{vector \code{sample_annotation} column names that 
+are
+  technical covariates}
 
 \item{biological_factors}{vector \code{sample_annotation} column names, that
 are biologically meaningful covariates}
 
 \item{fill_the_missing}{numeric value determining how  missing values 
-should be substituted. If \code{NULL}, features with missing values are excluded.
+should be substituted. If \code{NULL}, features with missing values are 
+excluded.
 If \code{NULL}, features with missing values are excluded.}
 
 \item{pca_threshold}{the percentile value of the minimum amount of the
 variabilities that the selected principal components need to explain}
 
-\item{variance_threshold}{the percentile value of weight each of the covariates
-needs to explain (the rest will be lumped together)}
+\item{variance_threshold}{the percentile value of weight each of the 
+covariates needs to explain (the rest will be lumped together)}
 
 \item{colors_for_bars}{four-item color vector, specifying colors for the
 following categories: c('residual', 'biological', 'biol:techn',

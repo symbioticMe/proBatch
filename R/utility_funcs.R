@@ -67,18 +67,24 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long,
     }
     if(!setequal(unique(sample_annotation[[sample_id_col]]), 
                  unique(df_long[[sample_id_col]]))){
-      warning('Sample IDs in sample annotation not consistent with samples in input data, 
+      warning('Sample IDs in sample annotation not consistent with samples in 
+input data, 
               will merge, using intersecting Sample IDs only')
-      #TODO: expand the warnings for more specific cases: 1) sample annotation has samples not represented in data matrix; 2) dm has samples not in annotation;
-      #TODO: Break the merge if 1) sample annotation has duplicated samples; 2) dm has duplicated samples
+      #TODO: expand the warnings for more specific cases: 1) sample annotation
+      #has samples not represented in data matrix; 2) dm has samples not in 
+      #annotation;
+      #TODO: Break the merge if 1) sample annotation has duplicated samples; 
+      #2) dm has duplicated samples
     }
     if (merge){
-      df_long = merge_df_with_annotation(df_long, sample_annotation, sample_id_col, 
-                                         batch_col, order_col, facet_col)
+      df_long = merge_df_with_annotation(df_long, sample_annotation, 
+                                         sample_id_col, batch_col, order_col, 
+                                         facet_col)
     }
 
   } else {
-    warning('Sample annotation is not provided, only the using df_long alone for correction/plotting')
+    warning('Sample annotation is not provided, only the using df_long alone for
+            correction/plotting')
   }
   return(df_long)
 }
@@ -101,24 +107,29 @@ check_sample_consistency <- function(sample_annotation, sample_id_col, df_long,
 #' @seealso \link{plot_sample_mean_or_boxplot}, \link{feature_level_diagnostics}
 #' 
 #' @name define_sample_order
-define_sample_order <- function(order_col, sample_annotation, facet_col, batch_col, 
+define_sample_order <- function(order_col, sample_annotation, facet_col, 
+                                batch_col, 
                                 df_long, sample_id_col, color_by_batch) {
   annotation_cols = c(batch_col, order_col, facet_col)
   if(!is.null(sample_annotation) && !any(annotation_cols %in% names(df_long))){
     
-    df_long = merge_df_with_annotation(df_long, sample_annotation, sample_id_col, 
-                                       batch_col, order_col, facet_col)
+    df_long = merge_df_with_annotation(df_long, sample_annotation, 
+                                       sample_id_col, batch_col, order_col, 
+                                       facet_col)
   }
   
   if (!is.null(order_col)){
     if (!is.null(sample_annotation)){
       if (!(order_col %in% names(sample_annotation))){
         if(!is.null(facet_col)){
-          warning(sprintf('column  %s is not found in sample annotation, assuming that order in 
-                sample annotation corresponds to sample running order, specific for each instrument', order_col))
+          warning(sprintf('column %s is not found in sample annotation, assuming
+                           that order in sample annotation corresponds to sample
+                           running order, specific for each instrument', 
+                           order_col))
         } else {
           warning(sprintf('column %s is not defined in sample annotation, 
-                assuming the order of sample IDs corresponds to running order', order_col))
+                assuming the order of sample IDs corresponds to running order',
+                          order_col))
         }
       } else {
         if (order_col != sample_id_col){
@@ -130,7 +141,8 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
       if (!(order_col %in% names(df_long))){
         if(!is.null(facet_col)){
           warning(sprintf('column  %s for order is not found in data frame, 
-                          taking order of files in the data matrix instead, specific for each instrument', order_col))
+                          taking order of files in the data matrix instead, 
+                          specific for each instrument', order_col))
         } else {
           warning(sprintf('column %s is not defined in data frame, 
                 taking order of files in the data matrix instead', order_col))
@@ -143,7 +155,8 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
   } else {
     if (!is.null(batch_col) && (batch_col %in% names(df_long))){
       warning("Order column is NULL, assuming order is not introducing unwanted 
-            association between the samples, plotting samples in order of batch factor")
+            association between the samples, plotting samples in order of batch 
+              factor")
       df_long[[batch_col]] = as.factor(df_long[[batch_col]])
     } else {
       warning("Order column is NULL, assuming order is not introducing unwanted 
@@ -155,21 +168,24 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
     if (!is.null(sample_annotation)){
       order_col = 'sample_order'
       if(color_by_batch && (!is.null(batch_col) && (batch_col %in% names(sample_annotation)))){
-        warning("order column is identical to sample ID column and coloring by batch is required,
-                ordering the samples by batch rather than by sample order in annotation")
+        warning("order column is identical to sample ID column and coloring by 
+                 batch is required, ordering the samples by batch rather than by
+                sample order in annotation")
         df_long = df_long %>% arrange(!!sym(c(batch_col))) %>%
           mutate(!!(sym(order_col)) :=  factor(!!(sym(sample_id_col)),
-                                                      levels = unique(!!(sym(sample_id_col)))))
+                                               levels = unique(!!(sym(sample_id_col)))))
         #df_long[[order_col]] = reorder(as.character(df_long[[sample_id_col]]), df_long[[batch_col]])
       } else {
         warning('order column is identical to sample ID column, 
-                assuming order of samples in the annnotation corresponds to the sample running order')
+                assuming order of samples in the annnotation corresponds to the 
+                sample running order')
         df_long[[order_col]] = match(df_long[[sample_id_col]],
                                      sample_annotation[[sample_id_col]])
       }
     } else {
-      warning('order column is identical to sample ID column, and sample annotation is not defined,
-                assuming order of samples in the intensity table corresponds to the sample running order')
+      warning('order column is identical to sample ID column, and sample 
+               annotation is not defined, assuming order of samples in the 
+              intensity table corresponds to the sample running order')
       order_col = 'sample_order'
       df_long[[order_col]] = match(df_long[[sample_id_col]],
                                    unique(df_long[[sample_id_col]]))
@@ -178,15 +194,17 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
   
   if (is.null(order_col) || !(order_col %in% names(df_long))){
     order_col = sample_id_col
-    if(color_by_batch && (!is.null(batch_col) && (batch_col %in% names(df_long)))){
+    if(color_by_batch && (!is.null(batch_col) && 
+                          (batch_col %in% names(df_long)))){
       warning("order column is not defined and coloring by batch is required,
                 ordering the samples by batch")
       df_long = df_long %>% arrange(!!sym(c(batch_col))) %>%
         mutate(!!(sym(order_col)) :=  factor(!!(sym(order_col)),
-                                                    levels = unique(!!(sym(order_col)))))
+                                             levels = unique(!!(sym(order_col)))))
       #df_long[[order_col]] = reorder(as.character(df_long[[order_col]]), df_long[[batch_col]])
     } else {
-      df_long[[order_col]] = factor(df_long[[order_col]], levels = unique(df_long[[order_col]]))
+      df_long[[order_col]] = factor(df_long[[order_col]], 
+                                    levels = unique(df_long[[order_col]]))
     }
   }
   
@@ -202,14 +220,17 @@ define_sample_order <- function(order_col, sample_annotation, facet_col, batch_c
               df_long = df_long))
 }
 
-add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vline_color, facet_col, 
+add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, 
+                                       vline_color, facet_col, 
                                        sample_annotation, gg) {
   if(!is.null(order_col) & (order_col != sample_id_col) & 
-     !(is.character(sample_annotation[[order_col]]) || is.factor(sample_annotation[[order_col]]))&
+     !(is.character(sample_annotation[[order_col]]) || 
+       is.factor(sample_annotation[[order_col]]))&
      !is.null(batch_col) & !is.null(vline_color)){
     #define the batch tipping points (positions of vertical lines)
     warning('inferring order-related batch borders for a plot; 
-            if the batch factor is not related to order, set vline_color to NULL')
+            if the batch factor is not related to order, set vline_color to 
+            NULL')
     if (!is.null(facet_col)){
       sample_annotation = sample_annotation %>%
         select(one_of(c(order_col, sample_id_col, batch_col, facet_col))) %>%
@@ -238,7 +259,8 @@ add_vertical_batch_borders <- function(order_col, sample_id_col, batch_col, vlin
         group_by(!!sym(batch_col)) %>%
         summarise(batch_size = n()) %>%
         ungroup() %>%
-        mutate() %>% #enables adequate plotting for batches, where order doesn't start from one
+        mutate() %>% #enables adequate plotting for batches, where order doesn't 
+                     #start from one
         mutate(tipping.points = cumsum(batch_size))%>%
         mutate(tipping.points = tipping.points+.5 + min_order_val)
     }
@@ -280,9 +302,11 @@ check_feature_id_col_in_dm <- function(feature_id_col, data_matrix) {
   if(!is.null(feature_id_col)){
     if(feature_id_col %in% colnames(data_matrix)){
       if(is.data.frame(data_matrix)){
-        warning(sprintf('feature_id_col with name %s in data matrix instead of rownames,
+        warning(sprintf('feature_id_col with name %s in data matrix instead of 
+                         rownames,
                         this might cause errors in other diagnostic functions,
-                        assign values of this column to rowname and remove from the data frame!', 
+                        assign values of this column to rowname and remove from 
+                        the data frame!', 
                         feature_id_col))
       }
       rownames(data_matrix) = data_matrix[[feature_id_col]]

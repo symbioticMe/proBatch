@@ -10,11 +10,12 @@ calculate_peptide_corr_distr(data_matrix, peptide_annotation,
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, use \code{help("example_proteome_matrix")})}
+See "example_proteome_matrix" for more details (to call the description, 
+use \code{help("example_proteome_matrix")})}
 
-\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
-protein and/or gene annotations. 
-See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
+\item{peptide_annotation}{long format data frame with peptide ID and their 
+corresponding protein and/or gene annotations. 
+See \code{help("example_peptide_annotation")}.}
 
 \item{protein_col}{column where protein names are specified}
 

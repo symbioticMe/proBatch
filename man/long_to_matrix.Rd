@@ -9,9 +9,9 @@ long_to_matrix(df_long, feature_id_col = "peptide_group_label",
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
-\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+output result file). See \code{help("example_proteome")} for more details.}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
 ID used in the long format representation \code{df_long}. In the wide
@@ -22,8 +22,8 @@ names.}
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+where the filenames (colnames of the \code{data_matrix} are found).}
 }
 \value{
 \code{data_matrix} (\link{proBatch}) like matrix 

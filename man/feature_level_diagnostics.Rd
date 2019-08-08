@@ -26,8 +26,9 @@ plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
   filename = NULL, width = NA, height = NA, units = c("cm", "in",
-  "mm"), plot_title = sprintf("Peptides of \%s protein", protein_name),
-  theme = "classic")
+  "mm"),
+  plot_title = sprintf("Peptides of \%s \\n                                                              protein",
+  protein_name), theme = "classic")
 
 plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
@@ -58,24 +59,26 @@ plot_with_fitting_curve(feature_name, fit_df, fit_value_col = "fit",
   color_scheme = "brewer", order_col = "order", vline_color = "grey",
   facet_col = NULL, filename = NULL, width = NA, height = NA,
   units = c("cm", "in", "mm"),
-  plot_title = sprintf("Fitting curve of \%s peptide",
+  plot_title = sprintf("Fitting curve of \%s \\n                                                         peptide",
   paste(feature_name, collapse = " ")), theme = "classic")
 }
 \arguments{
-\item{feature_name}{name of the selected feature (e.g. peptide) for diagnostic profiling}
+\item{feature_name}{name of the selected feature (e.g. peptide) for 
+diagnostic profiling}
 
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} and a
-\code{measure_col}, but usually also an \code{m_score} (in OpenSWATH output result
-file). See "example_proteome" for more details (to call the description, use \code{help("example_proteome")})}
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+output result file). See \code{help("example_proteome")} for more details.}
 
-\item{sample_annotation}{data frame with: \enumerate{ \item \code{sample_id_col}
-(this can be repeated as row names) \item biological covariates \item
-technical covariates (batches etc) }. 
-See "example_sample_annotation" for example with the detailed description (to call it, use \code{help("example_sample_annotation")})}
+\item{sample_annotation}{data frame with: 
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
+  \item biological covariates 
+  \item technical covariates (batches etc) }. 
+  See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, where the
-filenames (colnames of the data matrix are found).}
+\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
@@ -86,15 +89,18 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{geom}{whether to show the feature as points and/or connect by lines (accepted 
-values are: 1. \code{point}, \code{line} and \code{c('point', 'line')})}
+\item{geom}{whether to show the feature as points and/or connect by lines 
+(accepted values are: 1. \code{point}, \code{line} and 
+\code{c('point', 'line')})}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in OpenSWATH output data, 
+by \code{color_by_qual_value}. Design with inferred/requant values in 
+OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
-this argument value has to be set to \code{2} (this is an \code{m_score} value for imputed values (requant values).}
+this argument value has to be set to \code{2} (this is an \code{m_score} 
+value for imputed values (requant values).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
@@ -106,20 +112,24 @@ by batch factor as defined by \code{batch_col}.}
 names corresponding to the levels of the factor. For continous variables, 
 vector doesn't need to be named.}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample order. It is
-used for in initial assessment plots (\link{plot_sample_mean_or_boxplot}) and 
-feature-level diagnostics (\link{feature_level_diagnostics}). Can be `NULL` 
-if sample order is irrelevant (e.g. in genomic experiments). For more details,
-order definition/inference, see \link{define_sample_order} and \link{date_to_sample_order}}
+\item{order_col}{column in \code{sample_annotation} that determines sample 
+order. It is used for in initial assessment plots 
+(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics 
+(\link{feature_level_diagnostics}). Can be `NULL` 
+   if sample order is irrelevant (e.g. in genomic experiments). For more 
+   details,
+   order definition/inference, see \link{define_sample_order} and 
+   \link{date_to_sample_order}}
 
 \item{vline_color}{color of vertical lines, typically separating 
 different MS batches in ordered runs; 
 should be `NULL` for experiments without intrinsic order}
 
-\item{facet_col}{column  in \code{sample_annotation} with a batch factor to separate 
-plots into facets; usually 2nd to \code{batch_col}. Most meaningful for multi-instrument 
-MS experiments (where each instrument has its own order-associated effects, see \code{order_col}) 
-or simultaneous examination of two batch factors (e.g. preparation day and measurement day).
+\item{facet_col}{column  in \code{sample_annotation} with a batch factor to 
+separate plots into facets; usually 2nd to \code{batch_col}. Most meaningful 
+for multi-instrument MS experiments (where each instrument has its own 
+order-associated effects (see \code{order_col}) or simultaneous examination 
+of two batch factors (e.g. preparation day and measurement day).
 For single-instrument case should be set to `NULL`}
 
 \item{filename}{path where the results are saved. 
@@ -142,31 +152,35 @@ level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{protein_name}{name of the protein as defined in \code{ProteinName}}
 
-\item{peptide_annotation}{long format data frame with peptide ID and their corresponding 
-protein and/or gene annotations. 
-See "example_peptide_annotation" for more details (to call the description, use \code{help("example_peptide_annotation")})}
+\item{peptide_annotation}{long format data frame with peptide ID and their 
+corresponding protein and/or gene annotations. 
+See \code{help("example_peptide_annotation")}.}
 
 \item{protein_col}{column where protein names are specified}
 
-\item{spike_ins}{name of feature(s), typically proteins that were spiked in for control}
+\item{spike_ins}{name of feature(s), typically proteins that were spiked in 
+for control}
 
 \item{irt_pattern}{substring used to identify iRT proteins in the column
 'ProteinName'}
 
-\item{fit_df}{data frame output of \code{adjust_batch_trend_df} to be plotted with the line}
+\item{fit_df}{data frame output of \code{adjust_batch_trend_df} to be plotted
+with the line}
 
-\item{fit_value_col}{column in \code{fit_df} where the values for fitting trend are found}
+\item{fit_value_col}{column in \code{fit_df} where the values for fitting 
+trend are found}
 }
 \value{
 ggplot2 type plot of \code{measure_col} vs \code{order_col},
   faceted by \code{feature_name} and (optionally) by \code{batch_col}
 }
 \description{
-Creates a peptide faceted ggplot2 plot of the value in \code{measure_col}
+Creates a peptide faceted ggplot2 plot of the value in 
+\code{measure_col}
 vs \code{order_col} (if `NULL`, x-axis is simply a sample name order). 
 Additionally, the resulting plot can also be colored either by batch factor, 
-by quality factor (e.g. imputated/non-imputed) and, if needed, faceted by another
- batch factor, e.g. an MS instrument.
+by quality factor (e.g. imputated/non-imputed) and, if needed, faceted by 
+anotherbatch factor, e.g. an instrument.
  If the non-linear curve was fit, this can also be added to the plot, see 
  functions specific to each case below
 }
@@ -183,7 +197,8 @@ qual_col = NULL, color_by_batch = TRUE, batch_col = 'MS_batch')
 #color measurements by factor, with order-unrelated factor
 single_feature_plot <- plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
 df_long = example_proteome, example_sample_annotation, 
-qual_col = NULL, color_by_batch = TRUE, batch_col = 'Diet', geom = 'point', vline_color = NULL)
+qual_col = NULL, color_by_batch = TRUE, batch_col = 'Diet', geom = 'point', 
+vline_color = NULL)
 
 #saving the plot
 \dontrun{
@@ -212,7 +227,8 @@ batch_col = 'MS_batch',
 filename = 'test_protein.png', width = 14, height = 9, units = 'in')}
 
 #to illustrate spike-ins:
-spike_in_plot <- plot_spike_in(spike_ins = "BOVINE_A1ag", protein_col = 'Gene', 
+spike_in_plot <- plot_spike_in(spike_ins = "BOVINE_A1ag", 
+protein_col = 'Gene', 
 df_long = example_proteome, sample_annotation = example_sample_annotation, 
 sample_id_col = 'FullRunName',
 plot_title = "Spike-in BOVINE protein peptides")

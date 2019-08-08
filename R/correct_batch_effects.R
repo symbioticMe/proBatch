@@ -34,7 +34,7 @@
 #' @param return_fit_df (logical) whether to return the \code{fit_df} from 
 #' \code{adjust_batch_trend_dm} or only the data matrix
 #' @param fit_func function to fit the (non)-linear trend
-#' @param abs_threshold the absolute threshold (number of samples in a batch) to 
+#' @param abs_threshold the absolute threshold (number of samples in a batch) to
 #' filter data for curve fitting.
 #' @param pct_threshold the percentage threshold (fraction of samples in the 
 #' batch) to filter data for curve fitting.
