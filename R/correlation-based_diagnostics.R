@@ -52,7 +52,7 @@ plot_corr_matrix <- function(corr_matrix,
                                              sample_id_col = annotation_id_col, 
                                              factor_columns = factors_to_plot,
                                              numeric_columns = NULL,
-                                             guess_factors = T)
+                                             guess_factors = TRUE)
   }
   
   if(cluster_rows != cluster_cols){
