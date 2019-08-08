@@ -29,7 +29,8 @@ map_factors_to_colors <- function(annotation_df_factors) {
                               value = TRUE, invert = TRUE)
   
   qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
-  brewer_colors = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+  brewer_colors = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, 
+                                rownames(qual_col_pals)))
   if(number_colors_for_factors <= 45){
     colors = standard_colors_base
   } else 
@@ -213,7 +214,8 @@ sample_annotation_to_colors <- function(sample_annotation,
   }
   
   if(is.null(numeric_columns) && guess_factors){
-    warning('numeric columns not specified, extracting numeric columns from factors')
+    warning('numeric columns not specified, 
+            extracting numeric columns from factors')
     which_factors = vapply(factor_columns, function(col) {
       batch_vector = sample_annotation[[col]]
       is_factor = is_batch_factor(batch_vector, color_scheme = NULL)
@@ -225,9 +227,10 @@ sample_annotation_to_colors <- function(sample_annotation,
                          function(col) is.POSIXct(sample_annotation[[col]]), 
                          FUN.VALUE = logical(1))
     date_columns = factor_columns[which_dates]
-    numeric_columns = factor_columns[vapply(factor_columns, 
-                                            function(col) is.numeric(sample_annotation[[col]]), 
-                                            FUN.VALUE = logical(1))]
+    is_not_factor <- vapply(factor_columns, 
+                            function(col) is.numeric(sample_annotation[[col]]),
+                            FUN.VALUE = logical(1))
+    numeric_columns = factor_columns[is_not_factor]
     numeric_columns = c(numeric_columns, date_columns)
     for (numcol in numeric_columns){
       batch_vector = sample_annotation[[numcol]]
@@ -235,7 +238,8 @@ sample_annotation_to_colors <- function(sample_annotation,
       if (n_batches <= 10 || n_batches < 0.1*nrow(sample_annotation)){
         warning(sprintf('%s column has very few values, but is numeric-like,
                         should it be treated as factor? 
-                        \nuse both factor_columns and numeric_columns parameters', numcol))
+                        \nuse both factor_columns and 
+                        numeric_columns parameters', numcol))
       }
     }
     factor_columns = factor_candidates
@@ -387,12 +391,14 @@ color_discrete <- function(color_scheme, batch_col, n_batches, fill_or_color, gg
   }
   
   #Define the color scheme on the fly
-  gg = add_color_scheme_discrete(color_scheme, n_batches, fill_or_color, gg, batch_col)
+  gg = add_color_scheme_discrete(color_scheme, n_batches, fill_or_color, 
+                                 gg, batch_col)
   
   return(gg)
 }
 
-color_continuous <- function(color_scheme, batch_col, n_batches, fill_or_color, gg) {
+color_continuous <- function(color_scheme, batch_col, n_batches, 
+                             fill_or_color, gg) {
   batch_vector = gg$data[[batch_col]]
   lab_datetime <- pretty(batch_vector)
   
@@ -464,14 +470,15 @@ color_by_factor <- function(color_by_batch, batch_col, gg, color_scheme,
     
     if((length(color_scheme) == 1) && color_scheme == 'brewer'){
       warning('color_scheme will be inferred automatically.
-              Numeric/factor columns are guessed, for more controlled color mapping use 
-              sample_annotation_to_colors()')
+              Numeric/factor columns are guessed, for more controlled color 
+              mapping use sample_annotation_to_colors()')
     }
     
     if(is_factor){
       gg = color_discrete(color_scheme, batch_col, n_batches, fill_or_color, gg)
     } else if(is_numeric) {
-      gg = color_continuous(color_scheme, batch_col, n_batches, fill_or_color, gg)
+      gg = color_continuous(color_scheme, batch_col, n_batches, fill_or_color, 
+                            gg)
     } else{
       stop('batch_col class is neither factor-like, nor numeric-like,  
            check sample_annotation and/or color_scheme')
