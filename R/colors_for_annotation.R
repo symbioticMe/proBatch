@@ -80,7 +80,7 @@ map_numbers_to_colors <- function(annotation_df_numbers,
   color_list <- lapply(seq_len(ncol(annotation_df_numbers)),
                        function(i)
                          generate_colors_for_numeric(i = i,
-                                                     palette_type = palette_type))
+                                                   palette_type = palette_type))
   names(color_list) = names(annotation_df_numbers)
   return(color_list)
 }
@@ -182,7 +182,7 @@ sample_annotation_to_colors <- function(sample_annotation,
                                         factor_columns = c('MS_batch','EarTag', 
                                                            'digestion_batch',
                                                            "Strain", "Diet"),
-                                        numeric_columns = c('DateTime', 'order'),
+                                        numeric_columns = c('DateTime','order'),
                                         rare_categories_to_other = TRUE,
                                         guess_factors = FALSE,
                                         numeric_palette_type = 'brewer') {
@@ -380,7 +380,8 @@ add_color_scheme_discrete <- function(color_scheme, n_batches, fill_or_color,
 }
 
 
-color_discrete <- function(color_scheme, batch_col, n_batches, fill_or_color, gg) {
+color_discrete <- function(color_scheme, batch_col, n_batches, fill_or_color, 
+                           gg) {
   
   if(fill_or_color == 'color'){
     gg = gg + aes(color = as.factor(!!sym(batch_col)))

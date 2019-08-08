@@ -204,7 +204,7 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
     corrected_df = df_long %>%
       #filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
       group_nest(!!!syms(c(feature_id_col, batch_col, "batch_total"))) %>%  
-      mutate(fit = pmap(list(df_feature_batch = data,  batch_size = batch_total, 
+      mutate(fit = pmap(list(df_feature_batch = data,  batch_size = batch_total,
                              feature_id = !!sym(feature_id_col)), 
                         batch_id = !!sym(batch_col),
                         fit_nonlinear, 
