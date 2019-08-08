@@ -378,6 +378,7 @@ plot_heatmap_generic <- function(data_matrix,
 #'   needs to explain (the rest will be lumped together)
 #' @param fill_the_missing numeric value determining how  missing values 
 #' should be substituted. If \code{NULL}, features with missing values are excluded.
+#' @return data frame of weights of Principal Variance Components
 #' @export
 #' 
 #' @examples

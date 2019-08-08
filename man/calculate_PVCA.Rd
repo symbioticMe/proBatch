@@ -40,6 +40,9 @@ needs to explain (the rest will be lumped together)}
 \item{fill_the_missing}{numeric value determining how  missing values 
 should be substituted. If \code{NULL}, features with missing values are excluded.}
 }
+\value{
+data frame of weights of Principal Variance Components
+}
 \description{
 Calculate variance distribution by variable
 }
