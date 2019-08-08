@@ -37,8 +37,8 @@ technical covariates}
 \item{biological_factors}{vector \code{sample_annotation} column names, that
 are biologically meaningful covariates}
 
-\item{fill_the_missing}{boolean value determining if  missing values 
-should be substituted with -1 (and colored with   \code{color_for_missing}). 
+\item{fill_the_missing}{numeric value determining how  missing values 
+should be substituted. If \code{NULL}, features with missing values are excluded.
 If \code{NULL}, features with missing values are excluded.}
 
 \item{pca_threshold}{the percentile value of the minimum amount of the
@@ -74,7 +74,7 @@ list of two items: plot =gg, df = pvca_res
 Plot variance distribution by variable
 }
 \examples{
-matrix_test <- example_proteome_matrix[1:50, ]
+matrix_test <- example_proteome_matrix[1:150, ]
 pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
 technical_factors = c('MS_batch', 'digestion_batch'),
 biological_factors = c("Diet", "Sex", "Strain"))

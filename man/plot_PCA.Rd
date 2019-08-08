@@ -34,8 +34,8 @@ filenames (colnames of the data matrix are found).}
 
 \item{PC_to_plot}{principal component numbers for x and y axis}
 
-\item{fill_the_missing}{boolean value determining if  missing values 
-should be substituted with -1 (and colored with   \code{color_for_missing}). 
+\item{fill_the_missing}{numeric value determining how  missing values 
+should be substituted. If \code{NULL}, features with missing values are excluded.
 If \code{NULL}, features with missing values are excluded.}
 
 \item{color_scheme}{a named vector of colors to map to \code{batch_col}, 

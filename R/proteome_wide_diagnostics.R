@@ -376,9 +376,39 @@ plot_heatmap_generic <- function(data_matrix,
 #'   variabilities that the selected principal components need to explain
 #' @param variance_threshold the percentile value of weight each of the factors
 #'   needs to explain (the rest will be lumped together)
+#' @param fill_the_missing numeric value determining how  missing values 
+#' should be substituted. If \code{NULL}, features with missing values are excluded.
 #' @export
-calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
-                           pca_threshold, variance_threshold = Inf) {
+#' 
+#' @examples
+#' 
+#' matrix_test <- example_proteome_matrix[1:150, ]
+#' pvca_df <- calculate_PVCA(matrix_test, example_sample_annotation, 
+#' factors_for_PVCA = c('MS_batch', 'digestion_batch',"Diet", "Sex", "Strain"),
+#' pca_threshold = .6, variance_threshold = .01, fill_the_missing = -1)
+calculate_PVCA <- function(data_matrix, sample_annotation, 
+                           feature_id_col = 'peptide_group_label',
+                           sample_id_col = 'FullRunName',
+                           factors_for_PVCA = c('MS_batch', 'digestion_batch',"Diet", "Sex", "Strain"),
+                           pca_threshold = .6, variance_threshold = .01,
+                           fill_the_missing = -1) {
+  
+  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col = NULL, order_col = NULL, 
+                                     facet_col = NULL, merge = FALSE)
+  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
+  
+  sample_annotation = sample_annotation   %>% 
+    select(one_of(c(sample_id_col, factors_for_PVCA))) %>%
+    mutate_if(is.POSIXct, as.numeric) %>%
+    as.data.frame()%>%
+    column_to_rownames(var = sample_id_col)
+  
+  data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
+  
+  warning_message <- 'PVCA cannot operate with missing values in the matrix'
+  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
   
   covrts.annodf = Biobase::AnnotatedDataFrame(data=sample_annotation)
   data_matrix = data_matrix[, rownames(sample_annotation)]
@@ -414,15 +444,15 @@ calculate_PVCA <- function(data_matrix, sample_annotation, factors_for_PVCA,
 #'   variabilities that the selected principal components need to explain
 #' @param variance_threshold the percentile value of weight each of the covariates
 #'   needs to explain (the rest will be lumped together)
-#' @param fill_the_missing boolean value determining if  missing values 
-#' should be substituted with -1 (and colored with   \code{color_for_missing}). 
+#' @param fill_the_missing numeric value determining how  missing values 
+#' should be substituted. If \code{NULL}, features with missing values are excluded.
 #' If \code{NULL}, features with missing values are excluded.
 #'
 #' @return list of two items: plot =gg, df = pvca_res
 #' @export
 #'
 #' @examples 
-#' matrix_test <- example_proteome_matrix[1:50, ]
+#' matrix_test <- example_proteome_matrix[1:150, ]
 #' pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
 #' technical_factors = c('MS_batch', 'digestion_batch'),
 #' biological_factors = c("Diet", "Sex", "Strain"))
@@ -449,27 +479,14 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                       plot_title = NULL,
                       theme = 'classic'){
   
-  df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
-  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
-                                     batch_col = NULL, order_col = NULL, 
-                                     facet_col = NULL, merge = FALSE)
-  data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
-  
   factors_for_PVCA = c(technical_factors, biological_factors)
   
-  sample_annotation = sample_annotation   %>% 
-    select(one_of(c(sample_id_col, factors_for_PVCA))) %>%
-    mutate_if(is.POSIXct, as.numeric) %>%
-    as.data.frame()%>%
-    column_to_rownames(var = sample_id_col)
-  
-  data_matrix = check_feature_id_col_in_dm(feature_id_col, data_matrix)
-  
-  warning_message <- 'PVCA cannot operate with missing values in the matrix'
-  data_matrix = handle_missing_values(data_matrix, warning_message, fill_the_missing)
-  
-  pvca_res = calculate_PVCA(data_matrix, sample_annotation, factors_for_PVCA,
-                            pca_threshold, variance_threshold = variance_threshold)
+  pvca_res = calculate_PVCA(data_matrix, sample_annotation, 
+                            feature_id_col = feature_id_col,
+                            sample_id_col = sample_id_col,
+                            factors_for_PVCA = factors_for_PVCA,
+                            pca_threshold, variance_threshold = variance_threshold,
+                            fill_the_missing = fill_the_missing)
   
   tech_interactions = expand.grid(technical_factors, 
                                   technical_factors) %>%
@@ -479,10 +496,6 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                                   biological_factors) %>%
     mutate(biol_interactions = paste(Var1, Var2, sep = ':')) %>%
     pull(biol_interactions)
-  
-  if(!(all(rownames(sample_annotation) %in% colnames(data_matrix)))){
-    stop('check data matrix column names or these in sample annotation')
-  }
   
   label_of_small = sprintf('Below %1.0f%%', 100*variance_threshold)
   technical_factors = c(technical_factors, tech_interactions)
@@ -551,8 +564,8 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #' @inheritParams proBatch
 #' @param color_by column name (as in \code{sample_annotation}) to color by
 #' @param PC_to_plot principal component numbers for x and y axis
-#' @param fill_the_missing boolean value determining if  missing values 
-#' should be substituted with -1 (and colored with   \code{color_for_missing}). 
+#' @param fill_the_missing numeric value determining how  missing values 
+#' should be substituted. If \code{NULL}, features with missing values are excluded.
 #' If \code{NULL}, features with missing values are excluded.
 #'
 #' @return ggplot scatterplot colored by factor levels of column specified in
