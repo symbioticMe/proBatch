@@ -71,7 +71,7 @@ plot_corr_matrix <- function(corr_matrix,
                             annotation_color_cols = color_list,
                             annotation_color_rows = color_list,
                             heatmap_color = heatmap_color,
-                            filename = filename, width = width, height = width, 
+                            filename = filename, width = width, height = height, 
                             units = units, 
                             plot_title = plot_title,
                             ...)
