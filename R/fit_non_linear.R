@@ -41,31 +41,34 @@ fit_nonlinear <- function(df_feature_batch, batch_size = NULL,
                           no_fit_imputed = FALSE, qual_col = 'm_score', 
                           qual_value = 2,
                           abs_threshold = 5, pct_threshold = 0.20, ...){
-  x_all = df_feature_batch[[order_col]]
-  y = df_feature_batch[[measure_col]]
     
   if(no_fit_imputed){
     if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
       warning('imputed value column is in the data, fitting curve only to 
               measured, non-imputed values')
       imputed_values <- df_feature_batch[[qual_col]] == qual_value
-      x_to_fit = x_all[!imputed_values]
-      y[imputed_values] = NA
+      df_feature_batch[[measure_col]][imputed_values] = NA
+      
     } else {
       stop('imputed values are specified not to be used for curve fitting, 
 however, 
            no flag for imputed values is specified')
       }
-    } else {
-      if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
+  } else {
+    if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
         warning('imputed value (requant) column is in the data, are you sure you
                 want to fit non-linear curve to these values, too?')
       }
-      x_to_fit = x_all
-    }
+  }
+  
+  x_all = df_feature_batch[[order_col]]
+  y = df_feature_batch[[measure_col]]
+  missing_values <- is.na(y)
+  y = y[!missing_values]
+  x_to_fit = x_all[!missing_values]
     
-    #checking if there is a reasonable number of values to fit a sensible curve
-    if (is.null(batch_size)){
+  #checking if there is a reasonable number of values to fit a sensible curve
+  if (is.null(batch_size)){
       warning("Batch size is not specified, assuming number of entries for this 
               batch and feature is the total batch size. Maybe erroneous,
               if missing values are not NAs, but removed from data frame")
@@ -73,7 +76,9 @@ however,
     }
     
     pct_threshold = batch_size*pct_threshold
-    if(sum(!is.na(y)) >= abs_threshold & sum(!is.na(y)) >= pct_threshold){
+    
+    max_consec_meas = rle_func(df_feature_batch)
+    if(max_consec_meas >= max(abs_threshold, pct_threshold)){
       #fitting the curve
       #TODO: re-write in the functional programming paradigm (e.g. arguments - 
       #       function, x_all, y, x_to_fit)
@@ -96,7 +101,7 @@ however,
                       feature_id, batch_id))
       fit_res = y
     }
-  fit_res[is.na(y)] = NA
+  fit_res[missing_values] = NA
   return(fit_res)
 }
 
@@ -166,4 +171,10 @@ optimise_df <- function(x, bw){
       S.nw[, j] <- reg.fcn.nw(x, Id[,j],x, bw = bw)
     df.nw <- sum(diag(S.nw))
     return(df.nw)
+  }
+
+rle_func <- function(df) { 
+  rle_res = rle(is.na(df$Intensity[order(df$order)]))
+  max_measured = max(rle_res$lengths[!rle_res$values])
+  return(max_measured)
   }
