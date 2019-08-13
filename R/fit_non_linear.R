@@ -73,7 +73,7 @@ however,
     }
     
     pct_threshold = batch_size*pct_threshold
-    if(length(x_to_fit) >= abs_threshold & length(x_to_fit) >= pct_threshold){
+    if(sum(!is.na(y)) >= abs_threshold & sum(!is.na(y)) >= pct_threshold){
       #fitting the curve
       #TODO: re-write in the functional programming paradigm (e.g. arguments - 
       #       function, x_all, y, x_to_fit)
@@ -110,11 +110,7 @@ loess_regression <- function(x_to_fit, y, x_all,
     warning=function(cond) {
       message(sprintf("Feature %s in batch %s caused a warning:", 
                       feature_id, batch_id))
-      message("Here's the original warning message:")
       message(cond)
-      # Choose a return value in case of warning
-      message(sprintf('class of prediction is %s'), class(pred))
-      message(sprintf('length of prediction is %s'), length(pred))
       y
     }
   )
