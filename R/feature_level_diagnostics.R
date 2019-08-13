@@ -206,7 +206,7 @@ plot_single_feature  <- function(feature_name, df_long,
       filter(!!(as.name(qual_col)) == qual_value)
     gg = gg + geom_point(data = col_data,
                          aes_string(x = order_col, y = measure_col),
-                         color = 'red', size = 1.5, shape = 8)
+                         color = 'red', size = 1, shape = 8)
   }
   
   
@@ -314,8 +314,7 @@ plot_peptides_of_one_protein <- function(protein_name,
                                          filename = NULL, 
                                          width = NA, height = NA, 
                                          units = c('cm','in','mm'),
-                                         plot_title = sprintf('Peptides of %s 
-                                                              protein', 
+                                         plot_title = sprintf('Peptides of %s protein', 
                                                               protein_name),
                                          theme = 'classic'){
   
