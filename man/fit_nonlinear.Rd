@@ -4,20 +4,16 @@
 \alias{fit_nonlinear}
 \title{Fit a non-linear trend (currently optimized for LOESS)}
 \usage{
-fit_nonlinear(df_feature_batch, batch_size = NULL,
-  measure_col = "Intensity", order_col = "order", feature_id = NULL,
-  batch_id = NULL, fit_func = "loess_regression",
-  optimize_span = FALSE, no_fit_imputed = FALSE,
-  qual_col = "m_score", qual_value = 2, abs_threshold = 5,
-  pct_threshold = 0.2, ...)
+fit_nonlinear(df_feature_batch, measure_col = "Intensity",
+  order_col = "order", feature_id = NULL, batch_id = NULL,
+  fit_func = "loess_regression", optimize_span = FALSE,
+  no_fit_imputed = TRUE, qual_col = "m_score", qual_value = 2,
+  min_measurements = 8, ...)
 }
 \arguments{
 \item{df_feature_batch}{data frame containing response variable e.g. 
 samples in order and explanatory variable e.g. measurement for a 
 specific feature (peptide) in a specific batch}
-
-\item{batch_size}{the total number of samples in the batch to 
-compute for percentage threshold}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
@@ -52,13 +48,12 @@ which means argument value has to be set to \code{m_score}.}
 this argument value has to be set to \code{2} (this is an \code{m_score} 
 value for imputed values (requant values).}
 
-\item{abs_threshold}{the absolute threshold to filter 
-data for curve fitting}
-
-\item{pct_threshold}{the percentage threshold to filter 
-data for curve fitting}
+\item{min_measurements}{the absolute threshold to filter}
 
 \item{...}{additional parameters to be passed to the fitting function}
+
+\item{batch_size}{the total number of samples in the batch to 
+compute for percentage threshold}
 }
 \value{
 vector of fitted response values
@@ -74,5 +69,13 @@ selected_batch = example_sample_annotation$MS_batch == 'Batch_1'
 batch_selected_df = example_sample_annotation[selected_batch,]
 df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
 fit_values = fit_nonlinear(df_for_test)
+
+#for the case where are two many missing values, no curve is fit
+selected_batch = example_sample_annotation$MS_batch == 'Batch_2'
+batch_selected_df = example_sample_annotation[selected_batch,]
+df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
+fit_values = fit_nonlinear(df_for_test)
+missing_values = df_for_test[['m_score']] == 2
+all(fit_values[!is.na(fit_values)] == df_for_test[['Intensity']][!missing_values])
 
 }

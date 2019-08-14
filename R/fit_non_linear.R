@@ -13,10 +13,7 @@
 #' @param optimize_span logical, whether to specify span or optimize it 
 #' (specific entirely for LOESS regression)
 #' @param no_fit_imputed (logical) whether to fit the imputed (requant) values
-#' @param abs_threshold the absolute threshold to filter 
-#' data for curve fitting 
-#' @param pct_threshold the percentage threshold to filter 
-#' data for curve fitting
+#' @param min_measurements the absolute threshold to filter 
 #' 
 #' @param ... additional parameters to be passed to the fitting function
 #'
