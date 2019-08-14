@@ -26,9 +26,8 @@ plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
   filename = NULL, width = NA, height = NA, units = c("cm", "in",
-  "mm"),
-  plot_title = sprintf("Peptides of \%s \\n                                                              protein",
-  protein_name), theme = "classic")
+  "mm"), plot_title = sprintf("Peptides of \%s protein", protein_name),
+  theme = "classic")
 
 plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,

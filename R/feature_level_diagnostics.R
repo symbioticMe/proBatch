@@ -126,7 +126,7 @@ plot_single_feature  <- function(feature_name, df_long,
                                  ylimits = NULL){
   
   #to ensure that missing measurements are NAs (to make them disconnected)
-  df_long = df_long %>% complete(!!!syms(c(feature_id_col, sample_id_col)))
+  #df_long = df_long %>% complete(!!!syms(c(feature_id_col, sample_id_col)))
   
   #reduce df to measurements of selected features
   plot_df = df_long %>%
