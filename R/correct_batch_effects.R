@@ -34,10 +34,8 @@
 #' @param return_fit_df (logical) whether to return the \code{fit_df} from 
 #' \code{adjust_batch_trend_dm} or only the data matrix
 #' @param fit_func function to fit the (non)-linear trend
-#' @param abs_threshold the absolute threshold (number of samples in a batch) to
-#' filter data for curve fitting.
-#' @param pct_threshold the percentage threshold (fraction of samples in the 
-#' batch) to filter data for curve fitting.
+#' @param no_fit_imputed (logical) whether to fit the imputed (requant) values
+#' @param min_measurements the number of samples in a batch required for curve fitting.
 #' @param par.prior use parametrical or non-parametrical prior 
 #' @param continuous_func function to use for the fit (currently 
 #' only \code{loess_regression} available); if order-associated fix is not 
@@ -78,11 +76,11 @@
 #' test_proteome = example_proteome[test_peptide_filter,]
 #' adjusted_data <- adjust_batch_trend_df(test_proteome, 
 #' example_sample_annotation, span = 0.7, 
-#' abs_threshold = 5, pct_threshold = 0.20)
+#' min_measurements = 8)
 #' fit_df <- adjusted_data$fit_df
 #' adjusted_df <- adjusted_data$corrected_df
 #' plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label), 
-#' df_long = adjusted_df, fit_df = fit_df, 
+#' df_long = adjusted_df, measure_col = 'preTrendFit_Intensity',fit_df = fit_df, 
 #' sample_annotation = example_sample_annotation)
 #' 
 #' #Correct the data in one go:
@@ -91,8 +89,7 @@
 #' continuous_func = 'loess_regression',
 #' discrete_func = 'MedianCentering', 
 #' batch_col = 'MS_batch',  
-#' span = 0.7,
-#' abs_threshold = 5, pct_threshold = 0.20)
+#' span = 0.7, min_measurements = 8)
 #' 
 #' @seealso \code{\link{fit_nonlinear}}
 #' @name correct_batch_effects
@@ -164,35 +161,14 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
                                order_col = 'order',
                                keep_all = FALSE,
                                fit_func = 'loess_regression', 
-                               abs_threshold = 5, pct_threshold = 0.20, ...){
+                               no_fit_imputed = TRUE,
+                               qual_col = 'm_score', 
+                               qual_value = 2,
+                               min_measurements = 8, ...){
   
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, order_col = NULL, 
                                      facet_col = NULL, merge = TRUE)
-  
-  batch_size_df = NULL
-  if (is.null(sample_annotation) && (batch_col %in% names(df_long))) {
-    batch_size_df = df_long %>%
-      group_by(!!sym(batch_col)) %>%
-      summarise(batch_total = n()) %>%
-      ungroup() %>%
-      mutate(!!batch_col := as.character(!!sym(batch_col)))
-  } 
-  
-  if(!is.null(sample_annotation)){
-    batch_size_df = sample_annotation %>%
-      group_by(!!sym(batch_col)) %>%
-      summarise(batch_total = n()) %>%
-      ungroup() %>%
-      mutate(!!batch_col := as.character(!!sym(batch_col)))
-  } else {
-    warning('Assuming this is a single batch fit: no batches found')
-  }
-  
-  if(!is.null(batch_size_df)){
-    df_long = df_long %>% 
-      merge(batch_size_df, by = batch_col)
-  }
   
   original_cols = names(df_long)
   
@@ -203,15 +179,16 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
     sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
     corrected_df = df_long %>%
       #filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
-      group_nest(!!!syms(c(feature_id_col, batch_col, "batch_total"))) %>%  
-      mutate(fit = pmap(list(df_feature_batch = data,  batch_size = batch_total,
-                             feature_id = !!sym(feature_id_col)), 
-                        batch_id = !!sym(batch_col),
+      group_nest(!!!syms(c(feature_id_col, batch_col))) %>%  
+      mutate(fit = pmap(list(df_feature_batch = data, 
+                             feature_id = !!sym(feature_id_col), 
+                             batch_id = as.character(!!sym(batch_col))),
                         fit_nonlinear, 
                         measure_col = measure_col,order_col = order_col, 
                         fit_func = fit_func, 
-                        abs_threshold = abs_threshold,
-                        pct_threshold = pct_threshold, ...))
+                        no_fit_imputed = no_fit_imputed,
+                        qual_col = qual_col, qual_value = qual_value,
+                        min_measurements = min_measurements, ...))
   } else {
     corrected_df = df_long %>%
       #filter(!is.na(!!(sym(measure_col)))) %>% #filter(!is.na(Intensity))
@@ -219,8 +196,7 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
       mutate(fit = map(data, fit_nonlinear, 
                         measure_col = measure_col,order_col = order_col, 
                         fit_func = fit_func,
-                        abs_threshold = abs_threshold,
-                        pct_threshold = pct_threshold, ...))
+                       min_measurements = min_measurements, ...))
   }
   
   old_measure_col = paste('preTrendFit', measure_col, sep = '_')
@@ -233,22 +209,23 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
     mutate(diff = mean_fit - fit) %>%
     mutate(diff.na = ifelse(is.na(diff), 0, diff)) %>%
     rename(!!(old_measure_col) := !!(sym(measure_col))) %>%
+    #TODO: make the conditional shift: if we keep the requants, 
+    #then we can fit the curve without, but shift them nevertheless
     mutate(!!(sym(measure_col)) := !!sym('diff.na') + !!sym(old_measure_col))
   
   fit_df = corrected_df %>% dplyr::select(one_of(c('fit', 'diff', 'diff.na', 
                                                    feature_id_col,
-                                                   sample_id_col, measure_col, 
+                                                   sample_id_col, old_measure_col, 
                                                    batch_col)))
-  
-  
-  corrected_df = corrected_df %>%
-    dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                    old_measure_col))
   
   if(keep_all){
     corrected_df = corrected_df %>%
       dplyr::select(c(original_cols, old_measure_col))
     
+  } else {
+    corrected_df = corrected_df %>%
+      dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                      old_measure_col))
   }
   
   return(list(corrected_df = corrected_df,
@@ -268,7 +245,7 @@ adjust_batch_trend_dm <- function(data_matrix, sample_annotation,
                                   order_col = 'order',
                                   fit_func = 'loess_regression', 
                                   return_fit_df = TRUE,
-                                  abs_threshold = 5, pct_threshold = 0.20, ...){
+                                  min_measurements = 8, ...){
   df_long = matrix_to_long(data_matrix, feature_id_col = feature_id_col,
                            measure_col = measure_col, 
                            sample_id_col = sample_id_col)
@@ -383,23 +360,30 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
                                   sample_id_col = 'FullRunName',
                                   measure_col = 'Intensity',  
                                   order_col = 'order', 
-                                  abs_threshold = 5, pct_threshold = 0.20, ...){
+                                  keep_all = FALSE,
+                                  no_fit_imputed = TRUE,
+                                  qual_col = 'm_score', 
+                                  qual_value = 2,
+                                  min_measurements = 8, ...){
   
   discrete_func <- match.arg(discrete_func)
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
   
   if(!is.null(continuous_func)){
-    fit_list = adjust_batch_trend_df(df_long, 
+    fit_list = adjust_batch_trend_df(df_long = df_long, 
                                   sample_annotation = sample_annotation,
                                   batch_col = batch_col,
                                   feature_id_col = feature_id_col,
                                   sample_id_col = sample_id_col,
                                   measure_col = measure_col,
-                                  order_col = order_col,
+                                  order_col = order_col, 
+                                  keep_all = keep_all,
+                                  no_fit_imputed = no_fit_imputed,
+                                  qual_col = qual_col, 
+                                  qual_value = qual_value,
                                   fit_func = continuous_func, 
-                                  abs_threshold = abs_threshold, 
-                                  pct_threshold = pct_threshold, ...)
+                                  min_measurements = min_measurements, ...)
     adjusted_df = fit_list$corrected_df
   }
   
@@ -440,8 +424,7 @@ correct_batch_effects_dm <- function(data_matrix, sample_annotation,
                                      sample_id_col = 'FullRunName',
                                      measure_col = 'Intensity',  
                                      order_col = 'order', 
-                                     abs_threshold = 5, pct_threshold = 0.20, 
-                                     ...){
+                                     min_measurements = 8, ...){
   
   df_long = matrix_to_long(data_matrix, feature_id_col = feature_id_col,
                            measure_col = measure_col, 
@@ -454,8 +437,7 @@ correct_batch_effects_dm <- function(data_matrix, sample_annotation,
                                           sample_id_col = sample_id_col,
                                           measure_col = measure_col, 
                                           order_col = order_col,
-                                          abs_threshold = abs_threshold, 
-                                          pct_threshold = pct_threshold, ...)
+                                          min_measurements = min_measurements, ...)
   
   return(corrected_df)
 }

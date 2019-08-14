@@ -24,14 +24,14 @@ adjust_batch_trend_df(df_long, sample_annotation = NULL,
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
   order_col = "order", keep_all = FALSE,
-  fit_func = "loess_regression", abs_threshold = 5,
-  pct_threshold = 0.2, ...)
+  fit_func = "loess_regression", no_fit_imputed = TRUE,
+  qual_col = "m_score", qual_value = 2, min_measurements = 8, ...)
 
 adjust_batch_trend_dm(data_matrix, sample_annotation,
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
   order_col = "order", fit_func = "loess_regression",
-  return_fit_df = TRUE, abs_threshold = 5, pct_threshold = 0.2, ...)
+  return_fit_df = TRUE, min_measurements = 8, ...)
 
 correct_with_ComBat_df(df_long, sample_annotation = NULL,
   feature_id_col = "peptide_group_label", measure_col = "Intensity",
@@ -48,14 +48,15 @@ correct_batch_effects_df(df_long, sample_annotation,
   "ComBat"), batch_col = "MS_batch",
   feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", abs_threshold = 5, pct_threshold = 0.2, ...)
+  order_col = "order", keep_all = FALSE, no_fit_imputed = TRUE,
+  qual_col = "m_score", qual_value = 2, min_measurements = 8, ...)
 
 correct_batch_effects_dm(data_matrix, sample_annotation,
   continuous_func = NULL, discrete_func = c("MedianCentering",
   "ComBat"), batch_col = "MS_batch",
   feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", abs_threshold = 5, pct_threshold = 0.2, ...)
+  order_col = "order", min_measurements = 8, ...)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -102,11 +103,18 @@ order. It is used for in initial assessment plots
 
 \item{fit_func}{function to fit the (non)-linear trend}
 
-\item{abs_threshold}{the absolute threshold (number of samples in a batch) to
-filter data for curve fitting.}
+\item{no_fit_imputed}{(logical) whether to fit the imputed (requant) values}
 
-\item{pct_threshold}{the percentage threshold (fraction of samples in the 
-batch) to filter data for curve fitting.}
+\item{qual_col}{column to color point by certain value denoted 
+by \code{color_by_qual_value}. Design with inferred/requant values in 
+OpenSWATH output data, 
+which means argument value has to be set to \code{m_score}.}
+
+\item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
+this argument value has to be set to \code{2} (this is an \code{m_score} 
+value for imputed values (requant values).}
+
+\item{min_measurements}{the number of samples in a batch required for curve fitting.}
 
 \item{...}{other parameters, usually of \code{adjust_batch_trend}, 
 and \code{fit_func}.}
@@ -182,11 +190,11 @@ test_peptide_filter = example_proteome$peptide_group_label \%in\% test_peptides
 test_proteome = example_proteome[test_peptide_filter,]
 adjusted_data <- adjust_batch_trend_df(test_proteome, 
 example_sample_annotation, span = 0.7, 
-abs_threshold = 5, pct_threshold = 0.20)
+min_measurements = 8)
 fit_df <- adjusted_data$fit_df
 adjusted_df <- adjusted_data$corrected_df
 plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label), 
-df_long = adjusted_df, fit_df = fit_df, 
+df_long = adjusted_df, measure_col = 'preTrendFit_Intensity',fit_df = fit_df, 
 sample_annotation = example_sample_annotation)
 
 #Correct the data in one go:
@@ -195,8 +203,7 @@ example_sample_annotation,
 continuous_func = 'loess_regression',
 discrete_func = 'MedianCentering', 
 batch_col = 'MS_batch',  
-span = 0.7,
-abs_threshold = 5, pct_threshold = 0.20)
+span = 0.7, min_measurements = 8)
 
 }
 \seealso{
