@@ -31,23 +31,34 @@
 #' df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
 #' fit_values = fit_nonlinear(df_for_test)
 #' 
+#' #for the case where are two many missing values, no curve is fit
+#' selected_batch = example_sample_annotation$MS_batch == 'Batch_2'
+#' batch_selected_df = example_sample_annotation[selected_batch,]
+#' df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
+#' fit_values = fit_nonlinear(df_for_test)
+#' missing_values = df_for_test[['m_score']] == 2
+#' all(fit_values[!is.na(fit_values)] == df_for_test[['Intensity']][!missing_values])
+#' 
 #' @export
 #' 
-fit_nonlinear <- function(df_feature_batch, batch_size = NULL, 
+fit_nonlinear <- function(df_feature_batch, 
                           measure_col = 'Intensity', order_col = 'order',
                           feature_id = NULL, batch_id = NULL,
                           fit_func = 'loess_regression',
                           optimize_span = FALSE, 
-                          no_fit_imputed = FALSE, qual_col = 'm_score', 
+                          no_fit_imputed = TRUE, qual_col = 'm_score', 
                           qual_value = 2,
-                          abs_threshold = 5, pct_threshold = 0.20, ...){
-    
+                          min_measurements = 8, ...){
+  x_all = df_feature_batch[[order_col]]
+  y_all = df_feature_batch[[measure_col]]
+  
   if(no_fit_imputed){
     if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
       warning('imputed value column is in the data, fitting curve only to 
               measured, non-imputed values')
       imputed_values <- df_feature_batch[[qual_col]] == qual_value
       df_feature_batch[[measure_col]][imputed_values] = NA
+      missing_values <- imputed_values
       
     } else {
       stop('imputed values are specified not to be used for curve fitting, 
@@ -58,37 +69,25 @@ however,
     if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
         warning('imputed value (requant) column is in the data, are you sure you
                 want to fit non-linear curve to these values, too?')
-      }
+    }
+    missing_values <- is.na(y_all)
   }
   
-  x_all = df_feature_batch[[order_col]]
-  y = df_feature_batch[[measure_col]]
-  missing_values <- is.na(y)
-  y = y[!missing_values]
+  y = y_all[!missing_values]
   x_to_fit = x_all[!missing_values]
-    
-  #checking if there is a reasonable number of values to fit a sensible curve
-  if (is.null(batch_size)){
-      warning("Batch size is not specified, assuming number of entries for this 
-              batch and feature is the total batch size. Maybe erroneous,
-              if missing values are not NAs, but removed from data frame")
-      batch_size = nrow(df_feature_batch)
-    }
-    
-    pct_threshold = batch_size*pct_threshold
-    
+  
     max_consec_meas = rle_func(df_feature_batch)
-    if(max_consec_meas >= max(abs_threshold, pct_threshold)){
+    if(max_consec_meas >= min_measurements){
       #fitting the curve
       #TODO: re-write in the functional programming paradigm (e.g. arguments - 
       #       function, x_all, y, x_to_fit)
       if(fit_func == 'loess_regression'){
         if(!optimize_span){
-          fit_res = loess_regression(x_to_fit, y, x_all, 
+          fit_res = loess_regression(x_to_fit, y, x_all, y_all,
                                      feature_id = feature_id, 
                                      batch_id = batch_id, ...)
         } else {
-          fit_res = loess_regression_opt(x_to_fit, y, x_all, 
+          fit_res = loess_regression_opt(x_to_fit, y, x_all, y_all,
                                          feature_id = feature_id, 
                                          batch_id = batch_id, ...)
         }
@@ -99,13 +98,19 @@ however,
       warning(sprintf("Curve fitting didn't have enough points to fit for the 
                        feature %s in the batch %s, leaving the original value", 
                       feature_id, batch_id))
-      fit_res = y
+      fit_res = y_all
     }
+  #TODO: make a flag to "pull" the values of imputed values through this fit
+  if(length(fit_res) != length(y_all)){
+    print(batch_id)
+    print(feature_id)
+    stop('dimensions do not match')
+  }
   fit_res[missing_values] = NA
   return(fit_res)
 }
 
-loess_regression <- function(x_to_fit, y, x_all,   
+loess_regression <- function(x_to_fit, y, x_all, y_all,  
                              feature_id = NULL, batch_id = NULL, ...){
   out <- tryCatch({
     fit = loess(y ~ x_to_fit, surface = 'direct', ...)
@@ -113,22 +118,33 @@ loess_regression <- function(x_to_fit, y, x_all,
     pred
   },
     warning=function(cond) {
-      message(sprintf("Feature %s in batch %s caused a warning:", 
+      message(sprintf("Feature %s in batch %s could not be fit with LOESS:", 
                       feature_id, batch_id))
       message(cond)
-      y
+      y_all
     }
   )
   return(out)
 }
 
-loess_regression_opt <- function(x_to_fit, y, x_all, 
+loess_regression_opt <- function(x_to_fit, y, x_all, y_all,
                                  feature_id = NULL, batch_id = NULL, ...) {
-  bw = optimise_bw(x_to_fit, y, ...)
-  degr_freedom = optimise_df(x_to_fit, bw)
-  fit = loess(y ~ x_all, enp.target = degr_freedom, surface = 'direct', ...)
-  res = predict(fit, newdata = x_to_fit)
-  return(res)
+  out <- tryCatch({
+    bw = optimise_bw(x_to_fit, y, ...)
+    degr_freedom = optimise_df(x_to_fit, bw)
+    fit = loess(y ~ x_all, enp.target = degr_freedom, surface = 'direct', ...)
+    pred = predict(fit, newdata = x_to_fit)
+    return(pred)
+  },
+  warning=function(cond) {
+    message(sprintf("Feature %s in batch %s could not be fit with optimised LOESS:", 
+                    feature_id, batch_id))
+    message(cond)
+    y_all
+  }
+  )
+  return(out)
+  
 }
 
 loocv.nw <- function(x, y, bw = 1.5, kernel = "normal"){
