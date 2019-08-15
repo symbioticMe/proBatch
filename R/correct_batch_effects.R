@@ -342,6 +342,9 @@ correct_with_ComBat_df <- function(df_long, sample_annotation = NULL,
                                    sample_id_col = 'FullRunName',
                                    batch_col = 'MS_batch', 
                                    par.prior = TRUE,
+                                   no_fit_imputed = TRUE,
+                                   qual_col = 'm_score', 
+                                   qual_value = 2,
                                    keep_all = 'default'){
   
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
@@ -349,10 +352,21 @@ correct_with_ComBat_df <- function(df_long, sample_annotation = NULL,
                                      facet_col = NULL, merge = FALSE)
   
   #TODO: no_impute_values fix
+  if(!is.null(qual_col) & no_fit_imputed){
+    if(!(qual_col %in% names(df_long))){
+      stop("imputed value flag column is not in the data frame!")
+    }
+    data_matrix = long_to_matrix(df_long, feature_id_col = feature_id_col,
+                                 measure_col = measure_col, 
+                                 sample_id_col = sample_id_col, 
+                                 qual_col = qual_col, qual_value = qual_value)
+  } else {
+    data_matrix = long_to_matrix(df_long, feature_id_col = feature_id_col,
+                                 measure_col = measure_col, 
+                                 sample_id_col = sample_id_col, 
+                                 qual_col = NULL)
+  }
   
-  data_matrix = long_to_matrix(df_long, feature_id_col = feature_id_col,
-                               measure_col = measure_col, 
-                               sample_id_col = sample_id_col)
   
   corrected_matrix = run_ComBat_core(sample_annotation, batch_col, data_matrix, 
                                      par.prior)
