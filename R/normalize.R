@@ -107,7 +107,7 @@ quantile_normalize_df <- function(df_long,
                                              c(feature_id_col, sample_id_col)))), 
           by = c(feature_id_col, sample_id_col))
   
-  if(!is.null(qual_col) & qual_col %in% names(normalized_df)){
+  if(!is.null(qual_col) && qual_col %in% names(normalized_df)){
     normalized_df = switch (keep_all,
                            all = normalized_df,
                            default = normalized_df,
@@ -184,7 +184,7 @@ normalize_sample_medians_df <- function(df_long,
     mutate(diff_norm = median_global - median_run) %>%
     mutate(!!(sym(measure_col)) := !!(sym(measure_col))+diff_norm)
   
-  if(!is.null(qual_col) & qual_col %in% names(normalized_df)){
+  if(!is.null(qual_col) && (qual_col %in% names(normalized_df))){
     normalized_df = switch (keep_all,
                             all = normalized_df,
                             default = normalized_df,

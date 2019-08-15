@@ -118,7 +118,7 @@ center_feature_batch_medians_df <- function(df_long, sample_annotation = NULL,
   corrected_df = df_long %>%
     group_by_at(vars(one_of(batch_col, feature_id_col))) 
   if (no_fit_imputed){
-    if(!is.null(qual_col) & !(qual_col %in% names(corrected_df))){
+    if(!is.null(qual_col) && !(qual_col %in% names(corrected_df))){
       stop("imputed value flag column (qual_col) is not in the data frame!")
     }
     temp_measure_col = paste('temp', measure_col, sep = '_')
@@ -147,7 +147,7 @@ however,
     rename(!!(sym(old_measure_col)) := !!(sym(measure_col))) %>%
     mutate(!!(sym(measure_col)) := !!(sym(old_measure_col)) + diff_medians)
   
-  if(!is.null(qual_col) & qual_col %in% names(corrected_df)){
+  if(!is.null(qual_col) && qual_col %in% names(corrected_df)){
     corrected_df = switch (keep_all,
                            all = corrected_df,
                            default = corrected_df %>%
@@ -266,7 +266,7 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
     #then we can fit the curve without, but shift them nevertheless
     mutate(!!(sym(measure_col)) := !!sym('diff.na') + !!sym(old_measure_col))
   
-  if(!is.null(qual_col) & qual_col %in% names(corrected_df)){
+  if(!is.null(qual_col) && qual_col %in% names(corrected_df)){
     corrected_df = switch (keep_all,
                            all = corrected_df,
                            default = corrected_df %>%
