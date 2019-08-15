@@ -136,7 +136,7 @@ however,
               no_fit_imputed is FALSE')
     }
     corrected_df = corrected_df %>%
-      mutate(median_batch = median(!!(sym(temp_measure_col)), na.rm = TRUE)) %>%
+      mutate(median_batch = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
       ungroup() %>%
       group_by_at(vars(one_of(feature_id_col))) %>%
       mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE))
@@ -271,10 +271,10 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
                            all = corrected_df,
                            default = corrected_df %>%
                              dplyr::select(c(original_cols, old_measure_col, 
-                                             'fit', qual_col, qual_value)),
+                                             'fit', batch_col, qual_col, qual_value)),
                            minimal = corrected_df %>%
                              dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                             old_measure_col,'fit', qual_col, qual_value))
+                                             old_measure_col,'fit', batch_col, qual_col, qual_value))
     )
   } else {
   
