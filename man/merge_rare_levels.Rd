@@ -4,7 +4,14 @@
 \alias{merge_rare_levels}
 \title{Replaces rare levels with other}
 \usage{
-merge_rare_levels(column)
+merge_rare_levels(column, rare_thr = 2)
+}
+\arguments{
+\item{column}{column of the data whose rare categories need to be merged to 
+"other"}
+
+\item{rare_thr}{minimal number of times for a category to be represented to 
+be declared as "rare" and converted to "other"}
 }
 \value{
 column with rare occurrences replaced by other

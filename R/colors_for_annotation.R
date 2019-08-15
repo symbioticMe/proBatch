@@ -129,15 +129,21 @@ check_rare_levels <- function(column) {
 #'
 #' Replaces levels with a maximal occurrence of 1 with \code{other}
 #'
+#' @param column column of the data whose rare categories need to be merged to 
+#' "other"
+#' @param rare_thr minimal number of times for a category to be represented to 
+#' be declared as "rare" and converted to "other"
+#'
 #' @keywords internal
 #'
 #' @return column with rare occurrences replaced by other
-merge_rare_levels <- function(column) {
+#' @export
+merge_rare_levels <- function(column, rare_thr = 2) {
   is_factor_col = is.factor(column)
   tb_col = table(column)
   if (is_factor_col)
     column = as.character(column)
-  column[column %in% names(tb_col)[tb_col == 1]] = 'other'
+  column[column %in% names(tb_col)[tb_col < rare_thr]] = 'other'
   if (is_factor_col)
     column = as.factor(column)
   return(column)
