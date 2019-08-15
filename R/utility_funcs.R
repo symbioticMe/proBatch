@@ -12,8 +12,14 @@ merge_df_with_annotation <- function(df_long, sample_annotation, sample_id_col,
                        if this is not intended behavior, remove these columns 
                       from df_long and repeat the function execution.',
                       annotation_string))
-      df_long = df_long %>%
-        select(-one_of(annotation_cols))
+      if(all(names(sample_annotation) %in% names(df_long))){
+        df_long = df_long %>%
+          select(-one_of(setdiff(names(sample_annotation), sample_id_col)))
+      } else {
+        df_long = df_long %>%
+          select(-one_of(annotation_cols))
+      }
+      
     } else {
       common_cols = setdiff(intersect(names(sample_annotation), names(df_long)), 
                             sample_id_col)
