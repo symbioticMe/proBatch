@@ -5,8 +5,6 @@
 #' @param df_feature_batch data frame containing response variable e.g. 
 #' samples in order and explanatory variable e.g. measurement for a 
 #' specific feature (peptide) in a specific batch
-#' @param batch_size the total number of samples in the batch to 
-#' compute for percentage threshold 
 #' @param feature_id the name of the feature, required for warnings
 #' @param batch_id  the name of the batch, required for warnings
 #' @param fit_func function to use for the fit, e.g. \code{loess_regression}

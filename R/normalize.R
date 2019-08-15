@@ -19,7 +19,6 @@
 #' @param log_base whether to log transform data matrix 
 #' before normalization (e.g. `NULL`, `2` or `10`)
 #' @param offset small positive number to prevent 0 conversion to \code{-Inf}
-#' @param keep_all whether all columns from \code{df_long} should be kept
 #' 
 #' @return the data in the same format as input (\code{data_matrix} or 
 #' \code{df_long}).

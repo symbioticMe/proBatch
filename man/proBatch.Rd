@@ -75,6 +75,9 @@ plotted in this diagnostic plot (assumed to be present in
 
 \item{protein_col}{column where protein names are specified}
 
+\item{no_fit_imputed}{(logical) whether to use imputed (requant) values, as flagged in 
+\code{qual_col} by \code{qual_value} for data transformation}
+
 \item{qual_col}{column to color point by certain value denoted 
 by \code{color_by_qual_value}. Design with inferred/requant values in 
 OpenSWATH output data, 
@@ -86,6 +89,8 @@ value for imputed values (requant values).}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
+
+\item{keep_all}{when transforming the data (normalize, correct) - should all/default/minimal set of columns be kept?}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 

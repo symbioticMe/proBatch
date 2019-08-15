@@ -14,7 +14,9 @@
 \usage{
 center_feature_batch_medians_df(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
-  feature_id_col = "peptide_group_label", measure_col = "Intensity")
+  feature_id_col = "peptide_group_label", measure_col = "Intensity",
+  keep_all = "default", no_fit_imputed = TRUE, qual_col = "m_score",
+  qual_value = 2)
 
 center_feature_batch_medians_dm(data_matrix, sample_annotation,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
@@ -23,7 +25,7 @@ center_feature_batch_medians_dm(data_matrix, sample_annotation,
 adjust_batch_trend_df(df_long, sample_annotation = NULL,
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", keep_all = FALSE,
+  order_col = "order", keep_all = "default",
   fit_func = "loess_regression", no_fit_imputed = TRUE,
   qual_col = "m_score", qual_value = 2, min_measurements = 8, ...)
 
@@ -36,7 +38,8 @@ adjust_batch_trend_dm(data_matrix, sample_annotation,
 correct_with_ComBat_df(df_long, sample_annotation = NULL,
   feature_id_col = "peptide_group_label", measure_col = "Intensity",
   sample_id_col = "FullRunName", batch_col = "MS_batch",
-  par.prior = TRUE)
+  par.prior = TRUE, no_fit_imputed = TRUE, qual_col = "m_score",
+  qual_value = 2, keep_all = "default")
 
 correct_with_ComBat_dm(data_matrix, sample_annotation = NULL,
   feature_id_col = "peptide_group_label", measure_col = "Intensity",
@@ -48,7 +51,7 @@ correct_batch_effects_df(df_long, sample_annotation,
   "ComBat"), batch_col = "MS_batch",
   feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  order_col = "order", keep_all = FALSE, no_fit_imputed = TRUE,
+  order_col = "order", keep_all = "default", no_fit_imputed = TRUE,
   qual_col = "m_score", qual_value = 2, min_measurements = 8, ...)
 
 correct_batch_effects_dm(data_matrix, sample_annotation,
@@ -85,6 +88,20 @@ names.}
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
+\item{keep_all}{when transforming the data (normalize, correct) - should all/default/minimal set of columns be kept?}
+
+\item{no_fit_imputed}{(logical) whether to use imputed (requant) values, as flagged in 
+\code{qual_col} by \code{qual_value} for data transformation}
+
+\item{qual_col}{column to color point by certain value denoted 
+by \code{color_by_qual_value}. Design with inferred/requant values in 
+OpenSWATH output data, 
+which means argument value has to be set to \code{m_score}.}
+
+\item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
+this argument value has to be set to \code{2} (this is an \code{m_score} 
+value for imputed values (requant values).}
+
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
 feature IDs in rownames and file/sample names as colnames. 
 See "example_proteome_matrix" for more details (to call the description, 
@@ -99,20 +116,7 @@ order. It is used for in initial assessment plots
    order definition/inference, see \link{define_sample_order} and 
    \link{date_to_sample_order}}
 
-\item{keep_all}{whether all columns from \code{df_long} should be kept}
-
 \item{fit_func}{function to fit the (non)-linear trend}
-
-\item{no_fit_imputed}{(logical) whether to fit the imputed (requant) values}
-
-\item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in 
-OpenSWATH output data, 
-which means argument value has to be set to \code{m_score}.}
-
-\item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
-this argument value has to be set to \code{2} (this is an \code{m_score} 
-value for imputed values (requant values).}
 
 \item{min_measurements}{the number of samples in a batch required for curve fitting.}
 

@@ -51,9 +51,6 @@ value for imputed values (requant values).}
 \item{min_measurements}{the absolute threshold to filter}
 
 \item{...}{additional parameters to be passed to the fitting function}
-
-\item{batch_size}{the total number of samples in the batch to 
-compute for percentage threshold}
 }
 \value{
 vector of fitted response values

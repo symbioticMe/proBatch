@@ -30,11 +30,9 @@
 #' 
 #' 
 #' @inheritParams proBatch
-#' @param keep_all whether all columns from \code{df_long} should be kept
 #' @param return_fit_df (logical) whether to return the \code{fit_df} from 
 #' \code{adjust_batch_trend_dm} or only the data matrix
 #' @param fit_func function to fit the (non)-linear trend
-#' @param no_fit_imputed (logical) whether to fit the imputed (requant) values
 #' @param min_measurements the number of samples in a batch required for curve fitting.
 #' @param par.prior use parametrical or non-parametrical prior 
 #' @param continuous_func function to use for the fit (currently 
