@@ -103,24 +103,73 @@ center_feature_batch_medians_df <- function(df_long, sample_annotation = NULL,
                                          sample_id_col = 'FullRunName',
                                          batch_col = 'MS_batch',
                                          feature_id_col = 'peptide_group_label',
-                                         measure_col = 'Intensity'){
+                                         measure_col = 'Intensity',
+                                         keep_all = 'default',
+                                         no_fit_imputed = TRUE,
+                                         qual_col = 'm_score', 
+                                         qual_value = 2){
   
+  original_cols = names(df_long)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, 
                                      order_col = NULL, 
                                      facet_col = NULL, merge = TRUE)
   
   old_measure_col = paste('preBatchCorr', measure_col, sep = '_')
+  
   corrected_df = df_long %>%
-    group_by_at(vars(one_of(batch_col, feature_id_col))) %>%
-    mutate(median_batch = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
+    group_by_at(vars(one_of(batch_col, feature_id_col))) 
+  if (no_fit_imputed){
+    if(!is.null(qual_col) & !(qual_col %in% names(corrected_df))){
+      stop("imputed value flag column (qual_col) is not in the data frame!")
+    }
+    temp_measure_col = paste('temp', measure_col, sep = '_')
+    corrected_df = corrected_df %>%
+      mutate(!!(sym(temp_measure_col)) := ifelse(!!sym(qual_col)== qual_value,
+                                                 NA, !!(sym(measure_col)))) %>%
+      mutate(median_batch = median(!!(sym(temp_measure_col)), na.rm = TRUE)) %>%
+      ungroup() %>%
+      group_by_at(vars(one_of(feature_id_col))) %>%
+      mutate(median_global = median(!!(sym(temp_measure_col)), na.rm = TRUE))
+  } else {
+    if(!is.null(qual_col)){
+      warning('imputed values are specified not to be used for median inference, 
+however, 
+              no_fit_imputed is FALSE')
+    }
+    corrected_df = corrected_df %>%
+      mutate(median_batch = median(!!(sym(temp_measure_col)), na.rm = TRUE)) %>%
+      ungroup() %>%
+      group_by_at(vars(one_of(feature_id_col))) %>%
+      mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE))
+  }
+  corrected_df = corrected_df %>%
     ungroup() %>%
-    group_by_at(vars(one_of(feature_id_col))) %>%
-    mutate(median_global = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
-    ungroup() %>%
-    mutate(diff = median_global - median_batch) %>%
-    rename(!!(old_measure_col) := !!(sym(measure_col))) %>%
-    mutate(!!(sym(measure_col)) := !!(sym(old_measure_col))+diff)
+    mutate(diff_medians = median_global - median_batch) %>%
+    rename(!!(sym(old_measure_col)) := !!(sym(measure_col))) %>%
+    mutate(!!(sym(measure_col)) := !!(sym(old_measure_col)) + diff_medians)
+  
+  if(!is.null(qual_col) & qual_col %in% names(corrected_df)){
+    corrected_df = switch (keep_all,
+                           all = corrected_df,
+                           default = corrected_df %>%
+                             dplyr::select(c(original_cols, old_measure_col, 
+                                             qual_col, qual_value)),
+                           minimal = corrected_df %>%
+                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col, qual_col, qual_value))
+    )
+  } else {
+    corrected_df = switch (keep_all,
+                           all = corrected_df,
+                           default = corrected_df %>%
+                             dplyr::select(c(original_cols, old_measure_col)),
+                           minimal = corrected_df %>%
+                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col))
+    )
+  }
+  
   
   return(corrected_df)
 }
@@ -159,18 +208,24 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
                                sample_id_col = 'FullRunName',
                                measure_col = 'Intensity',
                                order_col = 'order',
-                               keep_all = FALSE,
+                               keep_all = 'default',
                                fit_func = 'loess_regression', 
                                no_fit_imputed = TRUE,
                                qual_col = 'm_score', 
                                qual_value = 2,
                                min_measurements = 8, ...){
   
+  original_cols = names(df_long)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, order_col = NULL, 
                                      facet_col = NULL, merge = TRUE)
   
-  original_cols = names(df_long)
+  if(!is.null(qual_col) & no_fit_imputed){
+    if(!(qual_col %in% names(df_long))){
+      stop("imputed value flag column is not in the data frame!")
+    }
+  
+  }
   
   if (!is.null(batch_col)){
     if (!(batch_col %in% union(names(df_long),names(sample_annotation)))){
@@ -206,30 +261,36 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
     group_by(!!!syms(c(feature_id_col, batch_col))) %>%
     mutate(mean_fit = mean(fit, na.rm = TRUE)) %>%
     ungroup() %>%
-    mutate(diff = mean_fit - fit) %>%
-    mutate(diff.na = ifelse(is.na(diff), 0, diff)) %>%
+    mutate(diff_fit = mean_fit - fit) %>%
+    mutate(diff.na = ifelse(is.na(diff_fit), 0, diff_fit)) %>%
     rename(!!(old_measure_col) := !!(sym(measure_col))) %>%
     #TODO: make the conditional shift: if we keep the requants, 
     #then we can fit the curve without, but shift them nevertheless
     mutate(!!(sym(measure_col)) := !!sym('diff.na') + !!sym(old_measure_col))
   
-  fit_df = corrected_df %>% dplyr::select(one_of(c('fit', 'diff', 'diff.na', 
-                                                   feature_id_col,
-                                                   sample_id_col, old_measure_col, 
-                                                   batch_col)))
-  
-  if(keep_all){
-    corrected_df = corrected_df %>%
-      dplyr::select(c(original_cols, old_measure_col))
-    
+  if(!is.null(qual_col) & qual_col %in% names(corrected_df)){
+    corrected_df = switch (keep_all,
+                           all = corrected_df,
+                           default = corrected_df %>%
+                             dplyr::select(c(original_cols, old_measure_col, 
+                                             'fit', qual_col, qual_value)),
+                           minimal = corrected_df %>%
+                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col,'fit', qual_col, qual_value))
+    )
   } else {
-    corrected_df = corrected_df %>%
+  
+  corrected_df = switch (keep_all,
+    all = corrected_df ,
+    default = corrected_df %>%
+      dplyr::select(c(original_cols, old_measure_col, 'fit')),
+    minimal = corrected_df %>%
       dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                      old_measure_col))
+                      old_measure_col,'fit'))
+  )
   }
   
-  return(list(corrected_df = corrected_df,
-              fit_df = fit_df))
+  return(corrected_df)
   }
 
 #' 
@@ -280,11 +341,14 @@ correct_with_ComBat_df <- function(df_long, sample_annotation = NULL,
                                    measure_col = 'Intensity',
                                    sample_id_col = 'FullRunName',
                                    batch_col = 'MS_batch', 
-                                   par.prior = TRUE){
+                                   par.prior = TRUE,
+                                   keep_all = 'default'){
   
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, order_col = NULL, 
                                      facet_col = NULL, merge = FALSE)
+  
+  #TODO: no_impute_values fix
   
   data_matrix = long_to_matrix(df_long, feature_id_col = feature_id_col,
                                measure_col = measure_col, 
@@ -305,6 +369,14 @@ correct_with_ComBat_df <- function(df_long, sample_annotation = NULL,
   
   corrected_df = corrected_df %>%
     merge(df_long, by = c(feature_id_col, sample_id_col))
+  
+  corrected_df = switch (keep_all,
+                         all = corrected_df ,
+                         default = corrected_df %>%
+                           dplyr::select(c(original_cols, old_measure_col)),
+                         minimal = corrected_df %>%
+                           dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                           old_measure_col)))
   
   return(corrected_df)
 }
@@ -360,7 +432,7 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
                                   sample_id_col = 'FullRunName',
                                   measure_col = 'Intensity',  
                                   order_col = 'order', 
-                                  keep_all = FALSE,
+                                  keep_all = 'default',
                                   no_fit_imputed = TRUE,
                                   qual_col = 'm_score', 
                                   qual_value = 2,
@@ -369,6 +441,8 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
   discrete_func <- match.arg(discrete_func)
   
   sample_annotation[[batch_col]] <- as.factor(sample_annotation[[batch_col]])
+  
+  original_cols = names(df_long)
   
   if(!is.null(continuous_func)){
     fit_list = adjust_batch_trend_df(df_long = df_long, 
@@ -394,7 +468,10 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
                                                sample_id_col = sample_id_col,
                                                batch_col = batch_col,
                                                feature_id_col = feature_id_col,
-                                               measure_col = measure_col)
+                                               measure_col = measure_col,
+                                               no_fit_imputed = no_fit_imputed,
+                                               qual_col = qual_col, 
+                                               qual_value = qual_value)
   }
   
   if(discrete_func == 'ComBat'){
@@ -406,6 +483,27 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
                                           sample_id_col = sample_id_col,
                                           batch_col = batch_col, 
                                           par.prior = TRUE)
+    #TODO: fix for "no_fit_imputed" cases
+  }
+  
+  old_measure_col = paste('preBatchCorr', measure_col, sep = '_')
+  if(!is.null(continuous_func)){
+    preFit_measure_col = paste('preTrendFit', measure_col, sep = '_')
+    corrected_df = switch (keep_all,
+                           all = corrected_df ,
+                           default = corrected_df %>%
+                             dplyr::select(c(original_cols, old_measure_col, preFit_measure_col, 'fit')),
+                           minimal = corrected_df %>%
+                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col))
+    )} else {
+      corrected_df = switch (keep_all,
+                             all = corrected_df ,
+                             default = corrected_df %>%
+                               dplyr::select(c(original_cols, old_measure_col)),
+                             minimal = corrected_df %>%
+                               dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                               old_measure_col)))
   }
   
   return(corrected_df)
@@ -437,7 +535,11 @@ correct_batch_effects_dm <- function(data_matrix, sample_annotation,
                                           sample_id_col = sample_id_col,
                                           measure_col = measure_col, 
                                           order_col = order_col,
-                                          min_measurements = min_measurements, ...)
+                                          min_measurements = min_measurements, 
+                                          no_fit_imputed = TRUE,
+                                          qual_col = 'm_score', 
+                                          qual_value = 2, 
+                                          keep_all = FALSE,...)
   
   return(corrected_df)
 }

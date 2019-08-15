@@ -95,15 +95,9 @@ however,
       warning(sprintf("Curve fitting didn't have enough points to fit for the 
                        feature %s in the batch %s, leaving the original value", 
                       feature_id, batch_id))
-      fit_res = y_all
+      fit_res = rep(NA, length(y_all))
     }
-  #TODO: make a flag to "pull" the values of imputed values through this fit
-  if(length(fit_res) != length(y_all)){
-    print(batch_id)
-    print(feature_id)
-    stop('dimensions do not match')
-  }
-  fit_res[missing_values] = NA
+  
   return(fit_res)
 }
 
@@ -118,7 +112,7 @@ loess_regression <- function(x_to_fit, y, x_all, y_all,
       message(sprintf("Feature %s in batch %s could not be fit with LOESS:", 
                       feature_id, batch_id))
       message(cond)
-      y_all
+      rep(NA, length(y_all))
     }
   )
   return(out)

@@ -16,9 +16,17 @@
 long_to_matrix <- function(df_long,
                            feature_id_col = 'peptide_group_label',
                            measure_col = 'Intensity',
-                           sample_id_col = 'FullRunName') {
+                           sample_id_col = 'FullRunName',
+                           qual_col = 'm_score',
+                           qual_value = 2) {
   casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
                                       sep =  " ~ "))
+  if(!is.null(qual_col)){
+    message('removing imputed values (requants)')
+    df_long = df_long %>%
+      mutate(!!sym(measure_col) := ifelse(!!sym(qual_col) == qual_value,
+                                          NA, !!sym(measure_col)))
+  }
   proteome_wide = dcast(df_long, formula = casting_formula,
                         value.var = measure_col) %>%
     column_to_rownames(feature_id_col) %>%

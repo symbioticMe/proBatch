@@ -62,13 +62,34 @@ quantile_normalize_df <- function(df_long,
                                   feature_id_col = 'peptide_group_label',
                                   sample_id_col = 'FullRunName', 
                                   measure_col = 'Intensity',
-                                  keep_all = FALSE){
+                                  no_fit_imputed = TRUE,
+                                  qual_col = 'm_score',
+                                  qual_value = 2,
+                                  keep_all = 'default'){
   
+  if(no_fit_imputed){
+    if(!(qual_col %in% names(df_long))){
+      stop("imputed value flag column (qual_col) is not in the data frame!")
+    }
+    message('removing imputed values (requants) from the matrix')
+    data_matrix = long_to_matrix(df_long, 
+                                 feature_id_col = feature_id_col, 
+                                 measure_col = measure_col,
+                                 sample_id_col = sample_id_col, 
+                                 qual_col = qual_col, 
+                                 qual_value = qual_value)
+  } else {
+    if(!is.null(qual_col) && (qual_col %in% names(df_long))){
+      warning('imputed value (requant) column is in the data, are you sure you
+                want to use imputed (requant) values in quantile inference?')
+    }
+    data_matrix = long_to_matrix(df_long, 
+                                 feature_id_col = feature_id_col, 
+                                 measure_col = measure_col,
+                                 sample_id_col = sample_id_col, 
+                                 qual_col = NULL)
+  }
   
-  data_matrix = long_to_matrix(df_long, 
-                               feature_id_col = feature_id_col, 
-                               measure_col = measure_col,
-                               sample_id_col = sample_id_col)
   q_norm_proteome = normalize.quantiles(data_matrix)
   colnames(q_norm_proteome) = colnames(data_matrix)
   rownames(q_norm_proteome) = rownames(data_matrix)
@@ -82,9 +103,26 @@ quantile_normalize_df <- function(df_long,
   df_long = df_long %>% 
     rename(!!(old_measure_col) := !!(sym(measure_col))) 
   
-  if (keep_all){
-    normalized_df = normalized_df %>%
-      merge(df_long, by = c(feature_id_col, sample_id_col))
+  normalized_df = normalized_df %>%
+    merge(df_long %>% select(-one_of(setdiff(names(normalized_df), 
+                                             c(feature_id_col, sample_id_col)))), 
+          by = c(feature_id_col, sample_id_col))
+  
+  if(!is.null(qual_col) & qual_col %in% names(normalized_df)){
+    normalized_df = switch (keep_all,
+                           all = normalized_df,
+                           default = normalized_df,
+                           minimal = normalized_df %>%
+                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col, qual_col, qual_value))
+    )
+  } else {
+    normalized_df = switch (keep_all,
+                            all = normalized_df,
+                            default = normalized_df, 
+                            minimal = normalized_df %>%
+                              dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                              old_measure_col)))
   }
   
   return(normalized_df)
@@ -114,7 +152,25 @@ normalize_sample_medians_df <- function(df_long,
                                         feature_id_col = 'peptide_group_label',
                                         sample_id_col = 'FullRunName',
                                         measure_col = 'Intensity',
-                                        keep_all = FALSE){
+                                        no_fit_imputed = FALSE,
+                                        qual_col = 'm_score',
+                                        qual_value = 2,
+                                        keep_all = 'default'){
+  if(no_fit_imputed){
+    if(!(qual_col %in% names(df_long))){
+      stop("imputed value flag column (qual_col) is not in the data frame!")
+    }
+    message('removing imputed values (requants) from the matrix')
+    df_long = df_long %>%
+      mutate(!!sym(measure_col) := ifelse(!!sym(qual_col) == qual_value, 
+                                          NA, measure_col))
+  } else {
+    if(!is.null(qual_col) && (qual_col %in% names(df_long))){
+      warning('imputed value (requant) column is in the data, are you sure you
+              want to use imputed (requant) values in sample median inference?')
+    }
+  }
+  
   normalized_df = df_long  %>%
     group_by_at(vars(one_of(sample_id_col))) %>%
     mutate(median_run = median(!!(sym(measure_col)), na.rm = TRUE)) %>%
@@ -129,9 +185,21 @@ normalize_sample_medians_df <- function(df_long,
     mutate(diff_norm = median_global - median_run) %>%
     mutate(!!(sym(measure_col)) := !!(sym(measure_col))+diff_norm)
   
-  if (!keep_all){
-    normalized_df = normalized_df %>%
-      select(!!!syms(c(feature_id_col, sample_id_col, measure_col)))
+  if(!is.null(qual_col) & qual_col %in% names(normalized_df)){
+    normalized_df = switch (keep_all,
+                            all = normalized_df,
+                            default = normalized_df,
+                            minimal = normalized_df %>%
+                              dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                              old_measure_col, qual_col, qual_value))
+    )
+  } else {
+    normalized_df = switch (keep_all,
+                            all = normalized_df,
+                            default = normalized_df, 
+                            minimal = normalized_df %>%
+                              dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                              old_measure_col)))
   }
   
   return(normalized_df)
@@ -172,6 +240,9 @@ normalize_data_df <- function(df_long,
                               feature_id_col = 'peptide_group_label',
                               sample_id_col = 'FullRunName',
                               measure_col = 'Intensity',
+                              no_fit_imputed = TRUE,
+                              qual_col = 'm_score',
+                              qual_value = 2,
                               keep_all = FALSE){
   
   normalize_func <- match.arg(normalize_func)
@@ -186,19 +257,20 @@ normalize_data_df <- function(df_long,
                                           feature_id_col = feature_id_col, 
                                           measure_col = measure_col,
                                           sample_id_col = sample_id_col,
-                                          keep_all = keep_all)
+                                          keep_all = keep_all, 
+                                          no_fit_imputed = no_fit_imputed,
+                                          qual_col = qual_col,
+                                          qual_value = qual_value)
   } else if(normalize_func == "medianCentering"){
     normalized_df = normalize_sample_medians_df(df_long, 
                                                 sample_id_col = sample_id_col, 
                                                 measure_col = measure_col,
-                                                keep_all = keep_all)
+                                                keep_all = keep_all, 
+                                                no_fit_imputed = no_fit_imputed,
+                                                qual_col = qual_col,
+                                                qual_value = qual_value)
   } else {
     stop("Only quantile and median centering normalization methods implemented")
-  }
-  
-  if (!keep_all){
-    normalized_df = normalized_df %>%
-      select(!!!syms(c(feature_id_col, measure_col, sample_id_col)))
   }
   
   return(normalized_df)
