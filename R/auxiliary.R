@@ -17,7 +17,7 @@ long_to_matrix <- function(df_long,
                            feature_id_col = 'peptide_group_label',
                            measure_col = 'Intensity',
                            sample_id_col = 'FullRunName',
-                           qual_col = 'm_score',
+                           qual_col = NULL,
                            qual_value = 2) {
   casting_formula =  as.formula(paste(feature_id_col, sample_id_col,
                                       sep =  " ~ "))

@@ -6,7 +6,7 @@
 \usage{
 long_to_matrix(df_long, feature_id_col = "peptide_group_label",
   measure_col = "Intensity", sample_id_col = "FullRunName",
-  qual_col = "m_score", qual_value = 2)
+  qual_col = NULL, qual_value = 2)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
