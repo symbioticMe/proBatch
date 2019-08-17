@@ -525,6 +525,27 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                       units = c('cm','in','mm'),
                       plot_title = NULL,
                       theme = 'classic'){
+  pvca_res = prepare_PVCA_df(data_matrix = data_matrix, 
+                             sample_annotation = sample_annotation,
+                             feature_id_col = feature_id_col,
+                             sample_id_col = sample_id_col,
+                             technical_factors = technical_factors,
+                             biological_factors = biological_factors,
+                             fill_the_missing = fill_the_missing,
+                             pca_threshold = pca_threshold, 
+                             variance_threshold = variance_threshold)
+  
+  gg = plot_PVCA.df(pvca_res = pvca_res)
+  return(gg)
+}
+
+prepare_PVCA_df <- function(data_matrix, sample_annotation,
+                            feature_id_col = 'peptide_group_label',
+                            sample_id_col = 'FullRunName',
+                            technical_factors = c('MS_batch', 'instrument'),
+                            biological_factors = c('cell_line','drug_dose'),
+                            fill_the_missing = -1,
+                            pca_threshold = .6, variance_threshold = .01){
   
   factors_for_PVCA = c(technical_factors, biological_factors)
   
@@ -559,10 +580,17 @@ plot_PVCA <- function(data_matrix, sample_annotation,
     arrange(desc(weights)) %>%
     arrange(label == label_of_small) %>%
     arrange(label == 'resid')
+  return(pvca_res)
+}
+
+plot_PVCA.df <- function(pvca_res,
+                      colors_for_bars = NULL,
+                      filename = NULL, width = NA, height = NA, 
+                      units = c('cm','in','mm'),
+                      plot_title = NULL,
+                      theme = 'classic'){
   pvca_res = pvca_res %>%
     mutate(label = factor(label, levels=label))
-  
-  pvca_res$label = factor(pvca_res$label, levels = pvca_res$label)
   
   y_title = 'Weighted average proportion variance'
   gg  = ggplot(pvca_res, aes(x = label, y = weights, fill = category))+
@@ -605,7 +633,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
     theme(text = element_text(size=15))+
     guides(fill=guide_legend(override.aes=list(color=NA), title=NULL))
   
-  return(list(plot =gg, df = pvca_res))
+  return(gg)
 }
 
 #' plot PCA plot
