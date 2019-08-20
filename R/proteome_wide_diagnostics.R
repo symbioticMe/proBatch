@@ -479,8 +479,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation,
 #' 
 #' @inheritParams proBatch
 #' @param technical_factors vector \code{sample_annotation} column names that 
-#' are
-#'   technical covariates
+#' are technical covariates
 #' @param biological_factors vector \code{sample_annotation} column names, that
 #'   are biologically meaningful covariates
 #' @param colors_for_bars four-item color vector, specifying colors for the
@@ -495,7 +494,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation,
 #' excluded.
 #' If \code{NULL}, features with missing values are excluded.
 #'
-#' @return list of two items: plot =gg, df = pvca_res
+#' @return \code{ggplot} object with the plot
 #' @export
 #'
 #' @examples 
@@ -539,6 +538,31 @@ plot_PVCA <- function(data_matrix, sample_annotation,
   return(gg)
 }
 
+#' prepare the weights of Principal Variance Components 
+#'
+#' @inheritParams proBatch
+#' @param technical_factors vector \code{sample_annotation} column names that 
+#' are technical covariates
+#' @param biological_factors vector \code{sample_annotation} column names, that
+#'   are biologically meaningful covariates
+#' @param pca_threshold the percentile value of the minimum amount of the
+#'   variabilities that the selected principal components need to explain
+#' @param variance_threshold the percentile value of weight each of the 
+#'  covariates needs to explain (the rest will be lumped together)
+#' @param fill_the_missing numeric value determining how  missing values 
+#' should be substituted. If \code{NULL}, features with missing values are 
+#' excluded.
+#' If \code{NULL}, features with missing values are excluded.
+#'
+#' @return data frame with weights and factors, combined in a way ready for plotting
+#' @export
+#'
+#' @examples
+#' matrix_test <- example_proteome_matrix[1:150, ]
+#' pvca_df_res <- prepare_PVCA_df(matrix_test, example_sample_annotation, 
+#' technical_factors = c('MS_batch', 'digestion_batch'),
+#' biological_factors = c("Diet", "Sex", "Strain"), 
+#' pca_threshold = .6, variance_threshold = .01, fill_the_missing = -1)
 prepare_PVCA_df <- function(data_matrix, sample_annotation,
                             feature_id_col = 'peptide_group_label',
                             sample_id_col = 'FullRunName',
@@ -583,6 +607,26 @@ prepare_PVCA_df <- function(data_matrix, sample_annotation,
   return(pvca_res)
 }
 
+#' plot PVCA, when the analysis is completed
+#'
+#' @inheritParams proBatch
+#' @param colors_for_bars four-item color vector, specifying colors for the
+#'   following categories: c('residual', 'biological', 'biol:techn',
+#'   'technical')
+#'   
+#' @return \code{ggplot} object with bars as weights, colored by bio/tech factors
+#' @export
+#'
+#' @examples
+#' #' matrix_test <- example_proteome_matrix[1:150, ]
+#' pvca_df_res <- prepare_PVCA_df(matrix_test, example_sample_annotation, 
+#' technical_factors = c('MS_batch', 'digestion_batch'),
+#' biological_factors = c("Diet", "Sex", "Strain"), 
+#' pca_threshold = .6, variance_threshold = .01, fill_the_missing = -1)
+#' colors_for_bars = c('grey', 'green','blue','red')
+#' names(colors_for_bars) = c('residual', 'biological','biol:techn','technical')
+#' 
+#' pvca_plot <- plot_PVCA.df(pvca_df_res, colors_for_bars)
 plot_PVCA.df <- function(pvca_res,
                       colors_for_bars = NULL,
                       filename = NULL, width = NA, height = NA, 
