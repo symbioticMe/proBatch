@@ -3,11 +3,6 @@
 #' Calculate CV distribution for each feature
 #'
 #' @inheritParams proBatch
-#' @param sample_annotation 
-#' @param feature_id_col 
-#' @param sample_id_col 
-#' @param measure_col 
-#' @param batch_col 
 #'
 #' @return data frame with Total CV for each feature & (optionally) per-batch CV
 #' @export
@@ -61,4 +56,59 @@ calculate_feature_CV <- function(df_long, sample_annotation = NULL,
       distinct()
   }
   return(CV_df)
+}
+
+plot_CV_distr.df <- function(CV_df, 
+                          plot_title = NULL, 
+                          filename = NULL, theme = 'classic'){
+  if ('Step' %in% names(CV_df)){
+    gg = ggplot(CV_df,  aes(x = Step, y = CV_total)) +
+      geom_boxplot()
+  } else {
+    gg = ggplot(CV_df,  aes(y = CV_total)) +
+      geom_boxplot()
+  }
+  if (!is.null(plot_title)){
+    gg = gg + ggtitle(plot_title)
+  }
+  if(theme == 'classic'){
+    gg = gg + theme_classic()
+  }
+  if(!is.null(filename)){
+    ggsave(gg, filename = filename)
+  }
+  return(gg)
+}
+
+#' Plot CV distribution to compare various steps of the analysis
+#'
+#' @inheritParams proBatch
+#' @param df_long as in \code{df_long} for the rest of the package, but, when it 
+#' has entries for intensity, represented in \code{measure_col} for several steps, 
+#' e.g. raw, normalized, batch corrected data, as seen in column \code{Step}, then
+#' multi-step CV comparison can be carried out.
+#' @return \code{ggplot} object with the boxplot of CVs on one or several steps
+#' @export
+#'
+#' @examples
+#' CV_plot = plot_CV_distr(example_proteome, 
+#' sample_annotation = sample_annotation_AgingMice, 
+#' measure_col = 'Intensity', batch_col = 'MS_batch', 
+#' plot_title = NULL, filename = NULL, theme = 'classic')
+plot_CV_distr <- function(df_long, sample_annotation = NULL,
+                          feature_id_col = 'peptide_group_label',
+                          sample_id_col = 'FullRunName',
+                          measure_col = 'Intensity', 
+                          batch_col = NULL, 
+                          plot_title = NULL, 
+                          filename = NULL, theme = 'classic'){
+  CV_df = calculate_feature_CV(df_long = df_long, 
+                               sample_annotation = sample_annotation, 
+                               feature_id_col = feature_id_col, 
+                               sample_id_col = sample_id_col,
+                               measure_col = measure_col, 
+                               batch_col = batch_col)
+  gg = plot_CV_distr.df(CV_df, plot_title = plot_title, filename = filename, 
+                        theme = theme)
+  return(gg)
 }
