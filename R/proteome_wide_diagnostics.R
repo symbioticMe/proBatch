@@ -339,6 +339,10 @@ plot_heatmap_generic <- function(data_matrix,
   warning_message <- 'Heatmap cannot operate with missing values in the matrix'
   data_matrix = handle_missing_values(data_matrix, warning_message, 
                                       fill_the_missing)
+  if (is.null(fill_the_missing) & (!cluster_rows | !cluster_cols)){
+    message('With NAs removed, clustering of heatmap will work, 
+              specify: cluster_rows = T, cluster_cols = T')
+  }
   
   if(!is.null(fill_the_missing)){
     heatmap_color = c(color_for_missing, heatmap_color)
@@ -374,7 +378,8 @@ plot_heatmap_generic <- function(data_matrix,
   }
   
   if(is.null(column_annotation_df) && is.null(row_annotation_df)){
-    warning("annotation_row and annotation_col are not specified for heatmap.")
+    warning("annotation_row and annotation_col are not specified for heatmap 
+            (annotation of rows/cols such as sample annotation will not be plotted)")
   }
   
   if(is.null(plot_title)){
@@ -638,7 +643,7 @@ plot_PVCA.df <- function(pvca_res,
   
   y_title = 'Weighted average proportion variance'
   gg  = ggplot(pvca_res, aes(x = label, y = weights, fill = category))+
-    geom_bar(stat = 'identity', color = 'black', size = 1.5)+
+    geom_bar(stat = 'identity', color = 'black')+
     ylab(y_title)
   
   
