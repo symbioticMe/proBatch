@@ -215,7 +215,7 @@ plot_single_feature  <- function(feature_name, df_long,
   gg = color_by_factor(color_by_batch = color_by_batch, 
                        batch_col = batch_col, gg = gg, 
                        color_scheme = color_scheme, 
-                       sample_annotation = sample_annotation,
+                       sample_annotation = df_long,
                        fill_or_color = 'color')
   if(!is.null(qual_col) && !is.null(color_by_batch) && color_by_batch){
     warning('coloring both inferred values and batches may lead to confusing 
@@ -241,15 +241,9 @@ plot_single_feature  <- function(feature_name, df_long,
   
   #add vertical lines, if required (for order-related effects)
   if (!is.null(batch_col) && is_factor){
-    if (!is.null(sample_annotation)){
-      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, 
-                                      vline_color, 
-                                      facet_col, sample_annotation, gg)
-    } else {
-      gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, 
-                                      vline_color, 
-                                      facet_col, df_long, gg)
-    }
+    gg = add_vertical_batch_borders(order_col, sample_id_col, batch_col, 
+                                    vline_color, 
+                                    facet_col, plot_df, gg)
   }
   
   #Add plot title
