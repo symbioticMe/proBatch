@@ -23,15 +23,18 @@ merge_df_with_annotation <- function(df_long, sample_annotation, sample_id_col,
     } else {
       common_cols = setdiff(intersect(names(sample_annotation), names(df_long)), 
                             sample_id_col)
-      common_col_string = paste(common_cols, collapse = ' ')
-      warning(sprintf('The following columns are represented in both df_long 
-                      and sample_annotation: %s, these columns in df_long 
-                      will be overriden from sample_annotation. 
-                      If this is not intended behavior, 
-                      remove these columns from df_long and 
-                      repeat the function execution.', common_col_string))
-      df_long = df_long %>%
-        select(-one_of(common_cols))
+      if(length(common_cols) > 1){
+        common_col_string = paste(common_cols, collapse = ' ')
+        warning(sprintf('The following columns are represented in both df_long 
+                        and sample_annotation: %s, these columns in df_long 
+                        will be overriden from sample_annotation. 
+                        If this is not intended behavior, 
+                        remove these columns from df_long and 
+                        repeat the function execution.', common_col_string))
+        df_long = df_long %>%
+          select(-one_of(common_cols))
+      }
+      
     }
   }
   
