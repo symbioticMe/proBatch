@@ -101,7 +101,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   gg = color_by_factor(color_by_batch = color_by_batch, 
                        batch_col = batch_col, gg = gg, 
                        color_scheme = color_scheme, 
-                       sample_annotation = sample_annotation,
+                       sample_annotation = df_ave,
                        fill_or_color = 'color')
   
   #add vertical lines, if required (for order-related effects)
@@ -257,7 +257,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   gg = color_by_factor(color_by_batch = color_by_batch, 
                        batch_col = batch_col, gg = gg, 
                        color_scheme = color_scheme, 
-                       sample_annotation = sample_annotation,
+                       sample_annotation = df_long,
                        fill_or_color = 'fill')
 
   #Plot each "facet factor" in it's own subplot
