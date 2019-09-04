@@ -38,14 +38,16 @@ calculate_feature_CV <- function(df_long, sample_annotation = NULL,
   if (!is.null(batch_col)){
     df_long = df_long %>%
       group_by(!!!syms(c(feature_id_col, batch_col))) %>%
-      mutate(CV_perBatch = sd(!!sym(measure_col), na.rm = T)/mean(!!sym(measure_col), na.rm = T)) %>%
+      mutate(CV_perBatch = sd(!!sym(measure_col), na.rm = TRUE)/
+               mean(!!sym(measure_col), na.rm = TRUE)) %>%
       ungroup()
   } else {
     warning('batch_col not found, calculating the total CV only')
   }
   CV_df = df_long %>%
     group_by(!!sym(feature_id_col)) %>%
-    mutate(CV_total = sd(!!sym(measure_col), na.rm = T)/mean(!!sym(measure_col), na.rm = T))
+    mutate(CV_total = sd(!!sym(measure_col), na.rm = TRUE)/
+             mean(!!sym(measure_col), na.rm = TRUE))
   if(!is.null(batch_col)){
     CV_df = CV_df%>%
       select(c(!!sym(feature_id_col), CV_total, CV_perBatch)) %>%
