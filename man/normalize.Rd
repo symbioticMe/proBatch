@@ -70,7 +70,8 @@ which means argument value has to be set to \code{m_score}.}
 this argument value has to be set to \code{2} (this is an \code{m_score} 
 value for imputed values (requant values).}
 
-\item{keep_all}{when transforming the data (normalize, correct) - should all/default/minimal set of columns be kept?}
+\item{keep_all}{when transforming the data (normalize, correct) - acceptable 
+values: all/default/minimal (which set of columns be kept).}
 
 \item{normalize_func}{global batch normalization method 
 (`quantile` or `MedianCentering`)}

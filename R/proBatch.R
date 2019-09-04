@@ -82,7 +82,8 @@
 #' value for imputed values (requant values).
 #' @param plot_title title of the plot (e.g., processing step + representation
 #'   level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))
-#' @param keep_all when transforming the data (normalize, correct) - should all/default/minimal set of columns be kept?
+#' @param keep_all when transforming the data (normalize, correct) - acceptable 
+#' values: all/default/minimal (which set of columns be kept).
 #' @param theme ggplot theme, by default \code{classic}. Can be easily overriden
 #' @param filename path where the results are saved. 
 #' If null the object is returned to the active window;

@@ -88,7 +88,8 @@ names.}
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
-\item{keep_all}{when transforming the data (normalize, correct) - should all/default/minimal set of columns be kept?}
+\item{keep_all}{when transforming the data (normalize, correct) - acceptable 
+values: all/default/minimal (which set of columns be kept).}
 
 \item{no_fit_imputed}{(logical) whether to use imputed (requant) values, as flagged in 
 \code{qual_col} by \code{qual_value} for data transformation}
