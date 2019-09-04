@@ -215,7 +215,7 @@ plot_single_feature  <- function(feature_name, df_long,
   gg = color_by_factor(color_by_batch = color_by_batch, 
                        batch_col = batch_col, gg = gg, 
                        color_scheme = color_scheme, 
-                       sample_annotation = df_long,
+                       sample_annotation = plot_df,
                        fill_or_color = 'color')
   if(!is.null(qual_col) && !is.null(color_by_batch) && color_by_batch){
     warning('coloring both inferred values and batches may lead to confusing 
