@@ -616,6 +616,8 @@ prepare_PVCA_df <- function(data_matrix, sample_annotation,
 #' plot PVCA, when the analysis is completed
 #'
 #' @inheritParams proBatch
+#' @param pvca_res data frame of weights of Principal Variance Components, result
+#' of \code{calculate_PVCA}
 #' @param colors_for_bars four-item color vector, specifying colors for the
 #'   following categories: c('residual', 'biological', 'biol:techn',
 #'   'technical')

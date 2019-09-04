@@ -9,6 +9,9 @@ plot_PVCA.df(pvca_res, colors_for_bars = NULL, filename = NULL,
   plot_title = NULL, theme = "classic")
 }
 \arguments{
+\item{pvca_res}{data frame of weights of Principal Variance Components, result
+of \code{calculate_PVCA}}
+
 \item{colors_for_bars}{four-item color vector, specifying colors for the
 following categories: c('residual', 'biological', 'biol:techn',
 'technical')}
