@@ -39,7 +39,7 @@ level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 plot PVCA, when the analysis is completed
 }
 \examples{
-#' matrix_test <- example_proteome_matrix[1:150, ]
+matrix_test <- example_proteome_matrix[1:150, ]
 pvca_df_res <- prepare_PVCA_df(matrix_test, example_sample_annotation, 
 technical_factors = c('MS_batch', 'digestion_batch'),
 biological_factors = c("Diet", "Sex", "Strain"), 
