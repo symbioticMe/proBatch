@@ -227,13 +227,14 @@ filename = 'test_protein.png', width = 14, height = 9, units = 'in')}
 
 #to illustrate spike-ins:
 spike_in_plot <- plot_spike_in(spike_ins = "BOVINE_A1ag", 
-protein_col = 'Gene', 
+peptide_annotation = example_peptide_annotation, protein_col = 'Gene', 
 df_long = example_proteome, sample_annotation = example_sample_annotation, 
 sample_id_col = 'FullRunName',
 plot_title = "Spike-in BOVINE protein peptides")
 
 #to illustrate iRT peptides:
-irt_plot <- plot_iRT(irt_pattern = "BOVINE_A1ag", 
+irt_plot <- plot_iRT(irt_pattern = "iRT", 
+peptide_annotation = example_peptide_annotation, 
 df_long = example_proteome, sample_annotation = example_sample_annotation, 
 protein_col = 'Gene')
 
@@ -244,12 +245,12 @@ example_sample_annotation, span = 0.7)
 
 fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
 df_long = example_proteome, sample_annotation = example_sample_annotation, 
-fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span")
+fit_df = loess_fit_70, plot_title = "Curve fitting with 70\% span")
 
 #with curves colored by the corresponding batch:
 fitting_curve_plot <- plot_with_fitting_curve(feature_name = "10231_QDVDVWLWQQEGSSK_2", 
 df_long = example_proteome, sample_annotation = example_sample_annotation, 
-fit_df = loess_fit_70$fit_df, plot_title = "Curve fitting with 70\% span", 
+fit_df = loess_fit_70, plot_title = "Curve fitting with 70\% span", 
 color_by_batch = TRUE, batch_col = 'MS_batch')
 
 }
