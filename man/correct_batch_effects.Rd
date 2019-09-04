@@ -15,8 +15,8 @@
 center_feature_batch_medians_df(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   feature_id_col = "peptide_group_label", measure_col = "Intensity",
-  keep_all = "default", no_fit_imputed = TRUE, qual_col = "m_score",
-  qual_value = 2)
+  keep_all = "default", no_fit_imputed = TRUE, qual_col = NULL,
+  qual_value = NULL)
 
 center_feature_batch_medians_dm(data_matrix, sample_annotation,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
@@ -27,7 +27,7 @@ adjust_batch_trend_df(df_long, sample_annotation = NULL,
   sample_id_col = "FullRunName", measure_col = "Intensity",
   order_col = "order", keep_all = "default",
   fit_func = "loess_regression", no_fit_imputed = TRUE,
-  qual_col = "m_score", qual_value = 2, min_measurements = 8, ...)
+  qual_col = NULL, qual_value = NULL, min_measurements = 8, ...)
 
 adjust_batch_trend_dm(data_matrix, sample_annotation,
   batch_col = "MS_batch", feature_id_col = "peptide_group_label",
@@ -38,8 +38,8 @@ adjust_batch_trend_dm(data_matrix, sample_annotation,
 correct_with_ComBat_df(df_long, sample_annotation = NULL,
   feature_id_col = "peptide_group_label", measure_col = "Intensity",
   sample_id_col = "FullRunName", batch_col = "MS_batch",
-  par.prior = TRUE, no_fit_imputed = TRUE, qual_col = "m_score",
-  qual_value = 2, keep_all = "default")
+  par.prior = TRUE, no_fit_imputed = TRUE, qual_col = NULL,
+  qual_value = NULL, keep_all = "default")
 
 correct_with_ComBat_dm(data_matrix, sample_annotation = NULL,
   feature_id_col = "peptide_group_label", measure_col = "Intensity",
@@ -52,7 +52,7 @@ correct_batch_effects_df(df_long, sample_annotation,
   feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
   order_col = "order", keep_all = "default", no_fit_imputed = TRUE,
-  qual_col = "m_score", qual_value = 2, min_measurements = 8, ...)
+  qual_col = NULL, qual_value = NULL, min_measurements = 8, ...)
 
 correct_batch_effects_dm(data_matrix, sample_annotation,
   continuous_func = NULL, discrete_func = c("MedianCentering",

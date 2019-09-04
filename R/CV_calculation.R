@@ -92,7 +92,7 @@ plot_CV_distr.df <- function(CV_df,
 #'
 #' @examples
 #' CV_plot = plot_CV_distr(example_proteome, 
-#' sample_annotation = sample_annotation_AgingMice, 
+#' sample_annotation = example_sample_annotation, 
 #' measure_col = 'Intensity', batch_col = 'MS_batch', 
 #' plot_title = NULL, filename = NULL, theme = 'classic')
 plot_CV_distr <- function(df_long, sample_annotation = NULL,

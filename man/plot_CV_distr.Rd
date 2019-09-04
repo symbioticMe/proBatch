@@ -55,7 +55,7 @@ Plot CV distribution to compare various steps of the analysis
 }
 \examples{
 CV_plot = plot_CV_distr(example_proteome, 
-sample_annotation = sample_annotation_AgingMice, 
+sample_annotation = example_sample_annotation, 
 measure_col = 'Intensity', batch_col = 'MS_batch', 
 plot_title = NULL, filename = NULL, theme = 'classic')
 }
