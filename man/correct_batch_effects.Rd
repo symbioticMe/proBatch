@@ -143,7 +143,8 @@ For \code{df_long} the data frame stores the original values of
 in another column called "preBatchCorr_[measure_col]", and the normalized 
 values in \code{measure_col} column.
 
-The function \code{adjust_batch_trend_df()} returns list of two items: 
+The function \code{adjust_batch_trend_dm()}, if \code{return_fit_df} is 
+\code{TRUE} returns list of two items: 
 \enumerate{
   \item \code{data_matrix}
   \item \code{fit_df}, used to examine the fitting curves
@@ -192,14 +193,12 @@ example_sample_annotation)
 test_peptides = unique(example_proteome$peptide_group_label)[1:3]
 test_peptide_filter = example_proteome$peptide_group_label \%in\% test_peptides
 test_proteome = example_proteome[test_peptide_filter,]
-adjusted_data <- adjust_batch_trend_df(test_proteome, 
+adjusted_df <- adjust_batch_trend_df(test_proteome, 
 example_sample_annotation, span = 0.7, 
 min_measurements = 8)
-fit_df <- adjusted_data$fit_df
-adjusted_df <- adjusted_data$corrected_df
 plot_fit <- plot_with_fitting_curve(unique(adjusted_df$peptide_group_label), 
-df_long = adjusted_df, measure_col = 'preTrendFit_Intensity',fit_df = fit_df, 
-sample_annotation = example_sample_annotation)
+df_long = adjusted_df, measure_col = 'preTrendFit_Intensity',
+fit_df = adjusted_df, sample_annotation = example_sample_annotation)
 
 #Correct the data in one go:
 batch_corrected_matrix <- correct_batch_effects_df(example_proteome, 
