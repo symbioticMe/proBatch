@@ -104,8 +104,8 @@ center_feature_batch_medians_df <- function(df_long, sample_annotation = NULL,
                                          measure_col = 'Intensity',
                                          keep_all = 'default',
                                          no_fit_imputed = TRUE,
-                                         qual_col = 'm_score', 
-                                         qual_value = 2){
+                                         qual_col = NULL, 
+                                         qual_value = NULL){
   
   original_cols = names(df_long)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
@@ -117,6 +117,12 @@ center_feature_batch_medians_df <- function(df_long, sample_annotation = NULL,
   
   corrected_df = df_long %>%
     group_by_at(vars(one_of(batch_col, feature_id_col))) 
+  
+  if(is.null(qual_col) & no_fit_imputed){
+    warning('imputed value flag column is NULL, changing no_fit_imputed to FALSE')
+    no_fit_imputed = FALSE
+  }
+  
   if (no_fit_imputed){
     if(!is.null(qual_col) && !(qual_col %in% names(corrected_df))){
       stop("imputed value flag column (qual_col) is not in the data frame!")
@@ -209,8 +215,8 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
                                keep_all = 'default',
                                fit_func = 'loess_regression', 
                                no_fit_imputed = TRUE,
-                               qual_col = 'm_score', 
-                               qual_value = 2,
+                               qual_col = NULL, 
+                               qual_value = NULL,
                                min_measurements = 8, ...){
   
   original_cols = names(df_long)
@@ -223,6 +229,11 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
       stop("imputed value flag column is not in the data frame!")
     }
   
+  } else{
+    if(is.null(qual_col) & no_fit_imputed){
+      warning('imputed value flag column is NULL, changing no_fit_imputed to FALSE')
+      no_fit_imputed = FALSE
+    }
   }
   
   if (!is.null(batch_col)){
@@ -341,10 +352,11 @@ correct_with_ComBat_df <- function(df_long, sample_annotation = NULL,
                                    batch_col = 'MS_batch', 
                                    par.prior = TRUE,
                                    no_fit_imputed = TRUE,
-                                   qual_col = 'm_score', 
-                                   qual_value = 2,
+                                   qual_col = NULL, 
+                                   qual_value = NULL,
                                    keep_all = 'default'){
   
+  original_cols = names(df_long)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
                                      batch_col, order_col = NULL, 
                                      facet_col = NULL, merge = FALSE)
@@ -446,8 +458,8 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
                                   order_col = 'order', 
                                   keep_all = 'default',
                                   no_fit_imputed = TRUE,
-                                  qual_col = 'm_score', 
-                                  qual_value = 2,
+                                  qual_col = NULL, 
+                                  qual_value = NULL,
                                   min_measurements = 8, ...){
   
   discrete_func <- match.arg(discrete_func)
@@ -457,7 +469,7 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
   original_cols = names(df_long)
   
   if(!is.null(continuous_func)){
-    fit_list = adjust_batch_trend_df(df_long = df_long, 
+    adjusted_df = adjust_batch_trend_df(df_long = df_long, 
                                   sample_annotation = sample_annotation,
                                   batch_col = batch_col,
                                   feature_id_col = feature_id_col,
@@ -470,7 +482,7 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
                                   qual_value = qual_value,
                                   fit_func = continuous_func, 
                                   min_measurements = min_measurements, ...)
-    adjusted_df = fit_list$corrected_df
+    #adjusted_df = fit_list$corrected_df
   }
   
   #TODO: re-implement in a functional programming
@@ -549,8 +561,8 @@ correct_batch_effects_dm <- function(data_matrix, sample_annotation,
                                           order_col = order_col,
                                           min_measurements = min_measurements, 
                                           no_fit_imputed = TRUE,
-                                          qual_col = 'm_score', 
-                                          qual_value = 2, 
+                                          qual_col = NULL, 
+                                          qual_value = NULL, 
                                           keep_all = FALSE,...)
   
   return(corrected_df)
