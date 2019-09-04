@@ -57,8 +57,7 @@ fit_nonlinear <- function(df_feature_batch,
       
     } else {
       stop('imputed values are specified not to be used for curve fitting, 
-however, 
-           no flag for imputed values is specified')
+           however, no flag for imputed values is specified')
       }
   } else {
     if(!is.null(qual_col) && (qual_col %in% names(df_feature_batch))){
