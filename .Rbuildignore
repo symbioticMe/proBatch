@@ -8,3 +8,4 @@
 ^replicate_diagnostics\.R$
 ^Haao_peptide_examples\.R$
 ^data-raw$
+^\.travis\.yml$
