@@ -339,7 +339,8 @@ plot_heatmap_generic <- function(data_matrix,
   warning_message <- 'Heatmap cannot operate with missing values in the matrix'
   data_matrix = handle_missing_values(data_matrix, warning_message, 
                                       fill_the_missing)
-  if (is.null(fill_the_missing) & (!cluster_rows | !cluster_cols)){
+  if (is.null(fill_the_missing) & any(is.na(data_matrix)) &
+      (!cluster_rows | !cluster_cols) ){
     message('With NAs removed, clustering of heatmap will work, 
               specify: cluster_rows = T, cluster_cols = T')
   }
