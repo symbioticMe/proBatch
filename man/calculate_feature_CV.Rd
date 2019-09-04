@@ -44,7 +44,7 @@ Calculate CV distribution for each feature
 }
 \examples{
 CV_df = calculate_feature_CV(example_proteome, 
-sample_annotation = sample_annotation_AgingMice, 
+sample_annotation = example_sample_annotation, 
 measure_col = 'Intensity', 
 batch_col = 'MS_batch')
 }
