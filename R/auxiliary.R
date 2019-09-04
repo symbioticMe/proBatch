@@ -103,6 +103,9 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 create_peptide_annotation <- function(df_long, 
                                       feature_id_col = 'peptide_group_label',
                                       protein_col = c("ProteinName", "Gene")){
+  if(!all(protein_col %in% names(df_long))){
+    stop(sprintf('Column %s is not in the data'), setdiff(names(df_long), protein_col))
+  }
   peptide_annotation = df_long %>%
     select(one_of(c(feature_id_col, protein_col))) %>%
     distinct()
