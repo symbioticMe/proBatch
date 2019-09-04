@@ -25,13 +25,13 @@ test_that("adjust_batch_trend", {
                                %in% c( "10062_NVGVSFYADKPEVTQEQK_3","101233_QGFNVVVESGAGEASK_2"), ]
   
   adjusted <- adjust_batch_trend_df(short_df, example_sample_annotation, span = 0.7, 
-                     abs_threshold = 5, pct_threshold = 0.20)
+                     abs_threshold = 5, pct_threshold = 0.20, keep_all = 'all')
 
   n_batch <- length(unique(example_sample_annotation$MS_batch))
   
-  expect_equal(adjusted$corrected_df[['peptide_group_label']][1],"10062_NVGVSFYADKPEVTQEQK_3")
-  expect_equal(length(unique(adjusted$fit_df$MS_batch)), n_batch)
-  expect_equivalent(adjusted$fit_df$fit[1], 1830358, tolerance=1)
+  expect_equal(adjusted[['peptide_group_label']][1],"10062_NVGVSFYADKPEVTQEQK_3")
+  expect_equal(length(unique(adjusted$MS_batch)), n_batch)
+  expect_equivalent(adjusted$fit[1], 1830358, tolerance=1)
 
 })
 

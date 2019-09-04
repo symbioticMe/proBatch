@@ -57,13 +57,12 @@ test_that("pvca_plot", {
                    technical_factors = c('MS_batch', 'digestion_batch'),
                    biological_factors = c("Diet", "Sex", "Strain"))
   
-  expect_equivalent(pvca$df$weights[1], 0.39166175, tolerance = 1e-2)
-  expect_equivalent(as.character(pvca$plot$data$label[2]), "MS_batch")
-  expect_equivalent(as.character(pvca$plot$data$label[3]), "Sex:Strain")
-  expect_equivalent(as.character(pvca$df$label[2]), "MS_batch")
+  expect_equivalent(pvca$data$weights[1], 0.39166175, tolerance = 1e-2)
+  expect_equivalent(as.character(pvca$data$label[2]), "MS_batch")
+  expect_equivalent(as.character(pvca$data$label[3]), "Sex:Strain")
   
-  expect_equal(pvca$plot$data$category[1], "biological")
-  expect_equal(pvca$plot$data$category[2], "technical")
+  expect_equal(pvca$data$category[1], "biological")
+  expect_equal(pvca$data$category[2], "technical")
   
 })
 

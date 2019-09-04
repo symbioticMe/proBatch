@@ -26,8 +26,10 @@ test_that("single_feature_plot", {
 test_that("peptides_of_one_protein_plot", {
   data(example_proteome, package="proBatch")
   data(example_sample_annotation, package="proBatch")
+  data(example_peptide_annotation, package="proBatch")
   
-  peptides_plot <- plot_peptides_of_one_protein (protein_name = "Haao",  
+  peptides_plot <- plot_peptides_of_one_protein (protein_name = "Haao",
+                                peptide_annotation = example_peptide_annotation,
                                 protein_col = "Gene", df_long = example_proteome, 
                                 sample_annotation = example_sample_annotation, 
                                 color_by_batch = TRUE,
@@ -51,8 +53,10 @@ test_that("peptides_of_one_protein_plot", {
 test_that("spike_in_peptides_plot", {
   data(example_proteome, package="proBatch")
   data(example_sample_annotation, package="proBatch")
+  data(example_peptide_annotation, package="proBatch")
   
   spike_in <- plot_spike_in(spike_ins = "BOVINE_A1ag", 
+                            peptide_annotation = example_peptide_annotation,
                             protein_col = 'Gene',  df_long = example_proteome,
                             sample_annotation = example_sample_annotation,
                             plot_title = "Spike-in BOVINE protein peptides")
@@ -77,8 +81,11 @@ test_that("spike_in_peptides_plot", {
 test_that("iRT_peptides_plot", {
   data(example_proteome, package="proBatch")
   data(example_sample_annotation, package="proBatch")
+  data(example_peptide_annotation, package="proBatch")
   
-  iRT <- plot_iRT(irt_pattern = 'iRT', protein_col = 'Gene',
+  iRT <- plot_iRT(irt_pattern = 'iRT', 
+                  peptide_annotation = example_peptide_annotation,
+                  protein_col = 'Gene',
                   df_long = example_proteome,
                   sample_annotation = example_sample_annotation)
   
@@ -107,7 +114,7 @@ test_that("fitting_trend_plots", {
   loess_fit <- adjust_batch_trend_df(short_df, example_sample_annotation, span = 0.7)
   
   fit_plot <- plot_with_fitting_curve(feature_name = "10062_NVGVSFYADKPEVTQEQK_3", 
-                                      fit_df = loess_fit$fit_df, fit_value_col = 'fit',
+                                      fit_df = loess_fit, fit_value_col = 'fit',
                                       df_long = example_proteome, 
                                       sample_annotation = example_sample_annotation)
   
