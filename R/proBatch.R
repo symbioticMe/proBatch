@@ -116,7 +116,7 @@
 #' @importFrom tidyr complete nest unnest
 #' @importFrom utils combn 
 #' @importFrom scales brewer_pal
-#' @importFrom stats as.formula complete.cases cor dist hclust 
+#' @importFrom stats as.formula complete.cases cor dist hclust sd
 #' @importFrom stats ksmooth loess median 
 #' @importFrom stats model.matrix prcomp predict reformulate setNames
 #' @importFrom tibble remove_rownames rownames_to_column column_to_rownames
@@ -131,6 +131,7 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c( "batch_size",
                                                          "tipping.points", 
                                                          "min_order_value", 
   "data", "batch_total", "fit",  "mean_fit",
+  "CV_total","CV_perBatch", "diff_fit", "diff_medians", "sd",
   "median_global", "median_batch", "diff_norm",
   "dateTime", 
   "same_protein", "batch_the_same", 
