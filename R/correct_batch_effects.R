@@ -196,7 +196,11 @@ center_feature_batch_medians_dm <- function(data_matrix, sample_annotation,
                                                  feature_id_col = feature_id_col,
                                                  measure_col = measure_col)
   
-  return(corrected_df)
+  corrected_matrix = long_to_matrix(corrected_df, 
+                                    sample_id_col = sample_id_col,
+                                    measure_col = measure_col,
+                                    feature_id_col = feature_id_col)
+  return(corrected_matrix)
 }
 
 #' 
@@ -302,8 +306,12 @@ center_feature_batch_means_dm <- function(data_matrix, sample_annotation,
                                                  batch_col = batch_col, 
                                                  feature_id_col = feature_id_col,
                                                  measure_col = measure_col)
+  corrected_matrix = long_to_matrix(corrected_df, 
+                                    sample_id_col = sample_id_col,
+                                    measure_col = measure_col,
+                                    feature_id_col = feature_id_col)
   
-  return(corrected_df)
+  return(corrected_matrix)
 }
 
 #' 
@@ -681,6 +689,10 @@ correct_batch_effects_dm <- function(data_matrix, sample_annotation,
                                           qual_col = NULL, 
                                           qual_value = NULL, 
                                           keep_all = FALSE,...)
+  corrected_matrix = long_to_matrix(corrected_df, 
+                                    sample_id_col = sample_id_col,
+                                    measure_col = measure_col,
+                                    feature_id_col = feature_id_col)
   
-  return(corrected_df)
+  return(corrected_matrix)
 }
