@@ -3,6 +3,11 @@
 #' Calculate CV distribution for each feature
 #'
 #' @inheritParams proBatch
+#' @param biospecimen_id_col column in \code{sample_annotation} 
+#' that defines a unique bio ID, which is usually a 
+#' combination of conditions or groups.
+#'  Tip: if such ID is absent, but can be defined from several columns,
+#'  create new \code{biospecimen_id} column
 #'
 #' @return data frame with Total CV for each feature & (optionally) per-batch CV
 #' @export
@@ -16,16 +21,35 @@
 calculate_feature_CV <- function(df_long, sample_annotation = NULL,
                                  feature_id_col = 'peptide_group_label',
                                  sample_id_col = 'FullRunName',
-                                 measure_col = 'Intensity', batch_col = NULL){
+                                 measure_col = 'Intensity', batch_col = NULL,
+                                 biospecimen_id_col = NULL,
+                                 unlog = TRUE, log_base = 2, offset = 1){
+  
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long)
+  
+  if(is.null(biospecimen_id_col)){
+    warning('considering all samples as replicates!')
+    df_long$biospecimen_id_col = 'replication'
+    biospecimen_id_col = 'replication'
+  } else{
+    if(!(biospecimen_id_col %in% names(df_long))){
+      stop('biospecimen ID, indicating replicates, is not in the data (df_long or sample_annotation)')
+    }
+  }
+  
+  if (unlog) {
+    warning('reversing log-transformation for CV calculation!')
+    df_long = unlog
+  }
+  
   if (!is.null(batch_col)){
     df_long = df_long %>%
-      group_by(!!!syms(c(feature_id_col, batch_col))) %>%
+      group_by(!!!syms(c(feature_id_col, batch_col, biospecimen_id_col))) %>%
       mutate(n = sum(!is.na(!!sym(measure_col))))
     
   } else {
     df_long = df_long %>%
-      group_by(!!sym(feature_id_col)) %>%
+      group_by(!!!syms(c(feature_id_col, biospecimen_id_col))) %>%
       mutate(n = sum(!is.na(!!sym(measure_col))))
   }
   if(any(df_long$n) > 2){
@@ -101,7 +125,11 @@ plot_CV_distr <- function(df_long, sample_annotation = NULL,
                           feature_id_col = 'peptide_group_label',
                           sample_id_col = 'FullRunName',
                           measure_col = 'Intensity', 
+                          biospecimen_id_col = 'EarTag',
                           batch_col = NULL, 
+                          unlog = TRUE,
+                          log_base = 2,
+                          offset = 1,
                           plot_title = NULL, 
                           filename = NULL, theme = 'classic'){
   CV_df = calculate_feature_CV(df_long = df_long, 
@@ -109,7 +137,9 @@ plot_CV_distr <- function(df_long, sample_annotation = NULL,
                                feature_id_col = feature_id_col, 
                                sample_id_col = sample_id_col,
                                measure_col = measure_col, 
-                               batch_col = batch_col)
+                               batch_col = batch_col,
+                               biospecimen_id_col = biospecimen_id_col,
+                               unlog = unlog, log_base = log_base, offset = offset)
   gg = plot_CV_distr.df(CV_df, plot_title = plot_title, filename = filename, 
                         theme = theme)
   return(gg)

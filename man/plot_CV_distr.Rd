@@ -7,7 +7,8 @@
 plot_CV_distr(df_long, sample_annotation = NULL,
   feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
-  batch_col = NULL, plot_title = NULL, filename = NULL,
+  biospecimen_id_col = "EarTag", batch_col = NULL, unlog = TRUE,
+  log_base = 2, offset = 1, plot_title = NULL, filename = NULL,
   theme = "classic")
 }
 \arguments{
