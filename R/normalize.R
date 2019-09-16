@@ -62,9 +62,14 @@ quantile_normalize_df <- function(df_long,
                                   sample_id_col = 'FullRunName', 
                                   measure_col = 'Intensity',
                                   no_fit_imputed = TRUE,
-                                  qual_col = 'm_score',
+                                  qual_col = NULL,
                                   qual_value = 2,
                                   keep_all = 'default'){
+  
+  if(is.null(qual_col) & no_fit_imputed){
+    warning('imputed value flag column is NULL, changing no_fit_imputed to FALSE')
+    no_fit_imputed = FALSE
+  }
   
   if(no_fit_imputed){
     if(!(qual_col %in% names(df_long))){
@@ -104,7 +109,7 @@ quantile_normalize_df <- function(df_long,
   
   normalized_df = normalized_df %>%
     merge(df_long %>% select(-one_of(setdiff(names(normalized_df), 
-                                             c(feature_id_col, sample_id_col)))), 
+                                             c(feature_id_col, sample_id_col, measure_col)))), 
           by = c(feature_id_col, sample_id_col))
   
   if(!is.null(qual_col) && qual_col %in% names(normalized_df)){
@@ -152,7 +157,7 @@ normalize_sample_medians_df <- function(df_long,
                                         sample_id_col = 'FullRunName',
                                         measure_col = 'Intensity',
                                         no_fit_imputed = FALSE,
-                                        qual_col = 'm_score',
+                                        qual_col = NULL,
                                         qual_value = 2,
                                         keep_all = 'default'){
   if(no_fit_imputed){
@@ -240,7 +245,7 @@ normalize_data_df <- function(df_long,
                               sample_id_col = 'FullRunName',
                               measure_col = 'Intensity',
                               no_fit_imputed = TRUE,
-                              qual_col = 'm_score',
+                              qual_col = NULL,
                               qual_value = 2,
                               keep_all = FALSE){
   

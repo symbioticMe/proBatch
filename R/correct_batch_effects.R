@@ -199,6 +199,112 @@ center_feature_batch_medians_dm <- function(data_matrix, sample_annotation,
   return(corrected_df)
 }
 
+#' 
+#' @export
+#' @rdname correct_batch_effects
+#' 
+center_feature_batch_means_df <- function(df_long, sample_annotation = NULL,
+                                            sample_id_col = 'FullRunName',
+                                            batch_col = 'MS_batch',
+                                            feature_id_col = 'peptide_group_label',
+                                            measure_col = 'Intensity',
+                                            keep_all = 'default',
+                                            no_fit_imputed = TRUE,
+                                            qual_col = NULL, 
+                                            qual_value = NULL){
+  
+  original_cols = names(df_long)
+  df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
+                                     batch_col, 
+                                     order_col = NULL, 
+                                     facet_col = NULL, merge = TRUE)
+  
+  old_measure_col = paste('preBatchCorr', measure_col, sep = '_')
+  
+  corrected_df = df_long %>%
+    group_by_at(vars(one_of(batch_col, feature_id_col))) 
+  
+  if(is.null(qual_col) & no_fit_imputed){
+    warning('imputed value flag column is NULL, changing no_fit_imputed to FALSE')
+    no_fit_imputed = FALSE
+  }
+  
+  if (no_fit_imputed){
+    if(!is.null(qual_col) && !(qual_col %in% names(corrected_df))){
+      stop("imputed value flag column (qual_col) is not in the data frame!")
+    }
+    temp_measure_col = paste('temp', measure_col, sep = '_')
+    corrected_df = corrected_df %>%
+      mutate(!!(sym(temp_measure_col)) := ifelse(!!sym(qual_col)== qual_value,
+                                                 NA, !!(sym(measure_col)))) %>%
+      mutate(mean_batch = mean(!!(sym(temp_measure_col)), na.rm = TRUE)) %>%
+      ungroup() %>%
+      group_by_at(vars(one_of(feature_id_col))) %>%
+      mutate(mean_global = mean(!!(sym(temp_measure_col)), na.rm = TRUE))
+  } else {
+    if(!is.null(qual_col)){
+      warning('imputed values are specified not to be used for mean inference, 
+              however, 
+              no_fit_imputed is FALSE')
+    }
+    corrected_df = corrected_df %>%
+      mutate(mean_batch = mean(!!(sym(measure_col)), na.rm = TRUE)) %>%
+      ungroup() %>%
+      group_by_at(vars(one_of(feature_id_col))) %>%
+      mutate(mean_global = mean(!!(sym(measure_col)), na.rm = TRUE))
+    }
+  corrected_df = corrected_df %>%
+    ungroup() %>%
+    mutate(diff_means = mean_global - mean_batch) %>%
+    rename(!!(sym(old_measure_col)) := !!(sym(measure_col))) %>%
+    mutate(!!(sym(measure_col)) := !!(sym(old_measure_col)) + diff_means)
+  
+  if(!is.null(qual_col) && qual_col %in% names(corrected_df)){
+    corrected_df = switch (keep_all,
+                           all = corrected_df,
+                           default = corrected_df %>%
+                             dplyr::select(c(original_cols, old_measure_col, 
+                                             qual_col, qual_value)),
+                           minimal = corrected_df %>%
+                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col, qual_col, qual_value))
+    )
+  } else {
+    corrected_df = switch (keep_all,
+                           all = corrected_df,
+                           default = corrected_df %>%
+                             dplyr::select(c(original_cols, old_measure_col)),
+                           minimal = corrected_df %>%
+                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col))
+    )
+  }
+  
+  
+  return(corrected_df)
+}
+
+#' @export
+#' @rdname correct_batch_effects
+#' 
+center_feature_batch_means_dm <- function(data_matrix, sample_annotation,
+                                            sample_id_col = 'FullRunName',
+                                            batch_col = 'MS_batch',
+                                            feature_id_col = 'peptide_group_label',
+                                            measure_col = 'Intensity'){
+  
+  df_long = matrix_to_long(data_matrix, feature_id_col = feature_id_col,
+                           measure_col = measure_col, 
+                           sample_id_col = sample_id_col)
+  
+  corrected_df = center_feature_batch_means_df(df_long, sample_annotation,
+                                                 sample_id_col = sample_id_col,
+                                                 batch_col = batch_col, 
+                                                 feature_id_col = feature_id_col,
+                                                 measure_col = measure_col)
+  
+  return(corrected_df)
+}
 
 #' 
 #' @export
@@ -449,7 +555,7 @@ run_ComBat_core <- function(sample_annotation, batch_col, data_matrix,
 #' 
 correct_batch_effects_df <- function(df_long, sample_annotation, 
                                   continuous_func = NULL, 
-                                  discrete_func = c("MedianCentering","ComBat"),
+                                  discrete_func = c("MedianCentering","MeanCentering","ComBat"),
                                   batch_col = 'MS_batch',  
                                   feature_id_col = 'peptide_group_label', 
                                   sample_id_col = 'FullRunName',
@@ -468,7 +574,7 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
   original_cols = names(df_long)
   
   if(!is.null(continuous_func)){
-    adjusted_df = adjust_batch_trend_df(df_long = df_long, 
+    df_long = adjust_batch_trend_df(df_long = df_long, 
                                   sample_annotation = sample_annotation,
                                   batch_col = batch_col,
                                   feature_id_col = feature_id_col,
@@ -481,12 +587,12 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
                                   qual_value = qual_value,
                                   fit_func = continuous_func, 
                                   min_measurements = min_measurements, ...)
-    #adjusted_df = fit_list$corrected_df
+    
   }
   
   #TODO: re-implement in a functional programming
   if(discrete_func == 'MedianCentering'){
-    corrected_df = center_feature_batch_medians_df(df_long = adjusted_df, 
+    corrected_df = center_feature_batch_medians_df(df_long = df_long, 
                                                sample_annotation = sample_annotation,
                                                sample_id_col = sample_id_col,
                                                batch_col = batch_col,
@@ -495,11 +601,23 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
                                                no_fit_imputed = no_fit_imputed,
                                                qual_col = qual_col, 
                                                qual_value = qual_value)
-  }
+  } 
+  
+  if(discrete_func == 'MeanCentering'){
+    corrected_df = center_feature_batch_means_df(df_long = df_long, 
+                                                   sample_annotation = sample_annotation,
+                                                   sample_id_col = sample_id_col,
+                                                   batch_col = batch_col,
+                                                   feature_id_col = feature_id_col,
+                                                   measure_col = measure_col,
+                                                   no_fit_imputed = no_fit_imputed,
+                                                   qual_col = qual_col, 
+                                                   qual_value = qual_value)
+  } 
   
   if(discrete_func == 'ComBat'){
     #TODO: pick up the functional programming argument borrowing
-    corrected_df = correct_with_ComBat_df(df_long = adjusted_df, 
+    corrected_df = correct_with_ComBat_df(df_long = df_long, 
                                           sample_annotation = sample_annotation,
                                           feature_id_col = feature_id_col, 
                                           measure_col = measure_col,

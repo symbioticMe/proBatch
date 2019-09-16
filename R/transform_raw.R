@@ -19,10 +19,6 @@
 NULL
 
 #' Log transformation of the data
-#'
-#'
-#' 
-#' 
 #' 
 #' @export
 #' @rdname transform_raw_data
@@ -36,7 +32,26 @@ log_transform_df <- function(df_long, log_base = 2, offset = 1,
       mutate(!!(sym(measure_col)) := 
                log(!!(sym(measure_col)) + offset, base = log_base))
   } else {
-    warning("Log base is NULL, returning the original data frea")
+    warning("Log base is NULL, returning the original data frame")
+  }
+  return(df_long)
+}
+
+#' "Unlog" transformation of the data to pre-log form (for quantification, forcing log-transform)
+#' 
+#' @export
+#' @rdname transform_raw_data
+#'
+unlog_df <- function(df_long, log_base = 2, offset = 1, 
+                     measure_col = 'Intensity'){
+  if(!is.null(log_base)){
+    df_long = df_long %>%
+      mutate(!!(paste('beforeUnLog', measure_col, sep = '_')) := 
+               !!(sym(measure_col))) %>%
+      mutate(!!(sym(measure_col)) := 
+               log_base^(!!(sym(measure_col)) - offset))
+  } else {
+    warning("Log base is NULL, returning the original data frame")
   }
   return(df_long)
 }
@@ -47,16 +62,24 @@ log_transform_df <- function(df_long, log_base = 2, offset = 1,
 #'
 log_transform_dm <- function(data_matrix, log_base = 2, offset = 1){
   if(!is.null(log_base)){
-    if(log_base == 2){
-      data_matrix_log = log2(data_matrix + offset)
-    }else if(log_base ==10){
-      data_matrix_log = log10(data_matrix + offset)
-    }else {
-      data_matrix_log = log(data_matrix + offset, base = log_base)
-    } 
+    data_matrix_log = log(data_matrix + offset, base = log_base)
   } else {
-    warning("Log base is NULL, returning the original data frea")
+    warning("Log base is NULL, returning the original data matrix")
     data_matrix_log = data_matrix
   }
   return(data_matrix_log)
+}
+
+#' 
+#' @export
+#' @rdname transform_raw_data
+#'
+unlog_dm <- function(data_matrix, log_base = 2, offset = 1){
+  if(!is.null(log_base)){
+    data_matrix_unlog = log_base^(data_matrix) - offset
+  } else {
+    warning("Log base is NULL, returning the original data matrix")
+    data_matrix_unlog = data_matrix
+  }
+  return(data_matrix_unlog)
 }
