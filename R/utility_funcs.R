@@ -1,41 +1,18 @@
 merge_df_with_annotation <- function(df_long, sample_annotation, sample_id_col, 
                                      batch_col, order_col, facet_col) {
-  annotation_cols = c(batch_col, order_col, facet_col)
-  if (any(annotation_cols %in% names(df_long)) && 
-      any(annotation_cols %in% names(sample_annotation))){
-    
-    if (all(annotation_cols %in% names(df_long)) && 
-        all(annotation_cols %in% names(sample_annotation))){
-      annotation_string = paste(annotation_cols, collapse = ' ')
-      warning(sprintf('All annotation columns (%s) are both in data matrix and 
-                       in sample annotation,  ignoring sample annotation; 
-                       if this is not intended behavior, remove these columns 
-                      from df_long and repeat the function execution.',
-                      annotation_string))
-      if(all(names(sample_annotation) %in% names(df_long))){
-        df_long = df_long %>%
-          select(-one_of(setdiff(names(sample_annotation), sample_id_col)))
-      } else {
-        df_long = df_long %>%
-          select(-one_of(annotation_cols))
-      }
-      
-    } else {
-      common_cols = setdiff(intersect(names(sample_annotation), names(df_long)), 
-                            sample_id_col)
-      if(length(common_cols) > 1){
-        common_col_string = paste(common_cols, collapse = ' ')
-        warning(sprintf('The following columns are represented in both df_long 
-                        and sample_annotation: %s, these columns in df_long 
-                        will be overriden from sample_annotation. 
-                        If this is not intended behavior, 
-                        remove these columns from df_long and 
-                        repeat the function execution.', common_col_string))
-        df_long = df_long %>%
-          select(-one_of(common_cols))
-      }
-      
-    }
+  
+  common_cols = setdiff(intersect(names(sample_annotation), names(df_long)), 
+                        sample_id_col)
+  if(length(common_cols) > 1){
+    common_col_string = paste(common_cols, collapse = ' ')
+    warning(sprintf('The following columns are represented in both df_long 
+                    and sample_annotation: %s, these columns in df_long 
+                    will be overriden from sample_annotation. 
+                    If this is not intended behavior, 
+                    remove these columns from df_long and 
+                    repeat the function execution.', common_col_string))
+    df_long = df_long %>%
+      select(-one_of(common_cols))
   }
   
   message('Merging data matrix and sample annotation')

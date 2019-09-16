@@ -4,6 +4,8 @@
 \alias{correct_batch_effects}
 \alias{center_feature_batch_medians_df}
 \alias{center_feature_batch_medians_dm}
+\alias{center_feature_batch_means_df}
+\alias{center_feature_batch_means_dm}
 \alias{adjust_batch_trend_df}
 \alias{adjust_batch_trend_dm}
 \alias{correct_with_ComBat_df}
@@ -19,6 +21,16 @@ center_feature_batch_medians_df(df_long, sample_annotation = NULL,
   qual_value = NULL)
 
 center_feature_batch_medians_dm(data_matrix, sample_annotation,
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
+  feature_id_col = "peptide_group_label", measure_col = "Intensity")
+
+center_feature_batch_means_df(df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
+  feature_id_col = "peptide_group_label", measure_col = "Intensity",
+  keep_all = "default", no_fit_imputed = TRUE, qual_col = NULL,
+  qual_value = NULL)
+
+center_feature_batch_means_dm(data_matrix, sample_annotation,
   sample_id_col = "FullRunName", batch_col = "MS_batch",
   feature_id_col = "peptide_group_label", measure_col = "Intensity")
 
@@ -48,7 +60,7 @@ correct_with_ComBat_dm(data_matrix, sample_annotation = NULL,
 
 correct_batch_effects_df(df_long, sample_annotation,
   continuous_func = NULL, discrete_func = c("MedianCentering",
-  "ComBat"), batch_col = "MS_batch",
+  "MeanCentering", "ComBat"), batch_col = "MS_batch",
   feature_id_col = "peptide_group_label",
   sample_id_col = "FullRunName", measure_col = "Intensity",
   order_col = "order", keep_all = "default", no_fit_imputed = TRUE,

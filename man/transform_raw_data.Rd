@@ -3,13 +3,20 @@
 \name{transform_raw_data}
 \alias{transform_raw_data}
 \alias{log_transform_df}
+\alias{unlog_df}
 \alias{log_transform_dm}
+\alias{unlog_dm}
 \title{Functions to log transform raw data before normalization and batch correction}
 \usage{
 log_transform_df(df_long, log_base = 2, offset = 1,
   measure_col = "Intensity")
 
+unlog_df(df_long, log_base = 2, offset = 1,
+  measure_col = "Intensity")
+
 log_transform_dm(data_matrix, log_base = 2, offset = 1)
+
+unlog_dm(data_matrix, log_base = 2, offset = 1)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -41,6 +48,8 @@ called "beforeLog_intensity" if "intensity" was the value of
 Functions to log transform raw data before normalization and batch correction
 
 Log transformation of the data
+
+"Unlog" transformation of the data to pre-log form (for quantification, forcing log-transform)
 }
 \examples{
 log_transformed_df <- log_transform_df(example_proteome)
