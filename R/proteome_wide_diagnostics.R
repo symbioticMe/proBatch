@@ -89,7 +89,8 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
             controlled color mapping use sample_annotation_to_colors()')
     color_list_new <- sample_annotation_to_colors(sample_annotation, 
                                                 sample_id_col = sample_id_col,
-                                                factor_columns = factors_without_colors)
+                                                factor_columns = factors_without_colors, 
+                                                numeric_columns = NULL)
     color_list = c(color_list, color_list_new)
   }
   
@@ -381,6 +382,18 @@ plot_heatmap_generic <- function(data_matrix,
   if(is.null(column_annotation_df) && is.null(row_annotation_df)){
     warning("annotation_row and annotation_col are not specified for heatmap 
             (annotation of rows/cols such as sample annotation will not be plotted)")
+  }
+  
+  if(!is.na(annotation_col)){
+    if (!setequal(rownames(annotation_col), colnames(data_matrix))){
+      warning('coloring by column annotation will not work: annotation rownames do not match data matrix column names')
+    }
+  }
+  
+  if(!is.na(annotation_row)){
+    if (!setequal(rownames(annotation_row), rownames(data_matrix))){
+      warning('coloring by row annotation will not work: annotation rownames do not match data matrix column names')
+    }
   }
   
   if(is.null(plot_title)){
