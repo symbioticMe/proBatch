@@ -3,11 +3,13 @@
 #' Calculate CV distribution for each feature
 #'
 #' @inheritParams proBatch
+#' @inheritParams transform_raw_data
 #' @param biospecimen_id_col column in \code{sample_annotation} 
 #' that defines a unique bio ID, which is usually a 
 #' combination of conditions or groups.
 #'  Tip: if such ID is absent, but can be defined from several columns,
 #'  create new \code{biospecimen_id} column
+#' @param unlog (logical) whether to reverse log transformation of the original data
 #'
 #' @return data frame with Total CV for each feature & (optionally) per-batch CV
 #' @export
@@ -30,7 +32,7 @@ calculate_feature_CV <- function(df_long, sample_annotation = NULL,
   if(is.null(biospecimen_id_col)){
     warning('considering all samples as replicates!')
     df_long$biospecimen_id_col = 'replication'
-    biospecimen_id_col = 'replication'
+    biospecimen_id_col = 'biospecimen_id_col'
   } else{
     if(!(biospecimen_id_col %in% names(df_long))){
       stop('biospecimen ID, indicating replicates, is not in the data (df_long or sample_annotation)')
@@ -39,8 +41,9 @@ calculate_feature_CV <- function(df_long, sample_annotation = NULL,
   
   if (unlog) {
     warning('reversing log-transformation for CV calculation!')
-    df_long = unlog
+    df_long = unlog_df(df_long, log_base = log_base, offset = offset, measure_col = measure_col)
   }
+  
   
   if (!is.null(batch_col)){
     df_long = df_long %>%
@@ -58,35 +61,69 @@ calculate_feature_CV <- function(df_long, sample_annotation = NULL,
       filter(n > 2)
   }
   
+  if('Step' %in% names(df_long)){
+    if (!is.null(batch_col)){
+      df_long = df_long %>%
+        group_by(!!!syms(c(feature_id_col, batch_col, 'Step'))) %>%
+        mutate(CV_perBatch = 100*sd(!!sym(measure_col), na.rm = TRUE)/
+                 mean(!!sym(measure_col), na.rm = TRUE)) %>%
+        ungroup()
+    } else {
+      warning('batch_col not specified, calculating the total CV only')
+    }
+    CV_df = df_long %>%
+      group_by(!!!syms(c(feature_id_col, 'Step'))) %>%
+      mutate(CV_total = 100*sd(!!sym(measure_col), na.rm = TRUE)/
+               mean(!!sym(measure_col), na.rm = TRUE))
+    if(!is.null(batch_col)){
+      CV_df = CV_df%>%
+        select(c(!!sym(feature_id_col), CV_total, CV_perBatch)) %>%
+        distinct()
+    } else {
+      CV_df = CV_df%>%
+        select(c(!!sym(feature_id_col), CV_total)) %>%
+        distinct()
+    }
+  } else {
+    if (!is.null(batch_col)){
+      df_long = df_long %>%
+        group_by(!!!syms(c(feature_id_col, batch_col))) %>%
+        mutate(CV_perBatch = sd(!!sym(measure_col), na.rm = TRUE)/
+                 mean(!!sym(measure_col), na.rm = TRUE)) %>%
+        ungroup()
+    } else {
+      warning('batch_col not found, calculating the total CV only')
+    }
+    CV_df = df_long %>%
+      group_by(!!sym(feature_id_col)) %>%
+      mutate(CV_total = sd(!!sym(measure_col), na.rm = TRUE)/
+               mean(!!sym(measure_col), na.rm = TRUE))
+    if(!is.null(batch_col)){
+      CV_df = CV_df%>%
+        select(c(!!sym(feature_id_col), CV_total, CV_perBatch)) %>%
+        distinct()
+    } else {
+      CV_df = CV_df%>%
+        select(c(!!sym(feature_id_col), CV_total)) %>%
+        distinct()
+    }
+  }
   
-  if (!is.null(batch_col)){
-    df_long = df_long %>%
-      group_by(!!!syms(c(feature_id_col, batch_col))) %>%
-      mutate(CV_perBatch = sd(!!sym(measure_col), na.rm = TRUE)/
-               mean(!!sym(measure_col), na.rm = TRUE)) %>%
-      ungroup()
-  } else {
-    warning('batch_col not found, calculating the total CV only')
-  }
-  CV_df = df_long %>%
-    group_by(!!sym(feature_id_col)) %>%
-    mutate(CV_total = sd(!!sym(measure_col), na.rm = TRUE)/
-             mean(!!sym(measure_col), na.rm = TRUE))
-  if(!is.null(batch_col)){
-    CV_df = CV_df%>%
-      select(c(!!sym(feature_id_col), CV_total, CV_perBatch)) %>%
-      distinct()
-  } else {
-    CV_df = CV_df%>%
-      select(c(!!sym(feature_id_col), CV_total)) %>%
-      distinct()
-  }
   return(CV_df)
 }
 
+#' Plot the distribution (boxplots) of per-batch per-step CV of features
+#'
+#' @inheritParams proBatch
+#' 
+#' @param CV_df data frame with Total CV for each feature & (optionally) per-batch CV
+#' @param log_y_scale (logical) whether to display the CV on log-scale
+#'
+#' @return ggplot object
+#' @export
 plot_CV_distr.df <- function(CV_df, 
                           plot_title = NULL, 
-                          filename = NULL, theme = 'classic'){
+                          filename = NULL, theme = 'classic', log_y_scale = TRUE){
   if ('Step' %in% names(CV_df)){
     gg = ggplot(CV_df,  aes(x = Step, y = CV_total)) +
       geom_boxplot()
@@ -103,16 +140,29 @@ plot_CV_distr.df <- function(CV_df,
   if(!is.null(filename)){
     ggsave(gg, filename = filename)
   }
+  
+  if(log_y_scale){
+    gg = gg+scale_y_log10()
+  }
+  
   return(gg)
 }
 
 #' Plot CV distribution to compare various steps of the analysis
 #'
 #' @inheritParams proBatch
+#' @inheritParams transform_raw_data
 #' @param df_long as in \code{df_long} for the rest of the package, but, when it 
 #' has entries for intensity, represented in \code{measure_col} for several steps, 
 #' e.g. raw, normalized, batch corrected data, as seen in column \code{Step}, then
 #' multi-step CV comparison can be carried out.
+#' @param biospecimen_id_col column in \code{sample_annotation} 
+#' that defines a unique bio ID, which is usually a 
+#' combination of conditions or groups.
+#'  Tip: if such ID is absent, but can be defined from several columns,
+#'  create new \code{biospecimen_id} column
+#' @param unlog (logical) whether to reverse log transformation of the original data
+#'  
 #' @return \code{ggplot} object with the boxplot of CVs on one or several steps
 #' @export
 #'

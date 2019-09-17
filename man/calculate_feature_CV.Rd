@@ -36,6 +36,18 @@ internally for consistency.}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
+
+\item{biospecimen_id_col}{column in \code{sample_annotation} 
+that defines a unique bio ID, which is usually a 
+combination of conditions or groups.
+ Tip: if such ID is absent, but can be defined from several columns,
+ create new \code{biospecimen_id} column}
+
+\item{unlog}{(logical) whether to reverse log transformation of the original data}
+
+\item{log_base}{base of the logarithm for transformation}
+
+\item{offset}{small positive number to prevent 0 conversion to \code{-Inf}}
 }
 \value{
 data frame with Total CV for each feature & (optionally) per-batch CV

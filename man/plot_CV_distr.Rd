@@ -35,8 +35,20 @@ where the filenames (colnames of the \code{data_matrix} are found).}
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
+\item{biospecimen_id_col}{column in \code{sample_annotation} 
+that defines a unique bio ID, which is usually a 
+combination of conditions or groups.
+ Tip: if such ID is absent, but can be defined from several columns,
+ create new \code{biospecimen_id} column}
+
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
+
+\item{unlog}{(logical) whether to reverse log transformation of the original data}
+
+\item{log_base}{base of the logarithm for transformation}
+
+\item{offset}{small positive number to prevent 0 conversion to \code{-Inf}}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
