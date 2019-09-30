@@ -3,6 +3,10 @@
   <!-- badges: start -->
   [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
   [![BioC status](http://www.bioconductor.org/shields/build/release/bioc/proBatch.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/proBatch)
+  [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+  [![Build Status](https://travis-ci.com/symbioticMe/proBatch.svg?branch=master)](https://travis-ci.com/symbioticMe/proBatch.svg)
+  
 <!-- badges: end -->
 
 ## General Overview
