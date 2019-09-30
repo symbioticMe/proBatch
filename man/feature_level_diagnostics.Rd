@@ -108,7 +108,7 @@ batch comparison (or other, non-batch factor to be mapped to color in plots).}
 by batch factor as defined by \code{batch_col}.}
 
 \item{color_scheme}{a named vector of colors to map to \code{batch_col}, 
-names corresponding to the levels of the factor. For continous variables, 
+names corresponding to the levels of the factor. For continuous variables, 
 vector doesn't need to be named.}
 
 \item{order_col}{column in \code{sample_annotation} that determines sample 
@@ -179,7 +179,7 @@ Creates a peptide faceted ggplot2 plot of the value in
 vs \code{order_col} (if `NULL`, x-axis is simply a sample name order). 
 Additionally, the resulting plot can also be colored either by batch factor, 
 by quality factor (e.g. imputated/non-imputed) and, if needed, faceted by 
-anotherbatch factor, e.g. an instrument.
+another batch factor, e.g. an instrument.
  If the non-linear curve was fit, this can also be added to the plot, see 
  functions specific to each case below
 }

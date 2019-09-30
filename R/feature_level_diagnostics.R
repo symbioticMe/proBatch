@@ -5,7 +5,7 @@
 #' vs \code{order_col} (if `NULL`, x-axis is simply a sample name order). 
 #' Additionally, the resulting plot can also be colored either by batch factor, 
 #' by quality factor (e.g. imputated/non-imputed) and, if needed, faceted by 
-#' anotherbatch factor, e.g. an instrument.
+#' another batch factor, e.g. an instrument.
 #'  If the non-linear curve was fit, this can also be added to the plot, see 
 #'  functions specific to each case below
 #'

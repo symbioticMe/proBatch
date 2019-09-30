@@ -2,9 +2,9 @@
 #' primarily in proteomics
 #'
 #' The proBatch package contains functions for analyzing and correcting batch 
-#' effects (aunwanted technical variation) from high-thoughput experiments. 
+#' effects (unwanted technical variation) from high-thoughput experiments. 
 #' Although the package has primarily been developed for mass spectrometry 
-#' proteomics (DIA/SWATH), it has been desinged be applicable to most omic data 
+#' proteomics (DIA/SWATH), it has been designed be applicable to most omic data 
 #' with minor adaptations.
 #' It addresses the following needs: 
 #' \itemize{ \item prepare the data for analysis
@@ -62,7 +62,7 @@
 #' corresponding protein and/or gene annotations. 
 #' See \code{help("example_peptide_annotation")}.
 #' @param color_scheme a named vector of colors to map to \code{batch_col}, 
-#' names corresponding to the levels of the factor. For continous variables, 
+#' names corresponding to the levels of the factor. For continuous variables, 
 #' vector doesn't need to be named.
 #' @param color_list list, as returned by \code{sample_annotation_to_colors}, 
 #' where each item contains a color vector for each factor to be mapped to the 

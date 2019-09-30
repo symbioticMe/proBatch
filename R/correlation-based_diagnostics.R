@@ -275,7 +275,7 @@ get_sample_corr_df <- function(cor_proteome, sample_annotation,
 
 
 #' Calculates correlation for all pairs of the samples in data matrix, labels 
-#' as replicated/same_batch/unrelated in output colums (see "Value").
+#' as replicated/same_batch/unrelated in output columns (see "Value").
 #'
 #' @inheritParams proBatch
 #' @param repeated_samples vector of sample IDs to evaluate, if \code{NULL}, 

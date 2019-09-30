@@ -42,7 +42,7 @@ excluded.
 If \code{NULL}, features with missing values are excluded.}
 
 \item{color_scheme}{a named vector of colors to map to \code{batch_col}, 
-names corresponding to the levels of the factor. For continous variables, 
+names corresponding to the levels of the factor. For continuous variables, 
 vector doesn't need to be named.}
 
 \item{filename}{path where the results are saved. 
