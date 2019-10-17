@@ -41,11 +41,11 @@ test_that("correct_with_ComBat_df", {
   data(example_sample_annotation, package="proBatch")
   
   short_df <- example_proteome[example_proteome[['peptide_group_label']]
-                               %in% c( "10062_NVGVSFYADKPEVTQEQK_3","101233_QGFNVVVESGAGEASK_2"), ]
+                               %in% c( "10062_NVGVSFYADKPEVTQEQK_3", "10063_NVGVSFYADKPEVTQEQKK_3"), ]
   combat_df <- correct_with_ComBat_df(short_df, example_sample_annotation)
   
   expect_equal(combat_df[['peptide_group_label']][1],"10062_NVGVSFYADKPEVTQEQK_3")
-  expect_equal(combat_df[['Intensity']][1],768661.4)
+  expect_equal(combat_df[['Intensity']][1],768661.4, tolerance=1)
   
   batch_1 <- example_sample_annotation$FullRunName[example_sample_annotation$MS_batch == "Batch_1"] 
   batch_2 <- example_sample_annotation$FullRunName[example_sample_annotation$MS_batch == "Batch_2"] 

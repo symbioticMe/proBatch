@@ -58,11 +58,11 @@ test_that("pvca_plot", {
                    biological_factors = c("Diet", "Sex", "Strain"))
   
   expect_equivalent(pvca$data$weights[1], 0.39166175, tolerance = 1e-2)
-  expect_equivalent(as.character(pvca$data$label[2]), "MS_batch")
-  expect_equivalent(as.character(pvca$data$label[3]), "Sex:Strain")
+  expect_equivalent(as.character(pvca$data$label[3]), "MS_batch")
+  expect_equivalent(as.character(pvca$data$label[2]), "Sex:Strain")
   
   expect_equal(pvca$data$category[1], "biological")
-  expect_equal(pvca$data$category[2], "technical")
+  expect_equal(pvca$data$category[3], "technical")
   
 })
 
@@ -73,7 +73,7 @@ test_that("pca_plot", {
 
   pca <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
                         color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
-  expect_equal(pca$labels$y, "PC2 (14.23%)")
-  expect_equal(pca$labels$x, "PC1 (69.41%)")
+  expect_equal(pca$labels$y, "PC2 (14.24%)")
+  expect_equal(pca$labels$x,  "PC1 (69.5%)")
   expect_equal(pca$labels$colour, "MS_batch")
 })

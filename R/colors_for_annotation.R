@@ -39,9 +39,49 @@ map_factors_to_colors <- function(annotation_df_factors) {
     } else if (number_colors_for_factors <= sum(length(brewer_colors), 45)){
       colors = c(standard_colors_base, brewer_colors)
     } else {
-      set.seed(1)
-      standard_colors_all = sample(grep('(white|(gr(a|e)y))', standardColors(), 
-                                        value = TRUE, invert = TRUE))
+      colors_to_sample = grep('(white|(gr(a|e)y))', standardColors(), 
+                              value = TRUE, invert = TRUE)
+      #equivalent to set.seed(1); indices_random = sample(1:length(colors_to_sample))
+      indices_random = c(270L, 44L, 381L, 308L, 271L, 263L, 167L, 215L, 377L, 349L, 
+                         26L, 141L, 19L, 57L, 248L, 137L, 240L, 406L, 107L, 252L, 20L, 
+                         145L, 75L, 176L, 15L, 347L, 405L, 204L, 364L, 131L, 99L, 231L, 
+                         352L, 331L, 201L, 357L, 49L, 192L, 18L, 14L, 402L, 188L, 211L, 
+                         298L, 302L, 150L, 265L, 338L, 59L, 130L, 239L, 309L, 33L, 114L, 
+                         129L, 353L, 284L, 264L, 103L, 135L, 354L, 190L, 158L, 175L, 379L, 
+                         395L, 180L, 243L, 210L, 36L, 2L, 123L, 203L, 209L, 83L, 340L, 
+                         157L, 25L, 407L, 189L, 350L, 177L, 132L, 51L, 320L, 368L, 341L, 
+                         101L, 170L, 411L, 316L, 296L, 40L, 45L, 333L, 366L, 251L, 376L, 
+                         179L, 152L, 115L, 56L, 138L, 134L, 370L, 392L, 288L, 393L, 322L, 
+                         116L, 286L, 156L, 326L, 165L, 276L, 151L, 186L, 299L, 117L, 306L, 
+                         382L, 219L, 220L, 93L, 267L, 412L, 312L, 147L, 244L, 184L, 386L, 
+                         212L, 30L, 408L, 260L, 222L, 360L, 314L, 62L, 327L, 4L, 60L, 
+                         24L, 345L, 301L, 378L, 330L, 323L, 78L, 185L, 67L, 257L, 98L, 
+                         329L, 64L, 124L, 390L, 344L, 69L, 153L, 187L, 361L, 358L, 398L, 
+                         82L, 221L, 321L, 399L, 295L, 66L, 171L, 85L, 54L, 198L, 79L, 
+                         196L, 237L, 249L, 52L, 242L, 258L, 58L, 290L, 31L, 415L, 245L, 
+                         317L, 403L, 63L, 154L, 266L, 38L, 74L, 384L, 9L, 401L, 193L, 
+                         268L, 13L, 283L, 206L, 334L, 388L, 22L, 277L, 88L, 272L, 385L, 
+                         339L, 37L, 343L, 168L, 346L, 235L, 126L, 241L, 108L, 112L, 225L, 
+                         16L, 373L, 89L, 182L, 118L, 304L, 213L, 214L, 410L, 208L, 166L, 
+                         351L, 285L, 84L, 92L, 128L, 169L, 297L, 292L, 5L, 146L, 71L, 
+                         375L, 139L, 133L, 200L, 261L, 418L, 10L, 127L, 289L, 259L, 122L, 
+                         233L, 3L, 53L, 383L, 318L, 104L, 396L, 161L, 155L, 371L, 61L, 
+                         282L, 7L, 149L, 11L, 254L, 199L, 73L, 232L, 72L, 76L, 342L, 1L, 
+                         355L, 105L, 397L, 12L, 32L, 90L, 262L, 315L, 77L, 335L, 325L, 
+                         313L, 207L, 121L, 374L, 110L, 348L, 46L, 394L, 159L, 367L, 238L, 
+                         380L, 229L, 365L, 48L, 274L, 387L, 311L, 273L, 409L, 23L, 413L, 
+                         217L, 226L, 303L, 109L, 162L, 224L, 172L, 356L, 250L, 140L, 174L, 
+                         86L, 400L, 269L, 143L, 234L, 337L, 8L, 195L, 281L, 113L, 29L, 
+                         300L, 389L, 163L, 255L, 362L, 47L, 65L, 287L, 216L, 80L, 246L, 
+                         28L, 278L, 100L, 43L, 191L, 87L, 35L, 391L, 404L, 164L, 68L, 
+                         136L, 102L, 119L, 50L, 328L, 81L, 205L, 332L, 144L, 120L, 372L, 
+                         310L, 307L, 39L, 280L, 230L, 173L, 227L, 106L, 96L, 42L, 178L, 
+                         34L, 202L, 336L, 236L, 194L, 275L, 21L, 253L, 294L, 91L, 369L, 
+                         223L, 148L, 319L, 416L, 419L, 293L, 94L, 183L, 70L, 6L, 111L, 
+                         279L, 324L, 197L, 160L, 17L, 218L, 142L, 256L, 247L, 228L, 181L, 
+                         27L, 291L, 55L, 41L, 359L, 95L, 417L, 125L, 363L, 305L, 414L, 
+                         97L)
+      standard_colors_all = colors_to_sample[indices_random]
       colors = standard_colors_all
   }
   

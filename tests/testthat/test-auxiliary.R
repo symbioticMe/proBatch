@@ -5,13 +5,13 @@ test_that("long_conversion_to_matrix", {
   data(example_proteome, package="proBatch")
 
   rows <- c(which(example_proteome$peptide_group_label == "10062_NVGVSFYADKPEVTQEQK_3"),
-            which(example_proteome$peptide_group_label == "101233_QGFNVVVESGAGEASK_2"))
+            which(example_proteome$peptide_group_label == "10063_NVGVSFYADKPEVTQEQKK_3"))
   
   proteome <- example_proteome[rows,]
   proteome_matrix <- long_to_matrix(proteome)
   
   expect_equal(rownames(proteome_matrix), 
-               c("10062_NVGVSFYADKPEVTQEQK_3" ,"101233_QGFNVVVESGAGEASK_2" ))
+               c("10062_NVGVSFYADKPEVTQEQK_3" ,"10063_NVGVSFYADKPEVTQEQKK_3" ))
   expect_equal(ncol(proteome_matrix), nrow(proteome)/2)
   
 })
@@ -22,13 +22,13 @@ test_that("matrix_conversion_to_long", {
   data(example_sample_annotation, package="proBatch")
   
   rows <- c(which(rownames(example_proteome_matrix) == "10062_NVGVSFYADKPEVTQEQK_3"),
-            which(rownames(example_proteome_matrix) == "101233_QGFNVVVESGAGEASK_2"))
+            which(rownames(example_proteome_matrix) == "10063_NVGVSFYADKPEVTQEQKK_3"))
   
   peptide_matrix <- as.matrix(example_proteome_matrix[rows,])
   proteome_long <- matrix_to_long(peptide_matrix, example_sample_annotation)
   
   expect_equal(unique(proteome_long$peptide_group_label), 
-               c("10062_NVGVSFYADKPEVTQEQK_3" ,"101233_QGFNVVVESGAGEASK_2" ))
+               c("10062_NVGVSFYADKPEVTQEQK_3" ,"10063_NVGVSFYADKPEVTQEQKK_3" ))
   expect_equal(nrow(proteome_long), ncol(peptide_matrix)*2)
 
   setequal(colnames(proteome_long), 

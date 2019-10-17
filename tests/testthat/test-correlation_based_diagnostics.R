@@ -119,6 +119,6 @@ test_that("peptide_distribution_plots", {
   expect_equivalent(peptide_dist$labels$y, "correlation")
   
   expect_is(peptide_dist$plot_env$corr_distribution, "data.frame")
-  expect_equal(peptide_dist$plot_env$median_same_prot, 0.8010358, tolerance=1e-6)
+  expect_equal(peptide_dist$plot_env$median_same_prot, 0.7337642, tolerance=1e-6)
   
 })

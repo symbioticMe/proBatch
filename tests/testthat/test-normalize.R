@@ -25,11 +25,11 @@ test_that("normalize_sample_medians", {
   median_centered_data <- normalize_sample_medians_df(sample_df, 
                                                       keep_all = 'all')
 
-  expect_equivalent(median_centered_data$median_global[1], 18320.71, tolerance = 1e-2)
-  expect_equivalent(median_centered_data$median_run[2], 17597.16, tolerance = 1e-2)
+  expect_equivalent(median_centered_data$median_global[1], 30277.6, tolerance = 1e-2)
+  expect_equivalent(median_centered_data$median_run[2], 29252.14, tolerance = 1e-2)
   
   expect_equivalent(median_centered_data$Intensity[1], 2728887.42, tolerance = 1e-2)
-  expect_equivalent(median_centered_data$Intensity[549], 7973235.87, tolerance = 1e-2)
-  expect_equivalent(median_centered_data$preNorm_Intensity[549], 7978020)
+  expect_equivalent(median_centered_data$Intensity[549], 35191.95, tolerance = 1e-2)
+  expect_equivalent(median_centered_data$preNorm_Intensity[549], 25479.8)
   
 })
