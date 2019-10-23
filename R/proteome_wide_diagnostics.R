@@ -384,13 +384,13 @@ plot_heatmap_generic <- function(data_matrix,
             (annotation of rows/cols such as sample annotation will not be plotted)")
   }
   
-  if(!is.na(annotation_col)){
+  if(!identical(annotation_col, NA) & (is.data.frame(annotation_col) | is.matrix(annotation_col))){
     if (!setequal(rownames(annotation_col), colnames(data_matrix))){
       warning('coloring by column annotation will not work: annotation rownames do not match data matrix column names')
     }
   }
   
-  if(!is.na(annotation_row)){
+  if(!identical(annotation_row, NA) & (is.data.frame(annotation_row) | is.matrix(annotation_row))){
     if (!setequal(rownames(annotation_row), rownames(data_matrix))){
       warning('coloring by row annotation will not work: annotation rownames do not match data matrix column names')
     }
