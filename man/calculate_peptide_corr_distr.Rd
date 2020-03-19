@@ -4,8 +4,12 @@
 \alias{calculate_peptide_corr_distr}
 \title{Calculate peptide correlation between and within peptides of one protein}
 \usage{
-calculate_peptide_corr_distr(data_matrix, peptide_annotation,
-  protein_col = "ProteinName", feature_id_col = "peptide_group_label")
+calculate_peptide_corr_distr(
+  data_matrix,
+  peptide_annotation,
+  protein_col = "ProteinName",
+  feature_id_col = "peptide_group_label"
+)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

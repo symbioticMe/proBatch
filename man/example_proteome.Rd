@@ -4,7 +4,9 @@
 \name{example_proteome}
 \alias{example_proteome}
 \title{Example protein data in long format}
-\format{An object of class \code{data.frame} with 85278 rows and 5 columns.}
+\format{
+
+}
 \source{
 PRIDE ID will be added upon the publication of the dataset
 }

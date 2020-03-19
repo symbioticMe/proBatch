@@ -4,11 +4,20 @@
 \alias{fit_nonlinear}
 \title{Fit a non-linear trend (currently optimized for LOESS)}
 \usage{
-fit_nonlinear(df_feature_batch, measure_col = "Intensity",
-  order_col = "order", feature_id = NULL, batch_id = NULL,
-  fit_func = "loess_regression", optimize_span = FALSE,
-  no_fit_imputed = TRUE, qual_col = "m_score", qual_value = 2,
-  min_measurements = 8, ...)
+fit_nonlinear(
+  df_feature_batch,
+  measure_col = "Intensity",
+  order_col = "order",
+  feature_id = NULL,
+  batch_id = NULL,
+  fit_func = "loess_regression",
+  optimize_span = FALSE,
+  no_fit_imputed = TRUE,
+  qual_col = "m_score",
+  qual_value = 2,
+  min_measurements = 8,
+  ...
+)
 }
 \arguments{
 \item{df_feature_batch}{data frame containing response variable e.g. 

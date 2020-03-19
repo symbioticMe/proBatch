@@ -3,7 +3,6 @@
 \docType{package}
 \name{proBatch}
 \alias{proBatch}
-\alias{proBatch-package}
 \title{proBatch: A package for diagnostics and correction of batch effects,
 primarily in proteomics}
 \arguments{

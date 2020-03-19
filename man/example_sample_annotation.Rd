@@ -4,7 +4,8 @@
 \name{example_sample_annotation}
 \alias{example_sample_annotation}
 \title{Sample annotation data version 1}
-\format{A data frame with 233 rows and 11 variables:
+\format{
+A data frame with 233 rows and 11 variables:
 \describe{
   \item{FullRunName}{name of the file with the measurement for each sample, 
   referred to as \code{sample_id_col}}
@@ -30,7 +31,8 @@
   \item{digestion_batch}{peptide digestion batch: 4-level 
   factor of manually annotated batches}
   ...
-}}
+}
+}
 \usage{
 example_sample_annotation
 }

@@ -5,17 +5,32 @@
 \alias{plot_sample_corr_distribution.corrDF}
 \title{Create violin plot of sample correlation distribution}
 \usage{
-plot_sample_corr_distribution(data_matrix, sample_annotation,
-  repeated_samples = NULL, sample_id_col = "FullRunName",
-  batch_col = "MS_batch", biospecimen_id_col = "EarTag",
-  filename = NULL, width = NA, height = NA, units = c("cm", "in",
-  "mm"), plot_title = "Sample correlation distribution",
-  plot_param = "batch_replicate", theme = "classic")
-
-plot_sample_corr_distribution.corrDF(corr_distribution, filename = NULL,
-  width = NA, height = NA, units = c("cm", "in", "mm"),
+plot_sample_corr_distribution(
+  data_matrix,
+  sample_annotation,
+  repeated_samples = NULL,
+  sample_id_col = "FullRunName",
+  batch_col = "MS_batch",
+  biospecimen_id_col = "EarTag",
+  filename = NULL,
+  width = NA,
+  height = NA,
+  units = c("cm", "in", "mm"),
   plot_title = "Sample correlation distribution",
-  plot_param = "batch_replicate", theme = "classic")
+  plot_param = "batch_replicate",
+  theme = "classic"
+)
+
+plot_sample_corr_distribution.corrDF(
+  corr_distribution,
+  filename = NULL,
+  width = NA,
+  height = NA,
+  units = c("cm", "in", "mm"),
+  plot_title = "Sample correlation distribution",
+  plot_param = "batch_replicate",
+  theme = "classic"
+)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

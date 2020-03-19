@@ -4,8 +4,7 @@
 \alias{color_list_to_df}
 \title{Color list to data frame}
 \usage{
-color_list_to_df(color_list, sample_annotation,
-  sample_id_col = "FullRunName")
+color_list_to_df(color_list, sample_annotation, sample_id_col = "FullRunName")
 }
 \arguments{
 \item{color_list}{list of colors}

@@ -4,14 +4,24 @@
 \alias{plot_PVCA}
 \title{Plot variance distribution by variable}
 \usage{
-plot_PVCA(data_matrix, sample_annotation,
+plot_PVCA(
+  data_matrix,
+  sample_annotation,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName", technical_factors = c("MS_batch",
-  "instrument"), biological_factors = c("cell_line", "drug_dose"),
-  fill_the_missing = -1, pca_threshold = 0.6,
-  variance_threshold = 0.01, colors_for_bars = NULL, filename = NULL,
-  width = NA, height = NA, units = c("cm", "in", "mm"),
-  plot_title = NULL, theme = "classic")
+  sample_id_col = "FullRunName",
+  technical_factors = c("MS_batch", "instrument"),
+  biological_factors = c("cell_line", "drug_dose"),
+  fill_the_missing = -1,
+  pca_threshold = 0.6,
+  variance_threshold = 0.01,
+  colors_for_bars = NULL,
+  filename = NULL,
+  width = NA,
+  height = NA,
+  units = c("cm", "in", "mm"),
+  plot_title = NULL,
+  theme = "classic"
+)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
