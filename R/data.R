@@ -57,7 +57,7 @@
 #'   \code{sample_id_col}}
 #'   \item{m_score}{column marking the quality of peptide IDs, used as 
 #'   \code{qual_col} throughout the script; when \code{qual_value} is 2 in this 
-#'   column, peptide has been imputed (requantified)}}
+#'   column, peptide has been imputed (requantified)}
 #' ...
 #' }
 #' @source PRIDE ID will be added upon the publication of the dataset
