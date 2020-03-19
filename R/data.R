@@ -51,8 +51,6 @@
 #'   where N is number of protein peptide group maps to. If 
 #'   1/UniProtID, then this is proteotypic peptide, in functions used as 
 #'   \code{protein_col}}
-#'   \item{Gene}{conventional gene name of corresponding \code{ProteinName}, 
-#'   in functions used as \code{protein_col}}
 #'   \item{FullRunName}{name of the file, in most functions used for 
 #'   \code{sample_id_col}}
 #'   \item{m_score}{column marking the quality of peptide IDs, used as 
