@@ -247,7 +247,7 @@ normalize_data_df <- function(df_long,
                               no_fit_imputed = TRUE,
                               qual_col = NULL,
                               qual_value = 2,
-                              keep_all = FALSE){
+                              keep_all = 'default'){
   
   normalize_func <- match.arg(normalize_func)
   
