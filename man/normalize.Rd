@@ -54,7 +54,7 @@ normalize_data_df(
   no_fit_imputed = TRUE,
   qual_col = NULL,
   qual_value = 2,
-  keep_all = FALSE
+  keep_all = "default"
 )
 }
 \arguments{
