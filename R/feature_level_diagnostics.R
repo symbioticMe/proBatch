@@ -32,24 +32,24 @@
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{feature_name} and (optionally) by \code{batch_col}
 #' @examples 
-#' single_feature_plot <- plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+#' single_feature_plot <- plot_single_feature(feature_name = c("46213_NVGVSFYADKPEVTQEQK_2","10081_NVQGIIDILK_2"), 
 #' df_long = example_proteome, example_sample_annotation, 
 #' qual_col = NULL)
 #' 
 #' #color measurements by factor, related to order (MS_batch)
-#' plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+#' plot_single_feature(feature_name = c("46213_NVGVSFYADKPEVTQEQK_2","10081_NVQGIIDILK_2"), 
 #' df_long = example_proteome, example_sample_annotation, 
 #' qual_col = NULL, color_by_batch = TRUE, batch_col = 'MS_batch')
 #' 
 #' #color measurements by factor, with order-unrelated factor
-#' single_feature_plot <- plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+#' single_feature_plot <- plot_single_feature(feature_name = c("46213_NVGVSFYADKPEVTQEQK_2","10081_NVQGIIDILK_2"), 
 #' df_long = example_proteome, example_sample_annotation, 
 #' qual_col = NULL, color_by_batch = TRUE, batch_col = 'Diet', geom = 'point', 
 #' vline_color = NULL)
 #' 
 #' #saving the plot
 #' \dontrun{
-#' single_feature_plot <- plot_single_feature(feature_name = "46213_NVGVSFYADKPEVTQEQK_2", 
+#' single_feature_plot <- plot_single_feature(feature_name = c("46213_NVGVSFYADKPEVTQEQK_2","10081_NVQGIIDILK_2"), 
 #' df_long = example_proteome, example_sample_annotation, 
 #' qual_col = NULL, filename = 'test_peptide.png', 
 #' width = 28, height = 18, units = 'cm')
@@ -226,7 +226,7 @@ plot_single_feature  <- function(feature_name, df_long,
   #wrap into facets, if several features are displayed
   #split into facets
   if(!is.null(facet_col)){
-    if (length(feature_name) > 1){
+    if (facet_col != feature_id_col && length(feature_name) > 1){
       gg = gg + facet_grid(reformulate(facet_col, feature_id_col), 
                            scales = 'free')
     } else {
