@@ -9,136 +9,57 @@
 \alias{plot_with_fitting_curve}
 \title{Ploting peptide measurements}
 \usage{
-plot_single_feature(
-  feature_name,
-  df_long,
-  sample_annotation = NULL,
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  feature_id_col = "peptide_group_label",
-  geom = c("point", "line"),
-  qual_col = NULL,
-  qual_value = NULL,
-  batch_col = "MS_batch",
-  color_by_batch = FALSE,
-  color_scheme = "brewer",
-  order_col = "order",
-  vline_color = "red",
-  facet_col = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = NULL,
-  theme = "classic",
-  ylimits = NULL
-)
+plot_single_feature(feature_name, df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", geom = c("point", "line"),
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = NULL, theme = "classic", ylimits = NULL)
 
-plot_peptides_of_one_protein(
-  protein_name,
-  peptide_annotation = NULL,
-  protein_col = "ProteinName",
-  df_long,
-  sample_annotation = NULL,
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  feature_id_col = "peptide_group_label",
-  geom = c("point", "line"),
-  qual_col = NULL,
-  qual_value = NULL,
-  batch_col = "MS_batch",
-  color_by_batch = FALSE,
-  color_scheme = "brewer",
-  order_col = "order",
-  vline_color = "red",
-  facet_col = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = sprintf("Peptides of \%s protein", protein_name),
-  theme = "classic"
-)
+plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
+  protein_col = "ProteinName", df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", geom = c("point", "line"),
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = sprintf("Peptides of \%s protein", protein_name),
+  theme = "classic")
 
-plot_spike_in(
-  spike_ins = "BOVIN",
-  peptide_annotation = NULL,
-  protein_col = "ProteinName",
-  df_long,
-  sample_annotation = NULL,
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  feature_id_col = "peptide_group_label",
-  geom = c("point", "line"),
-  qual_col = NULL,
-  qual_value = NULL,
-  batch_col = "MS_batch",
-  color_by_batch = FALSE,
-  color_scheme = "brewer",
-  order_col = "order",
-  vline_color = "red",
-  facet_col = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = sprintf("Spike-in \%s plots", spike_ins),
-  theme = "classic"
-)
+plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
+  protein_col = "ProteinName", df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", geom = c("point", "line"),
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = sprintf("Spike-in \%s plots", spike_ins),
+  theme = "classic")
 
-plot_iRT(
-  irt_pattern = "iRT",
-  peptide_annotation = NULL,
-  protein_col = "ProteinName",
-  df_long,
-  sample_annotation = NULL,
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  feature_id_col = "peptide_group_label",
-  geom = c("point", "line"),
-  qual_col = NULL,
-  qual_value = NULL,
-  batch_col = "MS_batch",
-  color_by_batch = FALSE,
-  color_scheme = "brewer",
-  order_col = "order",
-  vline_color = "red",
-  facet_col = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = "iRT peptide profile",
-  theme = "classic"
-)
+plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
+  protein_col = "ProteinName", df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  feature_id_col = "peptide_group_label", geom = c("point", "line"),
+  qual_col = NULL, qual_value = NULL, batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "red", facet_col = NULL,
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = "iRT peptide profile", theme = "classic")
 
-plot_with_fitting_curve(
-  feature_name,
-  fit_df,
-  fit_value_col = "fit",
-  df_long,
-  sample_annotation = NULL,
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  feature_id_col = "peptide_group_label",
-  geom = c("point", "line"),
-  qual_col = NULL,
-  qual_value = NULL,
-  batch_col = "MS_batch",
-  color_by_batch = FALSE,
-  color_scheme = "brewer",
-  order_col = "order",
-  vline_color = "grey",
-  facet_col = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
+plot_with_fitting_curve(feature_name, fit_df, fit_value_col = "fit",
+  df_long, sample_annotation = NULL, sample_id_col = "FullRunName",
+  measure_col = "Intensity", feature_id_col = "peptide_group_label",
+  geom = c("point", "line"), qual_col = NULL, qual_value = NULL,
+  batch_col = "MS_batch", color_by_batch = FALSE,
+  color_scheme = "brewer", order_col = "order", vline_color = "grey",
+  facet_col = NULL, filename = NULL, width = NA, height = NA,
   units = c("cm", "in", "mm"),
- 
-    plot_title = sprintf("Fitting curve of \%s \\n                                                         peptide",
-    paste(feature_name, collapse = " ")),
-  theme = "classic"
-)
+  plot_title = sprintf("Fitting curve of \%s \\n                                                         peptide",
+  paste(feature_name, collapse = " ")), theme = "classic")
 }
 \arguments{
 \item{feature_name}{name of the selected feature (e.g. peptide) for 
@@ -172,7 +93,7 @@ names.}
 \code{c('point', 'line')})}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in 
+by \code{qual_value}. Design with inferred/requant values in 
 OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 

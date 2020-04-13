@@ -74,7 +74,7 @@
 #' @param no_fit_imputed (logical) whether to use imputed (requant) values, as flagged in 
 #' \code{qual_col} by \code{qual_value} for data transformation
 #' @param qual_col column to color point by certain value denoted 
-#' by \code{color_by_qual_value}. Design with inferred/requant values in 
+#' by \code{qual_value}. Design with inferred/requant values in 
 #' OpenSWATH output data, 
 #' which means argument value has to be set to \code{m_score}.
 #' @param qual_value value in \code{qual_col} to color. For OpenSWATH data,
