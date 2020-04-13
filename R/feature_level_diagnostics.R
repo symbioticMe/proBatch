@@ -230,8 +230,13 @@ plot_single_feature  <- function(feature_name, df_long,
       gg = gg + facet_grid(reformulate(facet_col, feature_id_col), 
                            scales = 'free')
     } else {
-      gg = gg  + facet_wrap(as.formula(paste("~", facet_col)), 
-                            scales = 'free_x')
+      if (facet_col == feature_id_col && length(feature_name) >1){
+        gg = gg + facet_wrap(as.formula(paste("~", feature_id_col)), 
+                             scales = 'free_y')
+      } else {
+        gg = gg  + facet_wrap(as.formula(paste("~", facet_col)), 
+                              scales = 'free_x')
+      }
     }
   } else {
     if (length(feature_name) > 1){
