@@ -124,7 +124,8 @@ plot_single_feature  <- function(feature_name, df_long,
                                  units = c('cm','in','mm'),
                                  plot_title = NULL,
                                  theme = 'classic',
-                                 ylimits = NULL){
+                                 ylimits = NULL,
+                                 base_size = 20){
   
   #to ensure that missing measurements are NAs (to make them disconnected)
   #df_long = df_long %>% complete(!!!syms(c(feature_id_col, sample_id_col)))
@@ -259,7 +260,7 @@ plot_single_feature  <- function(feature_name, df_long,
     
   #Add the theme
   if (!is.null(theme) && theme == 'classic'){
-    gg = gg + theme_classic()
+    gg = gg + theme_classic(base_size = base_size)
   } else{
     message("plotting with default ggplot theme, only theme = 'classic' 
             implemented")
@@ -316,7 +317,8 @@ plot_peptides_of_one_protein <- function(protein_name,
                                          units = c('cm','in','mm'),
                                          plot_title = sprintf('Peptides of %s protein', 
                                                               protein_name),
-                                         theme = 'classic'){
+                                         theme = 'classic',
+                                         base_size = 20){
   
   if (!is.null(peptide_annotation)){
     peptides = peptide_annotation %>%
@@ -371,7 +373,8 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                           filename = NULL, width = NA, height = NA, 
                           units = c('cm','in','mm'),
                           plot_title = sprintf('Spike-in %s plots', spike_ins), 
-                          theme = 'classic'){
+                          theme = 'classic',
+                          base_size = 20){
   
   if(!is.null(protein_col)){
     if(protein_col %in% names(df_long)){
@@ -419,7 +422,8 @@ plot_spike_in <- function(spike_ins = 'BOVIN', peptide_annotation = NULL,
                            order_col = order_col,
                            facet_col = facet_col,
                            plot_title = plot_title, 
-                           theme = theme)
+                           theme = theme, 
+                           base_size = base_size)
   
   #save the plot
   save_ggplot(filename, units, width, height, gg)
@@ -447,7 +451,8 @@ plot_iRT <- function(irt_pattern = 'iRT',
                      filename = NULL, width = NA, height = NA, 
                      units = c('cm','in','mm'),
                      plot_title = 'iRT peptide profile', 
-                     theme = 'classic'){
+                     theme = 'classic',
+                     base_size = 20){
   
   if (!is.null(peptide_annotation)){
     df_long = df_long %>%
@@ -471,7 +476,8 @@ plot_iRT <- function(irt_pattern = 'iRT',
                            vline_color = vline_color,
                            facet_col = facet_col,
                            plot_title = plot_title, 
-                           theme = theme)
+                           theme = theme, 
+                           base_size = base_size)
   
   #save the plot
   save_ggplot(filename, units, width, height, gg)
@@ -502,7 +508,8 @@ plot_with_fitting_curve <- function(feature_name,
                                                          peptide", 
                                                          paste(feature_name, 
                                                                collapse = ' ')),
-                                    theme = 'classic'){
+                                    theme = 'classic',
+                                    base_size = 20){
   
   if(length(feature_name) > 10){
     warning("Visualisation of individual features can be suboptimal,
@@ -523,7 +530,8 @@ plot_with_fitting_curve <- function(feature_name,
                            vline_color = vline_color, 
                            facet_col = facet_col,
                            plot_title = plot_title, 
-                           theme = theme)
+                           theme = theme, 
+                           base_size = base_size)
   
   fit_df = fit_df %>%
     filter(!!(sym(feature_id_col)) %in% feature_name)

@@ -542,7 +542,8 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                       filename = NULL, width = NA, height = NA, 
                       units = c('cm','in','mm'),
                       plot_title = NULL,
-                      theme = 'classic'){
+                      theme = 'classic',
+                      base_size = 20){
   pvca_res = prepare_PVCA_df(data_matrix = data_matrix, 
                              sample_annotation = sample_annotation,
                              feature_id_col = feature_id_col,
@@ -553,7 +554,10 @@ plot_PVCA <- function(data_matrix, sample_annotation,
                              pca_threshold = pca_threshold, 
                              variance_threshold = variance_threshold)
   
-  gg = plot_PVCA.df(pvca_res = pvca_res)
+  gg = plot_PVCA.df(pvca_res = pvca_res, colors_for_bars = colors_for_bars, 
+                    filename = filename, width = width, height = height, units = units, 
+                    plot_title = plot_title,
+                    theme = theme, base_size = base_size)
   return(gg)
 }
 
@@ -653,7 +657,8 @@ plot_PVCA.df <- function(pvca_res,
                       filename = NULL, width = NA, height = NA, 
                       units = c('cm','in','mm'),
                       plot_title = NULL,
-                      theme = 'classic'){
+                      theme = 'classic',
+                      base_size = 20){
   pvca_res = pvca_res %>%
     mutate(label = factor(label, levels=label))
   
@@ -683,7 +688,7 @@ plot_PVCA.df <- function(pvca_res,
   
   #Change the theme
   if(!is.null(theme) && theme == 'classic'){
-    gg = gg + theme_classic()
+    gg = gg + theme_classic(base_size = base_size)
   }else{
     message("plotting with default ggplot theme, only theme = 'classic' 
             implemented")
@@ -744,7 +749,8 @@ plot_PCA <- function(data_matrix, sample_annotation,
                      filename = NULL, width = NA, height = NA, 
                      units = c('cm','in','mm'),
                      plot_title = NULL,
-                     theme = 'classic'){
+                     theme = 'classic',
+                     base_size = 20){
   
   df_long = matrix_to_long(data_matrix, sample_id_col = sample_id_col)
   df_long = check_sample_consistency(sample_annotation, sample_id_col, df_long, 
@@ -783,7 +789,7 @@ plot_PCA <- function(data_matrix, sample_annotation,
   
   #Change the theme
   if(!is.null(theme) && theme == 'classic'){
-    gg = gg + theme_classic()
+    gg = gg + theme_classic(base_size = base_size)
   }else{
     message("plotting with default ggplot theme, only theme = 'classic' 
             implemented")

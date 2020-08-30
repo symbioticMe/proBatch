@@ -446,7 +446,7 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
                                                  units = c('cm','in','mm'),
                                                  plot_title = 'Sample correlation distribution',
                                                  plot_param = 'batch_replicate',
-                                                 theme = 'classic'){
+                                                 theme = 'classic', base_size = 20){
   
   gg <- ggplot(corr_distribution, aes_string(x = plot_param, y = 'correlation'))+
     geom_violin(scale = 'width')+
@@ -467,7 +467,7 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
     }
   }
   if (!is.null(theme) && theme == 'classic'){
-    gg = gg + theme_classic()
+    gg = gg + theme_classic(base_size = base_size)
   } else{
     message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }
@@ -631,7 +631,8 @@ plot_peptide_corr_distribution.corrDF <- function(corr_distribution,
                                                   filename = NULL, width = NA, height = NA, 
                                                   units = c('cm','in','mm'),
                                                   plot_title = 'Correlation of peptides', 
-                                                  theme = 'classic') {
+                                                  theme = 'classic',
+                                                  base_size = 20) {
   median_same_prot = corr_distribution %>%
     filter(same_protein == 'same protein') %>%
     summarize(median = median(correlation, na.rm = TRUE)) %>%
@@ -661,7 +662,7 @@ plot_peptide_corr_distribution.corrDF <- function(corr_distribution,
   }
   
   if (!is.null(theme) && theme == 'classic'){
-    gg = gg + theme_classic()
+    gg = gg + theme_classic(base_size = base_size)
   } else{
     message("plotting with default ggplot theme, only theme = 'classic' implemented")
   }

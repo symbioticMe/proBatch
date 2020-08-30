@@ -48,6 +48,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
                              units = c('cm','in','mm'),
                              plot_title = NULL,
                              theme = 'classic',
+                             base_size = 20,
                              ylimits = NULL){
   
   #Create a data frame with sample averages
@@ -136,7 +137,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   
   #Change the theme
   if(!is.null(theme) && theme == 'classic'){
-    gg = gg + theme_classic()
+    gg = gg + theme_classic(base_size = base_size)
   } else{
     message("plotting with default ggplot theme, only theme = 'classic' 
             implemented")
@@ -205,6 +206,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
                          filename = NULL, width = NA, height = NA, 
                          units = c('cm','in','mm'),
                          plot_title = NULL, theme = 'classic',
+                         base_size = 20,
                          ylimits = NULL, outliers = TRUE){
   
   #Check the consistency of sample ann. sample IDs and measur. table sample IDs
@@ -275,7 +277,7 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   
   #Change the plot theme
   if(!is.null(theme) && theme == 'classic'){
-    gg = gg + theme_classic()
+    gg = gg + theme_classic(base_size = base_size)
   } else{
     message("plotting with default ggplot theme, only theme = 'classic' 
             implemented")

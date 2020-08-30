@@ -63,7 +63,7 @@ plot_split_violin_with_boxplot <- function(df, y_col = 'y',
   }
   
   if(theme == 'classic'){
-    p = p + theme_classic()
+    p = p + theme_classic(base_size = 20)
   }
   
   if(!is.null(plot_title)){
