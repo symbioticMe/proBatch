@@ -4,15 +4,9 @@
 \alias{check_sample_consistency}
 \title{Check if sample annotation is consistent with data matrix and join the two}
 \usage{
-check_sample_consistency(
-  sample_annotation,
-  sample_id_col,
-  df_long,
-  batch_col = NULL,
-  order_col = NULL,
-  facet_col = NULL,
-  merge = TRUE
-)
+check_sample_consistency(sample_annotation, sample_id_col, df_long,
+  batch_col = NULL, order_col = NULL, facet_col = NULL,
+  merge = TRUE)
 }
 \arguments{
 \item{sample_annotation}{data frame with: 

@@ -6,44 +6,21 @@
 \alias{plot_boxplot}
 \title{Plot per-sample mean or boxplots for initial assessment}
 \usage{
-plot_sample_mean(
-  data_matrix,
-  sample_annotation = NULL,
-  sample_id_col = "FullRunName",
-  batch_col = "MS_batch",
-  color_by_batch = FALSE,
-  color_scheme = "brewer",
-  order_col = "order",
-  vline_color = "grey",
-  facet_col = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = NULL,
-  theme = "classic",
-  ylimits = NULL
-)
+plot_sample_mean(data_matrix, sample_annotation = NULL,
+  sample_id_col = "FullRunName", batch_col = "MS_batch",
+  color_by_batch = FALSE, color_scheme = "brewer",
+  order_col = "order", vline_color = "grey", facet_col = NULL,
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = NULL, theme = "classic", base_size = 20,
+  ylimits = NULL)
 
-plot_boxplot(
-  df_long,
-  sample_annotation = NULL,
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  batch_col = "MS_batch",
-  color_by_batch = TRUE,
-  color_scheme = "brewer",
-  order_col = "order",
-  facet_col = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = NULL,
-  theme = "classic",
-  ylimits = NULL,
-  outliers = TRUE
-)
+plot_boxplot(df_long, sample_annotation = NULL,
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  batch_col = "MS_batch", color_by_batch = TRUE,
+  color_scheme = "brewer", order_col = "order", facet_col = NULL,
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = NULL, theme = "classic", base_size = 20,
+  ylimits = NULL, outliers = TRUE)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

@@ -4,13 +4,9 @@
 \alias{dates_to_posix}
 \title{Convert data/time to POSIXct}
 \usage{
-dates_to_posix(
-  sample_annotation,
-  time_column = c("RunDate", "RunTime"),
-  new_time_column = "DateTime",
-  dateTimeFormat = c("\%b_\%d", "\%H:\%M:\%S"),
-  tz = "GMT"
-)
+dates_to_posix(sample_annotation, time_column = c("RunDate", "RunTime"),
+  new_time_column = "DateTime", dateTimeFormat = c("\%b_\%d",
+  "\%H:\%M:\%S"), tz = "GMT")
 }
 \arguments{
 \item{sample_annotation}{data frame with: 

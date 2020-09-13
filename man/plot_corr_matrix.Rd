@@ -4,22 +4,12 @@
 \alias{plot_corr_matrix}
 \title{Visualise correlation matrix}
 \usage{
-plot_corr_matrix(
-  corr_matrix,
-  annotation = NULL,
-  annotation_id_col = "FullRunName",
-  factors_to_plot = NULL,
-  cluster_rows = FALSE,
-  cluster_cols = FALSE,
-  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
-  color_list = NULL,
-  filename = NULL,
-  width = 7,
-  height = 7,
-  units = c("cm", "in", "mm"),
-  plot_title = NULL,
-  ...
-)
+plot_corr_matrix(corr_matrix, annotation = NULL,
+  annotation_id_col = "FullRunName", factors_to_plot = NULL,
+  cluster_rows = FALSE, cluster_cols = FALSE,
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
+  "RdYlBu")))(100), color_list = NULL, filename = NULL, width = 7,
+  height = 7, units = c("cm", "in", "mm"), plot_title = NULL, ...)
 }
 \arguments{
 \item{corr_matrix}{square correlation matrix}

@@ -4,24 +4,16 @@
 \alias{plot_protein_corrplot}
 \title{Peptide correlation matrix (heatmap)}
 \usage{
-plot_protein_corrplot(
-  data_matrix,
-  protein_name,
-  peptide_annotation = NULL,
-  protein_col = "ProteinName",
+plot_protein_corrplot(data_matrix, protein_name,
+  peptide_annotation = NULL, protein_col = "ProteinName",
   feature_id_col = "peptide_group_label",
-  factors_to_plot = c("ProteinName"),
-  cluster_rows = FALSE,
+  factors_to_plot = c("ProteinName"), cluster_rows = FALSE,
   cluster_cols = FALSE,
-  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
-  color_list = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = sprintf("Peptide correlation matrix of \%s protein", protein_name),
-  ...
-)
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
+  "RdYlBu")))(100), color_list = NULL, filename = NULL, width = NA,
+  height = NA, units = c("cm", "in", "mm"),
+  plot_title = sprintf("Peptide correlation matrix of \%s protein",
+  protein_name), ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

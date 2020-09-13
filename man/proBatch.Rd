@@ -3,6 +3,7 @@
 \docType{package}
 \name{proBatch}
 \alias{proBatch}
+\alias{proBatch-package}
 \title{proBatch: A package for diagnostics and correction of batch effects,
 primarily in proteomics}
 \arguments{
@@ -78,7 +79,7 @@ plotted in this diagnostic plot (assumed to be present in
 \code{qual_col} by \code{qual_value} for data transformation}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in 
+by \code{qual_value}. Design with inferred/requant values in 
 OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 

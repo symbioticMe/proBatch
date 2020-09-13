@@ -4,22 +4,13 @@
 \alias{plot_PCA}
 \title{plot PCA plot}
 \usage{
-plot_PCA(
-  data_matrix,
-  sample_annotation,
+plot_PCA(data_matrix, sample_annotation,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName",
-  color_by = "MS_batch",
-  PC_to_plot = c(1, 2),
-  fill_the_missing = -1,
-  color_scheme = "brewer",
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = NULL,
-  theme = "classic"
-)
+  sample_id_col = "FullRunName", color_by = "MS_batch",
+  PC_to_plot = c(1, 2), fill_the_missing = -1,
+  color_scheme = "brewer", filename = NULL, width = NA,
+  height = NA, units = c("cm", "in", "mm"), plot_title = NULL,
+  theme = "classic", base_size = 20)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

@@ -4,20 +4,11 @@
 \alias{fit_nonlinear}
 \title{Fit a non-linear trend (currently optimized for LOESS)}
 \usage{
-fit_nonlinear(
-  df_feature_batch,
-  measure_col = "Intensity",
-  order_col = "order",
-  feature_id = NULL,
-  batch_id = NULL,
-  fit_func = "loess_regression",
-  optimize_span = FALSE,
-  no_fit_imputed = TRUE,
-  qual_col = "m_score",
-  qual_value = 2,
-  min_measurements = 8,
-  ...
-)
+fit_nonlinear(df_feature_batch, measure_col = "Intensity",
+  order_col = "order", feature_id = NULL, batch_id = NULL,
+  fit_func = "loess_regression", optimize_span = FALSE,
+  no_fit_imputed = TRUE, qual_col = "m_score", qual_value = 2,
+  min_measurements = 8, ...)
 }
 \arguments{
 \item{df_feature_batch}{data frame containing response variable e.g. 
@@ -49,7 +40,7 @@ order. It is used for in initial assessment plots
 \item{no_fit_imputed}{(logical) whether to fit the imputed (requant) values}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in 
+by \code{qual_value}. Design with inferred/requant values in 
 OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 

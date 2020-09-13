@@ -12,50 +12,28 @@
 \usage{
 quantile_normalize_dm(data_matrix)
 
-quantile_normalize_df(
-  df_long,
-  feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  no_fit_imputed = TRUE,
-  qual_col = NULL,
-  qual_value = 2,
-  keep_all = "default"
-)
+quantile_normalize_df(df_long, feature_id_col = "peptide_group_label",
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  no_fit_imputed = TRUE, qual_col = NULL, qual_value = 2,
+  keep_all = "default")
 
 normalize_sample_medians_dm(data_matrix)
 
-normalize_sample_medians_df(
-  df_long,
+normalize_sample_medians_df(df_long,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  no_fit_imputed = FALSE,
-  qual_col = NULL,
-  qual_value = 2,
-  keep_all = "default"
-)
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  no_fit_imputed = FALSE, qual_col = NULL, qual_value = 2,
+  keep_all = "default")
 
-normalize_data_dm(
-  data_matrix,
-  normalize_func = c("quantile", "medianCentering"),
-  log_base = NULL,
-  offset = 1
-)
+normalize_data_dm(data_matrix, normalize_func = c("quantile",
+  "medianCentering"), log_base = NULL, offset = 1)
 
-normalize_data_df(
-  df_long,
-  normalize_func = c("quantile", "medianCentering"),
-  log_base = NULL,
-  offset = 1,
+normalize_data_df(df_long, normalize_func = c("quantile",
+  "medianCentering"), log_base = NULL, offset = 1,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  no_fit_imputed = TRUE,
-  qual_col = NULL,
-  qual_value = 2,
-  keep_all = "default"
-)
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  no_fit_imputed = TRUE, qual_col = NULL, qual_value = 2,
+  keep_all = "default")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -84,7 +62,7 @@ internally for consistency.}
 \code{qual_col} by \code{qual_value} for data transformation}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in 
+by \code{qual_value}. Design with inferred/requant values in 
 OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 

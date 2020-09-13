@@ -4,28 +4,16 @@
 \alias{plot_heatmap_diagnostic}
 \title{Plot the heatmap of samples (cols) vs features (rows)}
 \usage{
-plot_heatmap_diagnostic(
-  data_matrix,
-  sample_annotation = NULL,
-  sample_id_col = "FullRunName",
-  factors_to_plot = NULL,
-  fill_the_missing = -1,
-  color_for_missing = "black",
-  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
-  cluster_rows = TRUE,
-  cluster_cols = FALSE,
-  color_list = NULL,
-  peptide_annotation = NULL,
+plot_heatmap_diagnostic(data_matrix, sample_annotation = NULL,
+  sample_id_col = "FullRunName", factors_to_plot = NULL,
+  fill_the_missing = -1, color_for_missing = "black",
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
+  "RdYlBu")))(100), cluster_rows = TRUE, cluster_cols = FALSE,
+  color_list = NULL, peptide_annotation = NULL,
   feature_id_col = "peptide_group_label",
   factors_of_feature_ann = c("KEGG_pathway", "evolutionary_distance"),
-  color_list_features = NULL,
-  filename = NULL,
-  width = 7,
-  height = 7,
-  units = c("cm", "in", "mm"),
-  plot_title = NULL,
-  ...
-)
+  color_list_features = NULL, filename = NULL, width = 7,
+  height = 7, units = c("cm", "in", "mm"), plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

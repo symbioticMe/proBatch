@@ -4,15 +4,12 @@
 \alias{sample_annotation_to_colors}
 \title{Generate colors for sample annotation}
 \usage{
-sample_annotation_to_colors(
-  sample_annotation,
-  sample_id_col = "FullRunName",
-  factor_columns = c("MS_batch", "EarTag", "digestion_batch", "Strain", "Diet"),
+sample_annotation_to_colors(sample_annotation,
+  sample_id_col = "FullRunName", factor_columns = c("MS_batch",
+  "EarTag", "digestion_batch", "Strain", "Diet"),
   numeric_columns = c("DateTime", "order"),
-  rare_categories_to_other = TRUE,
-  guess_factors = FALSE,
-  numeric_palette_type = "brewer"
-)
+  rare_categories_to_other = TRUE, guess_factors = FALSE,
+  numeric_palette_type = "brewer")
 }
 \arguments{
 \item{sample_annotation}{data frame with: 

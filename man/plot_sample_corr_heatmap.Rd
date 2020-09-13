@@ -4,24 +4,14 @@
 \alias{plot_sample_corr_heatmap}
 \title{Sample correlation matrix (heatmap)}
 \usage{
-plot_sample_corr_heatmap(
-  data_matrix,
-  samples_to_plot = NULL,
-  sample_annotation = NULL,
-  sample_id_col = "FullRunName",
-  factors_to_plot = NULL,
-  cluster_rows = FALSE,
-  cluster_cols = FALSE,
-  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
-  color_list = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
+plot_sample_corr_heatmap(data_matrix, samples_to_plot = NULL,
+  sample_annotation = NULL, sample_id_col = "FullRunName",
+  factors_to_plot = NULL, cluster_rows = FALSE, cluster_cols = FALSE,
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
+  "RdYlBu")))(100), color_list = NULL, filename = NULL, width = NA,
+  height = NA, units = c("cm", "in", "mm"),
   plot_title = sprintf("Correlation matrix of\%s samples",
-    ifelse(is.null(samples_to_plot), "", " selected")),
-  ...
-)
+  ifelse(is.null(samples_to_plot), "", " selected")), ...)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

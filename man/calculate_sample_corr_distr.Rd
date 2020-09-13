@@ -5,14 +5,9 @@
 \title{Calculates correlation for all pairs of the samples in data matrix, labels 
 as replicated/same_batch/unrelated in output columns (see "Value").}
 \usage{
-calculate_sample_corr_distr(
-  data_matrix,
-  sample_annotation,
-  repeated_samples = NULL,
-  biospecimen_id_col = "EarTag",
-  sample_id_col = "FullRunName",
-  batch_col = "MS_batch"
-)
+calculate_sample_corr_distr(data_matrix, sample_annotation,
+  repeated_samples = NULL, biospecimen_id_col = "EarTag",
+  sample_id_col = "FullRunName", batch_col = "MS_batch")
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

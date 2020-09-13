@@ -4,21 +4,12 @@
 \alias{plot_CV_distr}
 \title{Plot CV distribution to compare various steps of the analysis}
 \usage{
-plot_CV_distr(
-  df_long,
-  sample_annotation = NULL,
+plot_CV_distr(df_long, sample_annotation = NULL,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  biospecimen_id_col = "EarTag",
-  batch_col = NULL,
-  unlog = TRUE,
-  log_base = 2,
-  offset = 1,
-  plot_title = NULL,
-  filename = NULL,
-  theme = "classic"
-)
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  biospecimen_id_col = "EarTag", batch_col = NULL, unlog = TRUE,
+  log_base = 2, offset = 1, plot_title = NULL, filename = NULL,
+  theme = "classic")
 }
 \arguments{
 \item{df_long}{as in \code{df_long} for the rest of the package, but, when it 

@@ -4,17 +4,12 @@
 \alias{prepare_PVCA_df}
 \title{prepare the weights of Principal Variance Components}
 \usage{
-prepare_PVCA_df(
-  data_matrix,
-  sample_annotation,
+prepare_PVCA_df(data_matrix, sample_annotation,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName",
-  technical_factors = c("MS_batch", "instrument"),
-  biological_factors = c("cell_line", "drug_dose"),
-  fill_the_missing = -1,
-  pca_threshold = 0.6,
-  variance_threshold = 0.01
-)
+  sample_id_col = "FullRunName", technical_factors = c("MS_batch",
+  "instrument"), biological_factors = c("cell_line", "drug_dose"),
+  fill_the_missing = -1, pca_threshold = 0.6,
+  variance_threshold = 0.01)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

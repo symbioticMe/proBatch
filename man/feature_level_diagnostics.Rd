@@ -16,7 +16,8 @@ plot_single_feature(feature_name, df_long, sample_annotation = NULL,
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
   filename = NULL, width = NA, height = NA, units = c("cm", "in",
-  "mm"), plot_title = NULL, theme = "classic", ylimits = NULL)
+  "mm"), plot_title = NULL, theme = "classic", ylimits = NULL,
+  base_size = 20)
 
 plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
@@ -27,7 +28,7 @@ plot_peptides_of_one_protein(protein_name, peptide_annotation = NULL,
   order_col = "order", vline_color = "red", facet_col = NULL,
   filename = NULL, width = NA, height = NA, units = c("cm", "in",
   "mm"), plot_title = sprintf("Peptides of \%s protein", protein_name),
-  theme = "classic")
+  theme = "classic", base_size = 20)
 
 plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
@@ -38,7 +39,7 @@ plot_spike_in(spike_ins = "BOVIN", peptide_annotation = NULL,
   order_col = "order", vline_color = "red", facet_col = NULL,
   filename = NULL, width = NA, height = NA, units = c("cm", "in",
   "mm"), plot_title = sprintf("Spike-in \%s plots", spike_ins),
-  theme = "classic")
+  theme = "classic", base_size = 20)
 
 plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
   protein_col = "ProteinName", df_long, sample_annotation = NULL,
@@ -48,7 +49,8 @@ plot_iRT(irt_pattern = "iRT", peptide_annotation = NULL,
   color_by_batch = FALSE, color_scheme = "brewer",
   order_col = "order", vline_color = "red", facet_col = NULL,
   filename = NULL, width = NA, height = NA, units = c("cm", "in",
-  "mm"), plot_title = "iRT peptide profile", theme = "classic")
+  "mm"), plot_title = "iRT peptide profile", theme = "classic",
+  base_size = 20)
 
 plot_with_fitting_curve(feature_name, fit_df, fit_value_col = "fit",
   df_long, sample_annotation = NULL, sample_id_col = "FullRunName",
@@ -59,7 +61,8 @@ plot_with_fitting_curve(feature_name, fit_df, fit_value_col = "fit",
   facet_col = NULL, filename = NULL, width = NA, height = NA,
   units = c("cm", "in", "mm"),
   plot_title = sprintf("Fitting curve of \%s \\n                                                         peptide",
-  paste(feature_name, collapse = " ")), theme = "classic")
+  paste(feature_name, collapse = " ")), theme = "classic",
+  base_size = 20)
 }
 \arguments{
 \item{feature_name}{name of the selected feature (e.g. peptide) for 

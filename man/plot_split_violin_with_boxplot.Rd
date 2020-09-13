@@ -4,16 +4,9 @@
 \alias{plot_split_violin_with_boxplot}
 \title{Plot split violin plot (convenient to compare distribution before and after)}
 \usage{
-plot_split_violin_with_boxplot(
-  df,
-  y_col = "y",
-  col_for_color = "m",
-  col_for_box = "x",
-  colors_for_plot = c("#8f1811", "#F8C333"),
-  hlineintercept = NULL,
-  plot_title = NULL,
-  theme = "classic"
-)
+plot_split_violin_with_boxplot(df, y_col = "y", col_for_color = "m",
+  col_for_box = "x", colors_for_plot = c("#8f1811", "#F8C333"),
+  hlineintercept = NULL, plot_title = NULL, theme = "classic")
 }
 \arguments{
 \item{df}{data.frame with \code{y_col}, \code{col_for_color}, \code{col_for_box}}

@@ -4,16 +4,9 @@
 \alias{plot_PVCA.df}
 \title{plot PVCA, when the analysis is completed}
 \usage{
-plot_PVCA.df(
-  pvca_res,
-  colors_for_bars = NULL,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = NULL,
-  theme = "classic"
-)
+plot_PVCA.df(pvca_res, colors_for_bars = NULL, filename = NULL,
+  width = NA, height = NA, units = c("cm", "in", "mm"),
+  plot_title = NULL, theme = "classic", base_size = 20)
 }
 \arguments{
 \item{pvca_res}{data frame of weights of Principal Variance Components, result

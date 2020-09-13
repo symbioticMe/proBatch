@@ -4,8 +4,7 @@
 \name{example_proteome}
 \alias{example_proteome}
 \title{Example protein data in long format}
-\format{
-A data frame with 124655 rows and 7 variables:
+\format{A data frame with 124655 rows and 7 variables:
 \describe{
   \item{peptide_group_label}{peptide ID, which is regular feature level. 
   This column is mostly used as \code{feature_id_col}} used for merging with 
@@ -23,8 +22,7 @@ A data frame with 124655 rows and 7 variables:
   \code{qual_col} throughout the script; when \code{qual_value} is 2 in this 
   column, peptide has been imputed (requantified)}
 ...
-}
-}
+}}
 \source{
 PRIDE ID will be added upon the publication of the dataset
 }

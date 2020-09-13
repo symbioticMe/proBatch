@@ -4,14 +4,9 @@
 \alias{long_to_matrix}
 \title{Long to wide data format conversion}
 \usage{
-long_to_matrix(
-  df_long,
-  feature_id_col = "peptide_group_label",
-  measure_col = "Intensity",
-  sample_id_col = "FullRunName",
-  qual_col = NULL,
-  qual_value = 2
-)
+long_to_matrix(df_long, feature_id_col = "peptide_group_label",
+  measure_col = "Intensity", sample_id_col = "FullRunName",
+  qual_col = NULL, qual_value = 2)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
@@ -32,7 +27,7 @@ internally for consistency.}
 where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{qual_col}{column to color point by certain value denoted 
-by \code{color_by_qual_value}. Design with inferred/requant values in 
+by \code{qual_value}. Design with inferred/requant values in 
 OpenSWATH output data, 
 which means argument value has to be set to \code{m_score}.}
 
@@ -52,7 +47,6 @@ proteome_matrix <- long_to_matrix(example_proteome)
 
 }
 \seealso{
-Other matrix manipulation functions: 
-\code{\link{matrix_to_long}()}
+Other matrix manipulation functions: \code{\link{matrix_to_long}}
 }
 \concept{matrix manipulation functions}

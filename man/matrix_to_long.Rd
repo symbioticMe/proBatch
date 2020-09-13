@@ -4,14 +4,9 @@
 \alias{matrix_to_long}
 \title{Wide to long conversion}
 \usage{
-matrix_to_long(
-  data_matrix,
-  sample_annotation = NULL,
-  feature_id_col = "peptide_group_label",
-  measure_col = "Intensity",
-  sample_id_col = "FullRunName",
-  step = NULL
-)
+matrix_to_long(data_matrix, sample_annotation = NULL,
+  feature_id_col = "peptide_group_label", measure_col = "Intensity",
+  sample_id_col = "FullRunName", step = NULL)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
@@ -54,7 +49,6 @@ example_sample_annotation)
 
 }
 \seealso{
-Other matrix manipulation functions: 
-\code{\link{long_to_matrix}()}
+Other matrix manipulation functions: \code{\link{long_to_matrix}}
 }
 \concept{matrix manipulation functions}

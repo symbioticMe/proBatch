@@ -5,28 +5,16 @@
 \alias{plot_peptide_corr_distribution.corrDF}
 \title{Create violin plot of peptide correlation distribution}
 \usage{
-plot_peptide_corr_distribution(
-  data_matrix,
-  peptide_annotation,
-  protein_col = "ProteinName",
-  feature_id_col = "peptide_group_label",
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = "Distribution of peptide correlation",
-  theme = "classic"
-)
+plot_peptide_corr_distribution(data_matrix, peptide_annotation,
+  protein_col = "ProteinName", feature_id_col = "peptide_group_label",
+  filename = NULL, width = NA, height = NA, units = c("cm", "in",
+  "mm"), plot_title = "Distribution of peptide correlation",
+  theme = "classic")
 
-plot_peptide_corr_distribution.corrDF(
-  corr_distribution,
-  filename = NULL,
-  width = NA,
-  height = NA,
-  units = c("cm", "in", "mm"),
-  plot_title = "Correlation of peptides",
-  theme = "classic"
-)
+plot_peptide_corr_distribution.corrDF(corr_distribution, filename = NULL,
+  width = NA, height = NA, units = c("cm", "in", "mm"),
+  plot_title = "Correlation of peptides", theme = "classic",
+  base_size = 20)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with

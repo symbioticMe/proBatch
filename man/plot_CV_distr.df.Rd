@@ -4,13 +4,8 @@
 \alias{plot_CV_distr.df}
 \title{Plot the distribution (boxplots) of per-batch per-step CV of features}
 \usage{
-plot_CV_distr.df(
-  CV_df,
-  plot_title = NULL,
-  filename = NULL,
-  theme = "classic",
-  log_y_scale = TRUE
-)
+plot_CV_distr.df(CV_df, plot_title = NULL, filename = NULL,
+  theme = "classic", log_y_scale = TRUE)
 }
 \arguments{
 \item{CV_df}{data frame with Total CV for each feature & (optionally) per-batch CV}

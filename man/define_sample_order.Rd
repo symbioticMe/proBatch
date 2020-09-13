@@ -4,15 +4,8 @@
 \alias{define_sample_order}
 \title{Defining sample order internally}
 \usage{
-define_sample_order(
-  order_col,
-  sample_annotation,
-  facet_col,
-  batch_col,
-  df_long,
-  sample_id_col,
-  color_by_batch
-)
+define_sample_order(order_col, sample_annotation, facet_col, batch_col,
+  df_long, sample_id_col, color_by_batch)
 }
 \arguments{
 \item{order_col}{column in \code{sample_annotation} that determines sample 

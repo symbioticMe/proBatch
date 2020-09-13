@@ -4,18 +4,11 @@
 \alias{calculate_feature_CV}
 \title{Calculate CV distribution for each feature}
 \usage{
-calculate_feature_CV(
-  df_long,
-  sample_annotation = NULL,
+calculate_feature_CV(df_long, sample_annotation = NULL,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName",
-  measure_col = "Intensity",
-  batch_col = NULL,
-  biospecimen_id_col = NULL,
-  unlog = TRUE,
-  log_base = 2,
-  offset = 1
-)
+  sample_id_col = "FullRunName", measure_col = "Intensity",
+  batch_col = NULL, biospecimen_id_col = NULL, unlog = TRUE,
+  log_base = 2, offset = 1)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single

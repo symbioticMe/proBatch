@@ -4,28 +4,17 @@
 \alias{plot_heatmap_generic}
 \title{Plot the heatmap}
 \usage{
-plot_heatmap_generic(
-  data_matrix,
-  column_annotation_df = NULL,
-  row_annotation_df = NULL,
-  col_ann_id_col = "FullRunName",
+plot_heatmap_generic(data_matrix, column_annotation_df = NULL,
+  row_annotation_df = NULL, col_ann_id_col = "FullRunName",
   row_ann_id_col = "peptide_group_label",
   columns_for_cols = c("MS_batch", "Diet", "DateTime", "order"),
-  columns_for_rows = c("KEGG_pathway", "WGCNA_module", "evolutionary_distance"),
-  cluster_rows = FALSE,
-  cluster_cols = TRUE,
-  annotation_color_cols = NULL,
-  annotation_color_rows = NULL,
-  fill_the_missing = -1,
-  color_for_missing = "black",
-  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
-  filename = NULL,
-  width = 7,
-  height = 7,
-  units = c("cm", "in", "mm"),
-  plot_title = NULL,
-  ...
-)
+  columns_for_rows = c("KEGG_pathway", "WGCNA_module",
+  "evolutionary_distance"), cluster_rows = FALSE, cluster_cols = TRUE,
+  annotation_color_cols = NULL, annotation_color_rows = NULL,
+  fill_the_missing = -1, color_for_missing = "black",
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
+  "RdYlBu")))(100), filename = NULL, width = 7, height = 7,
+  units = c("cm", "in", "mm"), plot_title = NULL, ...)
 }
 \arguments{
 \item{data_matrix}{the matrix of data to be plotted}

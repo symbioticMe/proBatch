@@ -8,9 +8,11 @@
 \alias{unlog_dm}
 \title{Functions to log transform raw data before normalization and batch correction}
 \usage{
-log_transform_df(df_long, log_base = 2, offset = 1, measure_col = "Intensity")
+log_transform_df(df_long, log_base = 2, offset = 1,
+  measure_col = "Intensity")
 
-unlog_df(df_long, log_base = 2, offset = 1, measure_col = "Intensity")
+unlog_df(df_long, log_base = 2, offset = 1,
+  measure_col = "Intensity")
 
 log_transform_dm(data_matrix, log_base = 2, offset = 1)
 

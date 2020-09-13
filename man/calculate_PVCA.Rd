@@ -4,16 +4,11 @@
 \alias{calculate_PVCA}
 \title{Calculate variance distribution by variable}
 \usage{
-calculate_PVCA(
-  data_matrix,
-  sample_annotation,
+calculate_PVCA(data_matrix, sample_annotation,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName",
-  factors_for_PVCA = c("MS_batch", "digestion_batch", "Diet", "Sex", "Strain"),
-  pca_threshold = 0.6,
-  variance_threshold = 0.01,
-  fill_the_missing = -1
-)
+  sample_id_col = "FullRunName", factors_for_PVCA = c("MS_batch",
+  "digestion_batch", "Diet", "Sex", "Strain"), pca_threshold = 0.6,
+  variance_threshold = 0.01, fill_the_missing = -1)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
