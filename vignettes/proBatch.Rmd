@@ -243,7 +243,7 @@ and name of corresponding protein (in this vignette, we use `Gene` name).
 The `proBatch` package can be applied to any dataset, for which an
 intensity matrix and a sample annotation tables are available. However,
 the package was primarily designed with proteomic data in mind, and
-thoroughly tested on SWATH data. Thus, as and example dataset we include
+thoroughly tested on SWATH data. Thus, as an example dataset we include
 a reduced SWATH-MS measurement file, generated from a BXD mouse aging
 study. In this study, the liver proteome of mouse from BXD reference
 population have been profiled to identify proteome changes associated
@@ -604,7 +604,7 @@ correction. To assess the bias in the data, one can choose a feature
 known. In our package, `plot_peptides_of_one_protein()` allows
 plotting peptides of interest e.g. from biologically well understood
 protein. If spike-in proteins or peptides have been added to the
-mixture, one can use the `plot_spike_ins()` function instead. In most
+mixture, one can use the `plot_spike_in()` function instead. In most
 DIA datasets iRT peptides [10] are added in controlled quantities and
 can be visualized with the `plot_iRT()` function.
 
@@ -815,7 +815,7 @@ p1 = plot_sample_corr_heatmap(log_transformed_matrix,
                               \nselected replicated samples', 
                               color_list = color_list,
                               heatmap_color = heatmap_colors, breaks = breaksList, 
-                              cluster_rows= FALSE, cluster_cols=FALSE,fontsize = 4,
+                              cluster_rows = FALSE, cluster_cols = FALSE,fontsize = 4,
                               annotation_names_col = TRUE, annotation_legend = FALSE, 
                               show_colnames = FALSE)
 
@@ -827,7 +827,7 @@ p2 = plot_sample_corr_heatmap(batch_corrected_matrix,
                               \nselected replicated samples', 
                               color_list = color_list,
                               heatmap_color = heatmap_colors, breaks = breaksList, 
-                              cluster_rows= FALSE, cluster_cols=FALSE,fontsize = 4,
+                              cluster_rows = FALSE, cluster_cols = FALSE,fontsize = 4,
                               annotation_names_col = TRUE, annotation_legend = FALSE, 
                               show_colnames = FALSE)
 library(gridExtra)
