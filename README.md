@@ -32,6 +32,10 @@ the correction improved the quality of the data.
 All steps of batch effects analysis and correction are illustrated in the vignette,
     using the subset of real-world large-scale dataset.
 
+Please use following manuscript for citation: 
+Diagnostics and correction of batch effects in large-scale proteomic studies: a tutorial. Molecular Systems Biology 17, e10240 (2021).
+
+
 ## Installing
 
 Install the dependencies:
