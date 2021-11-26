@@ -79,3 +79,8 @@ Browse the vignette:
 ```
 browseVignettes('proBatch')
 ```
+
+
+## Citation
+Please cite this package by the following publication: 
+Diagnostics and correction of batch effects in large-scale proteomic studies: a tutorial. Molecular Systems Biology 17, e10240 (2021). https://doi.org/10.15252/msb.202110240
