@@ -1,18 +1,17 @@
 citHeader("To cite proBatch in publications use:")
 
-citEntry(entry = "PhdThesis",
-  title        = "Computational challenges in biomarker discovery from high-throughput proteomic data",
+citEntry(entry = "article",
+  title        = "Diagnostics and correction of batch effects in large-scale proteomic studies: a tutorial",
   author       = as.person(c("Jelena Cuklina <chuklina.jelena@gmail.com> [aut, cre]",
                   "Chloe H. Lee [aut]", 
                   "Evan G. Willams [dtc, ctb]",
-                  "Ben Collins [dtc]",
                   "Tatjana Sajic [dtc]",
-                  "Patrick Pedrioli [aut]",
+                  "Ben Collins [dtc]",
                   "Maria Rodriguez-Martinez [ths]",
-                   "Ruedi Aebersold [ths, fnd]")),
-  url          = "https://doi.org/10.3929/ethz-b-000307772",
-  school = 'ETH Zurich',
-  year = '2018',
-  textVersion = paste("Cuklina J., Lee C.H., Williams E.G., Collins B., Sajic T., Pedrioli P., Rodriguez-Martinez M., Aebersold R.", 
-  "Chapter 3: Systematic overview of batch effects in proteomics", "Doctoral thesis, ETH Zurich, 2018", "https://doi.org/10.3929/ethz-b-000307772")
+                  "Patrick Pedrioli [aut]",
+                  "Ruedi Aebersold [ths, fnd]")),
+  url          = "https://doi.org/10.15252/msb.202110240",
+  textVersion = paste("Cuklina J., Lee C.H., Williams E.G., Sajic T., Collins B., Rodriguez-Martinez M., Aebersold R., Pedrioli P.", 
+  "Diagnostics and correction of batch effects in large-scale proteomic studies: a tutorial", "Molecular Systems Biology 17, e10240 (2021)", "https://doi.org/10.15252/msb.202110240")
   )
+  
