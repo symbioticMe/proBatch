@@ -44,12 +44,12 @@ Imports:
     utils,
     viridis,
     wesanderson,
+    ggpubr,
     WGCNA
 Suggests: 
     knitr,
     rmarkdown,
     devtools,
-    ggpubr,
     gtable,
     gridExtra,
     roxygen2,

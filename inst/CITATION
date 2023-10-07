@@ -10,6 +10,8 @@ citEntry(entry = "article",
                   "Maria Rodriguez-Martinez [ths]",
                   "Patrick Pedrioli [aut]",
                   "Ruedi Aebersold [ths, fnd]")),
+  journal      = "Molecular Systems Biology",
+  year         = 2021,
   url          = "https://doi.org/10.15252/msb.202110240",
   textVersion = paste("Cuklina J., Lee C.H., Williams E.G., Sajic T., Collins B., Rodriguez-Martinez M., Aebersold R., Pedrioli P.", 
   "Diagnostics and correction of batch effects in large-scale proteomic studies: a tutorial", "Molecular Systems Biology 17, e10240 (2021)", "https://doi.org/10.15252/msb.202110240")
