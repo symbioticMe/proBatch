@@ -10,7 +10,8 @@
 #'   converted to
 #' @param dateTimeFormat POSIX format of the date and time. 
 #'   See \code{\link{as.POSIXct}} from base R for details
-#' @param tz for time zone
+#' @param tz for time zone, 'GMT' by default
+#' @param locale for locale, 'en_US.UTF-8' by default
 #'
 #' @return sample annotation file with a new column \code{new_time_column} with
 #'   POSIX-formatted date
@@ -27,7 +28,11 @@
 dates_to_posix <- function(sample_annotation,
                            time_column = c('RunDate','RunTime'),
                            new_time_column = 'DateTime',
-                           dateTimeFormat = c("%b_%d", "%H:%M:%S"), tz = 'GMT'){
+                           dateTimeFormat = c("%b_%d", "%H:%M:%S"), 
+                           tz = 'GMT', locale = 'en_US.UTF-8'){
+  old_locale <- Sys.getlocale("LC_TIME")
+  Sys.setlocale("LC_TIME", locale)                          
+
   if (length(time_column) == 1){
     if(is.null(new_time_column)) new_time_column = time_column
     time_col = as.character(sample_annotation[[time_column]])
@@ -40,9 +45,11 @@ dates_to_posix <- function(sample_annotation,
       mutate(dateTime = paste(!!!syms(time_column), sep=" ")) %>%
       mutate(dateTime = as.POSIXct(dateTime,
                                    format = paste(dateTimeFormat, 
-                                                  collapse = ' '))) %>%
+                                                  collapse = ' '), 
+                                                  tz = tz)) %>%
       rename(!!new_time_column := dateTime)
   }
+  Sys.setlocale("LC_TIME", old_locale)
   return(sample_annotation)
 }
 
