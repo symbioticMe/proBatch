@@ -180,10 +180,11 @@ plot_single_feature  <- function(feature_name, df_long,
   
   #Main plotting function
   gg = ggplot(plot_df,
-              aes_string(x = order_col, y = measure_col))
+              aes(x = !!sym(order_col), y = !!sym(measure_col)))
   if (identical(geom, 'line')){
-    gg = gg + geom_line(color = 'darkgrey', size = .3, 
-                        aes_string(group = batch_col))
+    gg = gg + geom_line(color = 'darkgrey',
+                        aes(group = !!sym(batch_col), linewidth = .3)
+                        )
   }
   if (identical(geom, 'point')){
     gg = gg + geom_point()
@@ -196,7 +197,7 @@ plot_single_feature  <- function(feature_name, df_long,
       if(is_factor){
         gg = gg + geom_point() +
           geom_line(color = 'black', alpha = .7, linetype = 'dashed', 
-                    aes_string(group = batch_col))
+                    aes(group = !!sym(batch_col)))
       } 
     }
   }
@@ -207,7 +208,7 @@ plot_single_feature  <- function(feature_name, df_long,
     col_data = plot_df %>%
       filter(!!(as.name(qual_col)) == qual_value)
     gg = gg + geom_point(data = col_data,
-                         aes_string(x = order_col, y = measure_col),
+                         aes(x = !!sym(order_col), y = !!sym(measure_col)),
                          color = 'red', size = 1, shape = 8)
   }
   
@@ -563,18 +564,20 @@ plot_with_fitting_curve <- function(feature_name,
     }
     
     gg = gg + geom_line(data = fit_df,
-                        aes_string(y = fit_value_col, x = order_col,
-                                   group = batch_col, 
-                                   color = batch_col), size = 1.25)
+                        aes(y = !!sym(fit_value_col), x = !!sym(order_col),
+                            group = !!sym(batch_col), 
+                            color = !!sym(batch_col),
+                            linewidth = 1.25))
     
     gg = add_color_scheme_discrete(color_scheme, n_batches, 
                                    fill_or_color = 'color', 
                                    gg = gg, batch_col = batch_col)
   } else {
     gg = gg + geom_line(data = fit_df,
-                        aes_string(y = fit_value_col, x = order_col, 
-                                   group = batch_col), 
-                        color = 'red', size = 1.25)
+                        aes(y = !!sym(fit_value_col), x = !!sym(order_col), 
+                                   group = !!sym(batch_col),
+                                   linewidth = 1.25), 
+                        color = 'red')
   }
   
   #save the plot

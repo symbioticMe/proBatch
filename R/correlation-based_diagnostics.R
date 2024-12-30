@@ -448,7 +448,7 @@ plot_sample_corr_distribution.corrDF <- function(corr_distribution,
                                                  plot_param = 'batch_replicate',
                                                  theme = 'classic', base_size = 20){
   
-  gg <- ggplot(corr_distribution, aes_string(x = plot_param, y = 'correlation'))+
+  gg <- ggplot(corr_distribution, aes(x = !!sym(plot_param), y = correlation))+
     geom_violin(scale = 'width')+
     geom_boxplot(width = .1) +
     theme(axis.title.x=element_blank())
@@ -637,8 +637,8 @@ plot_peptide_corr_distribution.corrDF <- function(corr_distribution,
     filter(same_protein == 'same protein') %>%
     summarize(median = median(correlation, na.rm = TRUE)) %>%
     pull(median)
-  gg <- ggplot(corr_distribution, aes_string(x = 'same_protein', 
-                                             y = 'correlation'))+
+  gg <- ggplot(corr_distribution, aes(x = same_protein, 
+                                      y = correlation))+
     geom_violin(scale = 'width') +
     geom_hline(yintercept = 0, linetype = 'dashed', color = 'darkgrey') +
     geom_hline(yintercept = median_same_prot, linetype = 'dotted', 

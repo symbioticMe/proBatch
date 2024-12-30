@@ -302,7 +302,7 @@ sample_annotation_to_colors <- function(sample_annotation,
       select(one_of(factor_columns))
     if (rare_categories_to_other) {
       factor_df = factor_df %>%
-        mutate_if(check_rare_levels, funs(merge_rare_levels(.)))
+        mutate_if(check_rare_levels, list(~ merge_rare_levels(.)))
     }
     list_of_col_for_factors = map_factors_to_colors(factor_df)
   } else {

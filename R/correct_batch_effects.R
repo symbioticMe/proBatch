@@ -379,7 +379,7 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
   old_measure_col = paste('preTrendFit', measure_col, sep = '_')
   
   corrected_df = corrected_df %>%
-    unnest() %>%
+    unnest(cols = where(is.list)) %>%
     group_by(!!!syms(c(feature_id_col, batch_col))) %>%
     mutate(mean_fit = mean(fit, na.rm = TRUE)) %>%
     ungroup() %>%

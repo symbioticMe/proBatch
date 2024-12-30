@@ -95,7 +95,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   df_ave = sample_order$df_long
   
   #Main plotting of intensity means:
-  gg = ggplot(df_ave, aes_string(x = order_col, y = 'Mean_Intensity'))+
+  gg = ggplot(df_ave, aes(x = !!sym(order_col), y = Mean_Intensity))+
     geom_point()
   
   #add colors
@@ -246,8 +246,8 @@ plot_boxplot <- function(df_long, sample_annotation = NULL,
   df_long = sample_order$df_long
   
   #Main plotting of intensity distribution boxplots
-  gg = ggplot(df_long, aes_string(x = order_col, y = measure_col,
-                                  group = order_col))
+  gg = ggplot(df_long, aes(x = !!sym(order_col), y = !!sym(measure_col),
+                           group = !!sym(order_col)))
   if (outliers){
     gg = gg + geom_boxplot(outlier.size = .15)
   } else {
