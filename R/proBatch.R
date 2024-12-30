@@ -92,6 +92,7 @@
 #' @param width option  determining the output image width
 #' @param height option  determining the output image width
 #' @param units units: 'cm', 'in' or 'mm'
+#' @param base_size base font size
 #'
 #' @import dplyr
 #' @import ggfortify
@@ -127,6 +128,7 @@
 #' 
 #' @docType package
 #' @name proBatch
+#' @aliases proBatch
 if(getRversion() >= "2.15.1")  utils::globalVariables(c( "batch_size", 
                                                          "tipping.points", 
                                                          "min_order_value", 

@@ -39,11 +39,14 @@ geom_split_violin <- function(mapping = NULL, data = NULL, stat = "ydensity", po
 #' @param col_for_box column to use to do group comparison
 #' @param colors_for_plot colors to map to col_for_color
 #' @param hlineintercept NULL: no intercept line; non-null: intercept value
+#' ...
 #'
 #' @return ggplot object
 #' @export
 #'
 #' @examples
+#' df = data.frame(x = rep(c('A', 'B'), each = 100), y = rnorm(200), m = rep(c('C', 'D'), 100))
+#' plot_split_violin_with_boxplot(df, y_col = 'y', col_for_color = 'm', col_for_box = 'x')
 plot_split_violin_with_boxplot <- function(df, y_col = 'y', 
                                            col_for_color = 'm', col_for_box = 'x', 
                                            colors_for_plot = c('#8f1811', '#F8C333'),

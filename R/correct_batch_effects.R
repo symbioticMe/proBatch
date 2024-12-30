@@ -156,20 +156,20 @@ however,
     corrected_df = switch (keep_all,
                            all = corrected_df,
                            default = corrected_df %>%
-                             dplyr::select(c(original_cols, old_measure_col, 
-                                             qual_col, qual_value)),
+                             dplyr::select(all_of(c(original_cols, old_measure_col, 
+                                             qual_col, qual_value))),
                            minimal = corrected_df %>%
-                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                             old_measure_col, qual_col, qual_value))
+                             dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col, qual_col, qual_value)))
     )
   } else {
     corrected_df = switch (keep_all,
                            all = corrected_df,
                            default = corrected_df %>%
-                             dplyr::select(c(original_cols, old_measure_col)),
+                             dplyr::select(all_of(c(original_cols, old_measure_col))),
                            minimal = corrected_df %>%
-                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                             old_measure_col))
+                             dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col)))
     )
   }
   
@@ -267,20 +267,20 @@ center_feature_batch_means_df <- function(df_long, sample_annotation = NULL,
     corrected_df = switch (keep_all,
                            all = corrected_df,
                            default = corrected_df %>%
-                             dplyr::select(c(original_cols, old_measure_col, 
-                                             qual_col, qual_value)),
+                             dplyr::select(all_of(c(original_cols, old_measure_col, 
+                                             qual_col, qual_value))),
                            minimal = corrected_df %>%
-                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                             old_measure_col, qual_col, qual_value))
+                             dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col, qual_col, qual_value)))
     )
   } else {
     corrected_df = switch (keep_all,
                            all = corrected_df,
                            default = corrected_df %>%
-                             dplyr::select(c(original_cols, old_measure_col)),
+                             dplyr::select(all_of(c(original_cols, old_measure_col))),
                            minimal = corrected_df %>%
-                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                             old_measure_col))
+                             dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col)))
     )
   }
   
@@ -394,21 +394,21 @@ adjust_batch_trend_df <- function(df_long, sample_annotation = NULL,
     corrected_df = switch (keep_all,
                            all = corrected_df,
                            default = corrected_df %>%
-                             dplyr::select(c(original_cols, old_measure_col, 
-                                             'fit', batch_col, qual_col, qual_value)),
+                             dplyr::select(all_of(c(original_cols, old_measure_col, 
+                                             'fit', batch_col, qual_col, qual_value))),
                            minimal = corrected_df %>%
-                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                             old_measure_col,'fit', batch_col, qual_col, qual_value))
+                             dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col,'fit', batch_col, qual_col, qual_value)))
     )
   } else {
   
   corrected_df = switch (keep_all,
     all = corrected_df ,
     default = corrected_df %>%
-      dplyr::select(c(original_cols, old_measure_col, 'fit')),
+      dplyr::select(all_of(c(original_cols, old_measure_col, 'fit'))),
     minimal = corrected_df %>%
-      dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                      old_measure_col,'fit'))
+      dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                      old_measure_col,'fit')))
   )
   }
   
@@ -510,10 +510,10 @@ correct_with_ComBat_df <- function(df_long, sample_annotation = NULL,
   corrected_df = switch (keep_all,
                          all = corrected_df ,
                          default = corrected_df %>%
-                           dplyr::select(c(original_cols, old_measure_col)),
+                           dplyr::select(all_of(c(original_cols, old_measure_col))),
                          minimal = corrected_df %>%
-                           dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                           old_measure_col)))
+                           dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                           old_measure_col))))
   
   return(corrected_df)
 }
@@ -641,18 +641,18 @@ correct_batch_effects_df <- function(df_long, sample_annotation,
     corrected_df = switch (keep_all,
                            all = corrected_df ,
                            default = corrected_df %>%
-                             dplyr::select(c(original_cols, old_measure_col, preFit_measure_col, 'fit')),
+                             dplyr::select(all_of(c(original_cols, old_measure_col, preFit_measure_col, 'fit'))),
                            minimal = corrected_df %>%
-                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                             old_measure_col))
+                             dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col)))
     )} else {
       corrected_df = switch (keep_all,
                              all = corrected_df ,
                              default = corrected_df %>%
-                               dplyr::select(c(original_cols, old_measure_col)),
+                               dplyr::select(all_of(c(original_cols, old_measure_col))),
                              minimal = corrected_df %>%
-                               dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                               old_measure_col)))
+                               dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                               old_measure_col))))
   }
   
   return(corrected_df)

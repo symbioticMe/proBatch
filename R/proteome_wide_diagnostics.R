@@ -510,9 +510,10 @@ calculate_PVCA <- function(data_matrix, sample_annotation,
 #'  covariates needs to explain (the rest will be lumped together)
 #' @param fill_the_missing numeric value determining how  missing values 
 #' should be substituted. If \code{NULL}, features with missing values are 
-#' excluded.
+#' excluded.  
 #' If \code{NULL}, features with missing values are excluded.
-#'
+#' @param base_size base size of the text in the plot
+#' 
 #' @return \code{ggplot} object with the plot
 #' @export
 #'
@@ -638,6 +639,7 @@ prepare_PVCA_df <- function(data_matrix, sample_annotation,
 #' @param colors_for_bars four-item color vector, specifying colors for the
 #'   following categories: c('residual', 'biological', 'biol:techn',
 #'   'technical')
+#' @param base_size base size of the text in the plot
 #'   
 #' @return \code{ggplot} object with bars as weights, colored by bio/tech factors
 #' @export
@@ -715,6 +717,7 @@ plot_PVCA.df <- function(pvca_res,
 #' should be substituted. If \code{NULL}, features with missing values are 
 #' excluded.
 #' If \code{NULL}, features with missing values are excluded.
+#' @param base_size base size of the text in the plot
 #'
 #' @return ggplot scatterplot colored by factor levels of column specified in
 #'   \code{factor_to_color}

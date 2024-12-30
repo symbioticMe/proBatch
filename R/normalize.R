@@ -117,16 +117,16 @@ quantile_normalize_df <- function(df_long,
                            all = normalized_df,
                            default = normalized_df,
                            minimal = normalized_df %>%
-                             dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                             old_measure_col, qual_col, qual_value))
+                             dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                             old_measure_col, qual_col, qual_value)))
     )
   } else {
     normalized_df = switch (keep_all,
                             all = normalized_df,
                             default = normalized_df, 
                             minimal = normalized_df %>%
-                              dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                              old_measure_col)))
+                              dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                              old_measure_col))))
   }
   
   return(normalized_df)
@@ -194,16 +194,16 @@ normalize_sample_medians_df <- function(df_long,
                             all = normalized_df,
                             default = normalized_df,
                             minimal = normalized_df %>%
-                              dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                              old_measure_col, qual_col, qual_value))
+                              dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                              old_measure_col, qual_col, qual_value)))
     )
   } else {
     normalized_df = switch (keep_all,
                             all = normalized_df,
                             default = normalized_df, 
                             minimal = normalized_df %>%
-                              dplyr::select(c(sample_id_col, feature_id_col, measure_col, 
-                                              old_measure_col)))
+                              dplyr::select(all_of(c(sample_id_col, feature_id_col, measure_col, 
+                                              old_measure_col))))
   }
   
   return(normalized_df)
