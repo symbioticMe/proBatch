@@ -16,7 +16,7 @@ handle_missing_values <- function(data_matrix, warning_message,
       if (ncol(data_matrix) == nrow(data_matrix)) {
         pre_corr_dim <- nrow(data_matrix)
         if (isSymmetric(data_matrix)) {
-          warning("removing rows and columns with missing values, as matrix is square")
+          message("removing rows and columns with missing values, as matrix is square")
           if (all(!complete_cases)) {
             warning("removing rows with all values missing")
             all_missing_rows <- apply(data_matrix, 2, function(x) all(is.na(x)))

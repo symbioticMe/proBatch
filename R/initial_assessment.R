@@ -33,7 +33,7 @@
 #'   color_scheme = color_list[["MS_batch"]]
 #' )
 #'
-#' \dontrun{
+#' \donttest{
 #' mean_plot <- plot_sample_mean(example_proteome_matrix,
 #'   example_sample_annotation,
 #'   order_col = "order", batch_col = "MS_batch",
@@ -213,7 +213,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' )
 
 #'
-#' \dontrun{
+#' \donttest{
 #' boxplot <- plot_boxplot(log_transform_df(example_proteome),
 #' sample_annotation = example_sample_annotation,
 #' batch_col = "MS_batch", filename = 'test_boxplot.png',

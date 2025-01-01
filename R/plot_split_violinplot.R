@@ -1,34 +1,71 @@
-GeomSplitViolin <- ggproto(
-  "GeomSplitViolin", GeomViolin,
+GeomSplitViolin <- ggproto("GeomSplitViolin", GeomViolin,
   draw_group = function(self, data, ..., draw_quantiles = NULL) {
-    data <- transform(data, xminv = x - violinwidth * (x - xmin), xmaxv = x + violinwidth * (xmax - x))
+    data <- transform(data, xminv = x - violinwidth *
+      (x - xmin), xmaxv = x + violinwidth *
+      (xmax - x))
     grp <- data[1, "group"]
-    newdata <- plyr::arrange(transform(data, x = if (grp %% 2 == 1) xminv else xmaxv), if (grp %% 2 == 1) y else -y)
+    newdata <- plyr::arrange(transform(data, x = if (grp %% 2 ==
+      1) {
+      xminv
+    } else {
+      xmaxv
+    }), if (grp %% 2 == 1) {
+      y
+    } else {
+      -y
+    })
     newdata <- rbind(newdata[1, ], newdata, newdata[nrow(newdata), ], newdata[1, ])
-    newdata[c(1, nrow(newdata) - 1, nrow(newdata)), "x"] <- round(newdata[1, "x"])
+    newdata[
+      c(1, nrow(newdata) - 1, nrow(newdata)),
+      "x"
+    ] <- round(newdata[1, "x"])
 
     if (length(draw_quantiles) > 0 & !scales::zero_range(range(data$y))) {
       stopifnot(all(draw_quantiles >= 0), all(draw_quantiles <=
         1))
-      quantiles <- ggplot2:::create_quantile_segment_frame(data, draw_quantiles)
-      aesthetics <- data[rep(1, nrow(quantiles)), setdiff(names(data), c("x", "y")), drop = FALSE]
+      quantiles <- ggplot2:::create_quantile_segment_frame(
+        data,
+        draw_quantiles
+      )
+      aesthetics <- data[rep(1, nrow(quantiles)),
+        setdiff(names(data), c("x", "y")),
+        drop = FALSE
+      ]
       aesthetics$alpha <- rep(1, nrow(quantiles))
       both <- cbind(quantiles, aesthetics)
-      quantile_grob <- GeomPath$draw_panel(both, ...)
-      ggplot2:::ggname("geom_split_violin", grid::grobTree(GeomPolygon$draw_panel(newdata, ...), quantile_grob))
+      quantile_grob <- GeomPath$draw_panel(
+        both,
+        ...
+      )
+      ggplot2:::ggname(
+        "geom_split_violin",
+        grid::grobTree(GeomPolygon$draw_panel(
+          newdata,
+          ...
+        ), quantile_grob)
+      )
     } else {
-      ggplot2:::ggname("geom_split_violin", GeomPolygon$draw_panel(newdata, ...))
+      ggplot2:::ggname(
+        "geom_split_violin",
+        GeomPolygon$draw_panel(newdata, ...)
+      )
     }
   }
 )
 
-geom_split_violin <- function(mapping = NULL, data = NULL, stat = "ydensity", position = "identity", ...,
-                              draw_quantiles = NULL, trim = TRUE, scale = "area", na.rm = FALSE,
-                              show.legend = NA, inherit.aes = TRUE) {
+geom_split_violin <- function(
+    mapping = NULL, data = NULL,
+    stat = "ydensity", position = "identity", ..., draw_quantiles = NULL,
+    trim = TRUE, scale = "area", na.rm = FALSE, show.legend = NA,
+    inherit.aes = TRUE) {
   layer(
     data = data, mapping = mapping, stat = stat, geom = GeomSplitViolin,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(trim = trim, scale = scale, draw_quantiles = draw_quantiles, na.rm = na.rm, ...)
+    position = position, show.legend = show.legend,
+    inherit.aes = inherit.aes, params = list(
+      trim = trim,
+      scale = scale, draw_quantiles = draw_quantiles,
+      na.rm = na.rm, ...
+    )
   )
 }
 
@@ -50,15 +87,23 @@ geom_split_violin <- function(mapping = NULL, data = NULL, stat = "ydensity", po
 #' @examples
 #' df <- data.frame(x = rep(c("A", "B"), each = 100), y = rnorm(200), m = rep(c("C", "D"), 100))
 #' plot_split_violin_with_boxplot(df, y_col = "y", col_for_color = "m", col_for_box = "x")
-plot_split_violin_with_boxplot <- function(df, y_col = "y",
-                                           col_for_color = "m", col_for_box = "x",
-                                           colors_for_plot = c("#8f1811", "#F8C333"),
-                                           hlineintercept = NULL, plot_title = NULL,
-                                           theme = "classic") {
-  p <- ggplot(df, aes(x = !!sym(col_for_box), y = !!sym(y_col), fill = !!sym(col_for_color))) +
-    geom_split_violin(alpha = .75) +
-    geom_boxplot(aes(group = interaction(!!sym(col_for_color), !!sym(col_for_box))),
-      position = "dodge", width = .2, outlier.shape = NA, coef = 0
+#'
+plot_split_violin_with_boxplot <- function(
+    df, y_col = "y", col_for_color = "m",
+    col_for_box = "x", colors_for_plot = c("#8f1811", "#F8C333"),
+    hlineintercept = NULL, plot_title = NULL, theme = "classic") {
+  p <- ggplot(df, aes(
+    x = !!sym(col_for_box), y = !!sym(y_col),
+    fill = !!sym(col_for_color)
+  )) +
+    geom_split_violin(alpha = 0.75) +
+    geom_boxplot(
+      aes(group = interaction(
+        !!sym(col_for_color),
+        !!sym(col_for_box)
+      )),
+      position = "dodge", width = 0.2,
+      outlier.shape = NA, coef = 0
     )
   if (!is.null(colors_for_plot)) {
     p <- p + scale_fill_manual(values = colors_for_plot)

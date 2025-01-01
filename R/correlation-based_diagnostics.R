@@ -497,7 +497,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 #'   plot_param = "batch_replicate"
 #' )
 #'
-#' \dontrun{
+#' \donttest{
 #' sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
 #'   plot_param = "batch_replicate",
 #'   filename = "test_sampleCorr.png",
@@ -709,7 +709,7 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
 #' )
 #' peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution)
 #'
-#' \dontrun{
+#' \donttest{
 #' peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution,
 #'   filename = "test_peptide.png",
 #'   width = 28, height = 28, units = "cm"

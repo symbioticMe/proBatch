@@ -577,7 +577,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation,
 #'   biological_factors = c("Diet", "Sex", "Strain")
 #' )
 #'
-#' \dontrun{
+#' \donttest{
 #' pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation,
 #'   technical_factors = c("MS_batch", "digestion_batch"),
 #'   biological_factors = c("Diet", "Sex", "Strain"),
@@ -811,7 +811,7 @@ plot_PVCA.df <- function(pvca_res,
 #'   color_by = "DateTime", color_scheme = color_list[["DateTime"]]
 #' )
 #'
-#' \dontrun{
+#' \donttest{
 #' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation,
 #'   color_by = "DateTime", plot_title = "PCA colored by DateTime",
 #'   filename = "test_PCA.png", width = 14, height = 9, units = "cm"

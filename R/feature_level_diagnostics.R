@@ -60,7 +60,7 @@
 #' )
 #'
 #' # saving the plot
-#' \dontrun{
+#' \donttest{
 #' single_feature_plot <- plot_single_feature(
 #'   feature_name = c("46213_NVGVSFYADKPEVTQEQK_2", "10081_NVQGIIDILK_2"),
 #'   df_long = example_proteome, example_sample_annotation,
@@ -79,7 +79,7 @@
 #' )
 #'
 #' # saving the peptides of one protein
-#' \dontrun{
+#' \donttest{
 #' peptides_of_one_protein_plot <- plot_peptides_of_one_protein(
 #'   protein_name = "Haao", peptide_annotation = example_peptide_annotation,
 #'   protein_col = "Gene", df_long = example_proteome,
