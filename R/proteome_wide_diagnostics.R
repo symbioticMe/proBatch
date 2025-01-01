@@ -21,7 +21,6 @@
 #' selected_batches = example_sample_annotation$MS_batch %in% 
 #'                                               c('Batch_1', 'Batch_2')
 #' selected_samples = example_sample_annotation$FullRunName[selected_batches]
-#' data("example_proteome_matrix", package = "proBatch")
 #' test_matrix = example_proteome_matrix[,selected_samples]
 #' 
 #' hierarchical_clustering_plot <- plot_hierarchical_clustering(
@@ -174,7 +173,7 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 #' @export
 #' 
 #' @examples 
-#' Load necessary datasets
+#' # Load necessary datasets
 #' data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 #' 
 #' log_transformed_matrix = log_transform_dm(example_proteome_matrix)

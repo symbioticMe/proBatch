@@ -9,6 +9,7 @@
 #'
 #' @family matrix manipulation functions
 #' @examples 
+#' data("example_proteome", package = "proBatch")
 #' proteome_matrix <- long_to_matrix(example_proteome)
 #'
 #' @export
@@ -96,6 +97,7 @@ matrix_to_long <- function(data_matrix, sample_annotation = NULL,
 #' @return data frame containing petpide annotations 
 #' @export
 #' @examples 
+#' data("example_proteome", package = "proBatch")
 #' generated_peptide_annotation <- create_peptide_annotation(
 #' example_proteome, feature_id_col = "peptide_group_label",
 #' protein_col = c("Protein"))

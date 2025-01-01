@@ -11,8 +11,7 @@
 #' `log_transform_dm()` returns \code{data_matrix} format matrix
 #' 
 #' @examples 
-#' data("example_proteome_matrix", package = "proBatch")
-#' data("example_proteome", package = "proBatch")
+#' data(list = c("example_proteome", "example_proteome_matrix"), package = "proBatch")
 #' 
 #' log_transformed_df <- log_transform_df(example_proteome)
 #' 

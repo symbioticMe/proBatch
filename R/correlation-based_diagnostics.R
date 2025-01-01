@@ -26,6 +26,7 @@
 #' \code{\link{plot_peptide_corr_distribution}}
 #' 
 #' @examples 
+#' data("example_proteome_matrix", package = "proBatch")
 #' peptides <- c("10231_QDVDVWLWQQEGSSK_2", "10768_RLESELDGLR_2")
 #' data_matrix_sub = example_proteome_matrix[peptides,]
 #' corr_matrix = cor(t(data_matrix_sub), use = 'complete.obs')
@@ -94,6 +95,7 @@ plot_corr_matrix <- function(corr_matrix,
 #'
 #' @export
 #' @examples 
+#' data(list = c("example_peptide_annotation", "example_proteome_matrix"), package = "proBatch")
 #' protein_corrplot_plot <- plot_protein_corrplot(example_proteome_matrix, 
 #' protein_name = 'Haao', peptide_annotation = example_peptide_annotation, 
 #' protein_col = 'Gene')
@@ -533,6 +535,7 @@ get_peptide_corr_df <- function(peptide_cor, peptide_annotation,
 #' \code{\link{plot_peptide_corr_distribution}} as \code{plot_param}:
 #' 
 #' @examples 
+#' data(list = c("example_peptide_annotation", "example_proteome_matrix"), package = "proBatch")
 #' selected_genes = c('BOVINE_A1ag','BOVINE_FetuinB','Cyfip1')
 #' gene_filter = example_peptide_annotation$Gene %in% selected_genes
 #' peptides_ann = example_peptide_annotation$peptide_group_label
@@ -573,6 +576,7 @@ NULL
 #' @rdname plot_peptide_corr_distribution
 #' 
 #' @examples 
+#' data(list = c("example_peptide_annotation", "example_proteome_matrix"), package = "proBatch")
 #' peptide_corr_distribution <- plot_peptide_corr_distribution(
 #' example_proteome_matrix, 
 #' example_peptide_annotation, protein_col = 'Gene')
@@ -616,6 +620,7 @@ plot_peptide_corr_distribution <- function(data_matrix, peptide_annotation,
 #' @rdname plot_peptide_corr_distribution
 #'
 #' @examples 
+#' data(list = c("example_peptide_annotation", "example_proteome_matrix"), package = "proBatch")
 #' selected_genes = c('BOVINE_A1ag','BOVINE_FetuinB','Cyfip1')
 #' gene_filter = example_peptide_annotation$Gene %in% selected_genes
 #' peptides_ann = example_peptide_annotation$peptide_group_label

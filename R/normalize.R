@@ -28,6 +28,7 @@
 #' normalized values in \code{measure_col} column.
 #' 
 #' @examples 
+#' data(list = c("example_proteome", "example_proteome_matrix"), package = "proBatch")
 #' 
 #' #Quantile normalization:
 #' quantile_normalized_matrix <- quantile_normalize_dm(example_proteome_matrix)
