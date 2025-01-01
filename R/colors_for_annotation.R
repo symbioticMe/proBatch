@@ -177,6 +177,12 @@ check_rare_levels <- function(column) {
 #' @keywords internal
 #'
 #' @return column with rare occurrences replaced by other
+#' 
+#' @examples 
+#' column <- factor(c("A", "B", "A", "C", "D", "D", "E"))
+#' merge_rare_levels(column, rare_thr = 2)
+#' # [1] A     other A     other D     D     other
+#' # Levels: A D other
 #' @export
 merge_rare_levels <- function(column, rare_thr = 2) {
   is_factor_col = is.factor(column)
