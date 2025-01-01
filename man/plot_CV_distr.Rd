@@ -4,23 +4,32 @@
 \alias{plot_CV_distr}
 \title{Plot CV distribution to compare various steps of the analysis}
 \usage{
-plot_CV_distr(df_long, sample_annotation = NULL,
+plot_CV_distr(
+  df_long,
+  sample_annotation = NULL,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName", measure_col = "Intensity",
-  biospecimen_id_col = "EarTag", batch_col = NULL, unlog = TRUE,
-  log_base = 2, offset = 1, plot_title = NULL, filename = NULL,
-  theme = "classic")
+  sample_id_col = "FullRunName",
+  measure_col = "Intensity",
+  biospecimen_id_col = "EarTag",
+  batch_col = NULL,
+  unlog = TRUE,
+  log_base = 2,
+  offset = 1,
+  plot_title = NULL,
+  filename = NULL,
+  theme = "classic"
+)
 }
 \arguments{
-\item{df_long}{as in \code{df_long} for the rest of the package, but, when it 
-has entries for intensity, represented in \code{measure_col} for several steps, 
+\item{df_long}{as in \code{df_long} for the rest of the package, but, when it
+has entries for intensity, represented in \code{measure_col} for several steps,
 e.g. raw, normalized, batch corrected data, as seen in column \code{Step}, then
 multi-step CV comparison can be carried out.}
 
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
@@ -28,15 +37,15 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
-\item{biospecimen_id_col}{column in \code{sample_annotation} 
-that defines a unique bio ID, which is usually a 
+\item{biospecimen_id_col}{column in \code{sample_annotation}
+that defines a unique bio ID, which is usually a
 combination of conditions or groups.
  Tip: if such ID is absent, but can be defined from several columns,
  create new \code{biospecimen_id} column}
@@ -53,9 +62,9 @@ batch comparison (or other, non-batch factor to be mapped to color in plots).}
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
-\item{filename}{path where the results are saved. 
+\item{filename}{path where the results are saved.
 If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only 
+otherwise, the object is save into the file. Currently only
 pdf and png format is supported}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
@@ -67,8 +76,10 @@ pdf and png format is supported}
 Plot CV distribution to compare various steps of the analysis
 }
 \examples{
-CV_plot = plot_CV_distr(example_proteome, 
-sample_annotation = example_sample_annotation, 
-measure_col = 'Intensity', batch_col = 'MS_batch', 
-plot_title = NULL, filename = NULL, theme = 'classic')
+data(list = c("example_sample_annotation", "example_proteome"), package = "proBatch")
+CV_plot <- plot_CV_distr(example_proteome,
+  sample_annotation = example_sample_annotation,
+  measure_col = "Intensity", batch_col = "MS_batch",
+  plot_title = NULL, filename = NULL, theme = "classic"
+)
 }

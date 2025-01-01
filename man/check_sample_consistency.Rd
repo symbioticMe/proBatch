@@ -4,59 +4,68 @@
 \alias{check_sample_consistency}
 \title{Check if sample annotation is consistent with data matrix and join the two}
 \usage{
-check_sample_consistency(sample_annotation, sample_id_col, df_long,
-  batch_col = NULL, order_col = NULL, facet_col = NULL,
-  merge = TRUE)
+check_sample_consistency(
+  sample_annotation,
+  sample_id_col,
+  df_long,
+  batch_col = NULL,
+  order_col = NULL,
+  facet_col = NULL,
+  merge = TRUE
+)
 }
 \arguments{
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
-and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col}
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH
 output result file). See \code{help("example_proteome")} for more details.}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample 
-order. It is used for in initial assessment plots 
-(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics 
-(\link{feature_level_diagnostics}). Can be `NULL` 
-   if sample order is irrelevant (e.g. in genomic experiments). For more 
+\item{order_col}{column in \code{sample_annotation} that determines sample
+order. It is used for in initial assessment plots
+(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics
+(\link{feature_level_diagnostics}). Can be `NULL`
+   if sample order is irrelevant (e.g. in genomic experiments). For more
    details,
-   order definition/inference, see \link{define_sample_order} and 
+   order definition/inference, see \link{define_sample_order} and
    \link{date_to_sample_order}}
 
-\item{facet_col}{column  in \code{sample_annotation} with a batch factor to 
-separate plots into facets; usually 2nd to \code{batch_col}. Most meaningful 
-for multi-instrument MS experiments (where each instrument has its own 
-order-associated effects (see \code{order_col}) or simultaneous examination 
+\item{facet_col}{column  in \code{sample_annotation} with a batch factor to
+separate plots into facets; usually 2nd to \code{batch_col}. Most meaningful
+for multi-instrument MS experiments (where each instrument has its own
+order-associated effects (see \code{order_col}) or simultaneous examination
 of two batch factors (e.g. preparation day and measurement day).
 For single-instrument case should be set to `NULL`}
 
-\item{merge}{(logical) whether to merge \code{df_long} with 
+\item{merge}{(logical) whether to merge \code{df_long} with
 \code{sample_annotation} or not}
 }
 \value{
-\code{df_long} format data frame, merged with sample_annotation using 
+\code{df_long} format data frame, merged with sample_annotation using
 inner_join (samples represented in both)
 }
 \description{
 Check if sample annotation is consistent with data matrix and join the two
 }
 \examples{
+# Load necessary datasets
+data(list = c("example_proteome", "example_sample_annotation"), package = "proBatch")
 
-df_test = check_sample_consistency(sample_annotation = example_sample_annotation, 
-df_long = example_proteome, sample_id_col = 'FullRunName',
-batch_col = NULL, order_col = NULL, facet_col = NULL)
-
+df_test <- check_sample_consistency(
+  sample_annotation = example_sample_annotation,
+  df_long = example_proteome, sample_id_col = "FullRunName",
+  batch_col = NULL, order_col = NULL, facet_col = NULL
+)
 
 }

@@ -4,54 +4,65 @@
 \alias{plot_hierarchical_clustering}
 \title{cluster the data matrix to visually inspect which confounder dominates}
 \usage{
-plot_hierarchical_clustering(data_matrix, sample_annotation,
-  sample_id_col = "FullRunName", color_list = NULL,
-  factors_to_plot = NULL, fill_the_missing = 0,
-  distance = "euclidean", agglomeration = "complete",
-  label_samples = TRUE, label_font = 0.2, filename = NULL,
-  width = 38, height = 25, units = c("cm", "in", "mm"),
-  plot_title = NULL, ...)
+plot_hierarchical_clustering(
+  data_matrix,
+  sample_annotation,
+  sample_id_col = "FullRunName",
+  color_list = NULL,
+  factors_to_plot = NULL,
+  fill_the_missing = 0,
+  distance = "euclidean",
+  agglomeration = "complete",
+  label_samples = TRUE,
+  label_font = 0.2,
+  filename = NULL,
+  width = 38,
+  height = 25,
+  units = c("cm", "in", "mm"),
+  plot_title = NULL,
+  ...
+)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, 
+feature IDs in rownames and file/sample names as colnames.
+See "example_proteome_matrix" for more details (to call the description,
 use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
-\item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
-where each item contains a color vector for each factor to be mapped to the 
+\item{color_list}{list, as returned by \code{sample_annotation_to_colors},
+where each item contains a color vector for each factor to be mapped to the
 color.}
 
-\item{factors_to_plot}{vector of technical and biological covariates to be 
-plotted in this diagnostic plot (assumed to be present in 
+\item{factors_to_plot}{vector of technical and biological covariates to be
+plotted in this diagnostic plot (assumed to be present in
 \code{sample_annotation})}
 
-\item{fill_the_missing}{numeric value determining how  missing values 
-should be substituted. If \code{NULL}, features with missing values are 
+\item{fill_the_missing}{numeric value determining how  missing values
+should be substituted. If \code{NULL}, features with missing values are
 excluded.}
 
 \item{distance}{distance metric used for clustering}
 
 \item{agglomeration}{agglomeration methods as used by \code{hclust}}
 
-\item{label_samples}{if \code{TRUE} sample IDs (column names of 
+\item{label_samples}{if \code{TRUE} sample IDs (column names of
 \code{data_matrix}) will be printed}
 
-\item{label_font}{size of the font. Is active if \code{label_samples} is 
+\item{label_font}{size of the font. Is active if \code{label_samples} is
 \code{TRUE}, ignored otherwise}
 
-\item{filename}{path where the results are saved. 
+\item{filename}{path where the results are saved.
 If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only 
+otherwise, the object is save into the file. Currently only
 pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
@@ -63,7 +74,7 @@ pdf and png format is supported}
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
-\item{...}{other parameters of \code{plotDendroAndColors} from 
+\item{...}{other parameters of \code{plotDendroAndColors} from
 \code{WGCNA} package}
 }
 \value{
@@ -73,33 +84,38 @@ No return
 cluster the data matrix to visually inspect which confounder dominates
 }
 \examples{
+# Load necessary datasets
+data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 
-selected_batches = example_sample_annotation$MS_batch \%in\% 
-                                              c('Batch_1', 'Batch_2')
-selected_samples = example_sample_annotation$FullRunName[selected_batches]
-test_matrix = example_proteome_matrix[,selected_samples]
+selected_batches <- example_sample_annotation$MS_batch \%in\%
+  c("Batch_1", "Batch_2")
+selected_samples <- example_sample_annotation$FullRunName[selected_batches]
+test_matrix <- example_proteome_matrix[, selected_samples]
 
 hierarchical_clustering_plot <- plot_hierarchical_clustering(
-example_proteome_matrix, example_sample_annotation,
-factors_to_plot = c('MS_batch', 'Diet', 'DateTime'),
-color_list = NULL,  
-distance = "euclidean", agglomeration = 'complete',
-label_samples = FALSE)
+  example_proteome_matrix, example_sample_annotation,
+  factors_to_plot = c("MS_batch", "Diet", "DateTime"),
+  color_list = NULL,
+  distance = "euclidean", agglomeration = "complete",
+  label_samples = FALSE
+)
 
-#with defined color scheme:
-color_list <- sample_annotation_to_colors (example_sample_annotation, 
-factor_columns = c('MS_batch', "Strain", "Diet", "digestion_batch"),
-numeric_columns = c('DateTime', 'order'))
+# with defined color scheme:
+color_list <- sample_annotation_to_colors(example_sample_annotation,
+  factor_columns = c("MS_batch", "Strain", "Diet", "digestion_batch"),
+  numeric_columns = c("DateTime", "order")
+)
 hierarchical_clustering_plot <- plot_hierarchical_clustering(
-example_proteome_matrix, example_sample_annotation,
-factors_to_plot = c('MS_batch', "Strain", 'DateTime', "digestion_batch"),
-color_list = color_list,  
-distance = "euclidean", agglomeration = 'complete',
-label_samples = FALSE)
+  example_proteome_matrix, example_sample_annotation,
+  factors_to_plot = c("MS_batch", "Strain", "DateTime", "digestion_batch"),
+  color_list = color_list,
+  distance = "euclidean", agglomeration = "complete",
+  label_samples = FALSE
+)
 
 }
 \seealso{
-\code{\link[stats]{hclust}}, 
+\code{\link[stats]{hclust}},
   \code{\link{sample_annotation_to_colors}},
   \code{\link[WGCNA]{plotDendroAndColors}}
 }

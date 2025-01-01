@@ -4,28 +4,37 @@
 \alias{fit_nonlinear}
 \title{Fit a non-linear trend (currently optimized for LOESS)}
 \usage{
-fit_nonlinear(df_feature_batch, measure_col = "Intensity",
-  order_col = "order", feature_id = NULL, batch_id = NULL,
-  fit_func = "loess_regression", optimize_span = FALSE,
-  no_fit_imputed = TRUE, qual_col = "m_score", qual_value = 2,
-  min_measurements = 8, ...)
+fit_nonlinear(
+  df_feature_batch,
+  measure_col = "Intensity",
+  order_col = "order",
+  feature_id = NULL,
+  batch_id = NULL,
+  fit_func = "loess_regression",
+  optimize_span = FALSE,
+  no_fit_imputed = TRUE,
+  qual_col = "m_score",
+  qual_value = 2,
+  min_measurements = 8,
+  ...
+)
 }
 \arguments{
-\item{df_feature_batch}{data frame containing response variable e.g. 
-samples in order and explanatory variable e.g. measurement for a 
+\item{df_feature_batch}{data frame containing response variable e.g.
+samples in order and explanatory variable e.g. measurement for a
 specific feature (peptide) in a specific batch}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample 
-order. It is used for in initial assessment plots 
-(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics 
-(\link{feature_level_diagnostics}). Can be `NULL` 
-   if sample order is irrelevant (e.g. in genomic experiments). For more 
+\item{order_col}{column in \code{sample_annotation} that determines sample
+order. It is used for in initial assessment plots
+(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics
+(\link{feature_level_diagnostics}). Can be `NULL`
+   if sample order is irrelevant (e.g. in genomic experiments). For more
    details,
-   order definition/inference, see \link{define_sample_order} and 
+   order definition/inference, see \link{define_sample_order} and
    \link{date_to_sample_order}}
 
 \item{feature_id}{the name of the feature, required for warnings}
@@ -34,18 +43,18 @@ order. It is used for in initial assessment plots
 
 \item{fit_func}{function to use for the fit, e.g. \code{loess_regression}}
 
-\item{optimize_span}{logical, whether to specify span or optimize it 
+\item{optimize_span}{logical, whether to specify span or optimize it
 (specific entirely for LOESS regression)}
 
 \item{no_fit_imputed}{(logical) whether to fit the imputed (requant) values}
 
-\item{qual_col}{column to color point by certain value denoted 
-by \code{qual_value}. Design with inferred/requant values in 
-OpenSWATH output data, 
+\item{qual_col}{column to color point by certain value denoted
+by \code{qual_value}. Design with inferred/requant values in
+OpenSWATH output data,
 which means argument value has to be set to \code{m_score}.}
 
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
-this argument value has to be set to \code{2} (this is an \code{m_score} 
+this argument value has to be set to \code{2} (this is an \code{m_score}
 value for imputed values (requant values).}
 
 \item{min_measurements}{the absolute threshold to filter}
@@ -59,20 +68,23 @@ vector of fitted response values
 Fit a non-linear trend (currently optimized for LOESS)
 }
 \examples{
-test_peptide = example_proteome$peptide_group_label[1] 
-selected_peptide = example_proteome$peptide_group_label == test_peptide
-df_selected = example_proteome[selected_peptide,]
-selected_batch = example_sample_annotation$MS_batch == 'Batch_1'
-batch_selected_df = example_sample_annotation[selected_batch,]
-df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
-fit_values = fit_nonlinear(df_for_test)
+# Load necessary datasets
+data(list = c("example_proteome", "example_sample_annotation"), package = "proBatch")
 
-#for the case where are two many missing values, no curve is fit
-selected_batch = example_sample_annotation$MS_batch == 'Batch_2'
-batch_selected_df = example_sample_annotation[selected_batch,]
-df_for_test = merge(df_selected, batch_selected_df, by = 'FullRunName')
-fit_values = fit_nonlinear(df_for_test)
-missing_values = df_for_test[['m_score']] == 2
-all(fit_values[!is.na(fit_values)] == df_for_test[['Intensity']][!missing_values])
+test_peptide <- example_proteome$peptide_group_label[1]
+selected_peptide <- example_proteome$peptide_group_label == test_peptide
+df_selected <- example_proteome[selected_peptide, ]
+selected_batch <- example_sample_annotation$MS_batch == "Batch_1"
+batch_selected_df <- example_sample_annotation[selected_batch, ]
+df_for_test <- merge(df_selected, batch_selected_df, by = "FullRunName")
+fit_values <- fit_nonlinear(df_for_test)
+
+# for the case where are two many missing values, no curve is fit
+selected_batch <- example_sample_annotation$MS_batch == "Batch_2"
+batch_selected_df <- example_sample_annotation[selected_batch, ]
+df_for_test <- merge(df_selected, batch_selected_df, by = "FullRunName")
+fit_values <- fit_nonlinear(df_for_test)
+missing_values <- df_for_test[["m_score"]] == 2
+all(fit_values[!is.na(fit_values)] == df_for_test[["Intensity"]][!missing_values])
 
 }

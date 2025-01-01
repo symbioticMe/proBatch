@@ -8,22 +8,22 @@
 primarily in proteomics}
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
-and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col}
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH
 output result file). See \code{help("example_proteome")} for more details.}
 
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, 
+feature IDs in rownames and file/sample names as colnames.
+See "example_proteome_matrix" for more details (to call the description,
 use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
@@ -38,66 +38,66 @@ names.}
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
-\item{order_col}{column in \code{sample_annotation} that determines sample 
-order. It is used for in initial assessment plots 
-(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics 
-(\link{feature_level_diagnostics}). Can be `NULL` 
-   if sample order is irrelevant (e.g. in genomic experiments). For more 
+\item{order_col}{column in \code{sample_annotation} that determines sample
+order. It is used for in initial assessment plots
+(\link{plot_sample_mean_or_boxplot}) and  feature-level diagnostics
+(\link{feature_level_diagnostics}). Can be `NULL`
+   if sample order is irrelevant (e.g. in genomic experiments). For more
    details,
-   order definition/inference, see \link{define_sample_order} and 
+   order definition/inference, see \link{define_sample_order} and
    \link{date_to_sample_order}}
 
-\item{facet_col}{column  in \code{sample_annotation} with a batch factor to 
-separate plots into facets; usually 2nd to \code{batch_col}. Most meaningful 
-for multi-instrument MS experiments (where each instrument has its own 
-order-associated effects (see \code{order_col}) or simultaneous examination 
+\item{facet_col}{column  in \code{sample_annotation} with a batch factor to
+separate plots into facets; usually 2nd to \code{batch_col}. Most meaningful
+for multi-instrument MS experiments (where each instrument has its own
+order-associated effects (see \code{order_col}) or simultaneous examination
 of two batch factors (e.g. preparation day and measurement day).
 For single-instrument case should be set to `NULL`}
 
-\item{color_by_batch}{(logical) whether to color points and connecting lines 
+\item{color_by_batch}{(logical) whether to color points and connecting lines
 by batch factor as defined by \code{batch_col}.}
 
-\item{peptide_annotation}{long format data frame with peptide ID and their 
-corresponding protein and/or gene annotations. 
+\item{peptide_annotation}{long format data frame with peptide ID and their
+corresponding protein and/or gene annotations.
 See \code{help("example_peptide_annotation")}.}
 
-\item{color_scheme}{a named vector of colors to map to \code{batch_col}, 
-names corresponding to the levels of the factor. For continuous variables, 
+\item{color_scheme}{a named vector of colors to map to \code{batch_col},
+names corresponding to the levels of the factor. For continuous variables,
 vector doesn't need to be named.}
 
-\item{color_list}{list, as returned by \code{sample_annotation_to_colors}, 
-where each item contains a color vector for each factor to be mapped to the 
+\item{color_list}{list, as returned by \code{sample_annotation_to_colors},
+where each item contains a color vector for each factor to be mapped to the
 color.}
 
-\item{factors_to_plot}{vector of technical and biological covariates to be 
-plotted in this diagnostic plot (assumed to be present in 
+\item{factors_to_plot}{vector of technical and biological covariates to be
+plotted in this diagnostic plot (assumed to be present in
 \code{sample_annotation})}
 
 \item{protein_col}{column where protein names are specified}
 
-\item{no_fit_imputed}{(logical) whether to use imputed (requant) values, as flagged in 
+\item{no_fit_imputed}{(logical) whether to use imputed (requant) values, as flagged in
 \code{qual_col} by \code{qual_value} for data transformation}
 
-\item{qual_col}{column to color point by certain value denoted 
-by \code{qual_value}. Design with inferred/requant values in 
-OpenSWATH output data, 
+\item{qual_col}{column to color point by certain value denoted
+by \code{qual_value}. Design with inferred/requant values in
+OpenSWATH output data,
 which means argument value has to be set to \code{m_score}.}
 
 \item{qual_value}{value in \code{qual_col} to color. For OpenSWATH data,
-this argument value has to be set to \code{2} (this is an \code{m_score} 
+this argument value has to be set to \code{2} (this is an \code{m_score}
 value for imputed values (requant values).}
 
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
-\item{keep_all}{when transforming the data (normalize, correct) - acceptable 
+\item{keep_all}{when transforming the data (normalize, correct) - acceptable
 values: all/default/minimal (which set of columns be kept).}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
-\item{filename}{path where the results are saved. 
+\item{filename}{path where the results are saved.
 If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only 
+otherwise, the object is save into the file. Currently only
 pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
@@ -105,14 +105,16 @@ pdf and png format is supported}
 \item{height}{option  determining the output image width}
 
 \item{units}{units: 'cm', 'in' or 'mm'}
+
+\item{base_size}{base font size}
 }
 \description{
-The proBatch package contains functions for analyzing and correcting batch 
-effects (unwanted technical variation) from high-thoughput experiments. 
-Although the package has primarily been developed for mass spectrometry 
-proteomics (DIA/SWATH), it has been designed be applicable to most omic data 
+The proBatch package contains functions for analyzing and correcting batch
+effects (unwanted technical variation) from high-thoughput experiments.
+Although the package has primarily been developed for mass spectrometry
+proteomics (DIA/SWATH), it has been designed be applicable to most omic data
 with minor adaptations.
-It addresses the following needs: 
+It addresses the following needs:
 \itemize{ \item prepare the data for analysis
 \item Visualize batch effects in sample-wide and feature-level;
 \item Normalize and correct for batch effects.
@@ -127,3 +129,22 @@ To learn more about proBatch, start with the vignettes:
 Common arguments to the functions.
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/symbioticMe/proBatch}
+  \item Report bugs at \url{https://github.com/symbioticMe/proBatch/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Yuliya Burankova \email{yuliya.burankova@uni-hamburg.de}
+
+Authors:
+\itemize{
+  \item Jelena Cuklina \email{chuklina.jelena@gmail.com}
+  \item Chloe H. Lee \email{chloe.h.lee94@gmail.com}
+  \item Patrick Pedrioli \email{pedrioli@gmail.com}
+}
+
+}

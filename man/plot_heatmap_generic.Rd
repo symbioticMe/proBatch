@@ -4,22 +4,33 @@
 \alias{plot_heatmap_generic}
 \title{Plot the heatmap}
 \usage{
-plot_heatmap_generic(data_matrix, column_annotation_df = NULL,
-  row_annotation_df = NULL, col_ann_id_col = "FullRunName",
+plot_heatmap_generic(
+  data_matrix,
+  column_annotation_df = NULL,
+  row_annotation_df = NULL,
+  col_ann_id_col = "FullRunName",
   row_ann_id_col = "peptide_group_label",
   columns_for_cols = c("MS_batch", "Diet", "DateTime", "order"),
-  columns_for_rows = c("KEGG_pathway", "WGCNA_module",
-  "evolutionary_distance"), cluster_rows = FALSE, cluster_cols = TRUE,
-  annotation_color_cols = NULL, annotation_color_rows = NULL,
-  fill_the_missing = -1, color_for_missing = "black",
-  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name =
-  "RdYlBu")))(100), filename = NULL, width = 7, height = 7,
-  units = c("cm", "in", "mm"), plot_title = NULL, ...)
+  columns_for_rows = c("KEGG_pathway", "WGCNA_module", "evolutionary_distance"),
+  cluster_rows = FALSE,
+  cluster_cols = TRUE,
+  annotation_color_cols = NULL,
+  annotation_color_rows = NULL,
+  fill_the_missing = -1,
+  color_for_missing = "black",
+  heatmap_color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100),
+  filename = NULL,
+  width = 7,
+  height = 7,
+  units = c("cm", "in", "mm"),
+  plot_title = NULL,
+  ...
+)
 }
 \arguments{
 \item{data_matrix}{the matrix of data to be plotted}
 
-\item{column_annotation_df}{data frame annotating columns of 
+\item{column_annotation_df}{data frame annotating columns of
 \code{data_matrix}}
 
 \item{row_annotation_df}{data frame annotating rows of \code{data_matrix}}
@@ -27,14 +38,14 @@ plot_heatmap_generic(data_matrix, column_annotation_df = NULL,
 \item{col_ann_id_col}{column of \code{column_annotation_df} whose values are
 unique identifiers of columns in \code{data_matrix}}
 
-\item{row_ann_id_col}{column of \code{row_annotation_df} whose values are 
+\item{row_ann_id_col}{column of \code{row_annotation_df} whose values are
 unique identifiers of rows in \code{data_matrix}}
 
-\item{columns_for_cols}{vector of factors (columns) of 
+\item{columns_for_cols}{vector of factors (columns) of
 \code{column_annotation_df}
 that will be mapped to color annotation of heatmap columns}
 
-\item{columns_for_rows}{vector of factors (columns) of 
+\item{columns_for_rows}{vector of factors (columns) of
 \code{row_annotation_df}
 that will be mapped to color annotation of heatmap rows}
 
@@ -43,27 +54,27 @@ that will be mapped to color annotation of heatmap rows}
 \item{cluster_cols}{boolean: whether the rows should be clustered}
 
 \item{annotation_color_cols}{list of color vectors for column annotation,
-for each factor to be plotted; for factor-like variables a named vector 
+for each factor to be plotted; for factor-like variables a named vector
 (names should correspond to the levels of factors). Advisable to supply here
 color list returned by \code{sample_annotation_to_colors}}
 
 \item{annotation_color_rows}{list of color vectors for row annotation,
-for each factor to be plotted; for factor-like variables a named vector 
+for each factor to be plotted; for factor-like variables a named vector
 (names should correspond to the levels of factors). Advisable to supply here
 color list returned by \code{sample_annotation_to_colors}}
 
 \item{fill_the_missing}{numeric value that the missing values are
-substituted with, or \code{NULL} if features with missing values are to be 
+substituted with, or \code{NULL} if features with missing values are to be
 excluded.}
 
-\item{color_for_missing}{special color to make missing values. 
+\item{color_for_missing}{special color to make missing values.
 Usually black or white, depending on \code{heatmap_color}}
 
 \item{heatmap_color}{vector of colors used in heatmap (typicall a gradient)}
 
-\item{filename}{path where the results are saved. 
+\item{filename}{path where the results are saved.
 If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only 
+otherwise, the object is save into the file. Currently only
 pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
@@ -84,11 +95,12 @@ pheatmap-type object
 Plot the heatmap
 }
 \examples{
-
-p <- plot_heatmap_generic(log_transform_dm(example_proteome_matrix), 
-column_annotation_df = example_sample_annotation,
-columns_for_cols = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'),
-plot_title = 'test_heatmap',
-show_rownames = FALSE, show_colnames = FALSE)
+data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
+p <- plot_heatmap_generic(log_transform_dm(example_proteome_matrix),
+  column_annotation_df = example_sample_annotation,
+  columns_for_cols = c("MS_batch", "digestion_batch", "Diet", "DateTime"),
+  plot_title = "test_heatmap",
+  show_rownames = FALSE, show_colnames = FALSE
+)
 
 }

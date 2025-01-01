@@ -4,20 +4,25 @@
 \alias{matrix_to_long}
 \title{Wide to long conversion}
 \usage{
-matrix_to_long(data_matrix, sample_annotation = NULL,
-  feature_id_col = "peptide_group_label", measure_col = "Intensity",
-  sample_id_col = "FullRunName", step = NULL)
+matrix_to_long(
+  data_matrix,
+  sample_annotation = NULL,
+  feature_id_col = "peptide_group_label",
+  measure_col = "Intensity",
+  sample_id_col = "FullRunName",
+  step = NULL
+)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, 
+feature IDs in rownames and file/sample names as colnames.
+See "example_proteome_matrix" for more details (to call the description,
 use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
@@ -29,7 +34,7 @@ names.}
 column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{step}{normalization step (e.g. \code{Raw} or \code{Normalized}.
@@ -44,11 +49,20 @@ Useful if consecutive steps are compared in plots. Note
 Convert from wide matrix to a long data frame representation
 }
 \examples{
-proteome_long <- matrix_to_long(example_proteome_matrix, 
-example_sample_annotation)
+# Load necessary datasets
+data(
+  list = c("example_sample_annotation", "example_proteome_matrix"),
+  package = "proBatch"
+)
+# Convert matrix to long format
+proteome_long <- matrix_to_long(
+  example_proteome_matrix,
+  example_sample_annotation
+)
 
 }
 \seealso{
-Other matrix manipulation functions: \code{\link{long_to_matrix}}
+Other matrix manipulation functions: 
+\code{\link{long_to_matrix}()}
 }
 \concept{matrix manipulation functions}

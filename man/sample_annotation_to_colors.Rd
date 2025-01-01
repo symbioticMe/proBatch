@@ -4,44 +4,47 @@
 \alias{sample_annotation_to_colors}
 \title{Generate colors for sample annotation}
 \usage{
-sample_annotation_to_colors(sample_annotation,
-  sample_id_col = "FullRunName", factor_columns = c("MS_batch",
-  "EarTag", "digestion_batch", "Strain", "Diet"),
+sample_annotation_to_colors(
+  sample_annotation,
+  sample_id_col = "FullRunName",
+  factor_columns = c("MS_batch", "EarTag", "digestion_batch", "Strain", "Diet"),
   numeric_columns = c("DateTime", "order"),
-  rare_categories_to_other = TRUE, guess_factors = FALSE,
-  numeric_palette_type = "brewer")
+  rare_categories_to_other = TRUE,
+  guess_factors = FALSE,
+  numeric_palette_type = "brewer"
+)
 }
 \arguments{
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
-\item{factor_columns}{columns of \code{sample_annotation} to be 
-treated as factors. Sometimes categorical variables are depicted as integers 
+\item{factor_columns}{columns of \code{sample_annotation} to be
+treated as factors. Sometimes categorical variables are depicted as integers
 (e.g. in column "Batch", values are 1, 2 and 3), specification here allows to
 map them correctly to qualitative palettes.}
 
-\item{numeric_columns}{columns of \code{sample_annotation} to be 
+\item{numeric_columns}{columns of \code{sample_annotation} to be
 treated as continuous numeric values.}
 
-\item{rare_categories_to_other}{if \code{True} rare categories 
+\item{rare_categories_to_other}{if \code{True} rare categories
 will be merged into the value \code{"other"}}
 
 \item{guess_factors}{whether attempt which of the \code{factor_columns}
 are actually numeric}
 
-\item{numeric_palette_type}{palette to be used for 
+\item{numeric_palette_type}{palette to be used for
 numeric values coloring (can be \code{'brewer' and 'viridis'})}
 }
 \value{
 list of three items: \enumerate{
-  \item list of colors; 
-  \item data frame of colors; 
+  \item list of colors;
+  \item data frame of colors;
   \item new sample annotation (e.g. rare factor levels merged into "other")
   }
 }
@@ -50,8 +53,13 @@ Convert the sample annotation data frame to list of colors
 the list is named as columns included to use in plotting functions
 }
 \examples{
-color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
-factor_columns = c('MS_batch','EarTag', "Strain", 
-"Diet", "digestion_batch", "Sex"),
-numeric_columns = c('DateTime', 'order'))
+data("example_sample_annotation", package = "proBatch")
+color_scheme <- sample_annotation_to_colors(
+  example_sample_annotation,
+  factor_columns = c(
+    "MS_batch", "EarTag", "Strain",
+    "Diet", "digestion_batch", "Sex"
+  ),
+  numeric_columns = c("DateTime", "order")
+)
 }
