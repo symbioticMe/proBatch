@@ -95,7 +95,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
   df_ave = sample_order$df_long
   
   #Main plotting of intensity means:
-  gg = ggplot(df_ave, aes(x = !!sym(order_col), y = Mean_Intensity))+
+  gg = ggplot(df_ave, aes(x = !!sym(order_col), y = .data$Mean_Intensity))+
     geom_point()
   
   #add colors
