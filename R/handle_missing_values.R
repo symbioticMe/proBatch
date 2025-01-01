@@ -2,8 +2,10 @@ handle_missing_values <- function(data_matrix, warning_message,
                                   fill_the_missing = NULL) {
   if (any(is.na(as.vector(data_matrix)))) {
     warning(warning_message)
+    pre_corr_dim <- nrow(data_matrix)
     if (!is.null(fill_the_missing)) {
       if (!is.numeric(fill_the_missing)) {
+        warning("filling value is not numeric, setting to 0")
         fill_the_missing <- 0
       } else {
         warning(sprintf("filling missing value with %s", fill_the_missing))
@@ -23,9 +25,6 @@ handle_missing_values <- function(data_matrix, warning_message,
             data_matrix <- (data_matrix[good_rows, good_rows])
           }
           data_matrix <- data_matrix[complete.cases(data_matrix), complete.cases(data_matrix)]
-          after_corr_dim <- nrow(data_matrix)
-          rem_rows <- pre_corr_dim - after_corr_dim
-          warning(sprintf("removed %s rows of the matrix with missing values", rem_rows))
         } else {
           warning("matrix is square, but not symmetric, coincidence or error?")
           data_matrix <- data_matrix[complete.cases(data_matrix), ]
@@ -34,6 +33,11 @@ handle_missing_values <- function(data_matrix, warning_message,
         warning("filling value is NULL, removing rows with missing values from data matrix")
         data_matrix <- data_matrix[complete.cases(data_matrix), ]
       }
+    }
+    after_corr_dim <- nrow(data_matrix)
+    rem_rows <- pre_corr_dim - after_corr_dim
+    if (rem_rows > 0) {
+      warning(sprintf("removed %s rows of the matrix with missing values", rem_rows))
     }
   }
   return(data_matrix)

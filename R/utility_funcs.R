@@ -320,18 +320,18 @@ save_ggplot <- function(filename, units, width, height, gg) {
   }
 }
 
-check_feature_id_col_in_dm <- function(feature_id_col, data_matrix) {
+check_feature_id_col_in_dm <- function(feature_id_col, data_matrix,
+                                       issue_reported = FALSE) {
   if (!is.null(feature_id_col)) {
     if (feature_id_col %in% colnames(data_matrix)) {
-      if (is.data.frame(data_matrix)) {
+      if (is.data.frame(data_matrix) && !issue_reported) {
         warning(sprintf(
-          "feature_id_col with name %s in data matrix instead of
-                         rownames,
-                        this might cause errors in other diagnostic functions,
-                        assign values of this column to rowname and remove from
-                        the data frame!",
+          "feature_id_col with name %s in data matrix instead of rownames,
+          this might cause errors in other diagnostic functions,
+          assign values of this column to rowname and remove from the data frame!",
           feature_id_col
         ))
+        issue_reported <- TRUE
       }
       rownames(data_matrix) <- data_matrix[[feature_id_col]]
       data_matrix[[feature_id_col]] <- NULL
