@@ -128,7 +128,8 @@
 #' 
 #' @docType package
 #' @name proBatch
-#' @aliases proBatch
+#' @aliases proBatch-package
+"_PACKAGE"
 if(getRversion() >= "2.15.1")  utils::globalVariables(c( "batch_size", 
                                                          "tipping.points", 
                                                          "min_order_value", 
