@@ -135,7 +135,7 @@ To install the latest version of proBatch package, you need `devtools`:
 ```{r install_proBatch, fig.show='hold', eval = FALSE}
 # install the development version from GitHub:
 install.packages("devtools")
-devtools::install_github("Freddsle/proBatch", build_vignettes = TRUE)
+devtools::install_github("symbioticMe/proBatch", build_vignettes = TRUE)
 ```
 
 \pagebreak

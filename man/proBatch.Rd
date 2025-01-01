@@ -138,7 +138,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Yuliya Burankova \email{yuliya.burankova@uni-hamburg.de}
+\strong{Maintainer}: 
 
 Authors:
 \itemize{
