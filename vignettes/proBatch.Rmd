@@ -27,7 +27,7 @@ numbersections: true
 
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(
-  echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "h"
+  echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "h",
   collapse = TRUE,
   comment = "#>"
 )
@@ -135,7 +135,7 @@ To install the latest version of proBatch package, you need `devtools`:
 ```{r install_proBatch, fig.show='hold', eval = FALSE}
 # install the development version from GitHub:
 install.packages("devtools")
-devtools::install_github("symbioticMe/proBatch", build_vignettes = TRUE)
+devtools::install_github("Freddsle/proBatch", build_vignettes = TRUE)
 ```
 
 \pagebreak
@@ -714,7 +714,7 @@ given dataset.
 
 ```{r loess_30, fig.show='hold', fig.width=5, fig.height=2.4}
 loess_fit_30 <- adjust_batch_trend_df(
-  quantile_normalized_long, 
+  quantile_normalized_long,
   example_sample_annotation,
   span = 0.3
 )
@@ -768,7 +768,8 @@ Feature-level median centering is the simplest approach for batch effects correc
 However, if the variance is different between batches, other approaches need to be used.
 ```{r median_batch, fig.show='hold', fig.width=3, fig.height=2.4}
 peptide_median_df <- center_feature_batch_medians_df(
-  loess_fit_df, example_sample_annotation)
+  loess_fit_df, example_sample_annotation
+)
 plot_single_feature(
   feature_name = "10231_QDVDVWLWQQEGSSK_2", df_long = peptide_median_df,
   sample_annotation = example_sample_annotation, measure_col = "Intensity",
