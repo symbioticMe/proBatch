@@ -116,9 +116,7 @@ plot_protein_corrplot <- function(data_matrix,
                                   filename = NULL,
                                   width = NA, height = NA, 
                                   units = c('cm','in','mm'),
-                                  plot_title = sprintf(
-                                    'Peptide correlation matrix of %s protein', 
-                                    protein_name), ...) {
+                                  plot_title = NULL, ...){
   
   peptides = peptide_annotation %>%
     filter(!!(sym(feature_id_col)) %in% rownames(data_matrix)) %>%
@@ -134,6 +132,12 @@ plot_protein_corrplot <- function(data_matrix,
   
   corr_matrix = corr_matrix[peptide_annotation[[feature_id_col]],
                             peptide_annotation[[feature_id_col]]]
+
+  if (is.null(plot_title) && length(protein_name) == 1){
+    plot_title = sprintf('Correlation matrix of peptides from %s', protein_name)
+  } else if (is.null(plot_title) && length(protein_name) > 1){
+    plot_title = sprintf('Peptide correlation matrix of %s proteins', paste(protein_name, collapse = ", "))
+  }
   
   plot_corr_matrix(corr_matrix, 
                    annotation = peptide_annotation, 
@@ -323,7 +327,7 @@ calculate_sample_corr_distr <- function(data_matrix, sample_annotation,
   data_matrix = long_to_matrix(df_long, sample_id_col = sample_id_col)
   
   if (!is.null(repeated_samples)){
-    print('calculating correlation of repeated samples only')
+    message('calculating correlation of repeated samples only')
     corr_matrix = cor(data_matrix[,repeated_samples], 
                       use = "pairwise.complete.obs")
   } else {
