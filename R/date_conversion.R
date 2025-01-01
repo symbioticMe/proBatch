@@ -18,6 +18,7 @@
 #'
 #' @family date
 #' @examples 
+#' data("example_sample_annotation", package = "proBatch")
 #' date_to_posix <- dates_to_posix(example_sample_annotation, 
 #' time_column = c('RunDate','RunTime'),
 #' new_time_column = 'DateTime_new', 
@@ -72,6 +73,7 @@ dates_to_posix <- function(sample_annotation,
 #'   in some diagnostic plots (e.g.
 #'   \code{\link{plot_iRT}}, \code{\link{plot_sample_mean}})
 #' @examples 
+#' data("example_sample_annotation", package = "proBatch")
 #' sample_annotation_wOrder <- date_to_sample_order(
 #' example_sample_annotation,
 #' time_column = c('RunDate','RunTime'),

@@ -221,7 +221,8 @@ merge_rare_levels <- function(column, rare_thr = 2) {
 #'   \item new sample annotation (e.g. rare factor levels merged into "other")
 #'   }
 #' 
-#' @examples 
+#' @examples
+#' data("example_sample_annotation", package = "proBatch")
 #' color_scheme <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch','EarTag', "Strain", 
 #' "Diet", "digestion_batch", "Sex"),

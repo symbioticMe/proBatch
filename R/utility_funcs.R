@@ -36,6 +36,8 @@ merge_df_with_annotation <- function(df_long, sample_annotation, sample_id_col,
 #' @export
 #'
 #' @examples
+#' # Load necessary datasets
+#' data(list = c("example_proteome", "example_sample_annotation"), package = "proBatch")
 #' 
 #' df_test = check_sample_consistency(sample_annotation = example_sample_annotation, 
 #' df_long = example_proteome, sample_id_col = 'FullRunName',
@@ -83,6 +85,7 @@ input data,
 #' @export
 #'
 #' @examples 
+#' data(list = c("example_proteome", "example_sample_annotation"), package = "proBatch")
 #' sample_order = define_sample_order(order_col = 'order', 
 #' sample_annotation = example_sample_annotation, 
 #' facet_col = NULL, batch_col = 'MS_batch', df_long = example_proteome, 

@@ -18,6 +18,9 @@
 #' @return vector of fitted response values
 #' 
 #' @examples 
+#' # Load necessary datasets
+#' data(list = c("example_proteome", "example_sample_annotation"), package = "proBatch")
+#' 
 #' test_peptide = example_proteome$peptide_group_label[1] 
 #' selected_peptide = example_proteome$peptide_group_label == test_peptide
 #' df_selected = example_proteome[selected_peptide,]

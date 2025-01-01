@@ -32,6 +32,10 @@
 #' @return ggplot2 type plot of \code{measure_col} vs \code{order_col},
 #'   faceted by \code{feature_name} and (optionally) by \code{batch_col}
 #' @examples 
+#' # Load necessary datasets
+#' data(list = c("example_sample_annotation", "example_proteome",
+#' "example_peptide_annotation"), package = "proBatch")
+#' 
 #' single_feature_plot <- plot_single_feature(feature_name = c("46213_NVGVSFYADKPEVTQEQK_2","10081_NVQGIIDILK_2"), 
 #' df_long = example_proteome, example_sample_annotation, 
 #' qual_col = NULL)

@@ -169,6 +169,7 @@ plot_protein_corrplot <- function(data_matrix,
 #' @export
 #'
 #' @examples
+#' data(list = c("example_sample_annotation", "example_proteome_matrix"), package = "proBatch")
 #' specified_samples = example_sample_annotation$FullRunName[
 #' which(example_sample_annotation$order %in% 110:115)] 
 #' 
@@ -178,7 +179,6 @@ plot_protein_corrplot <- function(data_matrix,
 #'  cluster_rows= FALSE, cluster_cols=FALSE,
 #'  annotation_names_col = TRUE, annotation_legend = FALSE, 
 #'  show_colnames = FALSE)
-#'  
 #'  
 #'  color_list <- sample_annotation_to_colors (example_sample_annotation, 
 #' factor_columns = c('MS_batch','EarTag', "Strain", 
@@ -308,6 +308,7 @@ get_sample_corr_df <- function(cor_proteome, sample_annotation,
 #' }
 #' 
 #' @examples 
+#' data(list = c("example_sample_annotation", "example_proteome_matrix"), package = "proBatch")
 #' corr_distribution = calculate_sample_corr_distr(data_matrix = example_proteome_matrix, 
 #' sample_annotation = example_sample_annotation,
 #' batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
@@ -377,7 +378,8 @@ NULL
 
 #' @rdname plot_sample_corr_distribution
 #' 
-#' @examples 
+#' @examples
+#' data(list = c("example_sample_annotation", "example_proteome_matrix"), package = "proBatch")
 #' sample_corr_distribution_plot <- plot_sample_corr_distribution(
 #' example_proteome_matrix,
 #' example_sample_annotation, batch_col = 'MS_batch', 
@@ -430,6 +432,7 @@ plot_sample_corr_distribution <- function(data_matrix, sample_annotation,
 #' @rdname plot_sample_corr_distribution
 #' 
 #' @examples 
+#' data(list = c("example_sample_annotation", "example_proteome_matrix"), package = "proBatch")
 #' corr_distribution = calculate_sample_corr_distr(data_matrix = example_proteome_matrix, 
 #' sample_annotation = example_sample_annotation,
 #' batch_col = 'MS_batch',biospecimen_id_col = "EarTag")

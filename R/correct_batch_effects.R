@@ -60,6 +60,9 @@
 
 #' 
 #' @examples 
+#' # Load necessary datasets
+#' data(list = c("example_sample_annotation", "example_proteome"),
+#'     package = "proBatch")
 #' 
 #' #Median centering per feature per batch:
 #' median_centered_df <- center_feature_batch_medians_df(

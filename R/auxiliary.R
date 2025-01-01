@@ -49,9 +49,11 @@ long_to_matrix <- function(df_long,
 #' @return \code{df_long} (\link{proBatch}) like data frame
 #'
 #' @family matrix manipulation functions
-#' @examples 
-#' proteome_long <- matrix_to_long(example_proteome_matrix, 
-#' example_sample_annotation)
+#' @examples
+#' # Load necessary datasets
+#' data(list = c("example_sample_annotation", "example_proteome_matrix"), package = "proBatch")
+#' # Convert matrix to long format
+#' proteome_long <- matrix_to_long(example_proteome_matrix, example_sample_annotation)
 #'
 #' @export
 #'

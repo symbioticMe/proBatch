@@ -15,6 +15,8 @@
 #'
 #' @return No return
 #' @examples
+#' # Load necessary datasets
+#' data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 #' 
 #' selected_batches = example_sample_annotation$MS_batch %in% 
 #'                                               c('Batch_1', 'Batch_2')
@@ -172,7 +174,9 @@ plot_hierarchical_clustering  <- function(data_matrix, sample_annotation,
 #' @export
 #' 
 #' @examples 
-#' data("example_proteome_matrix", package = "proBatch")
+#' Load necessary datasets
+#' data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
+#' 
 #' log_transformed_matrix = log_transform_dm(example_proteome_matrix)
 #' heatmap_plot <- plot_heatmap_diagnostic(log_transformed_matrix, 
 #' example_sample_annotation, 
@@ -307,7 +311,7 @@ plot_heatmap_diagnostic <- function(data_matrix, sample_annotation = NULL,
 #' @export
 #' 
 #' @examples 
-#' data("example_proteome_matrix", package = "proBatch")
+#' data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 #' p <- plot_heatmap_generic(log_transform_dm(example_proteome_matrix), 
 #' column_annotation_df = example_sample_annotation,
 #' columns_for_cols = c("MS_batch",  "digestion_batch", "Diet", 'DateTime'),
@@ -441,7 +445,7 @@ plot_heatmap_generic <- function(data_matrix,
 #' @export
 #' 
 #' @examples
-#' data("example_proteome_matrix", package = "proBatch")
+#' data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 #' matrix_test <- example_proteome_matrix[1:150, ]
 #' pvca_df <- calculate_PVCA(matrix_test, example_sample_annotation, 
 #' factors_for_PVCA = c('MS_batch', 'digestion_batch',"Diet", "Sex", "Strain"),
@@ -519,7 +523,7 @@ calculate_PVCA <- function(data_matrix, sample_annotation,
 #' @export
 #'
 #' @examples 
-#' data("example_proteome_matrix", package = "proBatch")
+#' data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 #' matrix_test <- example_proteome_matrix[1:150, ]
 #' pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
 #' technical_factors = c('MS_batch', 'digestion_batch'),
@@ -584,7 +588,7 @@ plot_PVCA <- function(data_matrix, sample_annotation,
 #' @export
 #'
 #' @examples
-#' data("example_proteome_matrix", package = "proBatch")
+#' data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 #' matrix_test <- example_proteome_matrix[1:150, ]
 #' pvca_df_res <- prepare_PVCA_df(matrix_test, example_sample_annotation, 
 #' technical_factors = c('MS_batch', 'digestion_batch'),
@@ -648,7 +652,7 @@ prepare_PVCA_df <- function(data_matrix, sample_annotation,
 #' @export
 #'
 #' @examples
-#' data("example_proteome_matrix", package = "proBatch")
+#' data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 #' matrix_test <- example_proteome_matrix[1:150, ]
 #' pvca_df_res <- prepare_PVCA_df(matrix_test, example_sample_annotation, 
 #' technical_factors = c('MS_batch', 'digestion_batch'),
@@ -728,7 +732,7 @@ plot_PVCA.df <- function(pvca_res,
 #' @export
 #'
 #' @examples
-#' data("example_proteome_matrix", package = "proBatch")
+#' data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 #' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 
 #' color_by = 'MS_batch', plot_title = "PCA colored by MS batch")
 #' pca_plot <- plot_PCA(example_proteome_matrix, example_sample_annotation, 

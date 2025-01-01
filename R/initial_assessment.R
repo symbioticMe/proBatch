@@ -19,6 +19,7 @@
 #' @export
 #'
 #' @examples 
+#' data(list = c("example_proteome", "example_sample_annotation"), package = "proBatch")
 #' mean_plot <- plot_sample_mean(example_proteome_matrix, example_sample_annotation, 
 #' order_col = 'order', batch_col = "MS_batch")
 #' 
@@ -177,6 +178,7 @@ plot_sample_mean <- function(data_matrix, sample_annotation = NULL,
 #' @export
 #'
 #' @examples
+#' data(list = c("example_proteome", "example_sample_annotation"), package = "proBatch")
 #' boxplot <- plot_boxplot(log_transform_df(example_proteome), 
 #' sample_annotation = example_sample_annotation, 
 #' batch_col = "MS_batch")
