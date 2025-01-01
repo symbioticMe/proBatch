@@ -27,8 +27,8 @@ long_to_matrix <- function(df_long,
   if (!is.null(qual_col)) {
     message("removing imputed values (requants)")
     df_long <- df_long %>%
-      mutate(!!sym(measure_col) := ifelse(!!sym(qual_col) == qual_value,
-        NA, !!sym(measure_col)
+      mutate(!!sym(measure_col) := ifelse(
+        !!sym(qual_col) == qual_value, NA, !!sym(measure_col)
       ))
   }
   proteome_wide <- dcast(
@@ -58,9 +58,15 @@ long_to_matrix <- function(df_long,
 #' @family matrix manipulation functions
 #' @examples
 #' # Load necessary datasets
-#' data(list = c("example_sample_annotation", "example_proteome_matrix"), package = "proBatch")
+#' data(
+#'   list = c("example_sample_annotation", "example_proteome_matrix"),
+#'   package = "proBatch"
+#' )
 #' # Convert matrix to long format
-#' proteome_long <- matrix_to_long(example_proteome_matrix, example_sample_annotation)
+#' proteome_long <- matrix_to_long(
+#'   example_proteome_matrix,
+#'   example_sample_annotation
+#' )
 #'
 #' @export
 #'
@@ -119,7 +125,10 @@ create_peptide_annotation <- function(df_long,
                                       feature_id_col = "peptide_group_label",
                                       protein_col = c("ProteinName", "Gene")) {
   if (!all(protein_col %in% names(df_long))) {
-    stop(sprintf("Column %s is not in the data"), setdiff(names(df_long), protein_col))
+    stop(
+      sprintf("Column %s is not in the data"),
+      setdiff(names(df_long), protein_col)
+    )
   }
   peptide_annotation <- df_long %>%
     select(one_of(c(feature_id_col, protein_col))) %>%
