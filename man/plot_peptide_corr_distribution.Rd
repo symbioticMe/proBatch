@@ -5,25 +5,38 @@
 \alias{plot_peptide_corr_distribution.corrDF}
 \title{Create violin plot of peptide correlation distribution}
 \usage{
-plot_peptide_corr_distribution(data_matrix, peptide_annotation,
-  protein_col = "ProteinName", feature_id_col = "peptide_group_label",
-  filename = NULL, width = NA, height = NA, units = c("cm", "in",
-  "mm"), plot_title = "Distribution of peptide correlation",
-  theme = "classic")
+plot_peptide_corr_distribution(
+  data_matrix,
+  peptide_annotation,
+  protein_col = "ProteinName",
+  feature_id_col = "peptide_group_label",
+  filename = NULL,
+  width = NA,
+  height = NA,
+  units = c("cm", "in", "mm"),
+  plot_title = "Distribution of peptide correlation",
+  theme = "classic"
+)
 
-plot_peptide_corr_distribution.corrDF(corr_distribution, filename = NULL,
-  width = NA, height = NA, units = c("cm", "in", "mm"),
-  plot_title = "Correlation of peptides", theme = "classic",
-  base_size = 20)
+plot_peptide_corr_distribution.corrDF(
+  corr_distribution,
+  filename = NULL,
+  width = NA,
+  height = NA,
+  units = c("cm", "in", "mm"),
+  plot_title = "Correlation of peptides",
+  theme = "classic",
+  base_size = 20
+)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, 
+feature IDs in rownames and file/sample names as colnames.
+See "example_proteome_matrix" for more details (to call the description,
 use \code{help("example_proteome_matrix")})}
 
-\item{peptide_annotation}{long format data frame with peptide ID and their 
-corresponding protein and/or gene annotations. 
+\item{peptide_annotation}{long format data frame with peptide ID and their
+corresponding protein and/or gene annotations.
 See \code{help("example_peptide_annotation")}.}
 
 \item{protein_col}{column where protein names are specified}
@@ -33,9 +46,9 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{filename}{path where the results are saved. 
+\item{filename}{path where the results are saved.
 If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only 
+otherwise, the object is save into the file. Currently only
 pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
@@ -50,33 +63,42 @@ level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
 \item{corr_distribution}{data frame with peptide correlation distribution}
+
+\item{base_size}{base font size}
 }
 \value{
 \code{ggplot} object (violin plot of peptide correlation)
 }
 \description{
-Plot distribution of peptide correlations within one 
+Plot distribution of peptide correlations within one
 protein and between proteins
 }
 \examples{
+data(list = c("example_peptide_annotation", "example_proteome_matrix"), package = "proBatch")
 peptide_corr_distribution <- plot_peptide_corr_distribution(
-example_proteome_matrix, 
-example_peptide_annotation, protein_col = 'Gene')
+  example_proteome_matrix,
+  example_peptide_annotation,
+  protein_col = "Gene"
+)
 
-selected_genes = c('BOVINE_A1ag','BOVINE_FetuinB','Cyfip1')
-gene_filter = example_peptide_annotation$Gene \%in\% selected_genes
-peptides_ann = example_peptide_annotation$peptide_group_label
-selected_peptides = peptides_ann[gene_filter]
-matrix_test = example_proteome_matrix[selected_peptides,]
-pep_annotation_sel = example_peptide_annotation[gene_filter, ]
-corr_distribution = calculate_peptide_corr_distr(matrix_test, 
-pep_annotation_sel, protein_col = 'Gene')
+data(list = c("example_peptide_annotation", "example_proteome_matrix"), package = "proBatch")
+selected_genes <- c("BOVINE_A1ag", "BOVINE_FetuinB", "Cyfip1")
+gene_filter <- example_peptide_annotation$Gene \%in\% selected_genes
+peptides_ann <- example_peptide_annotation$peptide_group_label
+selected_peptides <- peptides_ann[gene_filter]
+matrix_test <- example_proteome_matrix[selected_peptides, ]
+pep_annotation_sel <- example_peptide_annotation[gene_filter, ]
+corr_distribution <- calculate_peptide_corr_distr(matrix_test,
+  pep_annotation_sel,
+  protein_col = "Gene"
+)
 peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution)
 
-\dontrun{
-peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution, 
-filename = 'test_peptide.png', 
-width = 28, height = 28, units = 'cm')
+\donttest{
+peptide_corr_distribution <- plot_peptide_corr_distribution.corrDF(corr_distribution,
+  filename = "test_peptide.png",
+  width = 28, height = 28, units = "cm"
+)
 }
 
 }

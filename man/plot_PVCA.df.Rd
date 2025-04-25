@@ -4,9 +4,17 @@
 \alias{plot_PVCA.df}
 \title{plot PVCA, when the analysis is completed}
 \usage{
-plot_PVCA.df(pvca_res, colors_for_bars = NULL, filename = NULL,
-  width = NA, height = NA, units = c("cm", "in", "mm"),
-  plot_title = NULL, theme = "classic", base_size = 20)
+plot_PVCA.df(
+  pvca_res,
+  colors_for_bars = NULL,
+  filename = NULL,
+  width = NA,
+  height = NA,
+  units = c("cm", "in", "mm"),
+  plot_title = NULL,
+  theme = "classic",
+  base_size = 20
+)
 }
 \arguments{
 \item{pvca_res}{data frame of weights of Principal Variance Components, result
@@ -16,9 +24,9 @@ of \code{calculate_PVCA}}
 following categories: c('residual', 'biological', 'biol:techn',
 'technical')}
 
-\item{filename}{path where the results are saved. 
+\item{filename}{path where the results are saved.
 If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only 
+otherwise, the object is save into the file. Currently only
 pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
@@ -31,6 +39,8 @@ pdf and png format is supported}
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
+
+\item{base_size}{base size of the text in the plot}
 }
 \value{
 \code{ggplot} object with bars as weights, colored by bio/tech factors
@@ -39,13 +49,15 @@ level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 plot PVCA, when the analysis is completed
 }
 \examples{
+data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 matrix_test <- example_proteome_matrix[1:150, ]
-pvca_df_res <- prepare_PVCA_df(matrix_test, example_sample_annotation, 
-technical_factors = c('MS_batch', 'digestion_batch'),
-biological_factors = c("Diet", "Sex", "Strain"), 
-pca_threshold = .6, variance_threshold = .01, fill_the_missing = -1)
-colors_for_bars = c('grey', 'green','blue','red')
-names(colors_for_bars) = c('residual', 'biological','biol:techn','technical')
+pvca_df_res <- prepare_PVCA_df(matrix_test, example_sample_annotation,
+  technical_factors = c("MS_batch", "digestion_batch"),
+  biological_factors = c("Diet", "Sex", "Strain"),
+  pca_threshold = .6, variance_threshold = .01, fill_the_missing = -1
+)
+colors_for_bars <- c("grey", "green", "blue", "red")
+names(colors_for_bars) <- c("residual", "biological", "biol:techn", "technical")
 
 pvca_plot <- plot_PVCA.df(pvca_df_res, colors_for_bars)
 }

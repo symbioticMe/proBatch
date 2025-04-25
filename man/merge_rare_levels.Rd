@@ -7,10 +7,10 @@
 merge_rare_levels(column, rare_thr = 2)
 }
 \arguments{
-\item{column}{column of the data whose rare categories need to be merged to 
+\item{column}{column of the data whose rare categories need to be merged to
 "other"}
 
-\item{rare_thr}{minimal number of times for a category to be represented to 
+\item{rare_thr}{minimal number of times for a category to be represented to
 be declared as "rare" and converted to "other"}
 }
 \value{
@@ -18,5 +18,11 @@ column with rare occurrences replaced by other
 }
 \description{
 Replaces levels with a maximal occurrence of 1 with \code{other}
+}
+\examples{
+column <- factor(c("A", "B", "A", "C", "D", "D", "E"))
+merge_rare_levels(column, rare_thr = 2)
+# [1] A     other A     other D     D     other
+# Levels: A D other
 }
 \keyword{internal}

@@ -2,19 +2,18 @@
 % Please edit documentation in R/auxiliary.R
 \name{create_peptide_annotation}
 \alias{create_peptide_annotation}
-\title{Prepare peptide annotation from long format data frame
- 
-Create light-weight peptide annotation data frame 
-for selection of illustrative proteins}
+\title{Prepare peptide annotation from long format data frame}
 \usage{
-create_peptide_annotation(df_long,
+create_peptide_annotation(
+  df_long,
   feature_id_col = "peptide_group_label",
-  protein_col = c("ProteinName", "Gene"))
+  protein_col = c("ProteinName", "Gene")
+)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
-and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col}
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH
 output result file). See \code{help("example_proteome")} for more details.}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
@@ -28,18 +27,19 @@ names.}
 data frame containing petpide annotations
 }
 \description{
-Prepare peptide annotation from long format data frame
- 
-Create light-weight peptide annotation data frame 
+Create light-weight peptide annotation data frame
 for selection of illustrative proteins
 }
 \examples{
+data("example_proteome", package = "proBatch")
 generated_peptide_annotation <- create_peptide_annotation(
-example_proteome, feature_id_col = "peptide_group_label",
-protein_col = c("Protein"))
+  example_proteome,
+  feature_id_col = "peptide_group_label",
+  protein_col = c("Protein")
+)
 
 }
 \seealso{
-\code{\link{plot_peptides_of_one_protein}}, 
+\code{\link{plot_peptides_of_one_protein}},
 \code{\link{plot_protein_corrplot}}
 }

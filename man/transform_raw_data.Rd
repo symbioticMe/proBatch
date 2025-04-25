@@ -8,11 +8,9 @@
 \alias{unlog_dm}
 \title{Functions to log transform raw data before normalization and batch correction}
 \usage{
-log_transform_df(df_long, log_base = 2, offset = 1,
-  measure_col = "Intensity")
+log_transform_df(df_long, log_base = 2, offset = 1, measure_col = "Intensity")
 
-unlog_df(df_long, log_base = 2, offset = 1,
-  measure_col = "Intensity")
+unlog_df(df_long, log_base = 2, offset = 1, measure_col = "Intensity")
 
 log_transform_dm(data_matrix, log_base = 2, offset = 1)
 
@@ -20,8 +18,8 @@ unlog_dm(data_matrix, log_base = 2, offset = 1)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
-and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col}
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH
 output result file). See \code{help("example_proteome")} for more details.}
 
 \item{log_base}{base of the logarithm for transformation}
@@ -33,14 +31,14 @@ column with expression/abundance/intensity; otherwise, it is used
 internally for consistency.}
 
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, 
+feature IDs in rownames and file/sample names as colnames.
+See "example_proteome_matrix" for more details (to call the description,
 use \code{help("example_proteome_matrix")})}
 }
 \value{
-`log_transform_df()` returns \code{df_long}-size data frame, with 
-\code{measure_col} log transformed; with old value in another column 
-called "beforeLog_intensity" if "intensity" was the value of 
+`log_transform_df()` returns \code{df_long}-size data frame, with
+\code{measure_col} log transformed; with old value in another column
+called "beforeLog_intensity" if "intensity" was the value of
 \code{measure_col};
 `log_transform_dm()` returns \code{data_matrix} format matrix
 }
@@ -52,8 +50,11 @@ Log transformation of the data
 "Unlog" transformation of the data to pre-log form (for quantification, forcing log-transform)
 }
 \examples{
+data(list = c("example_proteome", "example_proteome_matrix"), package = "proBatch")
+
 log_transformed_df <- log_transform_df(example_proteome)
 
-log_transformed_matrix <- log_transform_dm(example_proteome_matrix, 
-log_base = 10, offset = 1)
+log_transformed_matrix <- log_transform_dm(example_proteome_matrix,
+  log_base = 10, offset = 1
+)
 }

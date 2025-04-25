@@ -4,8 +4,13 @@
 \alias{plot_CV_distr.df}
 \title{Plot the distribution (boxplots) of per-batch per-step CV of features}
 \usage{
-plot_CV_distr.df(CV_df, plot_title = NULL, filename = NULL,
-  theme = "classic", log_y_scale = TRUE)
+plot_CV_distr.df(
+  CV_df,
+  plot_title = NULL,
+  filename = NULL,
+  theme = "classic",
+  log_y_scale = TRUE
+)
 }
 \arguments{
 \item{CV_df}{data frame with Total CV for each feature & (optionally) per-batch CV}
@@ -13,9 +18,9 @@ plot_CV_distr.df(CV_df, plot_title = NULL, filename = NULL,
 \item{plot_title}{title of the plot (e.g., processing step + representation
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
-\item{filename}{path where the results are saved. 
+\item{filename}{path where the results are saved.
 If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only 
+otherwise, the object is save into the file. Currently only
 pdf and png format is supported}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}

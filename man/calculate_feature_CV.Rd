@@ -4,22 +4,29 @@
 \alias{calculate_feature_CV}
 \title{Calculate CV distribution for each feature}
 \usage{
-calculate_feature_CV(df_long, sample_annotation = NULL,
+calculate_feature_CV(
+  df_long,
+  sample_annotation = NULL,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName", measure_col = "Intensity",
-  batch_col = NULL, biospecimen_id_col = NULL, unlog = TRUE,
-  log_base = 2, offset = 1)
+  sample_id_col = "FullRunName",
+  measure_col = "Intensity",
+  batch_col = NULL,
+  biospecimen_id_col = NULL,
+  unlog = TRUE,
+  log_base = 2,
+  offset = 1
+)
 }
 \arguments{
 \item{df_long}{data frame where each row is a single feature in a single
-sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col} 
-and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH 
+sample. It minimally has a \code{sample_id_col}, a \code{feature_id_col}
+and a \code{measure_col}, but usually also an \code{m_score} (in OpenSWATH
 output result file). See \code{help("example_proteome")} for more details.}
 
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
@@ -27,7 +34,7 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{measure_col}{if \code{df_long} is among the parameters, it is the
@@ -37,8 +44,8 @@ internally for consistency.}
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
-\item{biospecimen_id_col}{column in \code{sample_annotation} 
-that defines a unique bio ID, which is usually a 
+\item{biospecimen_id_col}{column in \code{sample_annotation}
+that defines a unique bio ID, which is usually a
 combination of conditions or groups.
  Tip: if such ID is absent, but can be defined from several columns,
  create new \code{biospecimen_id} column}
@@ -56,8 +63,10 @@ data frame with Total CV for each feature & (optionally) per-batch CV
 Calculate CV distribution for each feature
 }
 \examples{
-CV_df = calculate_feature_CV(example_proteome, 
-sample_annotation = example_sample_annotation, 
-measure_col = 'Intensity', 
-batch_col = 'MS_batch')
+data(list = c("example_sample_annotation", "example_proteome"), package = "proBatch")
+CV_df <- calculate_feature_CV(example_proteome,
+  sample_annotation = example_sample_annotation,
+  measure_col = "Intensity",
+  batch_col = "MS_batch"
+)
 }

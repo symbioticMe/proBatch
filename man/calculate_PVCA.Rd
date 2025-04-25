@@ -4,22 +4,27 @@
 \alias{calculate_PVCA}
 \title{Calculate variance distribution by variable}
 \usage{
-calculate_PVCA(data_matrix, sample_annotation,
+calculate_PVCA(
+  data_matrix,
+  sample_annotation,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName", factors_for_PVCA = c("MS_batch",
-  "digestion_batch", "Diet", "Sex", "Strain"), pca_threshold = 0.6,
-  variance_threshold = 0.01, fill_the_missing = -1)
+  sample_id_col = "FullRunName",
+  factors_for_PVCA = c("MS_batch", "digestion_batch", "Diet", "Sex", "Strain"),
+  pca_threshold = 0.6,
+  variance_threshold = 0.01,
+  fill_the_missing = -1
+)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, 
+feature IDs in rownames and file/sample names as colnames.
+See "example_proteome_matrix" for more details (to call the description,
 use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
@@ -27,7 +32,7 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{factors_for_PVCA}{vector of factors from \code{sample_annotation}, that
@@ -39,8 +44,8 @@ variabilities that the selected principal components need to explain}
 \item{variance_threshold}{the percentile value of weight each of the factors
 needs to explain (the rest will be lumped together)}
 
-\item{fill_the_missing}{numeric value determining how  missing values 
-should be substituted. If \code{NULL}, features with missing values are 
+\item{fill_the_missing}{numeric value determining how  missing values
+should be substituted. If \code{NULL}, features with missing values are
 excluded.}
 }
 \value{
@@ -50,9 +55,10 @@ data frame of weights of Principal Variance Components
 Calculate variance distribution by variable
 }
 \examples{
-
+data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 matrix_test <- example_proteome_matrix[1:150, ]
-pvca_df <- calculate_PVCA(matrix_test, example_sample_annotation, 
-factors_for_PVCA = c('MS_batch', 'digestion_batch',"Diet", "Sex", "Strain"),
-pca_threshold = .6, variance_threshold = .01, fill_the_missing = -1)
+pvca_df <- calculate_PVCA(matrix_test, example_sample_annotation,
+  factors_for_PVCA = c("MS_batch", "digestion_batch", "Diet", "Sex", "Strain"),
+  pca_threshold = .6, variance_threshold = .01, fill_the_missing = -1
+)
 }

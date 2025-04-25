@@ -5,47 +5,63 @@
 \alias{plot_sample_corr_distribution.corrDF}
 \title{Create violin plot of sample correlation distribution}
 \usage{
-plot_sample_corr_distribution(data_matrix, sample_annotation,
-  repeated_samples = NULL, sample_id_col = "FullRunName",
-  batch_col = "MS_batch", biospecimen_id_col = "EarTag",
-  filename = NULL, width = NA, height = NA, units = c("cm", "in",
-  "mm"), plot_title = "Sample correlation distribution",
-  plot_param = "batch_replicate", theme = "classic")
-
-plot_sample_corr_distribution.corrDF(corr_distribution, filename = NULL,
-  width = NA, height = NA, units = c("cm", "in", "mm"),
+plot_sample_corr_distribution(
+  data_matrix,
+  sample_annotation,
+  repeated_samples = NULL,
+  sample_id_col = "FullRunName",
+  batch_col = "MS_batch",
+  biospecimen_id_col = "EarTag",
+  filename = NULL,
+  width = NA,
+  height = NA,
+  units = c("cm", "in", "mm"),
   plot_title = "Sample correlation distribution",
-  plot_param = "batch_replicate", theme = "classic", base_size = 20)
+  plot_param = "batch_replicate",
+  theme = "classic"
+)
+
+plot_sample_corr_distribution.corrDF(
+  corr_distribution,
+  filename = NULL,
+  width = NA,
+  height = NA,
+  units = c("cm", "in", "mm"),
+  plot_title = "Sample correlation distribution",
+  plot_param = "batch_replicate",
+  theme = "classic",
+  base_size = 20
+)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, 
+feature IDs in rownames and file/sample names as colnames.
+See "example_proteome_matrix" for more details (to call the description,
 use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
 \item{repeated_samples}{if \code{NULL}, correlation of all samples is plotted}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
 \item{batch_col}{column in \code{sample_annotation} that should be used for
 batch comparison (or other, non-batch factor to be mapped to color in plots).}
 
-\item{biospecimen_id_col}{column in \code{sample_annotation} 
-that captures the biological sample, 
+\item{biospecimen_id_col}{column in \code{sample_annotation}
+that captures the biological sample,
 that (possibly) was profiled several times as technical replicates.
 Tip: if such ID is absent, but can be defined from several columns,
 create new \code{biospecimen_id} column}
 
-\item{filename}{path where the results are saved. 
+\item{filename}{path where the results are saved.
 If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only 
+otherwise, the object is save into the file. Currently only
 pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
@@ -67,39 +83,49 @@ level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
 
-\item{corr_distribution}{data frame with correlation distribution, 
+\item{corr_distribution}{data frame with correlation distribution,
 as returned by \code{calculate_sample_corr_distr}}
+
+\item{base_size}{base font size}
 }
 \value{
-\code{ggplot} type object with violin plot 
+\code{ggplot} type object with violin plot
 for each \code{plot_param}
 }
 \description{
-Useful to visualize within batch vs within replicate 
+Useful to visualize within batch vs within replicate
 vs non-related sample correlation
 }
 \examples{
+data(list = c("example_sample_annotation", "example_proteome_matrix"), package = "proBatch")
 sample_corr_distribution_plot <- plot_sample_corr_distribution(
-example_proteome_matrix,
-example_sample_annotation, batch_col = 'MS_batch', 
-biospecimen_id_col = "EarTag", 
-plot_param = 'batch_replicate')
+  example_proteome_matrix,
+  example_sample_annotation,
+  batch_col = "MS_batch",
+  biospecimen_id_col = "EarTag",
+  plot_param = "batch_replicate"
+)
 
-corr_distribution = calculate_sample_corr_distr(data_matrix = example_proteome_matrix, 
-sample_annotation = example_sample_annotation,
-batch_col = 'MS_batch',biospecimen_id_col = "EarTag")
+data(list = c("example_sample_annotation", "example_proteome_matrix"), package = "proBatch")
+corr_distribution <- calculate_sample_corr_distr(
+  data_matrix = example_proteome_matrix,
+  sample_annotation = example_sample_annotation,
+  batch_col = "MS_batch", biospecimen_id_col = "EarTag"
+)
 sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
-plot_param = 'batch_replicate')
+  plot_param = "batch_replicate"
+)
 
-\dontrun{
+\donttest{
 sample_corr_distribution_plot <- plot_sample_corr_distribution.corrDF(corr_distribution,
-plot_param = 'batch_replicate', 
-filename = 'test_sampleCorr.png', 
-width = 28, height = 28, units = 'cm')
+  plot_param = "batch_replicate",
+  filename = "test_sampleCorr.png",
+  width = 28, height = 28, units = "cm"
+)
 }
 
 }
 \seealso{
-\code{\link{calculate_sample_corr_distr}}, 
+\code{\link{calculate_sample_corr_distr}},
 \code{\link[ggplot2]{ggplot}}
 }

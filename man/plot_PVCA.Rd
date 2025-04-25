@@ -4,25 +4,36 @@
 \alias{plot_PVCA}
 \title{Plot variance distribution by variable}
 \usage{
-plot_PVCA(data_matrix, sample_annotation,
+plot_PVCA(
+  data_matrix,
+  sample_annotation,
   feature_id_col = "peptide_group_label",
-  sample_id_col = "FullRunName", technical_factors = c("MS_batch",
-  "instrument"), biological_factors = c("cell_line", "drug_dose"),
-  fill_the_missing = -1, pca_threshold = 0.6,
-  variance_threshold = 0.01, colors_for_bars = NULL, filename = NULL,
-  width = NA, height = NA, units = c("cm", "in", "mm"),
-  plot_title = NULL, theme = "classic", base_size = 20)
+  sample_id_col = "FullRunName",
+  technical_factors = c("MS_batch", "instrument"),
+  biological_factors = c("cell_line", "drug_dose"),
+  fill_the_missing = -1,
+  pca_threshold = 0.6,
+  variance_threshold = 0.01,
+  colors_for_bars = NULL,
+  filename = NULL,
+  width = NA,
+  height = NA,
+  units = c("cm", "in", "mm"),
+  plot_title = NULL,
+  theme = "classic",
+  base_size = 20
+)
 }
 \arguments{
 \item{data_matrix}{features (in rows) vs samples (in columns) matrix, with
-feature IDs in rownames and file/sample names as colnames. 
-See "example_proteome_matrix" for more details (to call the description, 
+feature IDs in rownames and file/sample names as colnames.
+See "example_proteome_matrix" for more details (to call the description,
 use \code{help("example_proteome_matrix")})}
 
-\item{sample_annotation}{data frame with: 
-\enumerate{ \item \code{sample_id_col} (this can be repeated as row names) 
-  \item biological covariates 
-  \item technical covariates (batches etc) }. 
+\item{sample_annotation}{data frame with:
+\enumerate{ \item \code{sample_id_col} (this can be repeated as row names)
+  \item biological covariates
+  \item technical covariates (batches etc) }.
   See \code{help("example_sample_annotation")}}
 
 \item{feature_id_col}{name of the column with feature/gene/peptide/protein
@@ -30,33 +41,33 @@ ID used in the long format representation \code{df_long}. In the wide
 formatted representation \code{data_matrix} this corresponds to the row
 names.}
 
-\item{sample_id_col}{name of the column in \code{sample_annotation} table, 
+\item{sample_id_col}{name of the column in \code{sample_annotation} table,
 where the filenames (colnames of the \code{data_matrix} are found).}
 
-\item{technical_factors}{vector \code{sample_annotation} column names that 
+\item{technical_factors}{vector \code{sample_annotation} column names that
 are technical covariates}
 
 \item{biological_factors}{vector \code{sample_annotation} column names, that
 are biologically meaningful covariates}
 
-\item{fill_the_missing}{numeric value determining how  missing values 
-should be substituted. If \code{NULL}, features with missing values are 
+\item{fill_the_missing}{numeric value determining how  missing values
+should be substituted. If \code{NULL}, features with missing values are
 excluded.
 If \code{NULL}, features with missing values are excluded.}
 
 \item{pca_threshold}{the percentile value of the minimum amount of the
 variabilities that the selected principal components need to explain}
 
-\item{variance_threshold}{the percentile value of weight each of the 
+\item{variance_threshold}{the percentile value of weight each of the
 covariates needs to explain (the rest will be lumped together)}
 
 \item{colors_for_bars}{four-item color vector, specifying colors for the
 following categories: c('residual', 'biological', 'biol:techn',
 'technical')}
 
-\item{filename}{path where the results are saved. 
+\item{filename}{path where the results are saved.
 If null the object is returned to the active window;
-otherwise, the object is save into the file. Currently only 
+otherwise, the object is save into the file. Currently only
 pdf and png format is supported}
 
 \item{width}{option  determining the output image width}
@@ -69,6 +80,8 @@ pdf and png format is supported}
 level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 
 \item{theme}{ggplot theme, by default \code{classic}. Can be easily overriden}
+
+\item{base_size}{base size of the text in the plot}
 }
 \value{
 \code{ggplot} object with the plot
@@ -77,20 +90,23 @@ level (fragments, transitions, proteins) + purpose (meanplot/corrplot etc))}
 Plot variance distribution by variable
 }
 \examples{
+data(list = c("example_proteome_matrix", "example_sample_annotation"), package = "proBatch")
 matrix_test <- example_proteome_matrix[1:150, ]
-pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
-technical_factors = c('MS_batch', 'digestion_batch'),
-biological_factors = c("Diet", "Sex", "Strain"))
+pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation,
+  technical_factors = c("MS_batch", "digestion_batch"),
+  biological_factors = c("Diet", "Sex", "Strain")
+)
 
-\dontrun{
-pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation, 
-technical_factors = c('MS_batch', 'digestion_batch'),
-biological_factors = c("Diet", "Sex", "Strain"), 
-filename = 'test_PVCA.png', width = 28, height = 22, units = 'cm')
+\donttest{
+pvca_plot <- plot_PVCA(matrix_test, example_sample_annotation,
+  technical_factors = c("MS_batch", "digestion_batch"),
+  biological_factors = c("Diet", "Sex", "Strain"),
+  filename = "test_PVCA.png", width = 28, height = 22, units = "cm"
+)
 }
 
 }
 \seealso{
-\code{\link{sample_annotation_to_colors}}, 
+\code{\link{sample_annotation_to_colors}},
 \code{\link[ggplot2]{ggplot}}
 }
